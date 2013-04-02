@@ -31,7 +31,8 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface macApplication : NSApplication 
+@interface macApplication :
+NSApplication
 {
 }
 

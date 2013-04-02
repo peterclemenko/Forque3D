@@ -53,7 +53,7 @@ class LightQuery;
 /// @section TSRenderState_functionality What Does TSRenderState Do?
 ///
 /// TSRenderState is a simple class that performs the function of passing along
-/// (from the prep function(s) to the actual submission) the data 
+/// (from the prep function(s) to the actual submission) the data
 /// needed for the desired state of rendering.
 ///
 /// @section TSRenderState_example Usage Example
@@ -65,89 +65,143 @@ class LightQuery;
 class TSRenderState
 {
 protected:
-   
-   const SceneRenderState *mState;
 
-   GFXCubemap *mCubemap;
-
-   /// Used to override the normal
-   /// fade value of an object.
-   /// This is multiplied by the current
-   /// fade value of the instance
-   /// to gain the resulting visibility fade (see TSMesh::render()).
-   F32 mFadeOverride;
-
-   /// These are used in some places
-   /// TSShapeInstance::render, however,
-   /// it appears they are never set to anything
-   /// other than false.  We provide methods
-   /// for setting them regardless.
-   bool mNoRenderTranslucent;
-   bool mNoRenderNonTranslucent;
-
-   /// A generic hint value passed from the game
-   /// code down to the material for use by shader 
-   /// features.
-   void *mMaterialHint;
-
-   /// An optional object space frustum used to cull
-   /// subobjects within the shape.
-   const Frustum *mCuller;
-
-   /// Use the origin point of the mesh for distance
-   /// sorting for transparency instead of the nearest
-   /// bounding box point.
-   bool mUseOriginSort;
-
-   /// The lighting query object used if any materials
-   /// are forward lit and need lights.
-   LightQuery *mLightQuery;
-
+    const SceneRenderState* mState;
+    
+    GFXCubemap* mCubemap;
+    
+    /// Used to override the normal
+    /// fade value of an object.
+    /// This is multiplied by the current
+    /// fade value of the instance
+    /// to gain the resulting visibility fade (see TSMesh::render()).
+    F32 mFadeOverride;
+    
+    /// These are used in some places
+    /// TSShapeInstance::render, however,
+    /// it appears they are never set to anything
+    /// other than false.  We provide methods
+    /// for setting them regardless.
+    bool mNoRenderTranslucent;
+    bool mNoRenderNonTranslucent;
+    
+    /// A generic hint value passed from the game
+    /// code down to the material for use by shader
+    /// features.
+    void* mMaterialHint;
+    
+    /// An optional object space frustum used to cull
+    /// subobjects within the shape.
+    const Frustum* mCuller;
+    
+    /// Use the origin point of the mesh for distance
+    /// sorting for transparency instead of the nearest
+    /// bounding box point.
+    bool mUseOriginSort;
+    
+    /// The lighting query object used if any materials
+    /// are forward lit and need lights.
+    LightQuery* mLightQuery;
+    
 public:
 
-   TSRenderState();
-   TSRenderState( const TSRenderState &state );
-
-   /// @name Get/Set methods.
-   /// @{
-
-   ///@see mState
-   const SceneRenderState* getSceneState() const { return mState; }
-   void setSceneState( const SceneRenderState *state ) { mState = state; }
-
-   ///@see mCubemap
-   GFXCubemap* getCubemap() const { return mCubemap; }
-   void setCubemap( GFXCubemap *cubemap ) { mCubemap = cubemap; }
-
-   ///@see mFadeOverride
-   F32 getFadeOverride() const { return mFadeOverride; }
-   void setFadeOverride( F32 fade ) { mFadeOverride = fade; }
-
-   ///@see mNoRenderTranslucent
-   bool isNoRenderTranslucent() const { return mNoRenderTranslucent; }
-   void setNoRenderTranslucent( bool noRenderTrans ) { mNoRenderTranslucent = noRenderTrans; }
-
-   ///@see mNoRenderNonTranslucent
-   bool isNoRenderNonTranslucent() const { return mNoRenderNonTranslucent; }
-   void setNoRenderNonTranslucent( bool noRenderNonTrans ) { mNoRenderNonTranslucent = noRenderNonTrans; }
-
-   ///@see mMaterialHint
-   void* getMaterialHint() const { return mMaterialHint; }
-   void setMaterialHint( void *materialHint ) { mMaterialHint = materialHint; }
-
-   ///@see mCuller
-   const Frustum* getCuller() const { return mCuller; }
-   void setCuller( const  Frustum *culler ) { mCuller = culler; }
-
-   ///@see mUseOriginSort
-   void setOriginSort( bool enable ) { mUseOriginSort = enable; }
-   bool useOriginSort() const { return mUseOriginSort; }
-
-   ///@see mLightQuery
-   void setLightQuery( LightQuery *query ) { mLightQuery = query; }
-   LightQuery* getLightQuery() const { return mLightQuery; }
-
-   /// @}
+    TSRenderState();
+    TSRenderState( const TSRenderState& state );
+    
+    /// @name Get/Set methods.
+    /// @{
+    
+    ///@see mState
+    const SceneRenderState* getSceneState() const
+    {
+        return mState;
+    }
+    void setSceneState( const SceneRenderState* state )
+    {
+        mState = state;
+    }
+    
+    ///@see mCubemap
+    GFXCubemap* getCubemap() const
+    {
+        return mCubemap;
+    }
+    void setCubemap( GFXCubemap* cubemap )
+    {
+        mCubemap = cubemap;
+    }
+    
+    ///@see mFadeOverride
+    F32 getFadeOverride() const
+    {
+        return mFadeOverride;
+    }
+    void setFadeOverride( F32 fade )
+    {
+        mFadeOverride = fade;
+    }
+    
+    ///@see mNoRenderTranslucent
+    bool isNoRenderTranslucent() const
+    {
+        return mNoRenderTranslucent;
+    }
+    void setNoRenderTranslucent( bool noRenderTrans )
+    {
+        mNoRenderTranslucent = noRenderTrans;
+    }
+    
+    ///@see mNoRenderNonTranslucent
+    bool isNoRenderNonTranslucent() const
+    {
+        return mNoRenderNonTranslucent;
+    }
+    void setNoRenderNonTranslucent( bool noRenderNonTrans )
+    {
+        mNoRenderNonTranslucent = noRenderNonTrans;
+    }
+    
+    ///@see mMaterialHint
+    void* getMaterialHint() const
+    {
+        return mMaterialHint;
+    }
+    void setMaterialHint( void* materialHint )
+    {
+        mMaterialHint = materialHint;
+    }
+    
+    ///@see mCuller
+    const Frustum* getCuller() const
+    {
+        return mCuller;
+    }
+    void setCuller( const  Frustum* culler )
+    {
+        mCuller = culler;
+    }
+    
+    ///@see mUseOriginSort
+    void setOriginSort( bool enable )
+    {
+        mUseOriginSort = enable;
+    }
+    bool useOriginSort() const
+    {
+        return mUseOriginSort;
+    }
+    
+    ///@see mLightQuery
+    void setLightQuery( LightQuery* query )
+    {
+        mLightQuery = query;
+    }
+    LightQuery* getLightQuery() const
+    {
+        return mLightQuery;
+    }
+    
+    /// @}
 };
 
 #endif // _TSRENDERDATA_H_

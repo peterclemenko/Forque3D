@@ -30,31 +30,31 @@
 
 class PointLight : public LightBase
 {
-   typedef LightBase Parent;
-
+    typedef LightBase Parent;
+    
 protected:
 
-   F32 mRadius;
- 
-   // LightBase
-   void _conformLights();
-   void _renderViz( SceneRenderState *state );
-
+    F32 mRadius;
+    
+    // LightBase
+    void _conformLights();
+    void _renderViz( SceneRenderState* state );
+    
 public:
 
-   PointLight();
-   virtual ~PointLight();
-
-   // ConsoleObject
-   DECLARE_CONOBJECT( PointLight );
-   static void initPersistFields();
-
-   // SceneObject
-   virtual void setScale( const VectorF &scale );
-
-   // NetObject
-   U32 packUpdate( NetConnection *conn, U32 mask, BitStream *stream );
-   void unpackUpdate( NetConnection *conn, BitStream *stream );  
+    PointLight();
+    virtual ~PointLight();
+    
+    // ConsoleObject
+    DECLARE_CONOBJECT( PointLight );
+    static void initPersistFields();
+    
+    // SceneObject
+    virtual void setScale( const VectorF& scale );
+    
+    // NetObject
+    U32 packUpdate( NetConnection* conn, U32 mask, BitStream* stream );
+    void unpackUpdate( NetConnection* conn, BitStream* stream );
 };
 
 #endif // _POINTLIGHT_H_

@@ -33,25 +33,31 @@
 
 class CubeLightShadowMap : public LightShadowMap
 {
-   typedef LightShadowMap Parent;
-
+    typedef LightShadowMap Parent;
+    
 public:
 
-   CubeLightShadowMap( LightInfo *light );
+    CubeLightShadowMap( LightInfo* light );
+    
+    // LightShadowMap
+    virtual bool hasShadowTex() const
+    {
+        return mCubemap.isValid();
+    }
+    virtual ShadowType getShadowType() const
+    {
+        return ShadowType_CubeMap;
+    }
+    virtual void _render( RenderPassManager* renderPass, const SceneRenderState* diffuseState );
+    virtual void setShaderParameters( GFXShaderConstBuffer* params, LightingShaderConstants* lsc );
+    virtual void releaseTextures();
+    virtual bool setTextureStage( U32 currTexFlag, LightingShaderConstants* lsc );
+    
+protected:
 
-   // LightShadowMap
-   virtual bool hasShadowTex() const { return mCubemap.isValid(); }
-   virtual ShadowType getShadowType() const { return ShadowType_CubeMap; }
-   virtual void _render( RenderPassManager* renderPass, const SceneRenderState *diffuseState );
-   virtual void setShaderParameters( GFXShaderConstBuffer* params, LightingShaderConstants* lsc );
-   virtual void releaseTextures();
-   virtual bool setTextureStage( U32 currTexFlag, LightingShaderConstants* lsc );
-
-protected:   
-
-   /// The shadow cubemap.
-   GFXCubemapHandle mCubemap;
-
+    /// The shadow cubemap.
+    GFXCubemapHandle mCubemap;
+    
 };
 
 #endif // _CUBELIGHTSHADOWMAP_H_

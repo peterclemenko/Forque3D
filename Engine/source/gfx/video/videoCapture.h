@@ -53,154 +53,188 @@ class VideoFrameGrabber;
 class VideoEncoder;
 class GBitmap;
 
-typedef VideoEncoder* (*VideoEncoderFactoryFn)();
+typedef VideoEncoder* ( *VideoEncoderFactoryFn )();
 
 
 /// Abstract frame grabber class
 /// implementation and initalization depends on video device
 class VideoFrameGrabber
 {
-   friend class VideoCapture;
+    friend class VideoCapture;
 protected:
-   Point2I mResolution; // The resolution used to capture the back buffer (scaling will be used)
-   Vector<GBitmap*> mBitmapList; //List of bitmaps created from backbuffer captures
-
-   /// Sets the output frame resolution
-   void setOutResolution( const Point2I& res ) { mResolution = res; }   
-
-   /// Pushes a fresh bitmap into our list
-   void pushNewBitmap( GBitmap* bitmap ) { mBitmapList.push_back(bitmap); }
-
-   /// Returns one captured bitmap. Returns NULL if there are no more bitmaps.
-   GBitmap* fetchBitmap();
-
-   /// Texture event callback
-   void _onTextureEvent(GFXTexCallbackCode code);
-   
-   /// Captures the current backbuffer. If the last capture wasn't made into a bitmap, it will be overriden.   
-   virtual void captureBackBuffer() = 0;
-
-   /// Starts converting the last backbuffer capture to a bitmap
-   /// Depending on the VideoFrameGrabber implementation, this may not produce a bitmap right away.
-   virtual void makeBitmap() = 0;
-
-   /// Releases internal textures
-   virtual void releaseTextures() {};
-
+    Point2I mResolution; // The resolution used to capture the back buffer (scaling will be used)
+    Vector<GBitmap*> mBitmapList; //List of bitmaps created from backbuffer captures
+    
+    /// Sets the output frame resolution
+    void setOutResolution( const Point2I& res )
+    {
+        mResolution = res;
+    }
+    
+    /// Pushes a fresh bitmap into our list
+    void pushNewBitmap( GBitmap* bitmap )
+    {
+        mBitmapList.push_back( bitmap );
+    }
+    
+    /// Returns one captured bitmap. Returns NULL if there are no more bitmaps.
+    GBitmap* fetchBitmap();
+    
+    /// Texture event callback
+    void _onTextureEvent( GFXTexCallbackCode code );
+    
+    /// Captures the current backbuffer. If the last capture wasn't made into a bitmap, it will be overriden.
+    virtual void captureBackBuffer() = 0;
+    
+    /// Starts converting the last backbuffer capture to a bitmap
+    /// Depending on the VideoFrameGrabber implementation, this may not produce a bitmap right away.
+    virtual void makeBitmap() = 0;
+    
+    /// Releases internal textures
+    virtual void releaseTextures() {};
+    
 public:
-   VideoFrameGrabber();
-   virtual ~VideoFrameGrabber();
+    VideoFrameGrabber();
+    virtual ~VideoFrameGrabber();
 };
 
 
 /// Video capture interface class
 class VideoCapture
-{   
+{
 private:
-   struct EncoderFactory {
-      const char* name;
-      VideoEncoderFactoryFn factory;      
-   };
-
-   /// List of encoder factory functions
-   static Vector<EncoderFactory> mEncoderFactoryFnList;
-
-   // The frame position of the latest backbuffer capture
-   F32 mCapturedFramePos;
-
-   /// Our current video encoder
-   VideoEncoder* mEncoder;
-
-   /// Our video frame grabber
-   VideoFrameGrabber* mFrameGrabber;
-
-   /// The canvas we're recording from
-   GuiCanvas* mCanvas;
-
-   /// True if we're recording
-   bool mIsRecording;
-
-   /// Time when we captured the previous frame
-   U32 mVideoCaptureStartTime;
-
-   /// Frame to be captured next
-   F32 mNextFramePosition;
-
-   /// The per-frame time (in milliseconds)
-   F32 mMsPerFrame;
-   
-   /// The framerate we'll use to record
-   F32 mFrameRate;
-
-   /// Accumulated error when converting the per-frame-time to integer
-   /// this is used to dither the value and keep overall time advancing
-   /// correct
-   F32 mMsPerFrameError;
-
-   /// Name of the encoder we'll be using
-   String mEncoderName;
-
-   /// The video output resolution
-   Point2I mResolution;
-
-   /// Output filename
-   String mFileName;
-
-   /// Tur if we're waiting for a canvas to bre created before capturing
-   bool mWaitingForCanvas;
-
-   /// Vector with bitmaps to delete
-   Vector< GBitmap* > mBitmapDeleteList;
-
-   /// Initializes our encoder
-   bool initEncoder( const char* name );   
-
-   /// Deletes processed bitmaps
-   void deleteProcessedBitmaps();
-      
+    struct EncoderFactory
+    {
+        const char* name;
+        VideoEncoderFactoryFn factory;
+    };
+    
+    /// List of encoder factory functions
+    static Vector<EncoderFactory> mEncoderFactoryFnList;
+    
+    // The frame position of the latest backbuffer capture
+    F32 mCapturedFramePos;
+    
+    /// Our current video encoder
+    VideoEncoder* mEncoder;
+    
+    /// Our video frame grabber
+    VideoFrameGrabber* mFrameGrabber;
+    
+    /// The canvas we're recording from
+    GuiCanvas* mCanvas;
+    
+    /// True if we're recording
+    bool mIsRecording;
+    
+    /// Time when we captured the previous frame
+    U32 mVideoCaptureStartTime;
+    
+    /// Frame to be captured next
+    F32 mNextFramePosition;
+    
+    /// The per-frame time (in milliseconds)
+    F32 mMsPerFrame;
+    
+    /// The framerate we'll use to record
+    F32 mFrameRate;
+    
+    /// Accumulated error when converting the per-frame-time to integer
+    /// this is used to dither the value and keep overall time advancing
+    /// correct
+    F32 mMsPerFrameError;
+    
+    /// Name of the encoder we'll be using
+    String mEncoderName;
+    
+    /// The video output resolution
+    Point2I mResolution;
+    
+    /// Output filename
+    String mFileName;
+    
+    /// Tur if we're waiting for a canvas to bre created before capturing
+    bool mWaitingForCanvas;
+    
+    /// Vector with bitmaps to delete
+    Vector< GBitmap* > mBitmapDeleteList;
+    
+    /// Initializes our encoder
+    bool initEncoder( const char* name );
+    
+    /// Deletes processed bitmaps
+    void deleteProcessedBitmaps();
+    
 public:
-   VideoCapture();
-      
-   /// Start a video capture session
-   void begin( GuiCanvas* canvas );
-
-   /// Captures a new frame
-   void capture();
-   
-   /// Ends a video capture
-   void end();
-
-   /// Sets the output filename
-   void setFilename( const char* filename ) { mFileName = filename; }
-
-   /// Sets the encoder we'll use
-   void setEncoderName( const char* encoder ) { mEncoderName = encoder; }
-
-   /// Sets the framerate
-   void setFramerate( F32 fps ) { mFrameRate = fps; }
-
-   /// Sets the video output resolution
-   void setResolution(const Point2I& res) { mResolution = res; }
-
-   /// Returns true if we're capturing
-   bool isRecording() { return mIsRecording; }
-
-   /// Returns the number of milliseconds per frame
-   S32 getMsPerFrame();
-
-   /// Sets the video farme grabber (cannot record without one).
-   void setFrameGrabber( VideoFrameGrabber* grabber ) { mFrameGrabber = grabber; }
-
-   /// This will make the video capture begin capturing 
-   /// as soon as a GuiCanvas is created
-   void waitForCanvas() { mWaitingForCanvas = true; }
-   bool isWaitingForCanvas() { return mWaitingForCanvas; }
-
-   /// Registers an encoder
-   static void registerEncoder( const char* name, VideoEncoderFactoryFn factoryFn );    
-
-   // For ManagedSingleton.
-   static const char* getSingletonName() { return "VideoCapture"; }   
+    VideoCapture();
+    
+    /// Start a video capture session
+    void begin( GuiCanvas* canvas );
+    
+    /// Captures a new frame
+    void capture();
+    
+    /// Ends a video capture
+    void end();
+    
+    /// Sets the output filename
+    void setFilename( const char* filename )
+    {
+        mFileName = filename;
+    }
+    
+    /// Sets the encoder we'll use
+    void setEncoderName( const char* encoder )
+    {
+        mEncoderName = encoder;
+    }
+    
+    /// Sets the framerate
+    void setFramerate( F32 fps )
+    {
+        mFrameRate = fps;
+    }
+    
+    /// Sets the video output resolution
+    void setResolution( const Point2I& res )
+    {
+        mResolution = res;
+    }
+    
+    /// Returns true if we're capturing
+    bool isRecording()
+    {
+        return mIsRecording;
+    }
+    
+    /// Returns the number of milliseconds per frame
+    S32 getMsPerFrame();
+    
+    /// Sets the video farme grabber (cannot record without one).
+    void setFrameGrabber( VideoFrameGrabber* grabber )
+    {
+        mFrameGrabber = grabber;
+    }
+    
+    /// This will make the video capture begin capturing
+    /// as soon as a GuiCanvas is created
+    void waitForCanvas()
+    {
+        mWaitingForCanvas = true;
+    }
+    bool isWaitingForCanvas()
+    {
+        return mWaitingForCanvas;
+    }
+    
+    /// Registers an encoder
+    static void registerEncoder( const char* name, VideoEncoderFactoryFn factoryFn );
+    
+    // For ManagedSingleton.
+    static const char* getSingletonName()
+    {
+        return "VideoCapture";
+    }
 };
 
 
@@ -209,42 +243,48 @@ public:
 class VideoEncoder
 {
 protected:
-   // Video output file path
-   String mPath;
-
-   // Video framerate
-   F32 mFramerate;
-
-   // Video resolution
-   Point2I mResolution;
-
-   // List with bitmaps which are done encoding
-   ThreadSafeDeque< GBitmap* > mProcessedBitmaps;
+    // Video output file path
+    String mPath;
+    
+    // Video framerate
+    F32 mFramerate;
+    
+    // Video resolution
+    Point2I mResolution;
+    
+    // List with bitmaps which are done encoding
+    ThreadSafeDeque< GBitmap* > mProcessedBitmaps;
 public:
-   // Stores an encoded bitmap to be dealt with later
-   void pushProcessedBitmap( GBitmap* bitmap );
-      
+    // Stores an encoded bitmap to be dealt with later
+    void pushProcessedBitmap( GBitmap* bitmap );
+    
 public:
-   /// Sets the file the encoder will write to
-   void setFile( const char* path );
-
-   /// Sets the framerate (and fixes it if its invalid)
-   virtual void setFramerate( F32* framerate ) { mFramerate = *framerate; }
-
-   /// Sets the output resolution (and fixes it if its invalid)
-   virtual void setResolution( Point2I* resolution ) { mResolution = *resolution; }
-
-   /// Begins accepting frames for encoding
-   virtual bool begin() = 0;
-
-   /// Pushes a new frame into the video stream
-   virtual bool pushFrame( GBitmap * bitmap ) = 0;
-
-   /// Finishes the encoding and closes the video
-   virtual bool end() = 0;
-
-   /// Returns an already encoded bitmap. Video capture will get these and manage their deletion
-   GBitmap* getProcessedBitmap();
+    /// Sets the file the encoder will write to
+    void setFile( const char* path );
+    
+    /// Sets the framerate (and fixes it if its invalid)
+    virtual void setFramerate( F32* framerate )
+    {
+        mFramerate = *framerate;
+    }
+    
+    /// Sets the output resolution (and fixes it if its invalid)
+    virtual void setResolution( Point2I* resolution )
+    {
+        mResolution = *resolution;
+    }
+    
+    /// Begins accepting frames for encoding
+    virtual bool begin() = 0;
+    
+    /// Pushes a new frame into the video stream
+    virtual bool pushFrame( GBitmap* bitmap ) = 0;
+    
+    /// Finishes the encoding and closes the video
+    virtual bool end() = 0;
+    
+    /// Returns an already encoded bitmap. Video capture will get these and manage their deletion
+    GBitmap* getProcessedBitmap();
 };
 
 /// Returns the VideoCapture singleton.

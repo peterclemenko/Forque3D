@@ -42,46 +42,46 @@ class SimObject;
 /// for fast removal of an object given object*
 class SimNameDictionary
 {
-   enum
-   {
-      DefaultTableSize = 29
-   };
-
-   SimObject **hashTable;  // hash the pointers of the names...
-   S32 hashTableSize;
-   S32 hashEntryCount;
-
-   void *mutex;
-
+    enum
+    {
+        DefaultTableSize = 29
+    };
+    
+    SimObject** hashTable;  // hash the pointers of the names...
+    S32 hashTableSize;
+    S32 hashEntryCount;
+    
+    void* mutex;
+    
 public:
-   void insert(SimObject* obj);
-   void remove(SimObject* obj);
-   SimObject* find(StringTableEntry name);
-
-   SimNameDictionary();
-   ~SimNameDictionary();
+    void insert( SimObject* obj );
+    void remove( SimObject* obj );
+    SimObject* find( StringTableEntry name );
+    
+    SimNameDictionary();
+    ~SimNameDictionary();
 };
 
 class SimManagerNameDictionary
 {
-   enum
-   {
-      DefaultTableSize = 29
-   };
-
-   SimObject **hashTable;  // hash the pointers of the names...
-   S32 hashTableSize;
-   S32 hashEntryCount;
-
-   void *mutex;
-
+    enum
+    {
+        DefaultTableSize = 29
+    };
+    
+    SimObject** hashTable;  // hash the pointers of the names...
+    S32 hashTableSize;
+    S32 hashEntryCount;
+    
+    void* mutex;
+    
 public:
-   void insert(SimObject* obj);
-   void remove(SimObject* obj);
-   SimObject* find(StringTableEntry name);
-
-   SimManagerNameDictionary();
-   ~SimManagerNameDictionary();
+    void insert( SimObject* obj );
+    void remove( SimObject* obj );
+    SimObject* find( StringTableEntry name );
+    
+    SimManagerNameDictionary();
+    ~SimManagerNameDictionary();
 };
 
 //----------------------------------------------------------------------------
@@ -91,22 +91,22 @@ public:
 /// for fast removal of an object given object*
 class SimIdDictionary
 {
-   enum
-   {
-      DefaultTableSize = 4096,
-      TableBitMask = 4095
-   };
-   SimObject *table[DefaultTableSize];
-
-   void *mutex;
-
+    enum
+    {
+        DefaultTableSize = 4096,
+        TableBitMask = 4095
+    };
+    SimObject* table[DefaultTableSize];
+    
+    void* mutex;
+    
 public:
-   void insert(SimObject* obj);
-   void remove(SimObject* obj);
-   SimObject* find(S32 id);
-
-   SimIdDictionary();
-   ~SimIdDictionary();
+    void insert( SimObject* obj );
+    void remove( SimObject* obj );
+    SimObject* find( S32 id );
+    
+    SimIdDictionary();
+    ~SimIdDictionary();
 };
 
 #endif //_SIMDICTIONARY_H_

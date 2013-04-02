@@ -54,32 +54,35 @@ class Semaphore;
 class SimEvent
 {
 public:
-   SimEvent *nextEvent;     ///< Linked list details - pointer to next item in the list.
-   SimTime startTime;       ///< When the event was posted.
-   SimTime time;            ///< When the event is scheduled to occur.
-   U32 sequenceCount;       ///< Unique ID. These are assigned sequentially based on order
-   ///  of addition to the list.
-   SimObject *destObject;   ///< Object on which this event will be applied.
-
-   SimEvent() { destObject = NULL; }
-   virtual ~SimEvent() {}   ///< Destructor
-   ///
-   /// A dummy virtual destructor is required
-   /// so that subclasses can be deleted properly
-
-   /// Function called when event occurs.
-   ///
-   /// This is where the meat of your event's implementation goes.
-   ///
-   /// See any of the subclasses for ideas of what goes in here.
-   ///
-   /// The event is deleted immediately after processing. If the
-   /// object referenced in destObject is deleted, then the event
-   /// is not called. The even will be executed unconditionally if
-   /// the object referenced is NULL.
-   ///
-   /// @param   object  Object stored in destObject.
-   virtual void process(SimObject *object)=0;
+    SimEvent* nextEvent;     ///< Linked list details - pointer to next item in the list.
+    SimTime startTime;       ///< When the event was posted.
+    SimTime time;            ///< When the event is scheduled to occur.
+    U32 sequenceCount;       ///< Unique ID. These are assigned sequentially based on order
+    ///  of addition to the list.
+    SimObject* destObject;   ///< Object on which this event will be applied.
+    
+    SimEvent()
+    {
+        destObject = NULL;
+    }
+    virtual ~SimEvent() {}   ///< Destructor
+    ///
+    /// A dummy virtual destructor is required
+    /// so that subclasses can be deleted properly
+    
+    /// Function called when event occurs.
+    ///
+    /// This is where the meat of your event's implementation goes.
+    ///
+    /// See any of the subclasses for ideas of what goes in here.
+    ///
+    /// The event is deleted immediately after processing. If the
+    /// object referenced in destObject is deleted, then the event
+    /// is not called. The even will be executed unconditionally if
+    /// the object referenced is NULL.
+    ///
+    /// @param   object  Object stored in destObject.
+    virtual void process( SimObject* object ) = 0;
 };
 
 /// Implementation of schedule() function.
@@ -89,51 +92,51 @@ public:
 class SimConsoleEvent : public SimEvent
 {
 protected:
-   S32 mArgc;
-   char **mArgv;
-   bool mOnObject;
+    S32 mArgc;
+    char** mArgv;
+    bool mOnObject;
 public:
 
-   /// Constructor
-   ///
-   /// Pass the arguments of a function call, optionally on an object.
-   ///
-   /// The object for the call to be executed on is specified by setting
-   /// onObject and storing a reference to the object in destObject. If
-   /// onObject is false, you don't need to store anything into destObject.
-   ///
-   /// The parameters here are passed unmodified to Con::execute() at the
-   /// time of the event.
-   ///
-   /// @see Con::execute(S32 argc, const char *argv[])
-   /// @see Con::execute(SimObject *object, S32 argc, const char *argv[])
-   SimConsoleEvent(S32 argc, const char **argv, bool onObject);
-
-   ~SimConsoleEvent();
-   virtual void process(SimObject *object);
+    /// Constructor
+    ///
+    /// Pass the arguments of a function call, optionally on an object.
+    ///
+    /// The object for the call to be executed on is specified by setting
+    /// onObject and storing a reference to the object in destObject. If
+    /// onObject is false, you don't need to store anything into destObject.
+    ///
+    /// The parameters here are passed unmodified to Con::execute() at the
+    /// time of the event.
+    ///
+    /// @see Con::execute(S32 argc, const char *argv[])
+    /// @see Con::execute(SimObject *object, S32 argc, const char *argv[])
+    SimConsoleEvent( S32 argc, const char** argv, bool onObject );
+    
+    ~SimConsoleEvent();
+    virtual void process( SimObject* object );
 };
 
 /// Used by Con::threadSafeExecute()
 struct SimConsoleThreadExecCallback
 {
-   Semaphore   *sem;
-   const char  *retVal;
-
-   SimConsoleThreadExecCallback();
-   ~SimConsoleThreadExecCallback();
-
-   void handleCallback(const char *ret);
-   const char *waitForResult();
+    Semaphore*   sem;
+    const char*  retVal;
+    
+    SimConsoleThreadExecCallback();
+    ~SimConsoleThreadExecCallback();
+    
+    void handleCallback( const char* ret );
+    const char* waitForResult();
 };
 
 class SimConsoleThreadExecEvent : public SimConsoleEvent
 {
-   SimConsoleThreadExecCallback *cb;
-
+    SimConsoleThreadExecCallback* cb;
+    
 public:
-   SimConsoleThreadExecEvent(S32 argc, const char **argv, bool onObject, SimConsoleThreadExecCallback *callback);
-
-   virtual void process(SimObject *object);
+    SimConsoleThreadExecEvent( S32 argc, const char** argv, bool onObject, SimConsoleThreadExecCallback* callback );
+    
+    virtual void process( SimObject* object );
 };
 
 /// General purpose SimEvent which calls a Delegate<void()> callback.
@@ -141,15 +144,15 @@ class SimDelegateEvent : public SimEvent
 {
 public:
 
-   U32 *mEventId;
-   Delegate<void()> mCallback;
-
-   void process( SimObject* )
-   {
-      // Clear the event id and call the delegate.
-      *mEventId = InvalidEventId;
-      mCallback();
-   }
+    U32* mEventId;
+    Delegate<void()> mCallback;
+    
+    void process( SimObject* )
+    {
+        // Clear the event id and call the delegate.
+        *mEventId = InvalidEventId;
+        mCallback();
+    }
 };
 
 #endif // _SIMEVENTS_H_

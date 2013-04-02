@@ -102,76 +102,85 @@ class BitStream;
 /// @nosubgrouping
 class SimDataBlock: public SimObject
 {
-   typedef SimObject Parent;
+    typedef SimObject Parent;
 public:
 
-   SimDataBlock();
-   DECLARE_CONOBJECT(SimDataBlock);
-   
-   /// @name Datablock Internals
-   /// @{
-
+    SimDataBlock();
+    DECLARE_CONOBJECT( SimDataBlock );
+    
+    /// @name Datablock Internals
+    /// @{
+    
 protected:
-   S32  modifiedKey;
-
+    S32  modifiedKey;
+    
 public:
-   static SimObjectId sNextObjectId;
-   static S32         sNextModifiedKey;
-
-   /// Assign a new modified key.
-   ///
-   /// Datablocks are assigned a modified key which is updated every time
-   /// a static field of the datablock is changed. These are gotten from
-   /// a global store.
-   static S32 getNextModifiedKey() { return sNextModifiedKey; }
-
-   /// Returns true if this is a client side only datablock (in
-   /// other words a datablock allocated with 'new' instead of 
-   /// the 'datablock' keyword).
-   bool isClientOnly() const { return getId() < DataBlockObjectIdFirst || getId() > DataBlockObjectIdLast; }
-
-   /// Get the modified key for this particular datablock.
-   S32 getModifiedKey() const { return modifiedKey; }
-
-   bool onAdd();
-   virtual void onStaticModified(const char* slotName, const char*newValue = NULL);
-   //void setLastError(const char*);
-   void assignId();
-
-   /// @}
-
-   /// @name Datablock Interface
-   /// @{
-
-   ///
-   virtual void packData(BitStream* stream);
-   virtual void unpackData(BitStream* stream);
-
-   /// Called to prepare the datablock for use, after it has been unpacked.
-   ///
-   /// @param  server      Set if we're running on the server (and therefore don't need to load
-   ///                     things like textures or sounds).
-   /// @param  errorStr    If an error occurs in loading, this is set to a short string describing
-   ///                     the error.
-   /// @returns True if all went well; false if something failed.
-   ///
-   /// @see @ref SimDataBlock_preload
-   virtual bool preload(bool server, String &errorStr);
-   /// @}
-
-   /// Output the TorqueScript to recreate this object.
-   ///
-   /// This calls writeFields internally.
-   /// @param   stream  Stream to output to.
-   /// @param   tabStop Indentation level for this object.
-   /// @param   flags   If SelectedOnly is passed here, then
-   ///                  only objects marked as selected (using setSelected)
-   ///                  will output themselves.
-   virtual void write(Stream &stream, U32 tabStop, U32 flags = 0);
-
-   /// Used by the console system to automatically tell datablock classes apart
-   /// from non-datablock classes.
-   static const bool __smIsDatablock = true;
+    static SimObjectId sNextObjectId;
+    static S32         sNextModifiedKey;
+    
+    /// Assign a new modified key.
+    ///
+    /// Datablocks are assigned a modified key which is updated every time
+    /// a static field of the datablock is changed. These are gotten from
+    /// a global store.
+    static S32 getNextModifiedKey()
+    {
+        return sNextModifiedKey;
+    }
+    
+    /// Returns true if this is a client side only datablock (in
+    /// other words a datablock allocated with 'new' instead of
+    /// the 'datablock' keyword).
+    bool isClientOnly() const
+    {
+        return getId() < DataBlockObjectIdFirst || getId() > DataBlockObjectIdLast;
+    }
+    
+    /// Get the modified key for this particular datablock.
+    S32 getModifiedKey() const
+    {
+        return modifiedKey;
+    }
+    
+    bool onAdd();
+    virtual void onStaticModified( const char* slotName, const char* newValue = NULL );
+    //void setLastError(const char*);
+    void assignId();
+    
+    /// @}
+    
+    /// @name Datablock Interface
+    /// @{
+    
+    ///
+    virtual void packData( BitStream* stream );
+    virtual void unpackData( BitStream* stream );
+    
+    /// Called to prepare the datablock for use, after it has been unpacked.
+    ///
+    /// @param  server      Set if we're running on the server (and therefore don't need to load
+    ///                     things like textures or sounds).
+    /// @param  errorStr    If an error occurs in loading, this is set to a short string describing
+    ///                     the error.
+    /// @returns True if all went well; false if something failed.
+    ///
+    /// @see @ref SimDataBlock_preload
+    virtual bool preload( bool server, String& errorStr );
+    /// @}
+    
+    /// Output the TorqueScript to recreate this object.
+    ///
+    /// This calls writeFields internally.
+    /// @param   stream  Stream to output to.
+    /// @param   tabStop Indentation level for this object.
+    /// @param   flags   If SelectedOnly is passed here, then
+    ///                  only objects marked as selected (using setSelected)
+    ///                  will output themselves.
+    virtual void write( Stream& stream, U32 tabStop, U32 flags = 0 );
+    
+    /// Used by the console system to automatically tell datablock classes apart
+    /// from non-datablock classes.
+    static const bool __smIsDatablock = true;
 };
 
 //---------------------------------------------------------------------------
@@ -179,12 +188,12 @@ public:
 class SimDataBlockGroup : public SimGroup
 {
 private:
-   S32 mLastModifiedKey;
-
+    S32 mLastModifiedKey;
+    
 public:
-   static S32 QSORT_CALLBACK compareModifiedKey(const void* a,const void* b);
-   void sort();
-   SimDataBlockGroup();
+    static S32 QSORT_CALLBACK compareModifiedKey( const void* a, const void* b );
+    void sort();
+    SimDataBlockGroup();
 };
 
 #endif // _SIMDATABLOCK_H_

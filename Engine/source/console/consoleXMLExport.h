@@ -35,28 +35,29 @@ class SimXMLDocument;
 /// Exports console information to XML representation
 /// @{
 
-namespace Con {
+namespace Con
+{
 
-   class XMLExport
-   {
+class XMLExport
+{
 
-   public:
+public:
 
-      XMLExport();
-      ~XMLExport();
+    XMLExport();
+    ~XMLExport();
+    
+    // writes console information in XML format to  the file specified
+    void exportXML( String& str );
+    
+private:
 
-      // writes console information in XML format to  the file specified
-      void exportXML(String& str);
-
-   private:
-
-      void exportBaseTypes();
-      void exportEntryTypes();
-      void exportNamespaces();
-
-      SimXMLDocument *mXML;
-
-   };
+    void exportBaseTypes();
+    void exportEntryTypes();
+    void exportNamespaces();
+    
+    SimXMLDocument* mXML;
+    
+};
 
 };
 

@@ -37,42 +37,45 @@ class PxCollision : public PhysicsCollision
 {
 protected:
 
-   /// The collision representation.
-   Vector<NxShapeDesc*> mColShapes;
-
-   /// Helper for adding shapes.
-   //void _addShape( btCollisionShape *shape, const MatrixF &localXfm );
-
+    /// The collision representation.
+    Vector<NxShapeDesc*> mColShapes;
+    
+    /// Helper for adding shapes.
+    //void _addShape( btCollisionShape *shape, const MatrixF &localXfm );
+    
 public:
 
-   PxCollision();
-   virtual ~PxCollision();
-
-   /// Return the PhysX shape descriptions.
-   const Vector<NxShapeDesc*>& getShapes() const { return mColShapes; }
-
-   // PhysicsCollision
-   virtual void addPlane( const PlaneF &plane );
-   virtual void addBox( const Point3F &halfWidth,
-                        const MatrixF &localXfm );
-   virtual void addSphere( F32 radius,
-                           const MatrixF &localXfm );
-   virtual void addCapsule(   F32 radius,
-                              F32 height,
-                              const MatrixF &localXfm );
-   virtual bool addConvex( const Point3F *points, 
-                           U32 count,
-                           const MatrixF &localXfm );
-   virtual bool addTriangleMesh( const Point3F *vert,
-                                 U32 vertCount,
-                                 const U32 *index,
-                                 U32 triCount,
-                                 const MatrixF &localXfm );
-   virtual bool addHeightfield(  const U16 *heights,
-                                 const bool *holes,
+    PxCollision();
+    virtual ~PxCollision();
+    
+    /// Return the PhysX shape descriptions.
+    const Vector<NxShapeDesc*>& getShapes() const
+    {
+        return mColShapes;
+    }
+    
+    // PhysicsCollision
+    virtual void addPlane( const PlaneF& plane );
+    virtual void addBox( const Point3F& halfWidth,
+                         const MatrixF& localXfm );
+    virtual void addSphere( F32 radius,
+                            const MatrixF& localXfm );
+    virtual void addCapsule( F32 radius,
+                             F32 height,
+                             const MatrixF& localXfm );
+    virtual bool addConvex( const Point3F* points,
+                            U32 count,
+                            const MatrixF& localXfm );
+    virtual bool addTriangleMesh( const Point3F* vert,
+                                  U32 vertCount,
+                                  const U32* index,
+                                  U32 triCount,
+                                  const MatrixF& localXfm );
+    virtual bool addHeightfield( const U16* heights,
+                                 const bool* holes,
                                  U32 blockSize,
                                  F32 metersPerSample,
-                                 const MatrixF &localXfm );
+                                 const MatrixF& localXfm );
 };
 
 #endif // _T3D_PHYSICS_PXCOLLISION_H_

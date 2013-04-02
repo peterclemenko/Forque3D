@@ -33,93 +33,93 @@
 
 MaterialList::MaterialList()
 {
-   VECTOR_SET_ASSOCIATION(mMatInstList);
-   VECTOR_SET_ASSOCIATION(mMaterialNames);
+    VECTOR_SET_ASSOCIATION( mMatInstList );
+    VECTOR_SET_ASSOCIATION( mMaterialNames );
 }
 
-MaterialList::MaterialList(const MaterialList* pCopy)
+MaterialList::MaterialList( const MaterialList* pCopy )
 {
-   VECTOR_SET_ASSOCIATION(mMatInstList);
-   VECTOR_SET_ASSOCIATION(mMaterialNames);
-
-   mMaterialNames.setSize(pCopy->mMaterialNames.size());
-   S32 i;
-   for (i = 0; i < mMaterialNames.size(); i++)
-   {
-      mMaterialNames[i] = pCopy->mMaterialNames[i];
-   }
-
-   clearMatInstList();
-   mMatInstList.setSize(pCopy->size());
-   for( i = 0; i < mMatInstList.size(); i++ )
-   {
-      if( i < pCopy->mMatInstList.size() && pCopy->mMatInstList[i] )
-      {
-         mMatInstList[i] = pCopy->mMatInstList[i]->getMaterial()->createMatInstance();
-      }
-      else
-      {
-         mMatInstList[i] = NULL;
-      }
-   }
+    VECTOR_SET_ASSOCIATION( mMatInstList );
+    VECTOR_SET_ASSOCIATION( mMaterialNames );
+    
+    mMaterialNames.setSize( pCopy->mMaterialNames.size() );
+    S32 i;
+    for( i = 0; i < mMaterialNames.size(); i++ )
+    {
+        mMaterialNames[i] = pCopy->mMaterialNames[i];
+    }
+    
+    clearMatInstList();
+    mMatInstList.setSize( pCopy->size() );
+    for( i = 0; i < mMatInstList.size(); i++ )
+    {
+        if( i < pCopy->mMatInstList.size() && pCopy->mMatInstList[i] )
+        {
+            mMatInstList[i] = pCopy->mMatInstList[i]->getMaterial()->createMatInstance();
+        }
+        else
+        {
+            mMatInstList[i] = NULL;
+        }
+    }
 }
 
 
 
-MaterialList::MaterialList(U32 materialCount, const char **materialNames)
+MaterialList::MaterialList( U32 materialCount, const char** materialNames )
 {
-   VECTOR_SET_ASSOCIATION(mMaterialNames);
-
-   set(materialCount, materialNames);
+    VECTOR_SET_ASSOCIATION( mMaterialNames );
+    
+    set( materialCount, materialNames );
 }
 
 
 //--------------------------------------
-void MaterialList::set(U32 materialCount, const char **materialNames)
+void MaterialList::set( U32 materialCount, const char** materialNames )
 {
-   free();
-   mMaterialNames.setSize(materialCount);
-   clearMatInstList();
-   mMatInstList.setSize(materialCount);
-   for(U32 i = 0; i < materialCount; i++)
-   {
-      mMaterialNames[i] = materialNames[i];
-      mMatInstList[i] = NULL;
-   }
+    free();
+    mMaterialNames.setSize( materialCount );
+    clearMatInstList();
+    mMatInstList.setSize( materialCount );
+    for( U32 i = 0; i < materialCount; i++ )
+    {
+        mMaterialNames[i] = materialNames[i];
+        mMatInstList[i] = NULL;
+    }
 }
 
 
 //--------------------------------------
 MaterialList::~MaterialList()
 {
-   free();
+    free();
 }
 
 //--------------------------------------
-void MaterialList::setMaterialName(U32 index, const String& name)
+void MaterialList::setMaterialName( U32 index, const String& name )
 {
-   if (index < mMaterialNames.size())
-      mMaterialNames[index] = name;
+    if( index < mMaterialNames.size() )
+        mMaterialNames[index] = name;
 }
 
 //--------------------------------------
-GFXTextureObject *MaterialList::getDiffuseTexture(U32 index)
+GFXTextureObject* MaterialList::getDiffuseTexture( U32 index )
 {
-   AssertFatal(index < (U32) mMatInstList.size(), "MaterialList::getDiffuseTex: index lookup out of range.");
-
-   MatInstance *matInst = dynamic_cast<MatInstance*>(mMatInstList[index]);
-   if (matInst && matInst->getProcessedMaterial())
-      return matInst->getProcessedMaterial()->getStageTexture(0, MFT_DiffuseMap);
-   else
-      return NULL;
+    AssertFatal( index < ( U32 ) mMatInstList.size(), "MaterialList::getDiffuseTex: index lookup out of range." );
+    
+    MatInstance* matInst = dynamic_cast<MatInstance*>( mMatInstList[index] );
+    if( matInst && matInst->getProcessedMaterial() )
+        return matInst->getProcessedMaterial()->getStageTexture( 0, MFT_DiffuseMap );
+    else
+        return NULL;
 }
 
 //--------------------------------------
 void MaterialList::free()
 {
-   clearMatInstList();
-   mMatInstList.clear();
-   mMaterialNames.clear();
+    clearMatInstList();
+    mMatInstList.clear();
+    mMaterialNames.clear();
 }
 
 /*
@@ -135,119 +135,119 @@ U32 MaterialList::push_back(GFXTexHandle textureHandle, const String &filename)
 */
 
 //--------------------------------------
-U32 MaterialList::push_back(const String &filename, Material* material)
+U32 MaterialList::push_back( const String& filename, Material* material )
 {
-   mMaterialNames.push_back(filename);
-   mMatInstList.push_back(material ? material->createMatInstance() : NULL);
-
-   // return the index
-   return mMaterialNames.size()-1;
+    mMaterialNames.push_back( filename );
+    mMatInstList.push_back( material ? material->createMatInstance() : NULL );
+    
+    // return the index
+    return mMaterialNames.size() - 1;
 }
 
 //--------------------------------------
-bool MaterialList::read(Stream &stream)
+bool MaterialList::read( Stream& stream )
 {
-   free();
-
-   // check the stream version
-   U8 version;
-   if ( stream.read(&version) && version != BINARY_FILE_VERSION)
-      return readText(stream,version);
-
-   // how many materials?
-   U32 count;
-   if ( !stream.read(&count) )
-      return false;
-
-   // pre-size the vectors for efficiency
-   mMaterialNames.reserve(count);
-
-   // read in the materials
-   for (U32 i=0; i<count; i++)
-   {
-      // Load the bitmap name
-      char buffer[256];
-      stream.readString(buffer);
-      if( !buffer[0] )
-      {
-         AssertWarn(0, "MaterialList::read: error reading stream");
-         return false;
-      }
-
-      // Material paths are a legacy of Tribes tools,
-      // strip them off...
-      char *name = &buffer[dStrlen(buffer)];
-      while (name != buffer && name[-1] != '/' && name[-1] != '\\')
-         name--;
-
-      // Add it to the list
-      mMaterialNames.push_back(name);
-      mMatInstList.push_back(NULL);
-   }
-
-   return (stream.getStatus() == Stream::Ok);
+    free();
+    
+    // check the stream version
+    U8 version;
+    if( stream.read( &version ) && version != BINARY_FILE_VERSION )
+        return readText( stream, version );
+        
+    // how many materials?
+    U32 count;
+    if( !stream.read( &count ) )
+        return false;
+        
+    // pre-size the vectors for efficiency
+    mMaterialNames.reserve( count );
+    
+    // read in the materials
+    for( U32 i = 0; i < count; i++ )
+    {
+        // Load the bitmap name
+        char buffer[256];
+        stream.readString( buffer );
+        if( !buffer[0] )
+        {
+            AssertWarn( 0, "MaterialList::read: error reading stream" );
+            return false;
+        }
+        
+        // Material paths are a legacy of Tribes tools,
+        // strip them off...
+        char* name = &buffer[dStrlen( buffer )];
+        while( name != buffer && name[-1] != '/' && name[-1] != '\\' )
+            name--;
+            
+        // Add it to the list
+        mMaterialNames.push_back( name );
+        mMatInstList.push_back( NULL );
+    }
+    
+    return ( stream.getStatus() == Stream::Ok );
 }
 
 //--------------------------------------
-bool MaterialList::write(Stream &stream)
+bool MaterialList::write( Stream& stream )
 {
-   stream.write((U8)BINARY_FILE_VERSION);          // version
-   stream.write((U32)mMaterialNames.size());       // material count
-
-   for(S32 i=0; i < mMaterialNames.size(); i++)    // material names
-      stream.writeString(mMaterialNames[i]);
-
-   return (stream.getStatus() == Stream::Ok);
+    stream.write( ( U8 )BINARY_FILE_VERSION );      // version
+    stream.write( ( U32 )mMaterialNames.size() );   // material count
+    
+    for( S32 i = 0; i < mMaterialNames.size(); i++ ) // material names
+        stream.writeString( mMaterialNames[i] );
+        
+    return ( stream.getStatus() == Stream::Ok );
 }
 
 //--------------------------------------
-bool MaterialList::readText(Stream &stream, U8 firstByte)
+bool MaterialList::readText( Stream& stream, U8 firstByte )
 {
-   free();
-
-   if (!firstByte)
-      return (stream.getStatus() == Stream::Ok || stream.getStatus() == Stream::EOS);
-
-   char buf[1024];
-   buf[0] = firstByte;
-   U32 offset = 1;
-
-   for(;;)
-   {
-      stream.readLine((U8*)(buf+offset), sizeof(buf)-offset);
-      if(!buf[0])
-         break;
-      offset = 0;
-
-      // Material paths are a legacy of Tribes tools,
-      // strip them off...
-      char *name = &buf[dStrlen(buf)];
-      while (name != buf && name[-1] != '/' && name[-1] != '\\')
-         name--;
-
-      // Add it to the list
-      mMaterialNames.push_back(name);
-      mMatInstList.push_back(NULL);
-   }
-
-   return (stream.getStatus() == Stream::Ok || stream.getStatus() == Stream::EOS);
+    free();
+    
+    if( !firstByte )
+        return ( stream.getStatus() == Stream::Ok || stream.getStatus() == Stream::EOS );
+        
+    char buf[1024];
+    buf[0] = firstByte;
+    U32 offset = 1;
+    
+    for( ;; )
+    {
+        stream.readLine( ( U8* )( buf + offset ), sizeof( buf ) - offset );
+        if( !buf[0] )
+            break;
+        offset = 0;
+        
+        // Material paths are a legacy of Tribes tools,
+        // strip them off...
+        char* name = &buf[dStrlen( buf )];
+        while( name != buf && name[-1] != '/' && name[-1] != '\\' )
+            name--;
+            
+        // Add it to the list
+        mMaterialNames.push_back( name );
+        mMatInstList.push_back( NULL );
+    }
+    
+    return ( stream.getStatus() == Stream::Ok || stream.getStatus() == Stream::EOS );
 }
 
-bool MaterialList::readText(Stream &stream)
+bool MaterialList::readText( Stream& stream )
 {
-   U8 firstByte;
-   stream.read(&firstByte);
-   return readText(stream,firstByte);
+    U8 firstByte;
+    stream.read( &firstByte );
+    return readText( stream, firstByte );
 }
 
 //--------------------------------------
-bool MaterialList::writeText(Stream &stream)
+bool MaterialList::writeText( Stream& stream )
 {
-   for(S32 i=0; i < mMaterialNames.size(); i++)
-      stream.writeLine((U8*)(mMaterialNames[i].c_str()));
-   stream.writeLine((U8*)"");
-
-   return (stream.getStatus() == Stream::Ok);
+    for( S32 i = 0; i < mMaterialNames.size(); i++ )
+        stream.writeLine( ( U8* )( mMaterialNames[i].c_str() ) );
+    stream.writeLine( ( U8* )"" );
+    
+    return ( stream.getStatus() == Stream::Ok );
 }
 
 //--------------------------------------------------------------------------
@@ -255,25 +255,25 @@ bool MaterialList::writeText(Stream &stream)
 //--------------------------------------------------------------------------
 void MaterialList::clearMatInstList()
 {
-   // clear out old materials.  any non null element of the list should be pointing at deletable memory,
-   // although multiple indexes may be pointing at the same memory so we have to be careful (see
-   // comment in loop body)
-   for (U32 i=0; i<mMatInstList.size(); i++)
-   {
-      if (mMatInstList[i])
-      {
-         BaseMatInstance* current = mMatInstList[i];
-         delete current;
-         mMatInstList[i] = NULL;
-
-         // ok, since ts material lists can remap difference indexes to the same object 
-         // we need to make sure that we don't delete the same memory twice.  walk the 
-         // rest of the list and null out any pointers that match the one we deleted.
-         for (U32 j=0; j<mMatInstList.size(); j++)
-            if (mMatInstList[j] == current)
-               mMatInstList[j] = NULL;
-      }
-   }
+    // clear out old materials.  any non null element of the list should be pointing at deletable memory,
+    // although multiple indexes may be pointing at the same memory so we have to be careful (see
+    // comment in loop body)
+    for( U32 i = 0; i < mMatInstList.size(); i++ )
+    {
+        if( mMatInstList[i] )
+        {
+            BaseMatInstance* current = mMatInstList[i];
+            delete current;
+            mMatInstList[i] = NULL;
+            
+            // ok, since ts material lists can remap difference indexes to the same object
+            // we need to make sure that we don't delete the same memory twice.  walk the
+            // rest of the list and null out any pointers that match the one we deleted.
+            for( U32 j = 0; j < mMatInstList.size(); j++ )
+                if( mMatInstList[j] == current )
+                    mMatInstList[j] = NULL;
+        }
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -281,10 +281,10 @@ void MaterialList::clearMatInstList()
 //--------------------------------------------------------------------------
 void MaterialList::mapMaterials()
 {
-   mMatInstList.setSize( mMaterialNames.size() );
-
-   for( U32 i=0; i<mMaterialNames.size(); i++ )
-      mapMaterial( i );
+    mMatInstList.setSize( mMaterialNames.size() );
+    
+    for( U32 i = 0; i < mMaterialNames.size(); i++ )
+        mapMaterial( i );
 }
 
 /// Map the material name at the given index to a material instance.
@@ -293,120 +293,120 @@ void MaterialList::mapMaterials()
 
 void MaterialList::mapMaterial( U32 i )
 {
-   AssertFatal( i < size(), "MaterialList::mapMaterialList - index out of bounds" );
-
-   if( mMatInstList[i] != NULL )
-      return;
-
-   // lookup a material property entry
-   const String &matName = getMaterialName(i);
-
-   // JMQ: this code assumes that all materials have names.
-   if( matName.isEmpty() )
-   {
-      mMatInstList[i] = NULL;
-      return;
-   }
-
-   String materialName = MATMGR->getMapEntry(matName);
-
-   // IF we didn't find it, then look for a PolyStatic generated Material
-   //  [a little cheesy, but we need to allow for user override of generated Materials]
-   if ( materialName.isEmpty() )
-      materialName = MATMGR->getMapEntry( String::ToString( "polyMat_%s", matName.c_str() ) );
-
-   if ( materialName.isNotEmpty() )
-   {
-      Material * mat = MATMGR->getMaterialDefinitionByName( materialName );
-      mMatInstList[i] = mat ? mat->createMatInstance() : MATMGR->createWarningMatInstance();
-   }
-   else
-   {
-      if ( Con::getBoolVariable( "$Materials::createMissing", true ) )
-      {
-         // No Material found, create new "default" material with just a diffuseMap
-
-         // First see if there is a valid diffuse texture
-         GFXTexHandle texHandle;
-         if (mLookupPath.isEmpty())
-         {
-            texHandle.set( mMaterialNames[i], &GFXDefaultStaticDiffuseProfile, avar("%s() - handle (line %d)", __FUNCTION__, __LINE__) );
-         }
-         else
-         {
-            // Should we strip off the extension of the path here before trying
-            // to load the texture?
-            String fullPath = String::ToString( "%s/%s", mLookupPath.c_str(), mMaterialNames[i].c_str() );
-            texHandle.set( fullPath, &GFXDefaultStaticDiffuseProfile, avar("%s() - handle (line %d)", __FUNCTION__, __LINE__) );
-         }
-
-         if ( texHandle.isValid() )
-         {
-            String newMatName = Sim::getUniqueName( "DefaultMaterial" );
-            Material *newMat = MATMGR->allocateAndRegister( newMatName, mMaterialNames[i] );
-
-            // Flag this as an autogenerated Material
-            newMat->mAutoGenerated = true;
-
-            // Overwrite diffuseMap in new material
-            newMat->mDiffuseMapFilename[0] = texHandle->mTextureLookupName;
-
-            // Set up some defaults for transparent textures
-            if (texHandle->mHasTransparency)
+    AssertFatal( i < size(), "MaterialList::mapMaterialList - index out of bounds" );
+    
+    if( mMatInstList[i] != NULL )
+        return;
+        
+    // lookup a material property entry
+    const String& matName = getMaterialName( i );
+    
+    // JMQ: this code assumes that all materials have names.
+    if( matName.isEmpty() )
+    {
+        mMatInstList[i] = NULL;
+        return;
+    }
+    
+    String materialName = MATMGR->getMapEntry( matName );
+    
+    // IF we didn't find it, then look for a PolyStatic generated Material
+    //  [a little cheesy, but we need to allow for user override of generated Materials]
+    if( materialName.isEmpty() )
+        materialName = MATMGR->getMapEntry( String::ToString( "polyMat_%s", matName.c_str() ) );
+        
+    if( materialName.isNotEmpty() )
+    {
+        Material* mat = MATMGR->getMaterialDefinitionByName( materialName );
+        mMatInstList[i] = mat ? mat->createMatInstance() : MATMGR->createWarningMatInstance();
+    }
+    else
+    {
+        if( Con::getBoolVariable( "$Materials::createMissing", true ) )
+        {
+            // No Material found, create new "default" material with just a diffuseMap
+            
+            // First see if there is a valid diffuse texture
+            GFXTexHandle texHandle;
+            if( mLookupPath.isEmpty() )
             {
-               newMat->mTranslucent = true;
-               newMat->mTranslucentBlendOp = Material::LerpAlpha;
-               newMat->mTranslucentZWrite = true;
-               newMat->mAlphaRef = 20;
+                texHandle.set( mMaterialNames[i], &GFXDefaultStaticDiffuseProfile, avar( "%s() - handle (line %d)", __FUNCTION__, __LINE__ ) );
             }
-
-            // create a MatInstance for the new material
-            mMatInstList[i] = newMat->createMatInstance();
-
-            #ifndef TORQUE_SHIPPING
-               Con::warnf( "[MaterialList::mapMaterials] Creating missing material for texture: %s", texHandle->mTextureLookupName.c_str() );
-            #endif
-         }
-         else
-         {
-            Con::errorf( "[MaterialList::mapMaterials] Unable to find material for texture: %s", mMaterialNames[i].c_str() );
+            else
+            {
+                // Should we strip off the extension of the path here before trying
+                // to load the texture?
+                String fullPath = String::ToString( "%s/%s", mLookupPath.c_str(), mMaterialNames[i].c_str() );
+                texHandle.set( fullPath, &GFXDefaultStaticDiffuseProfile, avar( "%s() - handle (line %d)", __FUNCTION__, __LINE__ ) );
+            }
+            
+            if( texHandle.isValid() )
+            {
+                String newMatName = Sim::getUniqueName( "DefaultMaterial" );
+                Material* newMat = MATMGR->allocateAndRegister( newMatName, mMaterialNames[i] );
+                
+                // Flag this as an autogenerated Material
+                newMat->mAutoGenerated = true;
+                
+                // Overwrite diffuseMap in new material
+                newMat->mDiffuseMapFilename[0] = texHandle->mTextureLookupName;
+                
+                // Set up some defaults for transparent textures
+                if( texHandle->mHasTransparency )
+                {
+                    newMat->mTranslucent = true;
+                    newMat->mTranslucentBlendOp = Material::LerpAlpha;
+                    newMat->mTranslucentZWrite = true;
+                    newMat->mAlphaRef = 20;
+                }
+                
+                // create a MatInstance for the new material
+                mMatInstList[i] = newMat->createMatInstance();
+                
+#ifndef TORQUE_SHIPPING
+                Con::warnf( "[MaterialList::mapMaterials] Creating missing material for texture: %s", texHandle->mTextureLookupName.c_str() );
+#endif
+            }
+            else
+            {
+                Con::errorf( "[MaterialList::mapMaterials] Unable to find material for texture: %s", mMaterialNames[i].c_str() );
+                mMatInstList[i] = MATMGR->createWarningMatInstance();
+            }
+        }
+        else
+        {
             mMatInstList[i] = MATMGR->createWarningMatInstance();
-         }
-      }
-      else
-      {
-         mMatInstList[i] = MATMGR->createWarningMatInstance();
-      }
-   }
+        }
+    }
 }
 
-void MaterialList::initMatInstances(   const FeatureSet &features, 
-                                       const GFXVertexFormat *vertexFormat )
+void MaterialList::initMatInstances( const FeatureSet& features,
+                                     const GFXVertexFormat* vertexFormat )
 {
-   for( U32 i=0; i < mMatInstList.size(); i++ )
-   {
-      BaseMatInstance *matInst = mMatInstList[i];
-      if ( !matInst )
-         continue;
-
-      if ( !matInst->init( features, vertexFormat ) )
-      {
-         Con::errorf( "MaterialList::initMatInstances - failed to initialize material instance for '%s'",
-            matInst->getMaterial()->getName() );
-
-         // Fall back to warning material.
-
-         SAFE_DELETE( matInst );
-         matInst = MATMGR->createMatInstance( "WarningMaterial" );
-         matInst->init( MATMGR->getDefaultFeatures(), vertexFormat );
-         mMatInstList[ i ] = matInst;
-      }
-   }
-
+    for( U32 i = 0; i < mMatInstList.size(); i++ )
+    {
+        BaseMatInstance* matInst = mMatInstList[i];
+        if( !matInst )
+            continue;
+            
+        if( !matInst->init( features, vertexFormat ) )
+        {
+            Con::errorf( "MaterialList::initMatInstances - failed to initialize material instance for '%s'",
+                         matInst->getMaterial()->getName() );
+                         
+            // Fall back to warning material.
+            
+            SAFE_DELETE( matInst );
+            matInst = MATMGR->createMatInstance( "WarningMaterial" );
+            matInst->init( MATMGR->getDefaultFeatures(), vertexFormat );
+            mMatInstList[ i ] = matInst;
+        }
+    }
+    
 }
 
-void MaterialList::setMaterialInst( BaseMatInstance *matInst, U32 texIndex )
+void MaterialList::setMaterialInst( BaseMatInstance* matInst, U32 texIndex )
 {
-   AssertFatal( texIndex < mMatInstList.size(), "MaterialList::setMaterialInst - index out of bounds" );
-   mMatInstList[texIndex] = matInst;
+    AssertFatal( texIndex < mMatInstList.size(), "MaterialList::setMaterialInst - index out of bounds" );
+    mMatInstList[texIndex] = matInst;
 }

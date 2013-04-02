@@ -26,53 +26,53 @@
 
 class MacDLibrary : public DLibrary
 {
-   void* _handle;
+    void* _handle;
 public:
-   MacDLibrary();
-   ~MacDLibrary();
-   bool open(const char* file);
-   void close();
-   void* bind(const char* name);
+    MacDLibrary();
+    ~MacDLibrary();
+    bool open( const char* file );
+    void close();
+    void* bind( const char* name );
 };
 
 MacDLibrary::MacDLibrary()
 {
-   _handle = NULL;
+    _handle = NULL;
 }
 
 MacDLibrary::~MacDLibrary()
 {
-   close();
+    close();
 }
 
-bool MacDLibrary::open(const char* file)
+bool MacDLibrary::open( const char* file )
 {
-   Platform::getExecutablePath();
-   _handle = dlopen(file, RTLD_LAZY | RTLD_LOCAL);
-   return _handle != NULL;
+    Platform::getExecutablePath();
+    _handle = dlopen( file, RTLD_LAZY | RTLD_LOCAL );
+    return _handle != NULL;
 }
 
-void* MacDLibrary::bind(const char* name)
+void* MacDLibrary::bind( const char* name )
 {
-   return _handle ? dlsym(_handle, name) : NULL;
+    return _handle ? dlsym( _handle, name ) : NULL;
 }
 
 void MacDLibrary::close()
 {
-   if(_handle)
-      dlclose(_handle);
-   
-   _handle = NULL;
+    if( _handle )
+        dlclose( _handle );
+        
+    _handle = NULL;
 }
 
-DLibraryRef OsLoadLibrary(const char* file)
+DLibraryRef OsLoadLibrary( const char* file )
 {
-   MacDLibrary* library = new MacDLibrary();
-   if(!library->open(file))
-   {
-      delete library;
-      return NULL;
-   }
-   
-   return library;
+    MacDLibrary* library = new MacDLibrary();
+    if( !library->open( file ) )
+    {
+        delete library;
+        return NULL;
+    }
+    
+    return library;
 }

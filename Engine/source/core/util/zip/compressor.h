@@ -38,46 +38,52 @@ namespace Zip
 // [tom, 10/26/2006] Standard Zip compression methods
 enum CompressionMethod
 {
-   Stored            = 0,
-   Shrunk            = 1,
-   ReducedL1         = 2,
-   ReducedL2         = 3,
-   ReducedL3         = 4,
-   ReducedL4         = 5,
-   Imploded          = 6,
-   ReservedTokenized = 7,
-   Deflated          = 8,
-   EnhDefalted       = 9,
-   DateCompression   = 10,
-   ReservedPKWARE    = 11,
-   BZip2             = 12,
-   PPMd              = 98,
-   AESEncrypted      = 99,    // WinZip's AES Encrypted zips use compression method 99
-                              // to indicate AES encryption. The actual compression
-                              // method is specified in the AES extra field.
+    Stored            = 0,
+    Shrunk            = 1,
+    ReducedL1         = 2,
+    ReducedL2         = 3,
+    ReducedL3         = 4,
+    ReducedL4         = 5,
+    Imploded          = 6,
+    ReservedTokenized = 7,
+    Deflated          = 8,
+    EnhDefalted       = 9,
+    DateCompression   = 10,
+    ReservedPKWARE    = 11,
+    BZip2             = 12,
+    PPMd              = 98,
+    AESEncrypted      = 99,    // WinZip's AES Encrypted zips use compression method 99
+    // to indicate AES encryption. The actual compression
+    // method is specified in the AES extra field.
 };
 
 class Compressor
 {
-   Compressor *mNext;
-
+    Compressor* mNext;
+    
 protected:
-   const char *mName;         //!< The name of the compression method
-   S32 mMethod;               //!< The compression method as in the Zip header
-
+    const char* mName;         //!< The name of the compression method
+    S32 mMethod;               //!< The compression method as in the Zip header
+    
 public:
-   Compressor(S32 method, const char *name);
-   virtual ~Compressor() {}
-
-   inline const char * getName()                { return mName; }
-   inline S32 getMethod()                       { return mMethod; }
-
-   virtual Stream *createReadStream(const CentralDir *cdir, Stream *zipStream) = 0;
-   virtual Stream *createWriteStream(const CentralDir *cdir, Stream *zipStream) = 0;
-
-   // Run time lookup methods
-   static Compressor *findCompressor(const char *name);
-   static Compressor *findCompressor(S32 method);
+    Compressor( S32 method, const char* name );
+    virtual ~Compressor() {}
+    
+    inline const char* getName()
+    {
+        return mName;
+    }
+    inline S32 getMethod()
+    {
+        return mMethod;
+    }
+    
+    virtual Stream* createReadStream( const CentralDir* cdir, Stream* zipStream ) = 0;
+    virtual Stream* createWriteStream( const CentralDir* cdir, Stream* zipStream ) = 0;
+    
+    // Run time lookup methods
+    static Compressor* findCompressor( const char* name );
+    static Compressor* findCompressor( S32 method );
 };
 
 #define ImplementCompressor(name, method)       \

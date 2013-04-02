@@ -31,10 +31,10 @@
 template<class T>
 struct AutoPtrRef
 {
-   T* _ptr;
-   AutoPtrRef(T *ptr)
-      : _ptr(ptr)
-   {}
+    T* _ptr;
+    AutoPtrRef( T* ptr )
+        : _ptr( ptr )
+    {}
 };
 
 /// A simple smart pointer.
@@ -54,78 +54,102 @@ template<class T, class P = DeleteSingle>
 class AutoPtr
 {
 public:
-   typedef T ValueType;
-
-   explicit AutoPtr(T *ptr = 0): _ptr(ptr) {}
-   ~AutoPtr()
-   {
-       P::destroy(_ptr);
-   }
-
-   // Copy constructors
-   AutoPtr(AutoPtr &rhs): _ptr(rhs.release()) {}
-
-   template<class U>
-   AutoPtr(AutoPtr<U,P> &rhs): _ptr(rhs.release()) { }
-
-   /// Transfer ownership, any object currently be referenced is deleted and
-   /// rhs is set to 0.
-   AutoPtr& operator= (AutoPtr &rhs)
-   {
-       reset(rhs.release());
-       return *this;
-   }
-
-   template<class U>
-   AutoPtr& operator= (AutoPtr<U,P> &rhs)
-   {
-       reset(rhs.release());
-       return *this;
-   }
-
-   // Access
-   T* ptr() const { return _ptr; }
-   T& operator*() const { return *_ptr; }
-   T* operator->() const { return _ptr; }
-   T& operator[](size_t index) { return (_ptr)[index]; }
-
-   /// Release ownership of the object without deleting it.
-   T* release()
-   {
-       T* tmp(_ptr);
-       _ptr = 0;
-       return tmp;
-   }
-
-   /// Equivalent to *this = (T*)ptr, except that operator=(T*) isn't provided for.
-   void reset(T* ptr = 0)
-   {
-       if (_ptr != ptr)
-       {
-           P::destroy(_ptr);
-           _ptr = ptr;
-       }
-   }
-
-   // Conversion to/from ref type
-   AutoPtr(AutoPtrRef<T> ref): _ptr(ref._ptr) {}
-   AutoPtr& operator= (AutoPtrRef<T> ref)
-   {
-        reset(ref._ptr);
+    typedef T ValueType;
+    
+    explicit AutoPtr( T* ptr = 0 ): _ptr( ptr ) {}
+    ~AutoPtr()
+    {
+        P::destroy( _ptr );
+    }
+    
+    // Copy constructors
+    AutoPtr( AutoPtr& rhs ): _ptr( rhs.release() ) {}
+    
+    template<class U>
+    AutoPtr( AutoPtr<U, P>& rhs ): _ptr( rhs.release() ) { }
+    
+    /// Transfer ownership, any object currently be referenced is deleted and
+    /// rhs is set to 0.
+    AutoPtr& operator= ( AutoPtr& rhs )
+    {
+        reset( rhs.release() );
         return *this;
-   }
-   
-   bool isNull() const { return _ptr == NULL; }
-   bool isValid() const { return !isNull(); }
-
-   template<class U>
-   operator AutoPtrRef<U>() { return AutoPtrRef<U>(release()); }
-
-   template<class U>
-   operator AutoPtr<U,P>() { return AutoPtr<U,P>(release()); }
-
+    }
+    
+    template<class U>
+    AutoPtr& operator= ( AutoPtr<U, P>& rhs )
+    {
+        reset( rhs.release() );
+        return *this;
+    }
+    
+    // Access
+    T* ptr() const
+    {
+        return _ptr;
+    }
+    T& operator*() const
+    {
+        return *_ptr;
+    }
+    T* operator->() const
+    {
+        return _ptr;
+    }
+    T& operator[]( size_t index )
+    {
+        return ( _ptr )[index];
+    }
+    
+    /// Release ownership of the object without deleting it.
+    T* release()
+    {
+        T* tmp( _ptr );
+        _ptr = 0;
+        return tmp;
+    }
+    
+    /// Equivalent to *this = (T*)ptr, except that operator=(T*) isn't provided for.
+    void reset( T* ptr = 0 )
+    {
+        if( _ptr != ptr )
+        {
+            P::destroy( _ptr );
+            _ptr = ptr;
+        }
+    }
+    
+    // Conversion to/from ref type
+    AutoPtr( AutoPtrRef<T> ref ): _ptr( ref._ptr ) {}
+    AutoPtr& operator= ( AutoPtrRef<T> ref )
+    {
+        reset( ref._ptr );
+        return *this;
+    }
+    
+    bool isNull() const
+    {
+        return _ptr == NULL;
+    }
+    bool isValid() const
+    {
+        return !isNull();
+    }
+    
+    template<class U>
+    operator AutoPtrRef<U>()
+    {
+        return AutoPtrRef<U>( release() );
+    }
+    
+    template<class U>
+    operator AutoPtr<U, P>()
+    {
+        return AutoPtr<U, P>( release() );
+    }
+    
 private:
-   T  *_ptr;
+    T*  _ptr;
 };
 
 #endif

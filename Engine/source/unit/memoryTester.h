@@ -25,12 +25,12 @@
 
 namespace UnitTesting
 {
-   class MemoryTester
-   {
-   public:
-      void mark();
-      bool check();
-   };
+class MemoryTester
+{
+public:
+    void mark();
+    bool check();
+};
 }
 
 

@@ -45,57 +45,57 @@ class _GFXGLTextureTargetImpl;
 class GFXGLTextureTarget : public GFXTextureTarget
 {
 public:
-   GFXGLTextureTarget();
-   virtual ~GFXGLTextureTarget();
-
-   virtual const Point2I getSize();
-   virtual GFXFormat getFormat();
-   virtual void attachTexture(RenderSlot slot, GFXTextureObject *tex, U32 mipLevel=0, U32 zOffset = 0);
-   virtual void attachTexture(RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel=0);
-   virtual void clearAttachments();
-
-   /// Functions to query internal state
-   /// @{
-   
-   /// Returns the internal structure for the given slot.  This should only be called by our internal implementations.
-   _GFXGLTargetDesc* getTargetDesc(RenderSlot slot) const;
-
-   /// @}
-   
-   void deactivate();
-   void zombify();
-   void resurrect();
-   virtual const String describeSelf() const;
-   
-   virtual void resolve();
-   
-   virtual void resolveTo(GFXTextureObject* obj);
-   
+    GFXGLTextureTarget();
+    virtual ~GFXGLTextureTarget();
+    
+    virtual const Point2I getSize();
+    virtual GFXFormat getFormat();
+    virtual void attachTexture( RenderSlot slot, GFXTextureObject* tex, U32 mipLevel = 0, U32 zOffset = 0 );
+    virtual void attachTexture( RenderSlot slot, GFXCubemap* tex, U32 face, U32 mipLevel = 0 );
+    virtual void clearAttachments();
+    
+    /// Functions to query internal state
+    /// @{
+    
+    /// Returns the internal structure for the given slot.  This should only be called by our internal implementations.
+    _GFXGLTargetDesc* getTargetDesc( RenderSlot slot ) const;
+    
+    /// @}
+    
+    void deactivate();
+    void zombify();
+    void resurrect();
+    virtual const String describeSelf() const;
+    
+    virtual void resolve();
+    
+    virtual void resolveTo( GFXTextureObject* obj );
+    
 protected:
 
-   friend class GFXGLDevice;
-
-   /// The callback used to get texture events.
-   /// @see GFXTextureManager::addEventDelegate
-   void _onTextureEvent( GFXTexCallbackCode code );
-   
-   /// If true our implementation should use AUX buffers
-   bool _needsAux;
-   
-   /// Pointer to our internal implementation
-   AutoPtr<_GFXGLTextureTargetImpl> _impl;
-
-   /// Array of _GFXGLTargetDesc's, an internal struct used to keep track of texture data.
-   AutoPtr<_GFXGLTargetDesc> mTargets[MaxRenderSlotId];
-
-   /// These redirect to our internal implementation
-   /// @{
-   
-   void applyState();
-   void makeActive();
-   
-   /// @}
-
+    friend class GFXGLDevice;
+    
+    /// The callback used to get texture events.
+    /// @see GFXTextureManager::addEventDelegate
+    void _onTextureEvent( GFXTexCallbackCode code );
+    
+    /// If true our implementation should use AUX buffers
+    bool _needsAux;
+    
+    /// Pointer to our internal implementation
+    AutoPtr<_GFXGLTextureTargetImpl> _impl;
+    
+    /// Array of _GFXGLTargetDesc's, an internal struct used to keep track of texture data.
+    AutoPtr<_GFXGLTargetDesc> mTargets[MaxRenderSlotId];
+    
+    /// These redirect to our internal implementation
+    /// @{
+    
+    void applyState();
+    void makeActive();
+    
+    /// @}
+    
 };
 
 #endif

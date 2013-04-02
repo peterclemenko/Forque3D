@@ -29,25 +29,25 @@
 class GFXGLPrimitiveBuffer : public GFXPrimitiveBuffer
 {
 public:
-	GFXGLPrimitiveBuffer(GFXDevice *device, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType);
-	~GFXGLPrimitiveBuffer();
-
-	virtual void lock(U32 indexStart, U32 indexEnd, void **indexPtr); ///< calls glMapBuffer, offets pointer by indexStart
-	virtual void unlock(); ///< calls glUnmapBuffer, unbinds the buffer
-	virtual void prepare();  ///< binds the buffer
-   virtual void finish(); ///< We're done with this buffer
-
-	virtual void* getBuffer(); ///< returns NULL
-
-   // GFXResource interface
-   virtual void zombify();
-   virtual void resurrect();
-   
+    GFXGLPrimitiveBuffer( GFXDevice* device, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType );
+    ~GFXGLPrimitiveBuffer();
+    
+    virtual void lock( U32 indexStart, U32 indexEnd, void** indexPtr ); ///< calls glMapBuffer, offets pointer by indexStart
+    virtual void unlock(); ///< calls glUnmapBuffer, unbinds the buffer
+    virtual void prepare();  ///< binds the buffer
+    virtual void finish(); ///< We're done with this buffer
+    
+    virtual void* getBuffer(); ///< returns NULL
+    
+    // GFXResource interface
+    virtual void zombify();
+    virtual void resurrect();
+    
 private:
-	/// Handle to our GL buffer object
-	GLuint mBuffer;
-   
-   U8* mZombieCache;
+    /// Handle to our GL buffer object
+    GLuint mBuffer;
+    
+    U8* mZombieCache;
 };
 
 #endif

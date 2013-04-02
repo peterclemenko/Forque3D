@@ -26,10 +26,10 @@
 
 
 IMPLEMENT_NONINSTANTIABLE_CLASS( EngineObject,
-   "Abstract base class for all objects exposed through the engine API." )
+                                 "Abstract base class for all objects exposed through the engine API." )
 END_IMPLEMENT_CLASS;
 IMPLEMENT_NONINSTANTIABLE_CLASS( StaticEngineObject,
-   "Abstract base class for objects that are statically allocated in the engine." )
+                                 "Abstract base class for objects that are statically allocated in the engine." )
 END_IMPLEMENT_CLASS;
 
 
@@ -47,73 +47,73 @@ EngineCRuntimeObjectPool EngineCRuntimeObjectPool::smInstance;
 // exclusive use by the control layer.
 void*& _USERDATA( EngineObject* object )
 {
-   return object->mEngineObjectUserData;
+    return object->mEngineObjectUserData;
 }
 
 //-----------------------------------------------------------------------------
 
 EngineObject::EngineObject()
-   : mEngineObjectUserData( NULL )
+    : mEngineObjectUserData( NULL )
 {
-   #ifdef TORQUE_DEBUG
-   // Add to instance list.
-
-   mNextEngineObject = smFirstEngineObject;
-   mPrevEngineObject = NULL;
-
-   if( smFirstEngineObject )
-      smFirstEngineObject->mPrevEngineObject = this;
-   smFirstEngineObject = this;
-
-   smNumEngineObjects ++;
-   #endif
+#ifdef TORQUE_DEBUG
+    // Add to instance list.
+    
+    mNextEngineObject = smFirstEngineObject;
+    mPrevEngineObject = NULL;
+    
+    if( smFirstEngineObject )
+        smFirstEngineObject->mPrevEngineObject = this;
+    smFirstEngineObject = this;
+    
+    smNumEngineObjects ++;
+#endif
 }
 
 //-----------------------------------------------------------------------------
 
 EngineObject::~EngineObject()
 {
-   #ifdef TORQUE_DEBUG
-   if( mPrevEngineObject )
-      mPrevEngineObject->mNextEngineObject = mNextEngineObject;
-   else
-      smFirstEngineObject = mNextEngineObject;
-      
-   if( mNextEngineObject )
-      mNextEngineObject->mPrevEngineObject = mPrevEngineObject;
-
-   smNumEngineObjects --;
-   #endif
+#ifdef TORQUE_DEBUG
+    if( mPrevEngineObject )
+        mPrevEngineObject->mNextEngineObject = mNextEngineObject;
+    else
+        smFirstEngineObject = mNextEngineObject;
+        
+    if( mNextEngineObject )
+        mNextEngineObject->mPrevEngineObject = mPrevEngineObject;
+        
+    smNumEngineObjects --;
+#endif
 }
 
 //-----------------------------------------------------------------------------
 
 void EngineObject::destroySelf()
 {
-   if( !engineAPI::gUseConsoleInterop )
-      AssertFatal( !getRefCount() || TYPEOF( this )->isDisposable(), "EngineObject::destroySelf - object still referenced!" );
-
-   // Call the internal _destroySelf().
-
-   _destroySelf();
-
-   // Destruct the object and release it in the pool.
-   
-   IEngineObjectPool* pool = this->mEngineObjectPool;
-   void* object = this;
-   
-   destructInPlace( this );
-   if( pool )
-      pool->freeObject( object );
+    if( !engineAPI::gUseConsoleInterop )
+        AssertFatal( !getRefCount() || TYPEOF( this )->isDisposable(), "EngineObject::destroySelf - object still referenced!" );
+        
+    // Call the internal _destroySelf().
+    
+    _destroySelf();
+    
+    // Destruct the object and release it in the pool.
+    
+    IEngineObjectPool* pool = this->mEngineObjectPool;
+    void* object = this;
+    
+    destructInPlace( this );
+    if( pool )
+        pool->freeObject( object );
 }
 
 //-----------------------------------------------------------------------------
 
 String EngineObject::describeSelf() const
 {
-   String desc = String::ToString( "class: %s", TYPEOF( this )->getFullyQualifiedExportName().c_str() );
-   
-   return desc;
+    String desc = String::ToString( "class: %s", TYPEOF( this )->getFullyQualifiedExportName().c_str() );
+    
+    return desc;
 }
 
 //-----------------------------------------------------------------------------
@@ -121,19 +121,19 @@ String EngineObject::describeSelf() const
 #ifndef TORQUE_DISABLE_MEMORY_MANAGER
 void* EngineObject::operator new( size_t size )
 {
-   AssertFatal( IEngineObjectPool::DEFAULT, "EngineObject::new - No default pool set!" );
-
-   void* ptr = IEngineObjectPool::DEFAULT->allocateObject( size TORQUE_TMM_LOC );
-   if( !ptr )
-   {
-      Platform::AlertOK( "Torque Memory Error", "Out of memory. Shutting down.\n");
-      Platform::forceShutdown( -1 );
-   }
-   
-   EngineObject* object = reinterpret_cast< EngineObject* >( ptr );
-   object->mEngineObjectPool = IEngineObjectPool::DEFAULT;
-   
-   return ptr;
+    AssertFatal( IEngineObjectPool::DEFAULT, "EngineObject::new - No default pool set!" );
+    
+    void* ptr = IEngineObjectPool::DEFAULT->allocateObject( size TORQUE_TMM_LOC );
+    if( !ptr )
+    {
+        Platform::AlertOK( "Torque Memory Error", "Out of memory. Shutting down.\n" );
+        Platform::forceShutdown( -1 );
+    }
+    
+    EngineObject* object = reinterpret_cast< EngineObject* >( ptr );
+    object->mEngineObjectPool = IEngineObjectPool::DEFAULT;
+    
+    return ptr;
 }
 #endif
 
@@ -142,28 +142,28 @@ void* EngineObject::operator new( size_t size )
 #ifndef TORQUE_DISABLE_MEMORY_MANAGER
 void* EngineObject::operator new( size_t size, IEngineObjectPool* pool )
 {
-   AssertFatal( pool, "EngineObject::new - Got a NULL pool pointer!" );
-
-   void* ptr = pool->allocateObject( size TORQUE_TMM_LOC );
-   if( !ptr )
-   {
-      // Fall back to default pool.
-      
-      pool = IEngineObjectPool::DEFAULT;
-      AssertFatal( pool, "EngineObject::new - No default pool set!" );
-      ptr = pool->allocateObject( size TORQUE_TMM_LOC );
-      
-      if( !ptr )
-      {
-         Platform::AlertOK( "Torque Memory Error", "Out of memory. Shutting down.\n");
-         Platform::forceShutdown( -1 );
-      }
-   }
-   
-   EngineObject* object = reinterpret_cast< EngineObject* >( ptr );
-   object->mEngineObjectPool = pool;
-   
-   return ptr;
+    AssertFatal( pool, "EngineObject::new - Got a NULL pool pointer!" );
+    
+    void* ptr = pool->allocateObject( size TORQUE_TMM_LOC );
+    if( !ptr )
+    {
+        // Fall back to default pool.
+        
+        pool = IEngineObjectPool::DEFAULT;
+        AssertFatal( pool, "EngineObject::new - No default pool set!" );
+        ptr = pool->allocateObject( size TORQUE_TMM_LOC );
+        
+        if( !ptr )
+        {
+            Platform::AlertOK( "Torque Memory Error", "Out of memory. Shutting down.\n" );
+            Platform::forceShutdown( -1 );
+        }
+    }
+    
+    EngineObject* object = reinterpret_cast< EngineObject* >( ptr );
+    object->mEngineObjectPool = pool;
+    
+    return ptr;
 }
 #endif
 
@@ -171,62 +171,62 @@ void* EngineObject::operator new( size_t size, IEngineObjectPool* pool )
 
 void* EngineObject::operator new( size_t size TORQUE_TMM_ARGS_DECL )
 {
-   AssertFatal( IEngineObjectPool::DEFAULT, "EngineObject::new - No default pool set!" );
-
-   void* ptr = IEngineObjectPool::DEFAULT->allocateObject( size TORQUE_TMM_ARGS );
-   if( !ptr )
-   {
-      Platform::AlertOK( "Torque Memory Error", "Out of memory. Shutting down.\n");
-      Platform::forceShutdown( -1 );
-   }
-   
-   EngineObject* object = reinterpret_cast< EngineObject* >( ptr );
-   object->mEngineObjectPool = IEngineObjectPool::DEFAULT;
-   
-   return ptr;
+    AssertFatal( IEngineObjectPool::DEFAULT, "EngineObject::new - No default pool set!" );
+    
+    void* ptr = IEngineObjectPool::DEFAULT->allocateObject( size TORQUE_TMM_ARGS );
+    if( !ptr )
+    {
+        Platform::AlertOK( "Torque Memory Error", "Out of memory. Shutting down.\n" );
+        Platform::forceShutdown( -1 );
+    }
+    
+    EngineObject* object = reinterpret_cast< EngineObject* >( ptr );
+    object->mEngineObjectPool = IEngineObjectPool::DEFAULT;
+    
+    return ptr;
 }
 
 //-----------------------------------------------------------------------------
 
 void* EngineObject::operator new( size_t size, IEngineObjectPool* pool TORQUE_TMM_ARGS_DECL )
 {
-   AssertFatal( pool, "EngineObject::new - Got a NULL pool pointer!" );
-
-   void* ptr = pool->allocateObject( size TORQUE_TMM_ARGS );
-   if( !ptr )
-   {
-      // Fall back to default pool.
-      
-      pool = IEngineObjectPool::DEFAULT;
-      AssertFatal( pool, "EngineObject::new - No default pool set!" );
-      ptr = pool->allocateObject( size TORQUE_TMM_ARGS );
-      
-      if( !ptr )
-      {
-         Platform::AlertOK( "Torque Memory Error", "Out of memory. Shutting down.\n");
-         Platform::forceShutdown( -1 );
-      }
-   }
-   
-   EngineObject* object = reinterpret_cast< EngineObject* >( ptr );
-   object->mEngineObjectPool = pool;
-   
-   return ptr;
+    AssertFatal( pool, "EngineObject::new - Got a NULL pool pointer!" );
+    
+    void* ptr = pool->allocateObject( size TORQUE_TMM_ARGS );
+    if( !ptr )
+    {
+        // Fall back to default pool.
+        
+        pool = IEngineObjectPool::DEFAULT;
+        AssertFatal( pool, "EngineObject::new - No default pool set!" );
+        ptr = pool->allocateObject( size TORQUE_TMM_ARGS );
+        
+        if( !ptr )
+        {
+            Platform::AlertOK( "Torque Memory Error", "Out of memory. Shutting down.\n" );
+            Platform::forceShutdown( -1 );
+        }
+    }
+    
+    EngineObject* object = reinterpret_cast< EngineObject* >( ptr );
+    object->mEngineObjectPool = pool;
+    
+    return ptr;
 }
 
 //-----------------------------------------------------------------------------
 
 void EngineObject::operator delete( void* ptr )
 {
-   if( !ptr )
-      return;
-
+    if( !ptr )
+        return;
+        
 //   AssertWarn( false, "EngineObject::delete - Directly deleting an EngineObject is disallowed!" );
-   
-   EngineObject* object = reinterpret_cast< EngineObject* >( ptr );
-   AssertFatal( !object->getRefCount(), "EngineObject::delete - object still referenced!" );
-   if( object->mEngineObjectPool )
-      object->mEngineObjectPool->freeObject( object );
+
+    EngineObject* object = reinterpret_cast< EngineObject* >( ptr );
+    AssertFatal( !object->getRefCount(), "EngineObject::delete - object still referenced!" );
+    if( object->mEngineObjectPool )
+        object->mEngineObjectPool->freeObject( object );
 }
 
 //-----------------------------------------------------------------------------
@@ -235,41 +235,41 @@ void EngineObject::operator delete( void* ptr )
 
 void EngineObject::debugDumpInstances()
 {
-   Con::printf( "----------- Dumping EngineObjects ----------------" );
-   for( EngineObject* object = smFirstEngineObject; object != NULL; object = object->mNextEngineObject )
-      Con::printf( object->describeSelf() );
-   Con::printf( "%i EngineObjects", smNumEngineObjects );
+    Con::printf( "----------- Dumping EngineObjects ----------------" );
+    for( EngineObject* object = smFirstEngineObject; object != NULL; object = object->mNextEngineObject )
+        Con::printf( object->describeSelf() );
+    Con::printf( "%i EngineObjects", smNumEngineObjects );
 }
 
 //-----------------------------------------------------------------------------
 
 void EngineObject::debugEnumInstances( const std::type_info& type, DebugEnumInstancesCallback callback )
 {
-   for( EngineObject* object = smFirstEngineObject; object != NULL; object = object->mNextEngineObject )
-      if( typeid( *object ) == type )
-      {
-         // Set breakpoint here to break for each instance.
-         if( callback )
-            callback( object );
-      }
+    for( EngineObject* object = smFirstEngineObject; object != NULL; object = object->mNextEngineObject )
+        if( typeid( *object ) == type )
+        {
+            // Set breakpoint here to break for each instance.
+            if( callback )
+                callback( object );
+        }
 }
 
 //-----------------------------------------------------------------------------
 
 void EngineObject::debugEnumInstances( const char* className, DebugEnumInstancesCallback callback )
 {
-   for( EngineObject* object = smFirstEngineObject; object != NULL; object = object->mNextEngineObject )
-   {
-      for( const EngineTypeInfo* type = TYPEOF( object ); type != NULL; type = type->getSuperType() )
-         if( dStricmp( type->getTypeName(), className ) == 0 )
-         {
-            // Set breakpoint here to break for each instance.
-            if( callback )
-               callback( object );
-               
-            break;
-         }
-   }
+    for( EngineObject* object = smFirstEngineObject; object != NULL; object = object->mNextEngineObject )
+    {
+        for( const EngineTypeInfo* type = TYPEOF( object ); type != NULL; type = type->getSuperType() )
+            if( dStricmp( type->getTypeName(), className ) == 0 )
+            {
+                // Set breakpoint here to break for each instance.
+                if( callback )
+                    callback( object );
+                    
+                break;
+            }
+    }
 }
 
 #endif // TORQUE_DEBUG
@@ -278,35 +278,35 @@ void EngineObject::debugEnumInstances( const char* className, DebugEnumInstances
 
 void* EngineCRuntimeObjectPool::allocateObject( U32 size TORQUE_TMM_ARGS_DECL )
 {
-   #ifdef TORQUE_DISABLE_MEMORY_MANAGER
-      return dMalloc( size );
-   #else
-      return dMalloc_r( size TORQUE_TMM_ARGS );
-   #endif
+#ifdef TORQUE_DISABLE_MEMORY_MANAGER
+    return dMalloc( size );
+#else
+    return dMalloc_r( size TORQUE_TMM_ARGS );
+#endif
 }
 
 //-----------------------------------------------------------------------------
 
 void EngineCRuntimeObjectPool::freeObject( void* ptr )
 {
-   dFree( ptr );
+    dFree( ptr );
 }
 
 //-----------------------------------------------------------------------------
 
 StaticEngineObject::StaticEngineObject()
 {
-   mEngineObjectPool = NULL;
-   
-   // Add an artificial reference to the object.
-   incRefCount();
+    mEngineObjectPool = NULL;
+    
+    // Add an artificial reference to the object.
+    incRefCount();
 }
 
 //-----------------------------------------------------------------------------
 
 void StaticEngineObject::destroySelf()
 {
-   AssertFatal( false, "StaticEngineObject::destroySelf - Cannot destroy static object!" );
+    AssertFatal( false, "StaticEngineObject::destroySelf - Cannot destroy static object!" );
 }
 
 //=============================================================================
@@ -316,61 +316,61 @@ void StaticEngineObject::destroySelf()
 
 //-----------------------------------------------------------------------------
 
-DefineNewEngineMethod( EngineObject, getType, const EngineTypeInfo*, (),,
-   "Return the type descriptor for the type the object is an instance of.\n"
-   "@return The type descriptor for the object's dynamic type." )
+DefineNewEngineMethod( EngineObject, getType, const EngineTypeInfo*, (), ,
+                       "Return the type descriptor for the type the object is an instance of.\n"
+                       "@return The type descriptor for the object's dynamic type." )
 {
-   return TYPEOF( object );
+    return TYPEOF( object );
 }
 
 //-----------------------------------------------------------------------------
 
-DefineNewEngineMethod( EngineObject, addRef, void, (),,
-   "Increase the reference count of the given object.\n\n"
-   "@param object An object." )
+DefineNewEngineMethod( EngineObject, addRef, void, (), ,
+                       "Increase the reference count of the given object.\n\n"
+                       "@param object An object." )
 {
-   object->incRefCount();
+    object->incRefCount();
 }
 
 //-----------------------------------------------------------------------------
 
-DefineNewEngineMethod( EngineObject, release, void, (),,
-   "Decrease the reference count of the given object.  If the count drops to "
-   "zero, the object will be deleted.\n\n"
-   "@param object An object." )
+DefineNewEngineMethod( EngineObject, release, void, (), ,
+                       "Decrease the reference count of the given object.  If the count drops to "
+                       "zero, the object will be deleted.\n\n"
+                       "@param object An object." )
 {
-   object->decRefCount();
+    object->decRefCount();
 }
 
 //-----------------------------------------------------------------------------
 
-DefineNewEngineMethod( EngineObject, getUserData, void*, (),,
-   "Get the opaque user data pointer installed on the object.\n"
-   "@return The user data pointer previously installed on the object; NULL by default." )
+DefineNewEngineMethod( EngineObject, getUserData, void*, (), ,
+                       "Get the opaque user data pointer installed on the object.\n"
+                       "@return The user data pointer previously installed on the object; NULL by default." )
 {
-   return _USERDATA( object );
+    return _USERDATA( object );
 }
 
 //-----------------------------------------------------------------------------
 
-DefineNewEngineMethod( EngineObject, setUserData, void, ( void* ptr ),,
-   "Install an opaque pointer on the object that the control layer can use to "
-   "associate data with the object.\n"
-   "@param ptr A pointer.\n" )
+DefineNewEngineMethod( EngineObject, setUserData, void, ( void* ptr ), ,
+                       "Install an opaque pointer on the object that the control layer can use to "
+                       "associate data with the object.\n"
+                       "@param ptr A pointer.\n" )
 {
-   _USERDATA( object ) = ptr;
+    _USERDATA( object ) = ptr;
 }
 
 //-----------------------------------------------------------------------------
 
 #ifdef TORQUE_DEBUG
 
-DefineEngineFunction( debugDumpAllObjects, void, (),,
-   "@brief Dumps all current EngineObject instances to the console.\n\n"
-   "@note This function is only available in debug builds.\n\n"
-   "@ingroup Debugging" )
+DefineEngineFunction( debugDumpAllObjects, void, (), ,
+                      "@brief Dumps all current EngineObject instances to the console.\n\n"
+                      "@note This function is only available in debug builds.\n\n"
+                      "@ingroup Debugging" )
 {
-   EngineObject::debugDumpInstances();
+    EngineObject::debugDumpInstances();
 }
 
 #endif // TORQUE_DEBUG

@@ -35,16 +35,16 @@ class Stream;
 class ShaderDependency
 {
 public:
-   virtual ~ShaderDependency() {}
-   
-   /// Compare this dependency to another one.
-   virtual bool operator==( const ShaderDependency &cmpTo ) const 
-   { 
-      return this == &cmpTo; 
-   }
-
-   /// Print the dependency into the header of a shader.
-   virtual void print( Stream &s ) const = 0;
+    virtual ~ShaderDependency() {}
+    
+    /// Compare this dependency to another one.
+    virtual bool operator==( const ShaderDependency& cmpTo ) const
+    {
+        return this == &cmpTo;
+    }
+    
+    /// Print the dependency into the header of a shader.
+    virtual void print( Stream& s ) const = 0;
 };
 
 
@@ -53,14 +53,14 @@ class ShaderIncludeDependency : public ShaderDependency
 {
 protected:
 
-   Torque::Path mIncludePath;
-
+    Torque::Path mIncludePath;
+    
 public:
 
-   ShaderIncludeDependency( const Torque::Path &pathToInclude );
-
-   virtual bool operator==( const ShaderDependency &cmpTo ) const;
-   virtual void print( Stream &s ) const;
+    ShaderIncludeDependency( const Torque::Path& pathToInclude );
+    
+    virtual bool operator==( const ShaderDependency& cmpTo ) const;
+    virtual void print( Stream& s ) const;
 };
 
 #endif // _SHADER_DEPENDENCY_H_

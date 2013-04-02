@@ -29,9 +29,9 @@
 
 namespace ConvertRGB
 {
-   ColorF toLUV( const ColorF &rgbColor );
-   ColorF toLUVScaled( const ColorF &rgbColor );
-   ColorF fromLUV( const ColorF &luvColor );
+ColorF toLUV( const ColorF& rgbColor );
+ColorF toLUVScaled( const ColorF& rgbColor );
+ColorF fromLUV( const ColorF& luvColor );
 };
 
 #endif

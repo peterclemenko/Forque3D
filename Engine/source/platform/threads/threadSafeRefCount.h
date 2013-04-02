@@ -55,26 +55,26 @@
 template< class T, class DeletePolicy = DeleteSingle >
 class ThreadSafeRefCount
 {
-   public:
+public:
 
-      typedef void Parent;
+    typedef void Parent;
+    
+    ThreadSafeRefCount()
+        : mRefCount( 0 ) {}
+    ThreadSafeRefCount( bool noSet ) {}
+    
+    bool           isShared() const;
+    U32            getRefCount() const;
+    void           addRef();
+    void           release();
+    void           clearLowestBit();
+    static T*      safeRead( T* const volatile& refPtr );
+    
+protected:
 
-      ThreadSafeRefCount()
-         : mRefCount( 0 ) {}
-      ThreadSafeRefCount( bool noSet ) {}
-
-      bool           isShared() const;
-      U32            getRefCount() const;
-      void           addRef();
-      void           release();
-      void           clearLowestBit();
-      static T*      safeRead( T* const volatile& refPtr );
-
-   protected:
-
-      U32            mRefCount;  ///< Reference count and claim bit.  Note that this increments in steps of two.
-
-      static U32     decrementAndTestAndSet( U32& refCount );
+    U32            mRefCount;  ///< Reference count and claim bit.  Note that this increments in steps of two.
+    
+    static U32     decrementAndTestAndSet( U32& refCount );
 };
 
 /// @return true if the object is referenced by more than a single
@@ -83,7 +83,7 @@ class ThreadSafeRefCount
 template< class T, class DeletePolicy >
 inline bool ThreadSafeRefCount< T, DeletePolicy >::isShared() const
 {
-   return ( mRefCount > 3 );
+    return ( mRefCount > 3 );
 }
 
 /// Get the current reference count.  This method is mostly meant for
@@ -92,7 +92,7 @@ inline bool ThreadSafeRefCount< T, DeletePolicy >::isShared() const
 template< class T, class DeletePolicy >
 inline U32 ThreadSafeRefCount< T, DeletePolicy >::getRefCount() const
 {
-   return mRefCount;
+    return mRefCount;
 }
 
 /// Increase the reference count on the object.
@@ -100,7 +100,7 @@ inline U32 ThreadSafeRefCount< T, DeletePolicy >::getRefCount() const
 template< class T, class DeletePolicy >
 inline void ThreadSafeRefCount< T, DeletePolicy >::addRef()
 {
-   dFetchAndAdd( mRefCount, 2 );
+    dFetchAndAdd( mRefCount, 2 );
 }
 
 /// Decrease the object's reference count and delete the object, if the count
@@ -109,9 +109,9 @@ inline void ThreadSafeRefCount< T, DeletePolicy >::addRef()
 template< class T, class DeletePolicy >
 inline void ThreadSafeRefCount< T, DeletePolicy >::release()
 {
-   AssertFatal( mRefCount != 0, "ThreadSafeRefCount::release() - refcount of zero" );
-   if( decrementAndTestAndSet( mRefCount ) != 0 )
-      DeletePolicy::destroy( ( T* ) this );
+    AssertFatal( mRefCount != 0, "ThreadSafeRefCount::release() - refcount of zero" );
+    if( decrementAndTestAndSet( mRefCount ) != 0 )
+        DeletePolicy::destroy( ( T* ) this );
 }
 
 /// Dereference a reference-counted pointer in a multi-thread safe way.
@@ -119,20 +119,20 @@ inline void ThreadSafeRefCount< T, DeletePolicy >::release()
 template< class T, class DeletePolicy >
 T* ThreadSafeRefCount< T, DeletePolicy >::safeRead( T* const volatile& refPtr )
 {
-   while( 1 )
-   {
-      // Support tagged pointers here.
-
-      T* ptr = TypeTraits< T* >::getUntaggedPtr( refPtr );
-      if( !ptr )
-         return 0;
-
-      ptr->addRef();
-      if( ptr == TypeTraits< T* >::getUntaggedPtr( refPtr ) )
-         return ptr;
-      else
-         ptr->release();
-   }
+    while( 1 )
+    {
+        // Support tagged pointers here.
+        
+        T* ptr = TypeTraits< T* >::getUntaggedPtr( refPtr );
+        if( !ptr )
+            return 0;
+            
+        ptr->addRef();
+        if( ptr == TypeTraits< T* >::getUntaggedPtr( refPtr ) )
+            return ptr;
+        else
+            ptr->release();
+    }
 }
 
 /// Decrement the given reference count.  Return 1 if the count dropped to zero
@@ -141,23 +141,23 @@ T* ThreadSafeRefCount< T, DeletePolicy >::safeRead( T* const volatile& refPtr )
 template< class T, class DeletePolicy >
 U32 ThreadSafeRefCount< T, DeletePolicy >::decrementAndTestAndSet( U32& refCount )
 {
-   U32 oldVal;
-   U32 newVal;
-
-   do
-   {
-      oldVal = refCount;
-      newVal = oldVal - 2;
-
-      AssertFatal( oldVal >= 2,
-         "ThreadSafeRefCount::decrementAndTestAndSet() - invalid refcount" );
-
-      if( newVal == 0 )
-         newVal = 1;
-   }
-   while( !dCompareAndSwap( refCount, oldVal, newVal ) );
-
-   return ( ( oldVal - newVal ) & 1 );
+    U32 oldVal;
+    U32 newVal;
+    
+    do
+    {
+        oldVal = refCount;
+        newVal = oldVal - 2;
+        
+        AssertFatal( oldVal >= 2,
+                     "ThreadSafeRefCount::decrementAndTestAndSet() - invalid refcount" );
+                     
+        if( newVal == 0 )
+            newVal = 1;
+    }
+    while( !dCompareAndSwap( refCount, oldVal, newVal ) );
+    
+    return ( ( oldVal - newVal ) & 1 );
 }
 
 ///
@@ -165,17 +165,17 @@ U32 ThreadSafeRefCount< T, DeletePolicy >::decrementAndTestAndSet( U32& refCount
 template< class T, class DeletePolicy >
 inline void ThreadSafeRefCount< T, DeletePolicy >::clearLowestBit()
 {
-   AssertFatal( mRefCount % 2 != 0, "ThreadSafeRefCount::clearLowestBit() - invalid refcount" );
-
-   U32 oldVal;
-   U32 newVal;
-
-   do
-   {
-      oldVal = mRefCount;
-      newVal = oldVal - 1;
-   }
-   while( !dCompareAndSwap( mRefCount, oldVal, newVal ) );
+    AssertFatal( mRefCount % 2 != 0, "ThreadSafeRefCount::clearLowestBit() - invalid refcount" );
+    
+    U32 oldVal;
+    U32 newVal;
+    
+    do
+    {
+        oldVal = mRefCount;
+        newVal = oldVal - 1;
+    }
+    while( !dCompareAndSwap( mRefCount, oldVal, newVal ) );
 }
 
 //--------------------------------------------------------------------------
@@ -197,59 +197,98 @@ inline void ThreadSafeRefCount< T, DeletePolicy >::clearLowestBit()
 template< class T >
 class ThreadSafeRef
 {
-   public:
+public:
 
-      enum ETag
-      {
-         TAG_PreserveOld,  ///< Preserve existing tagging state when changing pointer.
-         TAG_PreserveNew,  ///< Preserve tagging state of new pointer when changing pointer.
-         TAG_Set,          ///< Set tag when changing pointer; okay if already set.
-         TAG_Unset,        ///< Unset tag when changing pointer; okay if already unset.
-         TAG_SetOrFail,    ///< Set tag when changing pointer; fail if already set.
-         TAG_UnsetOrFail,  ///< Unset tag when changing pointer; fail if already unset.
-         TAG_FailIfSet,    ///< Fail changing pointer when currently tagged.
-         TAG_FailIfUnset   ///< Fail changing pointer when currently untagged.
-      };
+    enum ETag
+    {
+        TAG_PreserveOld,  ///< Preserve existing tagging state when changing pointer.
+        TAG_PreserveNew,  ///< Preserve tagging state of new pointer when changing pointer.
+        TAG_Set,          ///< Set tag when changing pointer; okay if already set.
+        TAG_Unset,        ///< Unset tag when changing pointer; okay if already unset.
+        TAG_SetOrFail,    ///< Set tag when changing pointer; fail if already set.
+        TAG_UnsetOrFail,  ///< Unset tag when changing pointer; fail if already unset.
+        TAG_FailIfSet,    ///< Fail changing pointer when currently tagged.
+        TAG_FailIfUnset   ///< Fail changing pointer when currently untagged.
+    };
+    
+    typedef ThreadSafeRef< T > ThisType;
+    
+    ThreadSafeRef()                        : mPtr( 0 ) {}
+    ThreadSafeRef( T* ptr )                : mPtr( ThreadSafeRefCount< T >::safeRead( ptr ) ) {}
+    ThreadSafeRef( const ThisType& ref )   : mPtr( ThreadSafeRefCount< T >::safeRead( ref.mPtr ) ) {}
+    ~ThreadSafeRef()
+    {
+        T* ptr = NULL;
+        while( !trySetFromTo( mPtr, ptr ) );
+    }
+    
+    T*             ptr() const
+    {
+        return getUntaggedPtr( mPtr ) ;
+    }
+    void           setTag()
+    {
+        while( !trySetFromTo( mPtr, mPtr, TAG_Set ) );
+    }
+    bool           isTagged() const
+    {
+        return isTaggedPtr( mPtr );
+    }
+    bool           trySetFromTo( T* oldVal, T* const volatile& newVal, ETag tag = TAG_PreserveOld );
+    bool           trySetFromTo( T* oldVal, const ThisType& newVal, ETag tag = TAG_PreserveOld );
+    bool           trySetFromTo( const ThisType& oldVal, const ThisType& newVal, ETag tag = TAG_PreserveOld );
+    static void    unsafeWrite( ThisType& ref, T* ptr );
+    static T*      safeRead( T* const volatile& refPtr )
+    {
+        return ThreadSafeRefCount< T >::safeRead( refPtr );
+    }
+    
+    bool           operator ==( T* ptr ) const;
+    bool           operator ==( const ThisType& ref ) const;
+    bool           operator !=( T* ptr ) const
+    {
+        return !( *this == ptr );
+    }
+    bool           operator !=( const ThisType& ref ) const
+    {
+        return !( *this == ref );
+    }
+    ThisType&      operator =( T* ptr );
+    ThisType&      operator =( const ThisType& ref );
+    
+    bool           operator !() const
+    {
+        return ( ptr() == 0 );
+    }
+    T&             operator *() const
+    {
+        return *ptr();
+    }
+    T*             operator ->() const
+    {
+        return ptr();
+    }
+    operator T* () const
+    {
+        return ptr();
+    }
+    
+protected:
 
-      typedef ThreadSafeRef< T > ThisType;
-
-      ThreadSafeRef()                        : mPtr( 0 ) {}
-      ThreadSafeRef( T* ptr )                : mPtr( ThreadSafeRefCount< T >::safeRead( ptr ) ) {}
-      ThreadSafeRef( const ThisType& ref )   : mPtr( ThreadSafeRefCount< T >::safeRead( ref.mPtr ) ) {}
-      ~ThreadSafeRef()
-      {
-         T* ptr = NULL;
-         while( !trySetFromTo( mPtr, ptr ) );
-      }
-
-      T*             ptr() const { return getUntaggedPtr( mPtr ) ; }
-      void           setTag() { while( !trySetFromTo( mPtr, mPtr, TAG_Set ) ); }
-      bool           isTagged() const { return isTaggedPtr( mPtr ); }
-      bool           trySetFromTo( T* oldVal, T* const volatile& newVal, ETag tag = TAG_PreserveOld );
-      bool           trySetFromTo( T* oldVal, const ThisType& newVal, ETag tag = TAG_PreserveOld );
-      bool           trySetFromTo( const ThisType& oldVal, const ThisType& newVal, ETag tag = TAG_PreserveOld );
-      static void    unsafeWrite( ThisType& ref, T* ptr );
-      static T*      safeRead( T* const volatile& refPtr ) { return ThreadSafeRefCount< T >::safeRead( refPtr ); }
-
-      bool           operator ==( T* ptr ) const;
-      bool           operator ==( const ThisType& ref ) const;
-      bool           operator !=( T* ptr ) const { return !( *this == ptr ); }
-      bool           operator !=( const ThisType& ref ) const { return !( *this == ref ); }
-      ThisType&      operator =( T* ptr );
-      ThisType&      operator =( const ThisType& ref );
-
-      bool           operator !() const   { return ( ptr() == 0 ); }
-      T&             operator *() const   { return *ptr(); }
-      T*             operator ->() const  { return ptr(); }
-                     operator T*() const  { return ptr(); }
-
-   protected:
-
-      T* volatile    mPtr;
-
-      static bool isTaggedPtr( T* ptr ) { return TypeTraits< T* >::isTaggedPtr( ptr ); }
-      static T* getTaggedPtr( T* ptr ) { return TypeTraits< T* >::getTaggedPtr( ptr ); }
-      static T* getUntaggedPtr( T* ptr ) { return TypeTraits< T* >::getUntaggedPtr( ptr ); }
+    T* volatile    mPtr;
+    
+    static bool isTaggedPtr( T* ptr )
+    {
+        return TypeTraits< T* >::isTaggedPtr( ptr );
+    }
+    static T* getTaggedPtr( T* ptr )
+    {
+        return TypeTraits< T* >::getTaggedPtr( ptr );
+    }
+    static T* getUntaggedPtr( T* ptr )
+    {
+        return TypeTraits< T* >::getUntaggedPtr( ptr );
+    }
 };
 
 /// Update the reference from pointing to oldVal to point to newVal.
@@ -269,56 +308,74 @@ class ThreadSafeRef
 template< class T >
 bool ThreadSafeRef< T >::trySetFromTo( T* oldVal, T* const volatile& newVal, ETag tag )
 {
-   bool setTag = false;
-   bool getTag = false;
-   bool isTagged = isTaggedPtr( oldVal );
-
-   switch( tag )
-   {
-   case TAG_PreserveOld:   setTag = isTaggedPtr( oldVal ); break;
-   case TAG_PreserveNew:   setTag = isTaggedPtr( newVal ); break;
-   case TAG_Set:           setTag = true; break;
-   case TAG_Unset:         setTag = false; break;
-   case TAG_SetOrFail:     setTag = true; getTag = true; break;
-   case TAG_UnsetOrFail:   setTag = false; getTag = true; break;
-   case TAG_FailIfSet:     if( isTagged ) return false; break;
-   case TAG_FailIfUnset:   if( !isTagged ) return false; break;
-   }
-
-   T* newValPtr = ( setTag
-                    ? getTaggedPtr( ThreadSafeRefCount< T >::safeRead( newVal ) )
-                    : getUntaggedPtr( ThreadSafeRefCount< T >::safeRead( newVal ) ) );
-
-   if( dCompareAndSwap( mPtr,
-                        ( getTag
-                          ? ( setTag
-                              ? getUntaggedPtr( oldVal )
-                              : getTaggedPtr( oldVal ) )
-                          : oldVal ),
-                        newValPtr ) )
-   {
-      if( getUntaggedPtr( oldVal ) )
-         getUntaggedPtr( oldVal )->release();
-      return true;
-   }
-   else
-   {
-      if( getUntaggedPtr( newValPtr ) )
-         getUntaggedPtr( newValPtr )->release();
-      return false;
-   }
+    bool setTag = false;
+    bool getTag = false;
+    bool isTagged = isTaggedPtr( oldVal );
+    
+    switch( tag )
+    {
+        case TAG_PreserveOld:
+            setTag = isTaggedPtr( oldVal );
+            break;
+        case TAG_PreserveNew:
+            setTag = isTaggedPtr( newVal );
+            break;
+        case TAG_Set:
+            setTag = true;
+            break;
+        case TAG_Unset:
+            setTag = false;
+            break;
+        case TAG_SetOrFail:
+            setTag = true;
+            getTag = true;
+            break;
+        case TAG_UnsetOrFail:
+            setTag = false;
+            getTag = true;
+            break;
+        case TAG_FailIfSet:
+            if( isTagged ) return false;
+            break;
+        case TAG_FailIfUnset:
+            if( !isTagged ) return false;
+            break;
+    }
+    
+    T* newValPtr = ( setTag
+                     ? getTaggedPtr( ThreadSafeRefCount< T >::safeRead( newVal ) )
+                     : getUntaggedPtr( ThreadSafeRefCount< T >::safeRead( newVal ) ) );
+                     
+    if( dCompareAndSwap( mPtr,
+                         ( getTag
+                           ? ( setTag
+                               ? getUntaggedPtr( oldVal )
+                               : getTaggedPtr( oldVal ) )
+                               : oldVal ),
+                             newValPtr ) )
+    {
+        if( getUntaggedPtr( oldVal ) )
+            getUntaggedPtr( oldVal )->release();
+        return true;
+    }
+    else
+    {
+        if( getUntaggedPtr( newValPtr ) )
+            getUntaggedPtr( newValPtr )->release();
+        return false;
+    }
 }
 
 template< class T >
 inline bool ThreadSafeRef< T >::trySetFromTo( T* oldVal, const ThisType& newVal, ETag tag )
 {
-   return trySetFromTo( oldVal, newVal.mPtr, tag );
+    return trySetFromTo( oldVal, newVal.mPtr, tag );
 }
 
 template< class T >
 inline bool ThreadSafeRef< T >::trySetFromTo( const ThisType& oldVal, const ThisType& newVal, ETag tag )
 {
-   return trySetFromTo( oldVal.mPtr, newVal.mPtr, tag );
+    return trySetFromTo( oldVal.mPtr, newVal.mPtr, tag );
 }
 
 /// Update ref to point to ptr but <em>do not</em> release an existing
@@ -334,33 +391,33 @@ inline bool ThreadSafeRef< T >::trySetFromTo( const ThisType& oldVal, const This
 template< class T >
 inline void ThreadSafeRef< T >::unsafeWrite( ThisType& ref, T* ptr )
 {
-   ref.mPtr = ptr;
+    ref.mPtr = ptr;
 }
 
 template< class T >
 inline bool ThreadSafeRef< T >::operator ==( T* p ) const
 {
-   return ( ptr() == p );
+    return ( ptr() == p );
 }
 
 template< class T >
 inline bool ThreadSafeRef< T >::operator ==( const ThisType& ref ) const
 {
-   return ( ptr() == ref.ptr() );
+    return ( ptr() == ref.ptr() );
 }
 
 template< class T >
 inline ThreadSafeRef< T >& ThreadSafeRef< T >::operator =( T* ptr )
 {
-   while( !trySetFromTo( mPtr, ptr, TAG_PreserveNew ) );
-   return *this;
+    while( !trySetFromTo( mPtr, ptr, TAG_PreserveNew ) );
+    return *this;
 }
 
 template< class T >
 inline ThreadSafeRef< T >& ThreadSafeRef< T >::operator =( const ThisType& ref )
 {
-   while( !trySetFromTo( mPtr, ref, TAG_PreserveNew ) );
-   return *this;
+    while( !trySetFromTo( mPtr, ref, TAG_PreserveNew ) );
+    return *this;
 }
 
 
@@ -369,12 +426,12 @@ struct TypeTraits< ThreadSafeRef< T > > : public TypeTraits< T* > {};
 template< typename T >
 inline T& Deref( ThreadSafeRef< T >& ref )
 {
-   return *ref;
+    return *ref;
 }
 template< typename T >
 inline T& Deref( const ThreadSafeRef< T >& ref )
 {
-   return *ref;
+    return *ref;
 }
 
 #endif // _THREADSAFEREFCOUNT_H_

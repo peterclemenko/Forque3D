@@ -25,10 +25,11 @@
 
 namespace LeapMotionConstants
 {
-   enum Constants {
-      MaxHands             = 2,
-      MaxPointablesPerHand = 5,
-   };
+enum Constants
+{
+    MaxHands             = 2,
+    MaxPointablesPerHand = 5,
+};
 }
 
 #endif   // _LEAPMOTIONCONSTANTS_H_

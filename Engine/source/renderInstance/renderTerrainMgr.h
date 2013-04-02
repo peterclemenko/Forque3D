@@ -41,65 +41,65 @@ class TerrainCellMaterial;
 /// The render instance for terrain cells.
 struct TerrainRenderInst : public RenderInst
 {
-   GFXVertexBuffer *vertBuff;
-
-   GFXPrimitiveBuffer *primBuff;
-
-   GFXPrimitive prim;
-
-   BaseMatInstance *mat;
-
-   const MatrixF *objectToWorldXfm;
-
-   TerrainCellMaterial *cellMat;
-
-   /// The lights we pass to the material for 
-   /// this cell in order light importance.
-   LightInfo *lights[8];
-
-   void clear()
-   {
-      dMemset( this, 0, sizeof( TerrainRenderInst ) );   
-      type = RenderPassManager::RIT_Terrain;      
-   }
+    GFXVertexBuffer* vertBuff;
+    
+    GFXPrimitiveBuffer* primBuff;
+    
+    GFXPrimitive prim;
+    
+    BaseMatInstance* mat;
+    
+    const MatrixF* objectToWorldXfm;
+    
+    TerrainCellMaterial* cellMat;
+    
+    /// The lights we pass to the material for
+    /// this cell in order light importance.
+    LightInfo* lights[8];
+    
+    void clear()
+    {
+        dMemset( this, 0, sizeof( TerrainRenderInst ) );
+        type = RenderPassManager::RIT_Terrain;
+    }
 };
 
 
 ///
 class RenderTerrainMgr : public RenderBinManager
 {
-   typedef RenderBinManager Parent;
-
+    typedef RenderBinManager Parent;
+    
 protected:
 
-   Vector<TerrainRenderInst*> mInstVector;
-
-   static bool smRenderWireframe;
-
-   static S32 smCellsRendered;
-   static S32 smOverrideCells;
-   static S32 smDrawCalls;
-
-   static bool _clearStats( GFXDevice::GFXDeviceEventType type );
-
-   // RenderBinManager
-   virtual void internalAddElement( RenderInst *inst );
-
+    Vector<TerrainRenderInst*> mInstVector;
+    
+    static bool smRenderWireframe;
+    
+    static S32 smCellsRendered;
+    static S32 smOverrideCells;
+    static S32 smDrawCalls;
+    
+    static bool _clearStats( GFXDevice::GFXDeviceEventType type );
+    
+    // RenderBinManager
+    virtual void internalAddElement( RenderInst* inst );
+    
 public:
 
-   RenderTerrainMgr();
-   RenderTerrainMgr( F32 renderOrder, F32 processAddOrder );
-   virtual ~RenderTerrainMgr();
-
-   // ConsoleObject
-   static void initPersistFields();
-   DECLARE_CONOBJECT(RenderTerrainMgr);
-
-   // RenderBinManager
-   virtual void sort();
-   virtual void render( SceneRenderState *state );
-   virtual void clear();
-
+    RenderTerrainMgr();
+    RenderTerrainMgr( F32 renderOrder, F32 processAddOrder );
+    virtual ~RenderTerrainMgr();
+    
+    // ConsoleObject
+    static void initPersistFields();
+    DECLARE_CONOBJECT( RenderTerrainMgr );
+    
+    // RenderBinManager
+    virtual void sort();
+    virtual void render( SceneRenderState* state );
+    virtual void clear();
+    
 };
 
 #endif // _RENDERTERRAINMGR_H_

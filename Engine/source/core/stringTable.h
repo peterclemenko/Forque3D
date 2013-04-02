@@ -76,98 +76,101 @@
 class _StringTable
 {
 private:
-   /// @name Implementation details
-   /// @{
+    /// @name Implementation details
+    /// @{
+    
+    /// This is internal to the _StringTable class.
+    struct Node
+    {
+        char* val;
+        Node* next;
+    };
+    
+    Node**      buckets;
+    U32         numBuckets;
+    U32         itemCount;
+    DataChunker mempool;
+    
+    StringTableEntry _EmptyString;
+    
+protected:
+    static const U32 csm_stInitSize;
+    
+    _StringTable();
+    ~_StringTable();
+    
+    /// @}
+public:
 
-   /// This is internal to the _StringTable class.
-   struct Node
-   {
-      char *val;
-      Node *next;
-   };
-
-   Node**      buckets;
-   U32         numBuckets;
-   U32         itemCount;
-   DataChunker mempool;
-
-   StringTableEntry _EmptyString;
-
-  protected:
-   static const U32 csm_stInitSize;
-
-   _StringTable();
-   ~_StringTable();
-
-   /// @}
-  public:
-
-   /// Initialize StringTable.
-   ///
-   /// This is called at program start to initialize the StringTable global.
-   static void create();
-
-   /// Destroy the StringTable
-   ///
-   /// This is called at program end to destroy the StringTable global.
-   static void destroy();
-
-   /// Get a pointer from the string table, adding the string to the table
-   /// if it was not already present.
-   ///
-   /// @param  string   String to check in the table (and add).
-   /// @param  caseSens Determines whether case matters.
-   StringTableEntry insert(const char *string, bool caseSens = false);
-
-   /// Get a pointer from the string table, adding the string to the table
-   /// if it was not already present.
-   ///
-   /// @param  string   String to check in the table (and add).
-   /// @param  len      Length of the string in bytes.
-   /// @param  caseSens Determines whether case matters.
-   StringTableEntry insertn(const char *string, S32 len, bool caseSens = false);
-
-   /// Get a pointer from the string table, NOT adding the string to the table
-   /// if it was not already present.
-   ///
-   /// @param  string   String to check in the table (but not add).
-   /// @param  caseSens Determines whether case matters.
-   StringTableEntry lookup(const char *string, bool caseSens = false);
-
-   /// Get a pointer from the string table, NOT adding the string to the table
-   /// if it was not already present.
-   ///
-   /// @param  string   String to check in the table (but not add).
-   /// @param  len      Length of string in bytes.
-   /// @param  caseSens Determines whether case matters.
-   StringTableEntry lookupn(const char *string, S32 len, bool caseSens = false);
-
-
-   /// Resize the StringTable to be able to hold newSize items. This
-   /// is called automatically by the StringTable when the table is
-   /// full past a certain threshhold.
-   ///
-   /// @param newSize   Number of new items to allocate space for.
-   void             resize(const U32 newSize);
-
-   /// Hash a string into a U32.
-   static U32 hashString(const char* in_pString);
-
-   /// Hash a string of given length into a U32.
-   static U32 hashStringn(const char* in_pString, S32 len);
-
-   /// Represents a zero length string.
-   StringTableEntry EmptyString() const { return _EmptyString; }
+    /// Initialize StringTable.
+    ///
+    /// This is called at program start to initialize the StringTable global.
+    static void create();
+    
+    /// Destroy the StringTable
+    ///
+    /// This is called at program end to destroy the StringTable global.
+    static void destroy();
+    
+    /// Get a pointer from the string table, adding the string to the table
+    /// if it was not already present.
+    ///
+    /// @param  string   String to check in the table (and add).
+    /// @param  caseSens Determines whether case matters.
+    StringTableEntry insert( const char* string, bool caseSens = false );
+    
+    /// Get a pointer from the string table, adding the string to the table
+    /// if it was not already present.
+    ///
+    /// @param  string   String to check in the table (and add).
+    /// @param  len      Length of the string in bytes.
+    /// @param  caseSens Determines whether case matters.
+    StringTableEntry insertn( const char* string, S32 len, bool caseSens = false );
+    
+    /// Get a pointer from the string table, NOT adding the string to the table
+    /// if it was not already present.
+    ///
+    /// @param  string   String to check in the table (but not add).
+    /// @param  caseSens Determines whether case matters.
+    StringTableEntry lookup( const char* string, bool caseSens = false );
+    
+    /// Get a pointer from the string table, NOT adding the string to the table
+    /// if it was not already present.
+    ///
+    /// @param  string   String to check in the table (but not add).
+    /// @param  len      Length of string in bytes.
+    /// @param  caseSens Determines whether case matters.
+    StringTableEntry lookupn( const char* string, S32 len, bool caseSens = false );
+    
+    
+    /// Resize the StringTable to be able to hold newSize items. This
+    /// is called automatically by the StringTable when the table is
+    /// full past a certain threshhold.
+    ///
+    /// @param newSize   Number of new items to allocate space for.
+    void             resize( const U32 newSize );
+    
+    /// Hash a string into a U32.
+    static U32 hashString( const char* in_pString );
+    
+    /// Hash a string of given length into a U32.
+    static U32 hashStringn( const char* in_pString, S32 len );
+    
+    /// Represents a zero length string.
+    StringTableEntry EmptyString() const
+    {
+        return _EmptyString;
+    }
 };
 
 
-extern _StringTable *_gStringTable;
+extern _StringTable* _gStringTable;
 
 inline _StringTable* _getStringTable()
 {
-   if(_gStringTable == NULL)
-      _StringTable::create();
-   return _gStringTable;
+    if( _gStringTable == NULL )
+        _StringTable::create();
+    return _gStringTable;
 }
 
 #define StringTable _getStringTable()

@@ -43,75 +43,81 @@ class ForestItemSelection : public Selection<ForestItem>
 {
 public:
 
-   void setForestData( ForestData* data ) { mData = data; }
-
+    void setForestData( ForestData* data )
+    {
+        mData = data;
+    }
+    
 protected:
 
-   void offsetObject( ForestItem &object, const Point3F &delta );
-   void rotateObject( ForestItem &object, const EulerF &delta, const Point3F &origin );
-   void scaleObject( ForestItem &object, const Point3F &delta );
-
+    void offsetObject( ForestItem& object, const Point3F& delta );
+    void rotateObject( ForestItem& object, const EulerF& delta, const Point3F& origin );
+    void scaleObject( ForestItem& object, const Point3F& delta );
+    
 protected:
 
-   ForestData *mData;
+    ForestData* mData;
 };
 
 
 class ForestSelectionTool : public ForestTool
 {
-   typedef ForestTool Parent;
+    typedef ForestTool Parent;
+    
+protected:
 
-   protected:
+    Gizmo* mGizmo;
+    GizmoProfile* mGizmoProfile;
+    
+    ForestItem mHoverItem;
+    
+    ForestItemSelection mSelection;
+    
+    ForestItemSelection mDragSelection;
+    bool mDragSelect;
+    RectI mDragRect;
+    Point2I mDragStart;
+    bool mMouseDown;
+    bool mMouseDragged;
+    ColorI mDragRectColor;
+    bool mUsingGizmo;
+    
+    Box3F mBounds;
+    
+    ForestUpdateAction* mCurrAction;
+    
+    void _selectItem( const ForestItem& item );
+    
+public:
 
-      Gizmo *mGizmo;
-      GizmoProfile *mGizmoProfile;
-
-      ForestItem mHoverItem;
-
-      ForestItemSelection mSelection;
-      
-      ForestItemSelection mDragSelection;
-      bool mDragSelect;
-      RectI mDragRect;
-      Point2I mDragStart;
-      bool mMouseDown;
-      bool mMouseDragged;
-      ColorI mDragRectColor;
-      bool mUsingGizmo;
-      
-      Box3F mBounds;
-
-      ForestUpdateAction *mCurrAction;
-
-      void _selectItem( const ForestItem &item );
-
-   public:
-
-      ForestSelectionTool();
-      virtual ~ForestSelectionTool();
-
-      DECLARE_CONOBJECT( ForestSelectionTool );
-
-      // ForestTool
-      virtual void setParentEditor( ForestEditorCtrl *editor );
-      virtual void setActiveForest( Forest *forest );
-      virtual void on3DMouseDown( const Gui3DMouseEvent &evt );
-      virtual void on3DMouseUp( const Gui3DMouseEvent &evt );
-      virtual void on3DMouseMove( const Gui3DMouseEvent &evt );
-      virtual void on3DMouseDragged( const Gui3DMouseEvent &evt );
-      virtual void onRender3D();
-      virtual void onRender2D();
-      virtual bool updateGuiInfo();
-      virtual void updateGizmo();
-      virtual void onUndoAction();
-
-      S32 getSelectionCount() const { return mSelection.size(); }
-
-      void deleteSelection();
-      void clearSelection();
-      void cutSelection();
-      void copySelection();
-      void pasteSelection();                
+    ForestSelectionTool();
+    virtual ~ForestSelectionTool();
+    
+    DECLARE_CONOBJECT( ForestSelectionTool );
+    
+    // ForestTool
+    virtual void setParentEditor( ForestEditorCtrl* editor );
+    virtual void setActiveForest( Forest* forest );
+    virtual void on3DMouseDown( const Gui3DMouseEvent& evt );
+    virtual void on3DMouseUp( const Gui3DMouseEvent& evt );
+    virtual void on3DMouseMove( const Gui3DMouseEvent& evt );
+    virtual void on3DMouseDragged( const Gui3DMouseEvent& evt );
+    virtual void onRender3D();
+    virtual void onRender2D();
+    virtual bool updateGuiInfo();
+    virtual void updateGizmo();
+    virtual void onUndoAction();
+    
+    S32 getSelectionCount() const
+    {
+        return mSelection.size();
+    }
+    
+    void deleteSelection();
+    void clearSelection();
+    void cutSelection();
+    void copySelection();
+    void pasteSelection();
 };
 
 

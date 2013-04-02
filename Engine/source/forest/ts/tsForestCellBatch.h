@@ -45,23 +45,23 @@ class GFXShader;
 class TSForestCellBatch : public ForestCellBatch
 {
 protected:
-   
-   /// We use the same shader and vertex format as TSLastDetail.
-   GFXVertexBufferHandle<ImposterState> mVB;
 
-   TSLastDetail *mDetail;
-
-   // ForestCellBatch
-   virtual bool _prepBatch( const ForestItem &item );
-   virtual void _rebuildBatch();
-   virtual void _render( const SceneRenderState *state );
-
+    /// We use the same shader and vertex format as TSLastDetail.
+    GFXVertexBufferHandle<ImposterState> mVB;
+    
+    TSLastDetail* mDetail;
+    
+    // ForestCellBatch
+    virtual bool _prepBatch( const ForestItem& item );
+    virtual void _rebuildBatch();
+    virtual void _render( const SceneRenderState* state );
+    
 public:
-   
-   TSForestCellBatch( TSLastDetail *detail );
 
-   virtual ~TSForestCellBatch();
-
+    TSForestCellBatch( TSLastDetail* detail );
+    
+    virtual ~TSForestCellBatch();
+    
 };
 
 

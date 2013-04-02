@@ -56,101 +56,101 @@
 template< typename T, class Stream >
 class AsyncIOItem : public ThreadPool::WorkItem
 {
-   public:
+public:
 
-      typedef WorkItem Parent;
-      typedef T ValueType;
-      typedef RawDataT< ValueType > BufferType;
-      typedef U32 OffsetType;
-      typedef Stream StreamType;
+    typedef WorkItem Parent;
+    typedef T ValueType;
+    typedef RawDataT< ValueType > BufferType;
+    typedef U32 OffsetType;
+    typedef Stream StreamType;
+    
+protected:
 
-   protected:
+    /// Buffer keeping/receiving the data elements.
+    BufferType mBuffer;
+    
+    /// The stream to read from/write to.
+    StreamType* mStream;
+    
+    /// Number of elements to read from/write to the stream.
+    U32 mNumElements;
+    
+    /// Offset in "mBuffer" from where to read/where to start writing to.
+    U32 mOffsetInBuffer;
+    
+    /// Offset in stream from where to read/where to write to.
+    /// @note This is only meaningful if the stream is an offset I/O
+    ///   stream.  For a stream that is can do both types of I/O,
+    ///   explicit offsets are preferred and this value is used.
+    OffsetType mOffsetInStream;
+    
+    ///
+    ValueType* getBufferPtr()
+    {
+        return &getBuffer().data[ getOffsetInBuffer() ];
+    }
+    
+public:
 
-      /// Buffer keeping/receiving the data elements.
-      BufferType mBuffer;
-      
-      /// The stream to read from/write to.
-      StreamType* mStream;
-
-      /// Number of elements to read from/write to the stream.
-      U32 mNumElements;
-
-      /// Offset in "mBuffer" from where to read/where to start writing to.
-      U32 mOffsetInBuffer;
-
-      /// Offset in stream from where to read/where to write to.
-      /// @note This is only meaningful if the stream is an offset I/O
-      ///   stream.  For a stream that is can do both types of I/O,
-      ///   explicit offsets are preferred and this value is used.
-      OffsetType mOffsetInStream;
-
-      ///
-      ValueType* getBufferPtr()
-      {
-         return &getBuffer().data[ getOffsetInBuffer() ]; 
-      }
-
-   public:
-   
-      ///
-      /// If the stream uses implicit positioning, then the supplied "offsetInStream"
-      /// is meaningless and ignored.
-      AsyncIOItem( StreamType* stream, U32 numElements, OffsetType offsetInStream,
-                   ThreadContext* context = 0 )
-         : Parent( context ),
-           mStream( stream ),
-           mNumElements( numElements ),
-           mOffsetInStream( offsetInStream ),
-           mOffsetInBuffer( 0 ) {}
-
-      /// Construct a read item on "stream" that stores data into the given "buffer".
-      ///
-      AsyncIOItem( StreamType* stream, BufferType& buffer, U32 offsetInBuffer,
-                   U32 numElements, OffsetType offsetInStream, bool takeOwnershipOfBuffer = true,
-                   ThreadContext* context = 0 )
-         : Parent( context ),
-           mStream( stream ),
-           mBuffer( buffer ),
-           mNumElements( numElements ),
-           mOffsetInStream( offsetInStream ),
-           mOffsetInBuffer( offsetInBuffer )
-      {
-         if( takeOwnershipOfBuffer )
+    ///
+    /// If the stream uses implicit positioning, then the supplied "offsetInStream"
+    /// is meaningless and ignored.
+    AsyncIOItem( StreamType* stream, U32 numElements, OffsetType offsetInStream,
+                 ThreadContext* context = 0 )
+        : Parent( context ),
+          mStream( stream ),
+          mNumElements( numElements ),
+          mOffsetInStream( offsetInStream ),
+          mOffsetInBuffer( 0 ) {}
+          
+    /// Construct a read item on "stream" that stores data into the given "buffer".
+    ///
+    AsyncIOItem( StreamType* stream, BufferType& buffer, U32 offsetInBuffer,
+                 U32 numElements, OffsetType offsetInStream, bool takeOwnershipOfBuffer = true,
+                 ThreadContext* context = 0 )
+        : Parent( context ),
+          mStream( stream ),
+          mBuffer( buffer ),
+          mNumElements( numElements ),
+          mOffsetInStream( offsetInStream ),
+          mOffsetInBuffer( offsetInBuffer )
+    {
+        if( takeOwnershipOfBuffer )
             mBuffer.ownMemory = true;
-      }
-
-      /// Return the stream being written to/read from.
-      StreamType* getStream()
-      {
-         return mStream;
-      }
-
-      /// Return the data buffer being written to/read from.
-      /// @note This may not yet have been allocated.
-      BufferType& getBuffer()
-      {
-         return mBuffer;
-
-      }
-
-      /// Return the number of elements involved in the transfer.
-      U32 getNumElements()
-      {
-         return mNumElements;
-      }
-
-      /// Return the position in the data buffer at which to start the transfer.
-      U32 getOffsetInBuffer()
-      {
-         return mOffsetInBuffer;
-      }
-
-      /// Return the position in the stream at which to start the transfer.
-      /// @note Only meaningful for streams that support offset I/O.
-      OffsetType getOffsetInStream()
-      {
-         return mOffsetInStream;
-      }
+    }
+    
+    /// Return the stream being written to/read from.
+    StreamType* getStream()
+    {
+        return mStream;
+    }
+    
+    /// Return the data buffer being written to/read from.
+    /// @note This may not yet have been allocated.
+    BufferType& getBuffer()
+    {
+        return mBuffer;
+        
+    }
+    
+    /// Return the number of elements involved in the transfer.
+    U32 getNumElements()
+    {
+        return mNumElements;
+    }
+    
+    /// Return the position in the data buffer at which to start the transfer.
+    U32 getOffsetInBuffer()
+    {
+        return mOffsetInBuffer;
+    }
+    
+    /// Return the position in the stream at which to start the transfer.
+    /// @note Only meaningful for streams that support offset I/O.
+    OffsetType getOffsetInStream()
+    {
+        return mOffsetInStream;
+    }
 };
 
 //--------------------------------------------------------------------------
@@ -172,107 +172,107 @@ class AsyncIOItem : public ThreadPool::WorkItem
 template< typename T, class Stream = IOffsetInputStream< T > >
 class AsyncReadItem : public AsyncIOItem< T, Stream >
 {
-   public:
+public:
 
-      typedef AsyncIOItem< T, Stream > Parent;
-      typedef typename Parent::StreamType StreamType;
-      typedef typename Parent::OffsetType OffsetType;
-      typedef typename Parent::BufferType BufferType;
-      typedef typename Parent::ValueType ValueType;
+    typedef AsyncIOItem< T, Stream > Parent;
+    typedef typename Parent::StreamType StreamType;
+    typedef typename Parent::OffsetType OffsetType;
+    typedef typename Parent::BufferType BufferType;
+    typedef typename Parent::ValueType ValueType;
+    
+    /// Construct a read item that reads "numElements" at "offsetInStream"
+    /// from "stream".
+    ///
+    /// Since with this constructor no data buffer is supplied, it will be
+    /// dynamically allocated by the read() method.  Note that this only makes
+    /// sense if this class is subclassed and processing is done on the buffer
+    /// after it has been read.
+    ///
+    /// @param stream The stream to read from.
+    /// @param numElement The number of elements to read from the stream.
+    /// @param offsetInStream The offset at which to read from the stream;
+    ///   ignored if the stream uses implicit positioning
+    /// @param context The tread pool context to place the item into.
+    AsyncReadItem( StreamType* stream, U32 numElements, OffsetType offsetInStream,
+                   ThreadContext* context = 0 )
+        : Parent( stream, numElements, offsetInStream, context )
+    {
+        _prep();
+    }
+    
+    AsyncReadItem( StreamType* stream, U32 numElements, OffsetType offsetInStream,
+                   BufferType& buffer, bool takeOwnershipOfBuffer = false,
+                   U32 offsetInBuffer = 0, ThreadContext* context = 0 )
+        : Parent( stream, buffer, offsetInBuffer, numElements, offsetInStream, takeOwnershipOfBuffer, context )
+    {
+        _prep();
+    }
+    
+    /// @return The number of elements actually read from the stream.
+    U32 getNumElementsRead()
+    {
+        return mNumElementsRead;
+    }
+    
+protected:
 
-      /// Construct a read item that reads "numElements" at "offsetInStream"
-      /// from "stream".
-      ///
-      /// Since with this constructor no data buffer is supplied, it will be
-      /// dynamically allocated by the read() method.  Note that this only makes
-      /// sense if this class is subclassed and processing is done on the buffer
-      /// after it has been read.
-      ///
-      /// @param stream The stream to read from.
-      /// @param numElement The number of elements to read from the stream.
-      /// @param offsetInStream The offset at which to read from the stream;
-      ///   ignored if the stream uses implicit positioning
-      /// @param context The tread pool context to place the item into.
-      AsyncReadItem( StreamType* stream, U32 numElements, OffsetType offsetInStream,
-                     ThreadContext* context = 0 )
-         : Parent( stream, numElements, offsetInStream, context )
-      {
-         _prep();
-      }
-
-      AsyncReadItem( StreamType* stream, U32 numElements, OffsetType offsetInStream,
-                     BufferType& buffer, bool takeOwnershipOfBuffer = false,
-                     U32 offsetInBuffer = 0, ThreadContext* context = 0 )
-         : Parent( stream, buffer, offsetInBuffer, numElements, offsetInStream, takeOwnershipOfBuffer, context )
-      {
-         _prep();
-      }
-
-      /// @return The number of elements actually read from the stream.
-      U32 getNumElementsRead()
-      {
-         return mNumElementsRead;
-      }
-
-   protected:
-
-      /// Handle of asynchronous stream read, if we are using an async interface.
-      void* mAsyncHandle;
-
-      /// After the read operation has completed, this holds the number of
-      /// elements actually read from the stream.
-      U32 mNumElementsRead;
-
-      virtual void execute();
-      
-      void _allocBuffer()
-      {
-         if( !this->getBuffer().data )
+    /// Handle of asynchronous stream read, if we are using an async interface.
+    void* mAsyncHandle;
+    
+    /// After the read operation has completed, this holds the number of
+    /// elements actually read from the stream.
+    U32 mNumElementsRead;
+    
+    virtual void execute();
+    
+    void _allocBuffer()
+    {
+        if( !this->getBuffer().data )
             this->getBuffer().alloc( this->getNumElements() );
-      }
-
-      void _prep()
-      {
-         IAsyncInputStream< T >* s = dynamic_cast< IAsyncInputStream< T >* >( this->getStream() );
-         if( s )
-         {
+    }
+    
+    void _prep()
+    {
+        IAsyncInputStream< T >* s = dynamic_cast< IAsyncInputStream< T >* >( this->getStream() );
+        if( s )
+        {
             _allocBuffer();
             mAsyncHandle = s->issueReadAt( this->getOffsetInStream(), this->getBufferPtr(), this->getNumElements() );
-         }
-      }
-
-      // Helper functions to differentiate between stream types.
-
-      void _read( IInputStream< T >* stream )
-      {
-         mNumElementsRead = stream->read( this->getBufferPtr(), this->getNumElements() );
-      }
-      void _read( IOffsetInputStream< T >* stream )
-      {
-         mNumElementsRead = stream->readAt( this->getOffsetInStream(), this->getBufferPtr(), this->getNumElements() );
-      }
-      void _read( IAsyncInputStream< T >* stream )
-      {
-         stream->tryCompleteReadAt( mAsyncHandle, mNumElementsRead, true );
-      }
+        }
+    }
+    
+    // Helper functions to differentiate between stream types.
+    
+    void _read( IInputStream< T >* stream )
+    {
+        mNumElementsRead = stream->read( this->getBufferPtr(), this->getNumElements() );
+    }
+    void _read( IOffsetInputStream< T >* stream )
+    {
+        mNumElementsRead = stream->readAt( this->getOffsetInStream(), this->getBufferPtr(), this->getNumElements() );
+    }
+    void _read( IAsyncInputStream< T >* stream )
+    {
+        stream->tryCompleteReadAt( mAsyncHandle, mNumElementsRead, true );
+    }
 };
 
 template< typename T, class Stream >
 void AsyncReadItem< T, Stream >::execute()
 {
-   _allocBuffer();
-   
-   // Read the data.  Do a dynamic cast for any of the
-   // interfaces we prefer.
-
-   if( this->cancellationPoint() ) return;
-   StreamType* stream = this->getStream();
-   if( dynamic_cast< IAsyncInputStream< T >* >( stream ) )
-      _read( ( IAsyncInputStream< T >* ) stream );
-   else if( dynamic_cast< IOffsetInputStream< T >* >( stream ) )
-      _read( ( IOffsetInputStream< T >* ) stream );
-   else
-      _read( stream );
+    _allocBuffer();
+    
+    // Read the data.  Do a dynamic cast for any of the
+    // interfaces we prefer.
+    
+    if( this->cancellationPoint() ) return;
+    StreamType* stream = this->getStream();
+    if( dynamic_cast< IAsyncInputStream< T >* >( stream ) )
+        _read( ( IAsyncInputStream< T >* ) stream );
+    else if( dynamic_cast< IOffsetInputStream< T >* >( stream ) )
+        _read( ( IOffsetInputStream< T >* ) stream );
+    else
+        _read( stream );
 }
 
 //--------------------------------------------------------------------------
@@ -296,62 +296,62 @@ void AsyncReadItem< T, Stream >::execute()
 template< typename T, class Stream = IOffsetOutputStream< T > >
 class AsyncWriteItem : public AsyncIOItem< T, Stream >
 {
-   public:
+public:
 
-      typedef AsyncIOItem< T, Stream > Parent;
-      typedef typename Parent::StreamType StreamType;
-      typedef typename Parent::OffsetType OffsetType;
-      typedef typename Parent::BufferType BufferType;
-      typedef typename Parent::ValueType ValueType;
+    typedef AsyncIOItem< T, Stream > Parent;
+    typedef typename Parent::StreamType StreamType;
+    typedef typename Parent::OffsetType OffsetType;
+    typedef typename Parent::BufferType BufferType;
+    typedef typename Parent::ValueType ValueType;
+    
+    AsyncWriteItem( StreamType* stream, U32 numElements, OffsetType offsetInStream,
+                    BufferType& buffer, bool takeOwnershipOfBuffer = true,
+                    U32 offsetInBuffer = 0, ThreadContext* context = 0 )
+        : Parent( stream, buffer, offsetInBuffer, numElements, offsetInStream, takeOwnershipOfBuffer, context )
+    {
+        _prep( stream );
+    }
+    
+protected:
 
-      AsyncWriteItem( StreamType* stream, U32 numElements, OffsetType offsetInStream,
-                      BufferType& buffer, bool takeOwnershipOfBuffer = true,
-                      U32 offsetInBuffer = 0, ThreadContext* context = 0 )
-         : Parent( stream, buffer, offsetInBuffer, numElements, offsetInStream, takeOwnershipOfBuffer, context )
-      {
-         _prep( stream );
-      }
-
-   protected:
-
-      /// Handle of asynchronous write operation, if the stream implements IAsyncOutputStream.
-      void* mAsyncHandle;
-      
-      virtual void execute();
-
-      void _prep( StreamType* stream )
-      {
-         IAsyncOutputStream< T >* s = dynamic_cast< IAsyncOutputStream< T >* >( stream );
-         if( s )
+    /// Handle of asynchronous write operation, if the stream implements IAsyncOutputStream.
+    void* mAsyncHandle;
+    
+    virtual void execute();
+    
+    void _prep( StreamType* stream )
+    {
+        IAsyncOutputStream< T >* s = dynamic_cast< IAsyncOutputStream< T >* >( stream );
+        if( s )
             mAsyncHandle = s->issueWriteAt( this->getOffset(), this->getBufferPtr(), this->getNumElements() );
-      }
-
-      void _write( IOutputStream< T >* stream )
-      {
-         stream->write( this->getBufferPtr(), this->getNumElements() );
-      }
-      void _write( IOffsetOutputStream< T >* stream )
-      {
-         stream->writeAt( this->getOffsetInStream(), this->getBufferPtr(), this->getNumElements() );
-      }
-      void _write( IAsyncOutputStream< T >* stream )
-      {
-         stream->tryCompleteWriteAt( mAsyncHandle, true );
-      }
+    }
+    
+    void _write( IOutputStream< T >* stream )
+    {
+        stream->write( this->getBufferPtr(), this->getNumElements() );
+    }
+    void _write( IOffsetOutputStream< T >* stream )
+    {
+        stream->writeAt( this->getOffsetInStream(), this->getBufferPtr(), this->getNumElements() );
+    }
+    void _write( IAsyncOutputStream< T >* stream )
+    {
+        stream->tryCompleteWriteAt( mAsyncHandle, true );
+    }
 };
 
 template< typename T, class Stream >
 void AsyncWriteItem< T, Stream >::execute()
 {
-   if( this->cancellationPoint() ) return;
-
-   StreamType* stream = this->getStream();
-   if( dynamic_cast< IAsyncOutputStream< T >* >( stream ) )
-      _write( ( IAsyncOutputStream< T >* ) stream );
-   if( dynamic_cast< IOffsetOutputStream< T >* >( stream ) )
-      _write( ( IOffsetOutputStream< T >* ) stream );
-   else
-      _write( stream );
+    if( this->cancellationPoint() ) return;
+    
+    StreamType* stream = this->getStream();
+    if( dynamic_cast< IAsyncOutputStream< T >* >( stream ) )
+        _write( ( IAsyncOutputStream< T >* ) stream );
+    if( dynamic_cast< IOffsetOutputStream< T >* >( stream ) )
+        _write( ( IOffsetOutputStream< T >* ) stream );
+    else
+        _write( stream );
 }
 
 #endif // _THREADPOOLASYNCIO_H_

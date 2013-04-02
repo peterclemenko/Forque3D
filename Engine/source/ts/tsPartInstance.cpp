@@ -29,170 +29,170 @@
 
 MRandomR250 TSPartInstance::smRandom;
 
-TSPartInstance::TSPartInstance(TSShapeInstance * sourceShape)
+TSPartInstance::TSPartInstance( TSShapeInstance* sourceShape )
 {
-   VECTOR_SET_ASSOCIATION(mMeshObjects);
-
-   init(sourceShape);
+    VECTOR_SET_ASSOCIATION( mMeshObjects );
+    
+    init( sourceShape );
 }
 
-TSPartInstance::TSPartInstance(TSShapeInstance * sourceShape, S32 objectIndex)
+TSPartInstance::TSPartInstance( TSShapeInstance* sourceShape, S32 objectIndex )
 {
-   init(sourceShape);
-   addObject(objectIndex);
+    init( sourceShape );
+    addObject( objectIndex );
 }
 
-void TSPartInstance::init(TSShapeInstance * sourceShape)
+void TSPartInstance::init( TSShapeInstance* sourceShape )
 {
-   mSourceShape = sourceShape;
-   mSizeCutoffs = NULL;
-   mPolyCount = NULL;
-   mNumDetails = 0;
-   mCurrentObjectDetail = 0;
-   mCurrentIntraDL = 1.0f;
-   mData = 0;
+    mSourceShape = sourceShape;
+    mSizeCutoffs = NULL;
+    mPolyCount = NULL;
+    mNumDetails = 0;
+    mCurrentObjectDetail = 0;
+    mCurrentIntraDL = 1.0f;
+    mData = 0;
 }
 
 TSPartInstance::~TSPartInstance()
 {
-   delete [] mPolyCount;
+    delete [] mPolyCount;
 }
 
 //-------------------------------------------------------------------------------------
 // Methods for updating PartInstances
 //-------------------------------------------------------------------------------------
 
-void TSPartInstance::addObject(S32 objectIndex)
+void TSPartInstance::addObject( S32 objectIndex )
 {
-   if (mSourceShape->mMeshObjects[objectIndex].forceHidden ||
-      mSourceShape->mMeshObjects[objectIndex].visible < 0.01f)
-      // not visible, don't bother
-      return;
-
-   mMeshObjects.push_back(&mSourceShape->mMeshObjects[objectIndex]);
+    if( mSourceShape->mMeshObjects[objectIndex].forceHidden ||
+            mSourceShape->mMeshObjects[objectIndex].visible < 0.01f )
+        // not visible, don't bother
+        return;
+        
+    mMeshObjects.push_back( &mSourceShape->mMeshObjects[objectIndex] );
 }
 
 void TSPartInstance::updateBounds()
 {
-   // run through meshes and brute force it?
-   Box3F bounds;
-   mBounds.minExtents.set( 10E30f, 10E30f, 10E30f);
-   mBounds.maxExtents.set(-10E30f,-10E30f,-10E30f);
-   for (S32 i=0; i<mMeshObjects.size(); i++)
-   {
-      if (mMeshObjects[i]->getMesh(0))
-         mMeshObjects[i]->getMesh(0)->computeBounds(mMeshObjects[i]->getTransform(),bounds,mMeshObjects[i]->frame);
-      mBounds.minExtents.setMin(bounds.minExtents);
-      mBounds.maxExtents.setMax(bounds.maxExtents);
-   }
-   mCenter = mBounds.minExtents + mBounds.maxExtents;
-   mCenter *= 0.5f;
-   Point3F r = mBounds.maxExtents-mCenter;
-   mRadius = mSqrt(mDot(r,r));
+    // run through meshes and brute force it?
+    Box3F bounds;
+    mBounds.minExtents.set( 10E30f, 10E30f, 10E30f );
+    mBounds.maxExtents.set( -10E30f, -10E30f, -10E30f );
+    for( S32 i = 0; i < mMeshObjects.size(); i++ )
+    {
+        if( mMeshObjects[i]->getMesh( 0 ) )
+            mMeshObjects[i]->getMesh( 0 )->computeBounds( mMeshObjects[i]->getTransform(), bounds, mMeshObjects[i]->frame );
+        mBounds.minExtents.setMin( bounds.minExtents );
+        mBounds.maxExtents.setMax( bounds.maxExtents );
+    }
+    mCenter = mBounds.minExtents + mBounds.maxExtents;
+    mCenter *= 0.5f;
+    Point3F r = mBounds.maxExtents - mCenter;
+    mRadius = mSqrt( mDot( r, r ) );
 }
 
 //-------------------------------------------------------------------------------------
 // Methods for breaking shapes into pieces
 //-------------------------------------------------------------------------------------
 
-void TSPartInstance::breakShape(TSShapeInstance * shape, S32 subShape, Vector<TSPartInstance*> & partList, F32 * probShatter, F32 * probBreak, S32 probDepth)
+void TSPartInstance::breakShape( TSShapeInstance* shape, S32 subShape, Vector<TSPartInstance*>& partList, F32* probShatter, F32* probBreak, S32 probDepth )
 {
-   AssertFatal(subShape>=0 && subShape<shape->mShape->subShapeFirstNode.size(),"TSPartInstance::breakShape: subShape out of range.");
-
-   S32 start = shape->mShape->subShapeFirstNode[subShape];
-
-   TSPartInstance::breakShape(shape, NULL, start, partList, probShatter, probBreak, probDepth);
-
-   // update bounds (and get rid of empty parts)
-   for (S32 i=0; i<partList.size(); i++)
-   {
-      if (partList[i]->mMeshObjects.size())
-         partList[i]->updateBounds();
-      else
-      {
-         partList.erase(i);
-         i--;
-      }
-   }
+    AssertFatal( subShape >= 0 && subShape < shape->mShape->subShapeFirstNode.size(), "TSPartInstance::breakShape: subShape out of range." );
+    
+    S32 start = shape->mShape->subShapeFirstNode[subShape];
+    
+    TSPartInstance::breakShape( shape, NULL, start, partList, probShatter, probBreak, probDepth );
+    
+    // update bounds (and get rid of empty parts)
+    for( S32 i = 0; i < partList.size(); i++ )
+    {
+        if( partList[i]->mMeshObjects.size() )
+            partList[i]->updateBounds();
+        else
+        {
+            partList.erase( i );
+            i--;
+        }
+    }
 }
 
-void TSPartInstance::breakShape(TSShapeInstance * shape, TSPartInstance * currentPart, S32 currentNode, Vector<TSPartInstance*> & partList, F32 * probShatter, F32 * probBreak, S32 probDepth)
+void TSPartInstance::breakShape( TSShapeInstance* shape, TSPartInstance* currentPart, S32 currentNode, Vector<TSPartInstance*>& partList, F32* probShatter, F32* probBreak, S32 probDepth )
 {
-   AssertFatal( !probDepth || (probShatter && probBreak),"TSPartInstance::breakShape: probabilities improperly specified.");
-
-   const TSShape::Node * node = &shape->mShape->nodes[currentNode];
-   S32 object = node->firstObject;
-   S32 child  = node->firstChild;
-
-   // copy off probabilities and update probability lists for next level
-   F32 ps = probShatter ? *probShatter : 1.0f;
-   F32 pb = probBreak   ? *probBreak   : 1.0f;
-   if (probDepth>1 && probShatter && probBreak)
-   {
-      probShatter++;
-      probBreak++;
-      probDepth--;
-   }
-
-   // what to do...depending on how the die roll, we can:
-   // a) shatter the shape at this level -- meaning we make a part out of each object on this node and
-   //    we make parts out of all the children (perhaps breaking them up further still)
-   // b) break the shape off at this level -- meaning we make a part out of the intact piece from here
-   //    on down (again, we might break the result further as we iterate through the nodes...what breaking
-   //    the shape really does is separate this piece from the parent piece).
-   // c) add this piece to the parent -- meaning all objects on this node are added to the parent, and children
-   //    are also added (but children will be recursively sent through this routine, so if a parent gets option
-   //    (c) and the child option (a) or (b), then the child will be ripped from the parents grasp.  Cruel
-   //    people us coders are.
-   // Note: (a) is the only way that two objects on the same node can be separated...that is why both
-   //       option a and option b are needed.
-   if (!probShatter || smRandom.randF() < ps)
-   {
-      // option a -- shatter the shape at this level
-
-      // iterate through the objects, make part out of each one
-      while (object>=0)
-      {
-         partList.increment();
-         partList.last() = new TSPartInstance(shape,object);
-         object = shape->mShape->objects[object].nextSibling;
-      }
-
-      // iterate through the child nodes, call ourselves on each one with currentPart = NULL
-      while (child>=0)
-      {
-         TSPartInstance::breakShape(shape,NULL,child,partList,probShatter,probBreak,probDepth);
-         child = shape->mShape->nodes[child].nextSibling;
-      }
-
-      return;
-   }
-
-   if (!probBreak || smRandom.randF() < pb)
-      // option b -- break the shape off at this level
-      currentPart = NULL; // fall through to option C
-
-   // option c -- add this piece to the parent
-
-   if (!currentPart)
-   {
-      currentPart = new TSPartInstance(shape);
-      partList.push_back(currentPart);
-   }
-
-   // iterate through objects, add to currentPart
-   while (object>=0)
-   {
-      currentPart->addObject(object);
-      object = shape->mShape->objects[object].nextSibling;
-   }
-
-   // iterate through child nodes, call ourselves on each one with currentPart as is
-   while (child>=0)
-   {
-      TSPartInstance::breakShape(shape,currentPart,child,partList,probShatter,probBreak,probDepth);
-      child = shape->mShape->nodes[child].nextSibling;
-   }
+    AssertFatal( !probDepth || ( probShatter && probBreak ), "TSPartInstance::breakShape: probabilities improperly specified." );
+    
+    const TSShape::Node* node = &shape->mShape->nodes[currentNode];
+    S32 object = node->firstObject;
+    S32 child  = node->firstChild;
+    
+    // copy off probabilities and update probability lists for next level
+    F32 ps = probShatter ? *probShatter : 1.0f;
+    F32 pb = probBreak   ? *probBreak   : 1.0f;
+    if( probDepth > 1 && probShatter && probBreak )
+    {
+        probShatter++;
+        probBreak++;
+        probDepth--;
+    }
+    
+    // what to do...depending on how the die roll, we can:
+    // a) shatter the shape at this level -- meaning we make a part out of each object on this node and
+    //    we make parts out of all the children (perhaps breaking them up further still)
+    // b) break the shape off at this level -- meaning we make a part out of the intact piece from here
+    //    on down (again, we might break the result further as we iterate through the nodes...what breaking
+    //    the shape really does is separate this piece from the parent piece).
+    // c) add this piece to the parent -- meaning all objects on this node are added to the parent, and children
+    //    are also added (but children will be recursively sent through this routine, so if a parent gets option
+    //    (c) and the child option (a) or (b), then the child will be ripped from the parents grasp.  Cruel
+    //    people us coders are.
+    // Note: (a) is the only way that two objects on the same node can be separated...that is why both
+    //       option a and option b are needed.
+    if( !probShatter || smRandom.randF() < ps )
+    {
+        // option a -- shatter the shape at this level
+        
+        // iterate through the objects, make part out of each one
+        while( object >= 0 )
+        {
+            partList.increment();
+            partList.last() = new TSPartInstance( shape, object );
+            object = shape->mShape->objects[object].nextSibling;
+        }
+        
+        // iterate through the child nodes, call ourselves on each one with currentPart = NULL
+        while( child >= 0 )
+        {
+            TSPartInstance::breakShape( shape, NULL, child, partList, probShatter, probBreak, probDepth );
+            child = shape->mShape->nodes[child].nextSibling;
+        }
+        
+        return;
+    }
+    
+    if( !probBreak || smRandom.randF() < pb )
+        // option b -- break the shape off at this level
+        currentPart = NULL; // fall through to option C
+        
+    // option c -- add this piece to the parent
+    
+    if( !currentPart )
+    {
+        currentPart = new TSPartInstance( shape );
+        partList.push_back( currentPart );
+    }
+    
+    // iterate through objects, add to currentPart
+    while( object >= 0 )
+    {
+        currentPart->addObject( object );
+        object = shape->mShape->objects[object].nextSibling;
+    }
+    
+    // iterate through child nodes, call ourselves on each one with currentPart as is
+    while( child >= 0 )
+    {
+        TSPartInstance::breakShape( shape, currentPart, child, partList, probShatter, probBreak, probDepth );
+        child = shape->mShape->nodes[child].nextSibling;
+    }
 }
 
 //-------------------------------------------------------------------------------------
@@ -200,13 +200,13 @@ void TSPartInstance::breakShape(TSShapeInstance * shape, TSPartInstance * curren
 // issues: setupTexturing expects a detail level, we give it an object detail level
 //-------------------------------------------------------------------------------------
 
-void TSPartInstance::render(S32 od, const TSRenderState &rdata)
+void TSPartInstance::render( S32 od, const TSRenderState& rdata )
 {
-   S32 i;
-
-   // render mesh objects
-   for (i=0; i<mMeshObjects.size(); i++)
-      mMeshObjects[i]->render(od,mSourceShape->getMaterialList(),rdata,1.0);
+    S32 i;
+    
+    // render mesh objects
+    for( i = 0; i < mMeshObjects.size(); i++ )
+        mMeshObjects[i]->render( od, mSourceShape->getMaterialList(), rdata, 1.0 );
 }
 
 //-------------------------------------------------------------------------------------
@@ -218,15 +218,15 @@ void TSPartInstance::render(S32 od, const TSRenderState &rdata)
 // If you want to use method 2, you have to call setDetailData sometime before selecting detail
 //-------------------------------------------------------------------------------------
 
-void TSPartInstance::setDetailData(F32 * sizeCutoffs, S32 numDetails)
+void TSPartInstance::setDetailData( F32* sizeCutoffs, S32 numDetails )
 {
-   if (mSizeCutoffs == sizeCutoffs && mNumDetails==numDetails)
-      return;
-
-   mSizeCutoffs = sizeCutoffs;
-   mNumDetails = numDetails;
-   delete [] mPolyCount;
-   mPolyCount = NULL;
+    if( mSizeCutoffs == sizeCutoffs && mNumDetails == numDetails )
+        return;
+        
+    mSizeCutoffs = sizeCutoffs;
+    mNumDetails = numDetails;
+    delete [] mPolyCount;
+    mPolyCount = NULL;
 }
 
 /*
@@ -327,45 +327,45 @@ void TSPartInstance::selectCurrentDetail(F32 pixelSize, F32 * sizeCutoffs, S32 n
 // can be determined...1) using source shape, or 2) using mSizeCutoffs
 //-------------------------------------------------------------------------------------
 
-F32 TSPartInstance::getDetailSize(S32 dl) const
+F32 TSPartInstance::getDetailSize( S32 dl ) const
 {
-   if (dl<0)
-      return 0;
-   else if (mSizeCutoffs && dl<mNumDetails)
-      return mSizeCutoffs[dl];
-   else if (!mSizeCutoffs && dl<=mSourceShape->getShape()->mSmallestVisibleDL)
-      return mSourceShape->getShape()->details[dl].size;
-   else return 0;
+    if( dl < 0 )
+        return 0;
+    else if( mSizeCutoffs && dl < mNumDetails )
+        return mSizeCutoffs[dl];
+    else if( !mSizeCutoffs && dl <= mSourceShape->getShape()->mSmallestVisibleDL )
+        return mSourceShape->getShape()->details[dl].size;
+    else return 0;
 }
 
-S32 TSPartInstance::getPolyCount(S32 dl)
+S32 TSPartInstance::getPolyCount( S32 dl )
 {
-   if (!mPolyCount)
-      computePolyCount();
-
-   if (dl<0 || dl>=mNumDetails)
-      return 0;
-   else
-      return mPolyCount[dl];
+    if( !mPolyCount )
+        computePolyCount();
+        
+    if( dl < 0 || dl >= mNumDetails )
+        return 0;
+    else
+        return mPolyCount[dl];
 }
 
 void TSPartInstance::computePolyCount()
 {
-   if (!mSizeCutoffs)
-      mNumDetails = mSourceShape->getShape()->mSmallestVisibleDL+1;
-
-   delete [] mPolyCount;
-   mPolyCount = new S32[mNumDetails];
-
-   for (S32 i=0; i<mNumDetails; i++)
-   {
-      mPolyCount[i] = 0;
-      for (S32 j=0; j<mMeshObjects.size(); j++)
-      {
-         if (mMeshObjects[j]->getMesh(i))
-            mPolyCount[i] += mMeshObjects[j]->getMesh(i)->getNumPolys();
-      }
-   }
+    if( !mSizeCutoffs )
+        mNumDetails = mSourceShape->getShape()->mSmallestVisibleDL + 1;
+        
+    delete [] mPolyCount;
+    mPolyCount = new S32[mNumDetails];
+    
+    for( S32 i = 0; i < mNumDetails; i++ )
+    {
+        mPolyCount[i] = 0;
+        for( S32 j = 0; j < mMeshObjects.size(); j++ )
+        {
+            if( mMeshObjects[j]->getMesh( i ) )
+                mPolyCount[i] += mMeshObjects[j]->getMesh( i )->getNumPolys();
+        }
+    }
 }
 
 

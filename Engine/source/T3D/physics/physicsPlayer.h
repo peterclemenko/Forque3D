@@ -43,31 +43,31 @@ class PhysicsPlayer : public PhysicsObject
 {
 public:
 
-   PhysicsPlayer() {}
-
-   virtual ~PhysicsPlayer() {};
-
-   ///
-   virtual void init(   const char *type, 
-                        const Point3F &size,
-                        F32 runSurfaceCos,
-                        F32 stepHeight,
-                        SceneObject *obj, 
-                        PhysicsWorld *world ) = 0;
-
-   virtual void findContact(  SceneObject **contactObject, 
-                              VectorF *contactNormal,
-                              Vector<SceneObject*> *outOverlapObjects ) const = 0;
-
-   virtual Point3F move( const VectorF &displacement, CollisionList &outCol ) = 0;
-
-   virtual bool testSpacials( const Point3F &nPos, const Point3F &nSize ) const = 0;
-
-   virtual void setSpacials( const Point3F &nPos, const Point3F &nSize ) = 0;
-
-   virtual void enableCollision() = 0;
-
-   virtual void disableCollision() = 0;
+    PhysicsPlayer() {}
+    
+    virtual ~PhysicsPlayer() {};
+    
+    ///
+    virtual void init( const char* type,
+                       const Point3F& size,
+                       F32 runSurfaceCos,
+                       F32 stepHeight,
+                       SceneObject* obj,
+                       PhysicsWorld* world ) = 0;
+                       
+    virtual void findContact( SceneObject** contactObject,
+                              VectorF* contactNormal,
+                              Vector<SceneObject*>* outOverlapObjects ) const = 0;
+                              
+    virtual Point3F move( const VectorF& displacement, CollisionList& outCol ) = 0;
+    
+    virtual bool testSpacials( const Point3F& nPos, const Point3F& nSize ) const = 0;
+    
+    virtual void setSpacials( const Point3F& nPos, const Point3F& nSize ) = 0;
+    
+    virtual void enableCollision() = 0;
+    
+    virtual void disableCollision() = 0;
 };
 
 

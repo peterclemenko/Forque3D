@@ -38,17 +38,20 @@
 class GFXGLCardProfiler : public GFXCardProfiler
 {
 public:
-   void init();
-
+    void init();
+    
 protected:
-   virtual const String& getRendererString() const { return mRendererString; }
-   virtual void setupCardCapabilities();
-   virtual bool _queryCardCap(const String& query, U32& foundResult);
-   virtual bool _queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips);
-
+    virtual const String& getRendererString() const
+    {
+        return mRendererString;
+    }
+    virtual void setupCardCapabilities();
+    virtual bool _queryCardCap( const String& query, U32& foundResult );
+    virtual bool _queryFormat( const GFXFormat fmt, const GFXTextureProfile* profile, bool& inOutAutogenMips );
+    
 private:
-   String mRendererString;
-   typedef GFXCardProfiler Parent;
+    String mRendererString;
+    typedef GFXCardProfiler Parent;
 };
 
 #endif

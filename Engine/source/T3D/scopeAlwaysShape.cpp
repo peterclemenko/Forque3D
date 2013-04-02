@@ -24,31 +24,31 @@
 
 class ScopeAlwaysShape : public StaticShape
 {
-      typedef StaticShape Parent;
-
-   public:
-      ScopeAlwaysShape();
-      static void initPersistFields();
-      DECLARE_CONOBJECT(ScopeAlwaysShape);
+    typedef StaticShape Parent;
+    
+public:
+    ScopeAlwaysShape();
+    static void initPersistFields();
+    DECLARE_CONOBJECT( ScopeAlwaysShape );
 };
 
 ScopeAlwaysShape::ScopeAlwaysShape()
 {
-   mNetFlags.set(Ghostable|ScopeAlways);
-   mTypeMask |= StaticShapeObjectType;
+    mNetFlags.set( Ghostable | ScopeAlways );
+    mTypeMask |= StaticShapeObjectType;
 }
 
 void ScopeAlwaysShape::initPersistFields()
 {
-   Parent::initPersistFields();
+    Parent::initPersistFields();
 }
 
-IMPLEMENT_CO_NETOBJECT_V1(ScopeAlwaysShape);
+IMPLEMENT_CO_NETOBJECT_V1( ScopeAlwaysShape );
 
 ConsoleDocClass( ScopeAlwaysShape,
-   "@brief StaticShape object which is always scoped.\n\n"
+                 "@brief StaticShape object which is always scoped.\n\n"
 
-   "@note Exists for backwards compatibility, no real use anymore. Go with TSStatic or a standard StaticShape instead.\n\n"
+                 "@note Exists for backwards compatibility, no real use anymore. Go with TSStatic or a standard StaticShape instead.\n\n"
 
-   "@internal\n"
-);
+                 "@internal\n"
+               );

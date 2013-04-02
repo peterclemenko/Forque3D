@@ -32,71 +32,74 @@
 #include <al/alut.h>
 
 // extra enums for win32/miles implementation
-enum {
-   // error values
-   AL_CONTEXT_ALREADY_INSTANTIATED = 0xbaadf00d,
-   AL_ENVIRONMENT_ALREADY_INSTANTIATED,
-   AL_UNSUPPORTED,
-   AL_INVALID_BUFFER,
-   AL_ERROR,
-
-   // context extention
-   ALC_PROVIDER,
-   ALC_PROVIDER_COUNT,
-   ALC_PROVIDER_NAME,
-   ALC_SPEAKER,
-   ALC_SPEAKER_COUNT,
-   ALC_SPEAKER_NAME,
-   ALC_BUFFER_DYNAMIC_MEMORY_SIZE,
-   ALC_BUFFER_DYNAMIC_MEMORY_USAGE,
-   ALC_BUFFER_DYNAMIC_COUNT,
-   ALC_BUFFER_MEMORY_USAGE,
-   ALC_BUFFER_COUNT,
-   ALC_BUFFER_LATENCY,
-
-   // misc 3d params
-   AL_MIN_DISTANCE,
-   AL_MAX_DISTANCE,
-   AL_CONE_OUTER_GAIN,
-   
-   // relative with pos(0,0,0) won't work for ambient sounds with miles
-   AL_SOURCE_AMBIENT,
-   AL_PAN,
-   
-   // other extensions
-   AL_BUFFER_KEEP_RESIDENT,
-   AL_FORMAT_WAVE_EXT,
-
-   // Environment extensions:
-   AL_ENV_EFFECT_VOLUME_EXT,
-   AL_ENV_FLAGS_EXT,
-   AL_ENV_DAMPING_EXT,
-   AL_ENV_ENVIRONMENT_SIZE_EXT,
-   AL_ENV_ROOM_VOLUME_EXT,
+enum
+{
+    // error values
+    AL_CONTEXT_ALREADY_INSTANTIATED = 0xbaadf00d,
+    AL_ENVIRONMENT_ALREADY_INSTANTIATED,
+    AL_UNSUPPORTED,
+    AL_INVALID_BUFFER,
+    AL_ERROR,
+    
+    // context extention
+    ALC_PROVIDER,
+    ALC_PROVIDER_COUNT,
+    ALC_PROVIDER_NAME,
+    ALC_SPEAKER,
+    ALC_SPEAKER_COUNT,
+    ALC_SPEAKER_NAME,
+    ALC_BUFFER_DYNAMIC_MEMORY_SIZE,
+    ALC_BUFFER_DYNAMIC_MEMORY_USAGE,
+    ALC_BUFFER_DYNAMIC_COUNT,
+    ALC_BUFFER_MEMORY_USAGE,
+    ALC_BUFFER_COUNT,
+    ALC_BUFFER_LATENCY,
+    
+    // misc 3d params
+    AL_MIN_DISTANCE,
+    AL_MAX_DISTANCE,
+    AL_CONE_OUTER_GAIN,
+    
+    // relative with pos(0,0,0) won't work for ambient sounds with miles
+    AL_SOURCE_AMBIENT,
+    AL_PAN,
+    
+    // other extensions
+    AL_BUFFER_KEEP_RESIDENT,
+    AL_FORMAT_WAVE_EXT,
+    
+    // Environment extensions:
+    AL_ENV_EFFECT_VOLUME_EXT,
+    AL_ENV_FLAGS_EXT,
+    AL_ENV_DAMPING_EXT,
+    AL_ENV_ENVIRONMENT_SIZE_EXT,
+    AL_ENV_ROOM_VOLUME_EXT,
 };
 
-enum {
-   // sample level environment:
-   AL_ENV_SAMPLE_REVERB_MIX_EXT = 0,
-   AL_ENV_SAMPLE_DIRECT_EXT,
-   AL_ENV_SAMPLE_DIRECT_HF_EXT,
-   AL_ENV_SAMPLE_ROOM_EXT,
-   AL_ENV_SAMPLE_ROOM_HF_EXT,
-   AL_ENV_SAMPLE_OBSTRUCTION_EXT,
-   AL_ENV_SAMPLE_OBSTRUCTION_LF_RATIO_EXT,
-   AL_ENV_SAMPLE_OCCLUSION_EXT,
-   AL_ENV_SAMPLE_OCCLUSION_LF_RATIO_EXT,
-   AL_ENV_SAMPLE_OCCLUSION_ROOM_RATIO_EXT,
-   AL_ENV_SAMPLE_ROOM_ROLLOFF_EXT,
-   AL_ENV_SAMPLE_AIR_ABSORPTION_EXT,
-   AL_ENV_SAMPLE_OUTSIDE_VOLUME_HF_EXT,
-   AL_ENV_SAMPLE_FLAGS_EXT,
-
-   AL_ENV_SAMPLE_COUNT,
+enum
+{
+    // sample level environment:
+    AL_ENV_SAMPLE_REVERB_MIX_EXT = 0,
+    AL_ENV_SAMPLE_DIRECT_EXT,
+    AL_ENV_SAMPLE_DIRECT_HF_EXT,
+    AL_ENV_SAMPLE_ROOM_EXT,
+    AL_ENV_SAMPLE_ROOM_HF_EXT,
+    AL_ENV_SAMPLE_OBSTRUCTION_EXT,
+    AL_ENV_SAMPLE_OBSTRUCTION_LF_RATIO_EXT,
+    AL_ENV_SAMPLE_OCCLUSION_EXT,
+    AL_ENV_SAMPLE_OCCLUSION_LF_RATIO_EXT,
+    AL_ENV_SAMPLE_OCCLUSION_ROOM_RATIO_EXT,
+    AL_ENV_SAMPLE_ROOM_ROLLOFF_EXT,
+    AL_ENV_SAMPLE_AIR_ABSORPTION_EXT,
+    AL_ENV_SAMPLE_OUTSIDE_VOLUME_HF_EXT,
+    AL_ENV_SAMPLE_FLAGS_EXT,
+    
+    AL_ENV_SAMPLE_COUNT,
 };
 
 // room types: same as miles/eax
-enum {
+enum
+{
     AL_ENVIRONMENT_GENERIC = 0,
     AL_ENVIRONMENT_PADDEDCELL,
     AL_ENVIRONMENT_ROOM,
@@ -123,7 +126,7 @@ enum {
     AL_ENVIRONMENT_DRUGGED,
     AL_ENVIRONMENT_DIZZY,
     AL_ENVIRONMENT_PSYCHOTIC,
-
+    
     AL_ENVIRONMENT_COUNT
 };
 
@@ -138,23 +141,23 @@ enum {
 namespace Audio
 {
 
-bool libraryInit(const char *library);
+bool libraryInit( const char* library );
 void libraryInitExtensions();
 void libraryShutdown();
 
 inline bool doesSupportIASIG()
 {
-   return gDoesSupport_AL_EXT_IASIG;
-}   
+    return gDoesSupport_AL_EXT_IASIG;
+}
 
 inline bool doesSupportDynamix()
 {
-   return gDoesSupport_AL_EXT_DYNAMIX;
-}  
+    return gDoesSupport_AL_EXT_DYNAMIX;
+}
 
 // helpers
-F32 DBToLinear(F32 value);
-F32 linearToDB(F32 value);
+F32 DBToLinear( F32 value );
+F32 linearToDB( F32 value );
 
 }  // end namespace Audio
 

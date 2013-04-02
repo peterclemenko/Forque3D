@@ -24,26 +24,26 @@
 #define _SFXNULLBUFFER_H_
 
 #ifndef _SFXBUFFER_H_
-   #include "sfx/sfxBuffer.h"
+#include "sfx/sfxBuffer.h"
 #endif
 
 
 class SFXNullBuffer : public SFXBuffer
 {
-      friend class SFXNullDevice;
-      typedef SFXBuffer Parent;
+    friend class SFXNullDevice;
+    typedef SFXBuffer Parent;
+    
+protected:
 
-   protected:
+    SFXNullBuffer( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
+    
+    // SFXBuffer.
+    virtual void write( SFXInternal::SFXStreamPacket* const* packets, U32 num );
+    virtual void _flush() {}
+    
+public:
 
-      SFXNullBuffer( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
-
-      // SFXBuffer.
-      virtual void write( SFXInternal::SFXStreamPacket* const* packets, U32 num );
-      virtual void _flush() {}
-
-   public:
-
-      virtual ~SFXNullBuffer();
+    virtual ~SFXNullBuffer();
 };
 
 #endif // _SFXNULLBUFFER_H_

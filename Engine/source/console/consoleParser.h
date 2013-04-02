@@ -34,38 +34,38 @@ namespace Compiler
 //-----------------------------------------------------------------------------
 /// \brief Function for GetCurrentFile from the lexer
 //-----------------------------------------------------------------------------
-typedef const char *(*fnGetCurrentFile)();
+typedef const char* ( *fnGetCurrentFile )();
 //-----------------------------------------------------------------------------
 /// \brief Function for GetCurrentLine from the lexer
 //-----------------------------------------------------------------------------
-typedef S32 (*fnGetCurrentLine)();
+typedef S32( *fnGetCurrentLine )();
 //-----------------------------------------------------------------------------
 /// \brief Function for Parse from the lexer
 //-----------------------------------------------------------------------------
-typedef S32 (*fnParse)();
+typedef S32( *fnParse )();
 //-----------------------------------------------------------------------------
 /// \brief Function for Restart from the lexer
 //-----------------------------------------------------------------------------
-typedef void (*fnRestart)(FILE *input_file);
+typedef void ( *fnRestart )( FILE* input_file );
 //-----------------------------------------------------------------------------
 /// \brief Function for SetScanBuffer from the lexer
 //-----------------------------------------------------------------------------
-typedef void (*fnSetScanBuffer)(const char *sb, const char *fn);
+typedef void ( *fnSetScanBuffer )( const char* sb, const char* fn );
 
 //-----------------------------------------------------------------------------
 /// \brief List of parsers for the compiler
 //-----------------------------------------------------------------------------
 struct ConsoleParser
 {
-	struct ConsoleParser *next;       //!< Next object in list or NULL
-
-	char *ext;                        //!< Filename extension handled by this parser
-	
-	fnGetCurrentFile getCurrentFile;  //!< GetCurrentFile lexer function
-	fnGetCurrentLine getCurrentLine;  //!< GetCurrentLine lexer function
-	fnParse          parse;           //!< Parse lexer function
-	fnRestart        restart;         //!< Restart lexer function
-	fnSetScanBuffer  setScanBuffer;   //!< SetScanBuffer lexer function
+    struct ConsoleParser* next;       //!< Next object in list or NULL
+    
+    char* ext;                        //!< Filename extension handled by this parser
+    
+    fnGetCurrentFile getCurrentFile;  //!< GetCurrentFile lexer function
+    fnGetCurrentLine getCurrentLine;  //!< GetCurrentLine lexer function
+    fnParse          parse;           //!< Parse lexer function
+    fnRestart        restart;         //!< Restart lexer function
+    fnSetScanBuffer  setScanBuffer;   //!< SetScanBuffer lexer function
 };
 
 // Macros
@@ -89,14 +89,14 @@ struct ConsoleParser
 
 //-----------------------------------------------------------------------------
 /// \brief Free the console parser list
-/// 
+///
 /// \sa AddConsoleParser()
 //-----------------------------------------------------------------------------
-void freeConsoleParserList(void);
+void freeConsoleParserList( void );
 
 //-----------------------------------------------------------------------------
 /// \brief Add a console parser to the list
-/// 
+///
 /// \param ext Filename extension
 /// \param gcf GetCurrentFile function
 /// \param gcl GetCurrentLine function
@@ -107,15 +107,15 @@ void freeConsoleParserList(void);
 /// \return true for success, false for failure (out of memory)
 /// \sa FreeConsoleParserList(), ConsoleParser
 //-----------------------------------------------------------------------------
-bool addConsoleParser(char *ext, fnGetCurrentFile gcf, fnGetCurrentLine gcl, fnParse p, fnRestart r, fnSetScanBuffer ssb, bool def = false);
+bool addConsoleParser( char* ext, fnGetCurrentFile gcf, fnGetCurrentLine gcl, fnParse p, fnRestart r, fnSetScanBuffer ssb, bool def = false );
 
 //-----------------------------------------------------------------------------
 /// \brief Get the parser for a particular file based on its extension
-/// 
+///
 /// \param filename Filename of file to obtain parser for
 /// \sa ConsoleParser
 //-----------------------------------------------------------------------------
-ConsoleParser * getParserForFile(const char *filename);
+ConsoleParser* getParserForFile( const char* filename );
 
 } // end namespace Con
 

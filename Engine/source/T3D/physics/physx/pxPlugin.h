@@ -32,28 +32,28 @@ class PxPlugin : public PhysicsPlugin
 {
 public:
 
-   PxPlugin();
-   ~PxPlugin();
-
-   /// Create function for factory.
-   static PhysicsPlugin* create();
-
-   // PhysicsPlugin
-   virtual void destroyPlugin();
-   virtual void reset();
-   virtual PhysicsCollision* createCollision();
-   virtual PhysicsBody* createBody();
-   virtual PhysicsPlayer* createPlayer();
-   virtual bool isSimulationEnabled() const;
-   virtual void enableSimulation( const String &worldName, bool enable );
-   virtual void setTimeScale( const F32 timeScale );
-   virtual const F32 getTimeScale() const;
-   virtual bool createWorld( const String &worldName );
-   virtual void destroyWorld( const String &worldName );
-   virtual PhysicsWorld* getWorld( const String &worldName ) const;
-   virtual PhysicsWorld* getWorld() const;
-   virtual U32 getWorldCount() const;
-   virtual void _onDebugDrawEnabled( bool enabled );
+    PxPlugin();
+    ~PxPlugin();
+    
+    /// Create function for factory.
+    static PhysicsPlugin* create();
+    
+    // PhysicsPlugin
+    virtual void destroyPlugin();
+    virtual void reset();
+    virtual PhysicsCollision* createCollision();
+    virtual PhysicsBody* createBody();
+    virtual PhysicsPlayer* createPlayer();
+    virtual bool isSimulationEnabled() const;
+    virtual void enableSimulation( const String& worldName, bool enable );
+    virtual void setTimeScale( const F32 timeScale );
+    virtual const F32 getTimeScale() const;
+    virtual bool createWorld( const String& worldName );
+    virtual void destroyWorld( const String& worldName );
+    virtual PhysicsWorld* getWorld( const String& worldName ) const;
+    virtual PhysicsWorld* getWorld() const;
+    virtual U32 getWorldCount() const;
+    virtual void _onDebugDrawEnabled( bool enabled );
 };
 
 #endif // _T3D_PHYSICS_PXPLUGIN_H_

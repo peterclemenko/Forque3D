@@ -52,69 +52,72 @@ class GuiMenuBar;
 class GuiFormCtrl : public GuiPanel
 {
 private:
-   typedef GuiPanel Parent;
-
-   Resource<GFont>  mFont;
-   String           mCaption;
-   bool             mCanMove;
-   bool             mUseSmallCaption;
-   String           mSmallCaption;
-   StringTableEntry mContentLibrary;
-   StringTableEntry mContent;
-
-   Point2I          mThumbSize;
-
-   bool             mHasMenu;
-   GuiMenuBar*      mMenuBar;
-
-   bool mMouseMovingWin;
-
-   Point2I mMouseDownPosition;
-   RectI mOrigBounds;
-   RectI mStandardBounds;
-
-   RectI mCloseButton;
-   RectI mMinimizeButton;
-   RectI mMaximizeButton;
-
-   bool mMouseOver;
-   bool mDepressed;
-   
-   static bool _setHasMenu( void *object, const char *index, const char *data );
-
+    typedef GuiPanel Parent;
+    
+    Resource<GFont>  mFont;
+    String           mCaption;
+    bool             mCanMove;
+    bool             mUseSmallCaption;
+    String           mSmallCaption;
+    StringTableEntry mContentLibrary;
+    StringTableEntry mContent;
+    
+    Point2I          mThumbSize;
+    
+    bool             mHasMenu;
+    GuiMenuBar*      mMenuBar;
+    
+    bool mMouseMovingWin;
+    
+    Point2I mMouseDownPosition;
+    RectI mOrigBounds;
+    RectI mStandardBounds;
+    
+    RectI mCloseButton;
+    RectI mMinimizeButton;
+    RectI mMaximizeButton;
+    
+    bool mMouseOver;
+    bool mDepressed;
+    
+    static bool _setHasMenu( void* object, const char* index, const char* data );
+    
 protected:
-   /// @name Callbacks
-   /// @{
-   DECLARE_CALLBACK( void, onResize, () );
-   /// @}
-
+    /// @name Callbacks
+    /// @{
+    DECLARE_CALLBACK( void, onResize, () );
+    /// @}
+    
 public:
-   GuiFormCtrl();
-   virtual ~GuiFormCtrl();
-
-   void setCaption( const char* caption ) { mCaption = caption; }
-   void setHasMenu( bool value );
-
-   bool resize(const Point2I &newPosition, const Point2I &newExtent);
-   void onRender(Point2I offset, const RectI &updateRect);
-
-   bool onWake();
-   void onSleep();
-
-   virtual void addObject( SimObject *object );
-   virtual void removeObject( SimObject* object );
-   virtual bool acceptsAsChild( SimObject* object ) const;
-
-   void onMouseDown(const GuiEvent &event);
-   void onMouseUp(const GuiEvent &event);
-   void onMouseMove(const GuiEvent &event);
-   void onMouseLeave(const GuiEvent &event);
-   void onMouseEnter(const GuiEvent &event);
-
-   U32  getMenuBarID();
-
-   static void initPersistFields();
-   DECLARE_CONOBJECT(GuiFormCtrl);
+    GuiFormCtrl();
+    virtual ~GuiFormCtrl();
+    
+    void setCaption( const char* caption )
+    {
+        mCaption = caption;
+    }
+    void setHasMenu( bool value );
+    
+    bool resize( const Point2I& newPosition, const Point2I& newExtent );
+    void onRender( Point2I offset, const RectI& updateRect );
+    
+    bool onWake();
+    void onSleep();
+    
+    virtual void addObject( SimObject* object );
+    virtual void removeObject( SimObject* object );
+    virtual bool acceptsAsChild( SimObject* object ) const;
+    
+    void onMouseDown( const GuiEvent& event );
+    void onMouseUp( const GuiEvent& event );
+    void onMouseMove( const GuiEvent& event );
+    void onMouseLeave( const GuiEvent& event );
+    void onMouseEnter( const GuiEvent& event );
+    
+    U32  getMenuBarID();
+    
+    static void initPersistFields();
+    DECLARE_CONOBJECT( GuiFormCtrl );
 };
 /// @}
 

@@ -28,7 +28,7 @@
 
 namespace GFXD3D9EnumTranslate
 {
-   void init();
+void init();
 };
 
 //------------------------------------------------------------------------------
@@ -60,4 +60,4 @@ extern _D3DDECLTYPE GFXD3D9DeclType[GFXDeclType_COUNT];
          val = i; \
          break; \
       } \
-
+ 

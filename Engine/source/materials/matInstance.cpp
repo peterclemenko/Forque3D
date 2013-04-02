@@ -41,76 +41,79 @@ class MatInstParameters;
 class MatInstanceParameterHandle : public MaterialParameterHandle
 {
 public:
-   virtual ~MatInstanceParameterHandle() {}
-   MatInstanceParameterHandle(const String& name);
-
-   void loadHandle(ProcessedMaterial* pmat);
-   
-   // MaterialParameterHandle interface
-   const String& getName() const { return mName; }
-   virtual bool isValid() const; 
-   virtual S32 getSamplerRegister( U32 pass ) const;
-private:   
-   friend class MatInstParameters;
-   String mName;
-   MaterialParameterHandle* mProcessedHandle;
+    virtual ~MatInstanceParameterHandle() {}
+    MatInstanceParameterHandle( const String& name );
+    
+    void loadHandle( ProcessedMaterial* pmat );
+    
+    // MaterialParameterHandle interface
+    const String& getName() const
+    {
+        return mName;
+    }
+    virtual bool isValid() const;
+    virtual S32 getSamplerRegister( U32 pass ) const;
+private:
+    friend class MatInstParameters;
+    String mName;
+    MaterialParameterHandle* mProcessedHandle;
 };
 
-MatInstanceParameterHandle::MatInstanceParameterHandle(const String& name)
+MatInstanceParameterHandle::MatInstanceParameterHandle( const String& name )
 {
-   mName = name;
-   mProcessedHandle = NULL;
+    mName = name;
+    mProcessedHandle = NULL;
 }
 
 bool MatInstanceParameterHandle::isValid() const
 {
-   return mProcessedHandle && mProcessedHandle->isValid();
+    return mProcessedHandle && mProcessedHandle->isValid();
 }
 
 S32 MatInstanceParameterHandle::getSamplerRegister( U32 pass ) const
-{ 
-   if ( !mProcessedHandle )
-      return -1;
-   return mProcessedHandle->getSamplerRegister( pass );
-}
-
-void MatInstanceParameterHandle::loadHandle(ProcessedMaterial* pmat)                                         
 {
-   mProcessedHandle = pmat->getMaterialParameterHandle(mName);
+    if( !mProcessedHandle )
+        return -1;
+    return mProcessedHandle->getSamplerRegister( pass );
 }
 
-MatInstParameters::MatInstParameters() 
-{ 
-   mOwnParameters = false; 
-   mParameters = NULL;
-}
-
-MatInstParameters::MatInstParameters(MaterialParameters* matParams)
+void MatInstanceParameterHandle::loadHandle( ProcessedMaterial* pmat )
 {
-   mOwnParameters = false; 
-   mParameters = matParams;
+    mProcessedHandle = pmat->getMaterialParameterHandle( mName );
 }
 
-void MatInstParameters::loadParameters(ProcessedMaterial* pmat)
+MatInstParameters::MatInstParameters()
 {
-   mOwnParameters = true; 
-   mParameters = pmat->allocMaterialParameters();
+    mOwnParameters = false;
+    mParameters = NULL;
+}
+
+MatInstParameters::MatInstParameters( MaterialParameters* matParams )
+{
+    mOwnParameters = false;
+    mParameters = matParams;
+}
+
+void MatInstParameters::loadParameters( ProcessedMaterial* pmat )
+{
+    mOwnParameters = true;
+    mParameters = pmat->allocMaterialParameters();
 }
 
 MatInstParameters::~MatInstParameters()
 {
-   if (mOwnParameters)
-      SAFE_DELETE(mParameters);
+    if( mOwnParameters )
+        SAFE_DELETE( mParameters );
 }
 
 const Vector<GFXShaderConstDesc>& MatInstParameters::getShaderConstDesc() const
-{ 
-   return mParameters->getShaderConstDesc(); 
+{
+    return mParameters->getShaderConstDesc();
 }
 
-U32 MatInstParameters::getAlignmentValue(const GFXShaderConstType constType)
+U32 MatInstParameters::getAlignmentValue( const GFXShaderConstType constType )
 {
-   return mParameters->getAlignmentValue(constType);
+    return mParameters->getAlignmentValue( constType );
 }
 
 #define MATINSTPARAMSET(handle, f) \
@@ -119,120 +122,120 @@ U32 MatInstParameters::getAlignmentValue(const GFXShaderConstType constType)
    AssertFatal(dynamic_cast<MatInstanceParameterHandle*>(handle), "Invalid handle type!"); \
    MatInstanceParameterHandle* mph = static_cast<MatInstanceParameterHandle*>(handle); \
    mParameters->set(mph->mProcessedHandle, f); \
-
-void MatInstParameters::set(MaterialParameterHandle* handle, const F32 f)
+ 
+void MatInstParameters::set( MaterialParameterHandle* handle, const F32 f )
 {
-   MATINSTPARAMSET(handle, f);
+    MATINSTPARAMSET( handle, f );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const Point2F& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const Point2F& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const Point3F& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const Point3F& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const Point4F& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const Point4F& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const ColorF& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const ColorF& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const S32 f)
+void MatInstParameters::set( MaterialParameterHandle* handle, const S32 f )
 {
-   MATINSTPARAMSET(handle, f);
+    MATINSTPARAMSET( handle, f );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const Point2I& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const Point2I& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const Point3I& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const Point3I& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const Point4I& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const Point4I& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const AlignedArray<F32>& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const AlignedArray<F32>& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const AlignedArray<Point2F>& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const AlignedArray<Point2F>& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const AlignedArray<Point3F>& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const AlignedArray<Point3F>& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const AlignedArray<Point4F>& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const AlignedArray<Point4F>& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const AlignedArray<S32>& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const AlignedArray<S32>& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const AlignedArray<Point2I>& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const AlignedArray<Point2I>& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const AlignedArray<Point3I>& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const AlignedArray<Point3I>& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const AlignedArray<Point4I>& fv)
+void MatInstParameters::set( MaterialParameterHandle* handle, const AlignedArray<Point4I>& fv )
 {
-   MATINSTPARAMSET(handle, fv);
+    MATINSTPARAMSET( handle, fv );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const MatrixF& mat, const GFXShaderConstType matrixType)
+void MatInstParameters::set( MaterialParameterHandle* handle, const MatrixF& mat, const GFXShaderConstType matrixType )
 {
-   AssertFatal(dynamic_cast<MatInstanceParameterHandle*>(handle), "Invalid handle type!"); 
-   MatInstanceParameterHandle* mph = static_cast<MatInstanceParameterHandle*>(handle); 
-   mParameters->set(mph->mProcessedHandle, mat, matrixType); 
+    AssertFatal( dynamic_cast<MatInstanceParameterHandle*>( handle ), "Invalid handle type!" );
+    MatInstanceParameterHandle* mph = static_cast<MatInstanceParameterHandle*>( handle );
+    mParameters->set( mph->mProcessedHandle, mat, matrixType );
 }
 
-void MatInstParameters::set(MaterialParameterHandle* handle, const MatrixF* mat, const U32 arraySize, const GFXShaderConstType matrixType)
+void MatInstParameters::set( MaterialParameterHandle* handle, const MatrixF* mat, const U32 arraySize, const GFXShaderConstType matrixType )
 {
-   AssertFatal(dynamic_cast<MatInstanceParameterHandle*>(handle), "Invalid handle type!"); 
-   MatInstanceParameterHandle* mph = static_cast<MatInstanceParameterHandle*>(handle); 
-   mParameters->set(mph->mProcessedHandle, mat, arraySize, matrixType); 
+    AssertFatal( dynamic_cast<MatInstanceParameterHandle*>( handle ), "Invalid handle type!" );
+    MatInstanceParameterHandle* mph = static_cast<MatInstanceParameterHandle*>( handle );
+    mParameters->set( mph->mProcessedHandle, mat, arraySize, matrixType );
 }
 #undef MATINSTPARAMSET
 
 //****************************************************************************
 // Material Instance
 //****************************************************************************
-MatInstance::MatInstance( Material &mat )
+MatInstance::MatInstance( Material& mat )
 {
-   VECTOR_SET_ASSOCIATION( mCurrentHandles );
-   VECTOR_SET_ASSOCIATION( mCurrentParameters );
-
-   mMaterial = &mat;
-
-   mCreatedFromCustomMaterial = (dynamic_cast<CustomMaterial *>(&mat) != NULL);
-
-   construct();
+    VECTOR_SET_ASSOCIATION( mCurrentHandles );
+    VECTOR_SET_ASSOCIATION( mCurrentParameters );
+    
+    mMaterial = &mat;
+    
+    mCreatedFromCustomMaterial = ( dynamic_cast<CustomMaterial*>( &mat ) != NULL );
+    
+    construct();
 }
 
 //----------------------------------------------------------------------------
@@ -240,18 +243,18 @@ MatInstance::MatInstance( Material &mat )
 //----------------------------------------------------------------------------
 void MatInstance::construct()
 {
-   mUserObject = NULL;
-   mCurPass = -1;
-   mProcessedMaterial = false;
-   mVertexFormat = NULL;
-   mMaxStages = 1;
-   mActiveParameters = NULL;
-   mDefaultParameters = NULL;
-   mHasNormalMaps = false;
-   mIsForwardLit = false;
-   mIsValid = false;
-
-   MATMGR->_track(this);
+    mUserObject = NULL;
+    mCurPass = -1;
+    mProcessedMaterial = false;
+    mVertexFormat = NULL;
+    mMaxStages = 1;
+    mActiveParameters = NULL;
+    mDefaultParameters = NULL;
+    mHasNormalMaps = false;
+    mIsForwardLit = false;
+    mIsValid = false;
+    
+    MATMGR->_track( this );
 }
 
 //----------------------------------------------------------------------------
@@ -259,29 +262,29 @@ void MatInstance::construct()
 //----------------------------------------------------------------------------
 MatInstance::~MatInstance()
 {
-   SAFE_DELETE(mProcessedMaterial);
-   SAFE_DELETE(mDefaultParameters);
-   for (U32 i = 0; i < mCurrentHandles.size(); i++)
-      SAFE_DELETE(mCurrentHandles[i]);   
-
-   MATMGR->_untrack(this);
+    SAFE_DELETE( mProcessedMaterial );
+    SAFE_DELETE( mDefaultParameters );
+    for( U32 i = 0; i < mCurrentHandles.size(); i++ )
+        SAFE_DELETE( mCurrentHandles[i] );
+        
+    MATMGR->_untrack( this );
 }
 
 //----------------------------------------------------------------------------
 // Init
 //----------------------------------------------------------------------------
-bool MatInstance::init( const FeatureSet &features, 
-                        const GFXVertexFormat *vertexFormat ) 
+bool MatInstance::init( const FeatureSet& features,
+                        const GFXVertexFormat* vertexFormat )
 {
-   AssertFatal( vertexFormat, "MatInstance::init - Got null vertex format!" );
-
-   mFeatureList = features;
-   mVertexFormat = vertexFormat;
-
-   SAFE_DELETE(mProcessedMaterial);   
-   mIsValid = processMaterial();         
-
-   return mIsValid;
+    AssertFatal( vertexFormat, "MatInstance::init - Got null vertex format!" );
+    
+    mFeatureList = features;
+    mVertexFormat = vertexFormat;
+    
+    SAFE_DELETE( mProcessedMaterial );
+    mIsValid = processMaterial();
+    
+    return mIsValid;
 }
 
 
@@ -290,20 +293,20 @@ bool MatInstance::init( const FeatureSet &features,
 //----------------------------------------------------------------------------
 bool MatInstance::reInit()
 {
-   SAFE_DELETE(mProcessedMaterial);
-   deleteAllHooks();
-   mIsValid = processMaterial();
-
-   if ( mIsValid )
-   {
-      for (U32 i = 0; i < mCurrentHandles.size(); i++)
-         mCurrentHandles[i]->loadHandle(mProcessedMaterial);
-
-      for (U32 i = 0; i < mCurrentParameters.size(); i++)
-         mCurrentParameters[i]->loadParameters(mProcessedMaterial);
-   }
-
-   return mIsValid;
+    SAFE_DELETE( mProcessedMaterial );
+    deleteAllHooks();
+    mIsValid = processMaterial();
+    
+    if( mIsValid )
+    {
+        for( U32 i = 0; i < mCurrentHandles.size(); i++ )
+            mCurrentHandles[i]->loadHandle( mProcessedMaterial );
+            
+        for( U32 i = 0; i < mCurrentParameters.size(); i++ )
+            mCurrentParameters[i]->loadParameters( mProcessedMaterial );
+    }
+    
+    return mIsValid;
 }
 
 //----------------------------------------------------------------------------
@@ -311,251 +314,251 @@ bool MatInstance::reInit()
 //----------------------------------------------------------------------------
 bool MatInstance::processMaterial()
 {
-   AssertFatal( mMaterial, "MatInstance::processMaterial - Got null material!" );
-   //AssertFatal( mVertexFormat, "MatInstance::processMaterial - Got null vertex format!" );
-   if ( !mMaterial || !mVertexFormat )   
-      return false;   
-
-   SAFE_DELETE(mDefaultParameters);
-
-   CustomMaterial *custMat = NULL;
-
-   if( dynamic_cast<CustomMaterial*>(mMaterial) )
-   {
-      F32 pixVersion = GFX->getPixelShaderVersion();
-      custMat = static_cast<CustomMaterial*>(mMaterial);
-      if ((custMat->mVersion > pixVersion) || (custMat->mVersion == 0.0))
-      {
-         if(custMat->mFallback)
-         {
-            mMaterial = custMat->mFallback;
-            return processMaterial();            
-         }
-         else
-         {            
-            AssertWarn(custMat->mVersion == 0.0f, avar("Can't load CustomMaterial %s for %s, using generic FF fallback", 
-               String(mMaterial->getName()).isEmpty() ? "Unknown" : mMaterial->getName(), custMat->mMapTo.c_str()));
-            mProcessedMaterial = new ProcessedFFMaterial(*mMaterial);
-         }
-      }
-      else 
-         mProcessedMaterial = new ProcessedCustomMaterial(*mMaterial);
-   }
-   else if(GFX->getPixelShaderVersion() > 0.001)
-      mProcessedMaterial = getShaderMaterial();
-   else
-      mProcessedMaterial = new ProcessedFFMaterial(*mMaterial);
-
-   if (mProcessedMaterial)
-   {
-      mProcessedMaterial->addStateBlockDesc( mUserDefinedState );
-      mProcessedMaterial->setShaderMacros( mUserMacros );
-      mProcessedMaterial->setUserObject( mUserObject );
-
-      FeatureSet features( mFeatureList );
-      features.exclude( MATMGR->getExclusionFeatures() );
-      
-      if( !mProcessedMaterial->init(features, mVertexFormat, mFeaturesDelegate) )
-      {
-         Con::errorf( "Failed to initialize material '%s'", getMaterial()->getName() );
-         SAFE_DELETE( mProcessedMaterial );
-         return false;
-      }
-
-      mDefaultParameters = new MatInstParameters(mProcessedMaterial->getDefaultMaterialParameters());
-      mActiveParameters = mDefaultParameters;
-
-      const FeatureSet &finalFeatures = mProcessedMaterial->getFeatures();
-      mHasNormalMaps = finalFeatures.hasFeature( MFT_NormalMap );
-
-      mIsForwardLit =   (  custMat && custMat->mForwardLit ) || 
-                        (  !finalFeatures.hasFeature( MFT_IsEmissive ) &&
-                           finalFeatures.hasFeature( MFT_ForwardShading ) );
-
-      return true;
-   }
-   
-   return false;
+    AssertFatal( mMaterial, "MatInstance::processMaterial - Got null material!" );
+    //AssertFatal( mVertexFormat, "MatInstance::processMaterial - Got null vertex format!" );
+    if( !mMaterial || !mVertexFormat )
+        return false;
+        
+    SAFE_DELETE( mDefaultParameters );
+    
+    CustomMaterial* custMat = NULL;
+    
+    if( dynamic_cast<CustomMaterial*>( mMaterial ) )
+    {
+        F32 pixVersion = GFX->getPixelShaderVersion();
+        custMat = static_cast<CustomMaterial*>( mMaterial );
+        if( ( custMat->mVersion > pixVersion ) || ( custMat->mVersion == 0.0 ) )
+        {
+            if( custMat->mFallback )
+            {
+                mMaterial = custMat->mFallback;
+                return processMaterial();
+            }
+            else
+            {
+                AssertWarn( custMat->mVersion == 0.0f, avar( "Can't load CustomMaterial %s for %s, using generic FF fallback",
+                            String( mMaterial->getName() ).isEmpty() ? "Unknown" : mMaterial->getName(), custMat->mMapTo.c_str() ) );
+                mProcessedMaterial = new ProcessedFFMaterial( *mMaterial );
+            }
+        }
+        else
+            mProcessedMaterial = new ProcessedCustomMaterial( *mMaterial );
+    }
+    else if( GFX->getPixelShaderVersion() > 0.001 )
+        mProcessedMaterial = getShaderMaterial();
+    else
+        mProcessedMaterial = new ProcessedFFMaterial( *mMaterial );
+        
+    if( mProcessedMaterial )
+    {
+        mProcessedMaterial->addStateBlockDesc( mUserDefinedState );
+        mProcessedMaterial->setShaderMacros( mUserMacros );
+        mProcessedMaterial->setUserObject( mUserObject );
+        
+        FeatureSet features( mFeatureList );
+        features.exclude( MATMGR->getExclusionFeatures() );
+        
+        if( !mProcessedMaterial->init( features, mVertexFormat, mFeaturesDelegate ) )
+        {
+            Con::errorf( "Failed to initialize material '%s'", getMaterial()->getName() );
+            SAFE_DELETE( mProcessedMaterial );
+            return false;
+        }
+        
+        mDefaultParameters = new MatInstParameters( mProcessedMaterial->getDefaultMaterialParameters() );
+        mActiveParameters = mDefaultParameters;
+        
+        const FeatureSet& finalFeatures = mProcessedMaterial->getFeatures();
+        mHasNormalMaps = finalFeatures.hasFeature( MFT_NormalMap );
+        
+        mIsForwardLit = ( custMat && custMat->mForwardLit ) ||
+                        ( !finalFeatures.hasFeature( MFT_IsEmissive ) &&
+                          finalFeatures.hasFeature( MFT_ForwardShading ) );
+                          
+        return true;
+    }
+    
+    return false;
 }
 
 const MatStateHint& MatInstance::getStateHint() const
 {
-   if ( mProcessedMaterial )
-      return mProcessedMaterial->getStateHint();
-   else
-      return MatStateHint::Default;
+    if( mProcessedMaterial )
+        return mProcessedMaterial->getStateHint();
+    else
+        return MatStateHint::Default;
 }
 
 ProcessedMaterial* MatInstance::getShaderMaterial()
 {
-   return new ProcessedShaderMaterial(*mMaterial);
+    return new ProcessedShaderMaterial( *mMaterial );
 }
 
-void MatInstance::addStateBlockDesc(const GFXStateBlockDesc& desc)
-{   
-   mUserDefinedState = desc;
+void MatInstance::addStateBlockDesc( const GFXStateBlockDesc& desc )
+{
+    mUserDefinedState = desc;
 }
 
 void MatInstance::updateStateBlocks()
 {
-   if ( mProcessedMaterial )
-      mProcessedMaterial->updateStateBlocks();
+    if( mProcessedMaterial )
+        mProcessedMaterial->updateStateBlocks();
 }
 
-void MatInstance::addShaderMacro( const String &name, const String &value )
-{   
-   // Check to see if we already have this macro.
-   Vector<GFXShaderMacro>::iterator iter = mUserMacros.begin();
-   for ( ; iter != mUserMacros.end(); iter++ )
-   {
-      if ( iter->name == name )
-      {
-         iter->value = value;
-         return;
-      }
-   }
-
-   // Add a new macro.
-   mUserMacros.increment();
-   mUserMacros.last().name = name;
-   mUserMacros.last().value = value;
+void MatInstance::addShaderMacro( const String& name, const String& value )
+{
+    // Check to see if we already have this macro.
+    Vector<GFXShaderMacro>::iterator iter = mUserMacros.begin();
+    for( ; iter != mUserMacros.end(); iter++ )
+    {
+        if( iter->name == name )
+        {
+            iter->value = value;
+            return;
+        }
+    }
+    
+    // Add a new macro.
+    mUserMacros.increment();
+    mUserMacros.last().name = name;
+    mUserMacros.last().value = value;
 }
 
 //----------------------------------------------------------------------------
 // Setup pass - needs scenegraph data because the lightmap will change across
 //    several materials.
 //----------------------------------------------------------------------------
-bool MatInstance::setupPass(SceneRenderState * state, const SceneData &sgData )
+bool MatInstance::setupPass( SceneRenderState* state, const SceneData& sgData )
 {
-   PROFILE_SCOPE( MatInstance_SetupPass );
-   
-   if( !mProcessedMaterial )
-      return false;
-
-   ++mCurPass;
-
-   if ( !mProcessedMaterial->setupPass( state, sgData, mCurPass ) )
-   {
-      mCurPass = -1;
-      return false;
-   }
-
-   return true;
+    PROFILE_SCOPE( MatInstance_SetupPass );
+    
+    if( !mProcessedMaterial )
+        return false;
+        
+    ++mCurPass;
+    
+    if( !mProcessedMaterial->setupPass( state, sgData, mCurPass ) )
+    {
+        mCurPass = -1;
+        return false;
+    }
+    
+    return true;
 }
 
-void MatInstance::setTransforms(const MatrixSet &matrixSet, SceneRenderState *state)
+void MatInstance::setTransforms( const MatrixSet& matrixSet, SceneRenderState* state )
 {
-   PROFILE_SCOPE(MatInstance_setTransforms);
-   mProcessedMaterial->setTransforms(matrixSet, state, getCurPass());
+    PROFILE_SCOPE( MatInstance_setTransforms );
+    mProcessedMaterial->setTransforms( matrixSet, state, getCurPass() );
 }
 
-void MatInstance::setSceneInfo(SceneRenderState * state, const SceneData& sgData)
+void MatInstance::setSceneInfo( SceneRenderState* state, const SceneData& sgData )
 {
-   PROFILE_SCOPE(MatInstance_setSceneInfo);
-   mProcessedMaterial->setSceneInfo(state, sgData, getCurPass());
+    PROFILE_SCOPE( MatInstance_setSceneInfo );
+    mProcessedMaterial->setSceneInfo( state, sgData, getCurPass() );
 }
 
-void MatInstance::setBuffers(GFXVertexBufferHandleBase* vertBuffer, GFXPrimitiveBufferHandle* primBuffer)
+void MatInstance::setBuffers( GFXVertexBufferHandleBase* vertBuffer, GFXPrimitiveBufferHandle* primBuffer )
 {
-   mProcessedMaterial->setBuffers(vertBuffer, primBuffer);
+    mProcessedMaterial->setBuffers( vertBuffer, primBuffer );
 }
 
-void MatInstance::setTextureStages(SceneRenderState * state, const SceneData &sgData )
+void MatInstance::setTextureStages( SceneRenderState* state, const SceneData& sgData )
 {
-   PROFILE_SCOPE(MatInstance_setTextureStages);
-   mProcessedMaterial->setTextureStages(state, sgData, getCurPass());
+    PROFILE_SCOPE( MatInstance_setTextureStages );
+    mProcessedMaterial->setTextureStages( state, sgData, getCurPass() );
 }
 
-bool MatInstance::isInstanced() const 
+bool MatInstance::isInstanced() const
 {
-   return mProcessedMaterial->getFeatures().hasFeature( MFT_UseInstancing );
+    return mProcessedMaterial->getFeatures().hasFeature( MFT_UseInstancing );
 }
 
 bool MatInstance::stepInstance()
 {
-   AssertFatal( isInstanced(), "MatInstance::stepInstance - This material isn't instanced!" );
-   AssertFatal( mCurPass >= 0, "MatInstance::stepInstance - Must be within material setup pass!" );
-
-   return mProcessedMaterial->stepInstance();
+    AssertFatal( isInstanced(), "MatInstance::stepInstance - This material isn't instanced!" );
+    AssertFatal( mCurPass >= 0, "MatInstance::stepInstance - Must be within material setup pass!" );
+    
+    return mProcessedMaterial->stepInstance();
 }
 
 U32 MatInstance::getCurStageNum()
 {
-   return mProcessedMaterial->getStageFromPass(getCurPass());
+    return mProcessedMaterial->getStageFromPass( getCurPass() );
 }
 
-RenderPassData* MatInstance::getPass(U32 pass)
+RenderPassData* MatInstance::getPass( U32 pass )
 {
-   return mProcessedMaterial->getPass(pass);
+    return mProcessedMaterial->getPass( pass );
 }
 
-bool MatInstance::hasGlow() 
-{ 
-   if( mProcessedMaterial )
-      return mProcessedMaterial->hasGlow(); 
-   else
-      return false;
-}
-
-const FeatureSet& MatInstance::getFeatures() const 
+bool MatInstance::hasGlow()
 {
-   return mProcessedMaterial->getFeatures(); 
+    if( mProcessedMaterial )
+        return mProcessedMaterial->hasGlow();
+    else
+        return false;
 }
 
-MaterialParameterHandle* MatInstance::getMaterialParameterHandle(const String& name)
+const FeatureSet& MatInstance::getFeatures() const
 {
-   AssertFatal(mProcessedMaterial, "Not init'ed!"); 
-   for (U32 i = 0; i < mCurrentHandles.size(); i++)
-   {
-      if (mCurrentHandles[i]->getName().equal(name))
-      {
-         return mCurrentHandles[i];
-      }
-   }
-   MatInstanceParameterHandle* mph = new MatInstanceParameterHandle(name);
-   mph->loadHandle(mProcessedMaterial);
-   mCurrentHandles.push_back(mph);
-   return mph;
+    return mProcessedMaterial->getFeatures();
 }
 
-MaterialParameters* MatInstance::allocMaterialParameters() 
-{  
-   AssertFatal(mProcessedMaterial, "Not init'ed!"); 
-   MatInstParameters* mip = new MatInstParameters();
-   mip->loadParameters(mProcessedMaterial);
-   mCurrentParameters.push_back(mip);
-   return mip;   
+MaterialParameterHandle* MatInstance::getMaterialParameterHandle( const String& name )
+{
+    AssertFatal( mProcessedMaterial, "Not init'ed!" );
+    for( U32 i = 0; i < mCurrentHandles.size(); i++ )
+    {
+        if( mCurrentHandles[i]->getName().equal( name ) )
+        {
+            return mCurrentHandles[i];
+        }
+    }
+    MatInstanceParameterHandle* mph = new MatInstanceParameterHandle( name );
+    mph->loadHandle( mProcessedMaterial );
+    mCurrentHandles.push_back( mph );
+    return mph;
 }
 
-void MatInstance::setMaterialParameters(MaterialParameters* param) 
-{ 
-   AssertFatal(mProcessedMaterial, "Not init'ed!"); 
-   mProcessedMaterial->setMaterialParameters(param, mCurPass);
-   AssertFatal(dynamic_cast<MatInstParameters*>(param), "Incorrect param type!");
-   mActiveParameters = static_cast<MatInstParameters*>(param);
+MaterialParameters* MatInstance::allocMaterialParameters()
+{
+    AssertFatal( mProcessedMaterial, "Not init'ed!" );
+    MatInstParameters* mip = new MatInstParameters();
+    mip->loadParameters( mProcessedMaterial );
+    mCurrentParameters.push_back( mip );
+    return mip;
+}
+
+void MatInstance::setMaterialParameters( MaterialParameters* param )
+{
+    AssertFatal( mProcessedMaterial, "Not init'ed!" );
+    mProcessedMaterial->setMaterialParameters( param, mCurPass );
+    AssertFatal( dynamic_cast<MatInstParameters*>( param ), "Incorrect param type!" );
+    mActiveParameters = static_cast<MatInstParameters*>( param );
 }
 
 MaterialParameters* MatInstance::getMaterialParameters()
-{ 
-   AssertFatal(mProcessedMaterial, "Not init'ed!"); 
-   return mActiveParameters;
+{
+    AssertFatal( mProcessedMaterial, "Not init'ed!" );
+    return mActiveParameters;
 }
 
 void MatInstance::dumpShaderInfo() const
 {
-   if ( mMaterial == NULL )
-   {
-      Con::errorf( "Trying to get Material information on an invalid MatInstance" );
-      return;
-   }
-
-   Con::printf( "Material Info for object %s - %s", mMaterial->getName(), mMaterial->mMapTo.c_str() );
-
-   if ( mProcessedMaterial == NULL )
-   {
-      Con::printf( "  [no processed material!]" );
-      return;
-   }
-
-   mProcessedMaterial->dumpMaterialInfo();
+    if( mMaterial == NULL )
+    {
+        Con::errorf( "Trying to get Material information on an invalid MatInstance" );
+        return;
+    }
+    
+    Con::printf( "Material Info for object %s - %s", mMaterial->getName(), mMaterial->mMapTo.c_str() );
+    
+    if( mProcessedMaterial == NULL )
+    {
+        Con::printf( "  [no processed material!]" );
+        return;
+    }
+    
+    mProcessedMaterial->dumpMaterialInfo();
 }

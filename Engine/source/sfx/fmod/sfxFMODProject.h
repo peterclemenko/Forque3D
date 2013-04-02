@@ -24,16 +24,16 @@
 #define _SFXFMODPROJECT_H_
 
 #ifndef _SIMDATABLOCK_H_
-   #include "console/simDatablock.h"
+#include "console/simDatablock.h"
 #endif
 #ifndef _CONSOLETYPES_H_
-   #include "console/consoleTypes.h"
+#include "console/consoleTypes.h"
 #endif
 #ifndef _TVECTOR_H_
-   #include "core/util/tVector.h"
+#include "core/util/tVector.h"
 #endif
 #ifndef _SFXSYSTEM_H_
-   #include "sfx/sfxSystem.h"
+#include "sfx/sfxSystem.h"
 #endif
 
 #include "fmod_event.h"
@@ -82,81 +82,84 @@ class SimGroup;
 ///
 class SFXFMODProject : public SimDataBlock
 {
-   public:
-   
-      typedef SimDataBlock Parent;
-      friend class SFXFMODEventGroup; // _addGroup
-      friend class SFXFMODEvent; // _addEvent
-      
-   protected:
-   
-      ///
-      String mFileName;
-      
-      ///
-      String mMediaPath;
-      
-      ///
-      SFXFMODEventGroup* mRootGroups;
-      
-      /// A flat list of all the groups in this projet.
-      Vector< SFXFMODEventGroup* > mGroups;
+public:
 
-      /// A flat list of all the events in the project.
-      Vector< SFXFMODEvent* > mEvents;
-      
-      ///
-      FMOD_EVENTPROJECT* mHandle;
-      
-      ///
-      void _onSystemEvent( SFXSystemEventType event );
-      
-      ///
-      void _clear();
-      
-      ///
-      bool _load();
-      
-      ///
-      void _addEvent( SFXFMODEvent* event );
-      
-      ///
-      void _addGroup( SFXFMODEventGroup* group );
-      
-      ///
-      void _removeEvent( SFXFMODEvent* event );
-      
-      ///
-      void _removeGroup( SFXFMODEventGroup* group );
-   
-   public:
-   
-      ///
-      SFXFMODProject();
-      
-      virtual ~SFXFMODProject();
-            
-      ///
-      void acquire( bool recursive = false );
-      
-      ///
-      void release();
-      
-      ///
-      const String& getFileName() const { return mFileName; }
+    typedef SimDataBlock Parent;
+    friend class SFXFMODEventGroup; // _addGroup
+    friend class SFXFMODEvent; // _addEvent
+    
+protected:
 
-      // SimDataBlock.
-      virtual bool onAdd();
-      virtual void onRemove();
-      virtual bool preload( bool server, String& errorStr );
-      virtual void packData( BitStream* stream );
-      virtual void unpackData( BitStream* stream );
-      
-      static void initPersistFields();
-   
-      DECLARE_CONOBJECT( SFXFMODProject );
-      DECLARE_CATEGORY( "SFX FMOD" );
-      DECLARE_DESCRIPTION( "An FMOD Designer project." );
+    ///
+    String mFileName;
+    
+    ///
+    String mMediaPath;
+    
+    ///
+    SFXFMODEventGroup* mRootGroups;
+    
+    /// A flat list of all the groups in this projet.
+    Vector< SFXFMODEventGroup* > mGroups;
+    
+    /// A flat list of all the events in the project.
+    Vector< SFXFMODEvent* > mEvents;
+    
+    ///
+    FMOD_EVENTPROJECT* mHandle;
+    
+    ///
+    void _onSystemEvent( SFXSystemEventType event );
+    
+    ///
+    void _clear();
+    
+    ///
+    bool _load();
+    
+    ///
+    void _addEvent( SFXFMODEvent* event );
+    
+    ///
+    void _addGroup( SFXFMODEventGroup* group );
+    
+    ///
+    void _removeEvent( SFXFMODEvent* event );
+    
+    ///
+    void _removeGroup( SFXFMODEventGroup* group );
+    
+public:
+
+    ///
+    SFXFMODProject();
+    
+    virtual ~SFXFMODProject();
+    
+    ///
+    void acquire( bool recursive = false );
+    
+    ///
+    void release();
+    
+    ///
+    const String& getFileName() const
+    {
+        return mFileName;
+    }
+    
+    // SimDataBlock.
+    virtual bool onAdd();
+    virtual void onRemove();
+    virtual bool preload( bool server, String& errorStr );
+    virtual void packData( BitStream* stream );
+    virtual void unpackData( BitStream* stream );
+    
+    static void initPersistFields();
+    
+    DECLARE_CONOBJECT( SFXFMODProject );
+    DECLARE_CATEGORY( "SFX FMOD" );
+    DECLARE_DESCRIPTION( "An FMOD Designer project." );
 };
 
 #endif // !_SFXFMODPROJECT_H_

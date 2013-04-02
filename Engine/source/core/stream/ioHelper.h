@@ -31,109 +31,317 @@
 /// template expansion.
 namespace IOHelper
 {
-   template<class A,class B,class C,class D,class E,class F,class G,class H,class I,class J,class K, class L, class M>
-      inline bool reads(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h,I& i,J& j,K& k,L& l,M& m)
-   { s->read(&a); s->read(&b); s->read(&c); s->read(&d); s->read(&e); s->read(&f); s->read(&g); s->read(&h); s->read(&i); s->read(&j); s->read(&k); s->read(&l); return s->read(&m); }
+template<class A, class B, class C, class D, class E, class F, class G, class H, class I, class J, class K, class L, class M>
+inline bool reads( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i, J& j, K& k, L& l, M& m )
+{
+    s->read( &a );
+    s->read( &b );
+    s->read( &c );
+    s->read( &d );
+    s->read( &e );
+    s->read( &f );
+    s->read( &g );
+    s->read( &h );
+    s->read( &i );
+    s->read( &j );
+    s->read( &k );
+    s->read( &l );
+    return s->read( &m );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G,class H,class I,class J,class K, class L>
-      inline bool reads(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h,I& i,J& j,K& k,L& l)
-   { s->read(&a); s->read(&b); s->read(&c); s->read(&d); s->read(&e); s->read(&f); s->read(&g); s->read(&h); s->read(&i); s->read(&j); s->read(&k); return s->read(&l); }
+template<class A, class B, class C, class D, class E, class F, class G, class H, class I, class J, class K, class L>
+inline bool reads( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i, J& j, K& k, L& l )
+{
+    s->read( &a );
+    s->read( &b );
+    s->read( &c );
+    s->read( &d );
+    s->read( &e );
+    s->read( &f );
+    s->read( &g );
+    s->read( &h );
+    s->read( &i );
+    s->read( &j );
+    s->read( &k );
+    return s->read( &l );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G,class H,class I,class J,class K>
-      inline bool reads(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h,I& i,J& j,K& k)
-   { s->read(&a); s->read(&b); s->read(&c); s->read(&d); s->read(&e); s->read(&f); s->read(&g); s->read(&h); s->read(&i); s->read(&j); return s->read(&k); }
+template<class A, class B, class C, class D, class E, class F, class G, class H, class I, class J, class K>
+inline bool reads( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i, J& j, K& k )
+{
+    s->read( &a );
+    s->read( &b );
+    s->read( &c );
+    s->read( &d );
+    s->read( &e );
+    s->read( &f );
+    s->read( &g );
+    s->read( &h );
+    s->read( &i );
+    s->read( &j );
+    return s->read( &k );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G,class H,class I,class J>
-      inline bool reads(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h,I& i,J& j)
-   { s->read(&a); s->read(&b); s->read(&c); s->read(&d); s->read(&e); s->read(&f); s->read(&g); s->read(&h); s->read(&i); return s->read(&j); }
+template<class A, class B, class C, class D, class E, class F, class G, class H, class I, class J>
+inline bool reads( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i, J& j )
+{
+    s->read( &a );
+    s->read( &b );
+    s->read( &c );
+    s->read( &d );
+    s->read( &e );
+    s->read( &f );
+    s->read( &g );
+    s->read( &h );
+    s->read( &i );
+    return s->read( &j );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G,class H,class I>
-      inline bool reads(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h,I& i)
-   { s->read(&a); s->read(&b); s->read(&c); s->read(&d); s->read(&e); s->read(&f); s->read(&g); s->read(&h); return s->read(&i); }
+template<class A, class B, class C, class D, class E, class F, class G, class H, class I>
+inline bool reads( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i )
+{
+    s->read( &a );
+    s->read( &b );
+    s->read( &c );
+    s->read( &d );
+    s->read( &e );
+    s->read( &f );
+    s->read( &g );
+    s->read( &h );
+    return s->read( &i );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G,class H>
-      inline bool reads(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h)
-   { s->read(&a); s->read(&b); s->read(&c); s->read(&d); s->read(&e); s->read(&f); s->read(&g); return s->read(&h); }
+template<class A, class B, class C, class D, class E, class F, class G, class H>
+inline bool reads( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h )
+{
+    s->read( &a );
+    s->read( &b );
+    s->read( &c );
+    s->read( &d );
+    s->read( &e );
+    s->read( &f );
+    s->read( &g );
+    return s->read( &h );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G>
-      inline bool reads(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g)
-   { s->read(&a); s->read(&b); s->read(&c); s->read(&d); s->read(&e); s->read(&f); return s->read(&g); }
+template<class A, class B, class C, class D, class E, class F, class G>
+inline bool reads( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g )
+{
+    s->read( &a );
+    s->read( &b );
+    s->read( &c );
+    s->read( &d );
+    s->read( &e );
+    s->read( &f );
+    return s->read( &g );
+}
 
-   template<class A,class B,class C,class D,class E,class F>
-      inline bool reads(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f)
-   { s->read(&a); s->read(&b); s->read(&c); s->read(&d); s->read(&e); return s->read(&f); }
+template<class A, class B, class C, class D, class E, class F>
+inline bool reads( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f )
+{
+    s->read( &a );
+    s->read( &b );
+    s->read( &c );
+    s->read( &d );
+    s->read( &e );
+    return s->read( &f );
+}
 
-   template<class A,class B,class C,class D,class E>
-      inline bool reads(Stream *s,A& a,B& b,C& c,D& d,E& e)
-   { s->read(&a); s->read(&b); s->read(&c); s->read(&d); return s->read(&e); }
+template<class A, class B, class C, class D, class E>
+inline bool reads( Stream* s, A& a, B& b, C& c, D& d, E& e )
+{
+    s->read( &a );
+    s->read( &b );
+    s->read( &c );
+    s->read( &d );
+    return s->read( &e );
+}
 
-   template<class A,class B,class C,class D>
-      inline bool reads(Stream *s,A& a,B& b,C& c,D& d)
-   { s->read(&a); s->read(&b); s->read(&c); return s->read(&d); }
+template<class A, class B, class C, class D>
+inline bool reads( Stream* s, A& a, B& b, C& c, D& d )
+{
+    s->read( &a );
+    s->read( &b );
+    s->read( &c );
+    return s->read( &d );
+}
 
-   template<class A,class B,class C>
-      inline bool reads(Stream *s,A& a,B& b,C& c)
-   { s->read(&a); s->read(&b); return s->read(&c); }
+template<class A, class B, class C>
+inline bool reads( Stream* s, A& a, B& b, C& c )
+{
+    s->read( &a );
+    s->read( &b );
+    return s->read( &c );
+}
 
-   template<class A,class B>
-      inline bool reads(Stream *s,A& a,B& b)
-   { s->read(&a); return s->read(&b); }
+template<class A, class B>
+inline bool reads( Stream* s, A& a, B& b )
+{
+    s->read( &a );
+    return s->read( &b );
+}
 
-   template<class A>
-      inline bool reads(Stream *s,A& a)
-   { return s->read(&a); }
+template<class A>
+inline bool reads( Stream* s, A& a )
+{
+    return s->read( &a );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G,class H,class I,class J,class K,class L,class M>
-      inline bool writes(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h,I& i,J& j,K& k,L& l,M& m)
-   { s->write(a); s->write(b); s->write(c); s->write(d); s->write(e); s->write(f); s->write(g); s->write(h); s->write(i); s->write(j); s->write(k); s->write(l); return s->write(m); }
+template<class A, class B, class C, class D, class E, class F, class G, class H, class I, class J, class K, class L, class M>
+inline bool writes( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i, J& j, K& k, L& l, M& m )
+{
+    s->write( a );
+    s->write( b );
+    s->write( c );
+    s->write( d );
+    s->write( e );
+    s->write( f );
+    s->write( g );
+    s->write( h );
+    s->write( i );
+    s->write( j );
+    s->write( k );
+    s->write( l );
+    return s->write( m );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G,class H,class I,class J,class K,class L>
-      inline bool writes(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h,I& i,J& j,K& k,L& l)
-   { s->write(a); s->write(b); s->write(c); s->write(d); s->write(e); s->write(f); s->write(g); s->write(h); s->write(i); s->write(j); s->write(k); return s->write(l); }
+template<class A, class B, class C, class D, class E, class F, class G, class H, class I, class J, class K, class L>
+inline bool writes( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i, J& j, K& k, L& l )
+{
+    s->write( a );
+    s->write( b );
+    s->write( c );
+    s->write( d );
+    s->write( e );
+    s->write( f );
+    s->write( g );
+    s->write( h );
+    s->write( i );
+    s->write( j );
+    s->write( k );
+    return s->write( l );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G,class H,class I,class J,class K>
-      inline bool writes(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h,I& i,J& j,K& k)
-   { s->write(a); s->write(b); s->write(c); s->write(d); s->write(e); s->write(f); s->write(g); s->write(h); s->write(i); s->write(j); return s->write(k); }
+template<class A, class B, class C, class D, class E, class F, class G, class H, class I, class J, class K>
+inline bool writes( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i, J& j, K& k )
+{
+    s->write( a );
+    s->write( b );
+    s->write( c );
+    s->write( d );
+    s->write( e );
+    s->write( f );
+    s->write( g );
+    s->write( h );
+    s->write( i );
+    s->write( j );
+    return s->write( k );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G,class H,class I,class J>
-      inline bool writes(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h,I& i,J& j)
-   { s->write(a); s->write(b); s->write(c); s->write(d); s->write(e); s->write(f); s->write(g); s->write(h); s->write(i); return s->write(j); }
+template<class A, class B, class C, class D, class E, class F, class G, class H, class I, class J>
+inline bool writes( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i, J& j )
+{
+    s->write( a );
+    s->write( b );
+    s->write( c );
+    s->write( d );
+    s->write( e );
+    s->write( f );
+    s->write( g );
+    s->write( h );
+    s->write( i );
+    return s->write( j );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G,class H,class I>
-      inline bool writes(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h,I& i)
-   { s->write(a); s->write(b); s->write(c); s->write(d); s->write(e); s->write(f); s->write(g); s->write(h); return s->write(i); }
+template<class A, class B, class C, class D, class E, class F, class G, class H, class I>
+inline bool writes( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h, I& i )
+{
+    s->write( a );
+    s->write( b );
+    s->write( c );
+    s->write( d );
+    s->write( e );
+    s->write( f );
+    s->write( g );
+    s->write( h );
+    return s->write( i );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G,class H>
-      inline bool writes(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g,H& h)
-   { s->write(a); s->write(b); s->write(c); s->write(d); s->write(e); s->write(f); s->write(g); return s->write(h); }
+template<class A, class B, class C, class D, class E, class F, class G, class H>
+inline bool writes( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g, H& h )
+{
+    s->write( a );
+    s->write( b );
+    s->write( c );
+    s->write( d );
+    s->write( e );
+    s->write( f );
+    s->write( g );
+    return s->write( h );
+}
 
-   template<class A,class B,class C,class D,class E,class F,class G>
-      inline bool writes(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f,G& g)
-   { s->write(a); s->write(b); s->write(c); s->write(d); s->write(e); s->write(f); return s->write(g); }
+template<class A, class B, class C, class D, class E, class F, class G>
+inline bool writes( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f, G& g )
+{
+    s->write( a );
+    s->write( b );
+    s->write( c );
+    s->write( d );
+    s->write( e );
+    s->write( f );
+    return s->write( g );
+}
 
-   template<class A,class B,class C,class D,class E,class F>
-      inline bool writes(Stream *s,A& a,B& b,C& c,D& d,E& e,F& f)
-   { s->write(a); s->write(b); s->write(c); s->write(d); s->write(e); return s->write(f); }
+template<class A, class B, class C, class D, class E, class F>
+inline bool writes( Stream* s, A& a, B& b, C& c, D& d, E& e, F& f )
+{
+    s->write( a );
+    s->write( b );
+    s->write( c );
+    s->write( d );
+    s->write( e );
+    return s->write( f );
+}
 
-   template<class A,class B,class C,class D,class E>
-      inline bool writes(Stream *s,A& a,B& b,C& c,D& d,E& e)
-   { s->write(a); s->write(b); s->write(c); s->write(d); return s->write(e); }
+template<class A, class B, class C, class D, class E>
+inline bool writes( Stream* s, A& a, B& b, C& c, D& d, E& e )
+{
+    s->write( a );
+    s->write( b );
+    s->write( c );
+    s->write( d );
+    return s->write( e );
+}
 
-   template<class A,class B,class C,class D>
-      inline bool writes(Stream *s,A& a,B& b,C& c,D& d)
-   { s->write(a); s->write(b); s->write(c); return s->write(d); }
+template<class A, class B, class C, class D>
+inline bool writes( Stream* s, A& a, B& b, C& c, D& d )
+{
+    s->write( a );
+    s->write( b );
+    s->write( c );
+    return s->write( d );
+}
 
-   template<class A,class B,class C>
-      inline bool writes(Stream *s,A& a,B& b,C& c)
-   { s->write(a); s->write(b); return s->write(c); }
+template<class A, class B, class C>
+inline bool writes( Stream* s, A& a, B& b, C& c )
+{
+    s->write( a );
+    s->write( b );
+    return s->write( c );
+}
 
-   template<class A,class B>
-      inline bool writes(Stream *s,A& a,B& b)
-   { s->write(a); return s->write(b); }
+template<class A, class B>
+inline bool writes( Stream* s, A& a, B& b )
+{
+    s->write( a );
+    return s->write( b );
+}
 
-   template<class A>
-      inline bool writes(Stream *s,A& a)
-   { return s->write(a); }
+template<class A>
+inline bool writes( Stream* s, A& a )
+{
+    return s->write( a );
+}
 }
 
 #endif

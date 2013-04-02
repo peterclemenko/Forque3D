@@ -41,9 +41,9 @@ struct Var;
 class ShaderComponent
 {
 public:
-   virtual ~ShaderComponent() {}
-   
-   virtual void print( Stream &stream ){};
+    virtual ~ShaderComponent() {}
+    
+    virtual void print( Stream& stream ) {};
 };
 
 
@@ -54,46 +54,46 @@ public:
 class ShaderConnector : public ShaderComponent
 {
 protected:
-   enum Consts
-   {
-      NUM_TEX_REGS = 8,
-   };
-
-   enum Elements
-   {
-      POSITION = 0,
-      NORMAL,
-      COLOR,
-      NUM_BASIC_ELEMS
-   };
-
-   Vector <Var*> mElementList;
-
-   U32 mCurTexElem;
-   U8 mName[32];
-
+    enum Consts
+    {
+        NUM_TEX_REGS = 8,
+    };
+    
+    enum Elements
+    {
+        POSITION = 0,
+        NORMAL,
+        COLOR,
+        NUM_BASIC_ELEMS
+    };
+    
+    Vector <Var*> mElementList;
+    
+    U32 mCurTexElem;
+    U8 mName[32];
+    
 public:
 
-   ShaderConnector();
-   virtual ~ShaderConnector();
-
-   ///
-   virtual Var* getElement(   RegisterType type, 
-                              U32 numElements = 1, 
-                              U32 numRegisters = -1 ) = 0;
-
-   virtual void setName( char *newName ) = 0;
-   virtual void reset() = 0;
-   virtual void sortVars() = 0;
-
-   virtual void print( Stream &stream ) = 0;
+    ShaderConnector();
+    virtual ~ShaderConnector();
+    
+    ///
+    virtual Var* getElement( RegisterType type,
+                             U32 numElements = 1,
+                             U32 numRegisters = -1 ) = 0;
+                             
+    virtual void setName( char* newName ) = 0;
+    virtual void reset() = 0;
+    virtual void sortVars() = 0;
+    
+    virtual void print( Stream& stream ) = 0;
 };
 
 /// This is to provide common functionalty needed by vertex and pixel main defs
 class ParamsDef : public ShaderComponent
 {
 protected:
-   virtual void assignConstantNumbers() {}
+    virtual void assignConstantNumbers() {}
 };
 
 #endif // _SHADERCOMP_H_

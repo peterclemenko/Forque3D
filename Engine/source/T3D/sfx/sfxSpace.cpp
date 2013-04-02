@@ -31,26 +31,26 @@
 IMPLEMENT_CO_NETOBJECT_V1( SFXSpace );
 
 ConsoleDocClass( SFXSpace,
-   "@brief A volume in space that defines an ambient sound zone.\n\n"
+                 "@brief A volume in space that defines an ambient sound zone.\n\n"
 
-   "@ingroup SFX"
-);
+                 "@ingroup SFX"
+               );
 
 //-----------------------------------------------------------------------------
 
 SFXSpace::SFXSpace()
 {
-   mObjScale.set( 10, 10, 10 );
-   mObjBox.set(
-      Point3F( -0.5f, -0.5f, -0.5f ),
-      Point3F( 0.5f, 0.5f, 0.5f )
-   );
+    mObjScale.set( 10, 10, 10 );
+    mObjBox.set(
+        Point3F( -0.5f, -0.5f, -0.5f ),
+        Point3F( 0.5f, 0.5f, 0.5f )
+    );
 }
 
 //-----------------------------------------------------------------------------
 
 void SFXSpace::consoleInit()
 {
-   // Disable rendering of SFXSpaces by default.
-   getStaticClassRep()->mIsRenderEnabled = false;
+    // Disable rendering of SFXSpaces by default.
+    getStaticClassRep()->mIsRenderEnabled = false;
 }

@@ -30,23 +30,23 @@ namespace Platform
 {
 namespace FS
 {
-   using namespace Torque;
-   using namespace Torque::FS;
+using namespace Torque;
+using namespace Torque::FS;
 
-   FileSystemRef  createNativeFS( const String &volume );
+FileSystemRef  createNativeFS( const String& volume );
 
-   String   getAssetDir();
+String   getAssetDir();
 
-   /// Mount default OS file systems.
-   /// On POSIX environment this means mounting a root FileSystem "/", mounting
-   /// the $HOME environment variable as the "home:/" file system and setting the
-   /// current working directory to the current OS working directory.
-   bool InstallFileSystems();
+/// Mount default OS file systems.
+/// On POSIX environment this means mounting a root FileSystem "/", mounting
+/// the $HOME environment variable as the "home:/" file system and setting the
+/// current working directory to the current OS working directory.
+bool InstallFileSystems();
 
-   bool MountDefaults();
-   bool MountZips(const String &root);
-   
-   bool Touch( const Path &path );
+bool MountDefaults();
+bool MountZips( const String& root );
+
+bool Touch( const Path& path );
 
 } // Namespace FS
 } // Namespace Platform

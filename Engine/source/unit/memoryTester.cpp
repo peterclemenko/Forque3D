@@ -32,6 +32,6 @@ void MemoryTester::mark()
 
 bool MemoryTester::check()
 {
-   //UnitTesting::UnitPrint("MemoryTester::check - unavailable w/o TORQUE_DEBUG_GUARD defined!");
-   return true;
+    //UnitTesting::UnitPrint("MemoryTester::check - unavailable w/o TORQUE_DEBUG_GUARD defined!");
+    return true;
 }

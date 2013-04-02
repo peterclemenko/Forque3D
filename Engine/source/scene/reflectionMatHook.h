@@ -32,43 +32,49 @@
 
 class ReflectionMatInstance : public MatInstance
 {
-   typedef MatInstance Parent;
-
+    typedef MatInstance Parent;
+    
 public:
-   ReflectionMatInstance( Material *mat );
-   virtual ~ReflectionMatInstance() {}
-
-   virtual bool setupPass( SceneRenderState *state, const SceneData &sgData );
+    ReflectionMatInstance( Material* mat );
+    virtual ~ReflectionMatInstance() {}
+    
+    virtual bool setupPass( SceneRenderState* state, const SceneData& sgData );
 };
 
 class ReflectionMaterialHook : public MatInstanceHook
 {
 public:
 
-   ReflectionMaterialHook();
-
-   // MatInstanceHook
-   virtual ~ReflectionMaterialHook();
-   virtual const MatInstanceHookType& getType() const { return Type; }
-
-   /// The material hook type.
-   static const MatInstanceHookType Type;
-
-   BaseMatInstance* getReflectMat() const { return mReflectMat; }
-
-   void init( BaseMatInstance *mat );
-
+    ReflectionMaterialHook();
+    
+    // MatInstanceHook
+    virtual ~ReflectionMaterialHook();
+    virtual const MatInstanceHookType& getType() const
+    {
+        return Type;
+    }
+    
+    /// The material hook type.
+    static const MatInstanceHookType Type;
+    
+    BaseMatInstance* getReflectMat() const
+    {
+        return mReflectMat;
+    }
+    
+    void init( BaseMatInstance* mat );
+    
 protected:
 
-   static void _overrideFeatures(   ProcessedMaterial *mat,
-                                    U32 stageNum,
-                                    MaterialFeatureData &fd, 
-                                    const FeatureSet &features );
-
-   /// 
-   BaseMatInstance* mReflectMat;
-
-
+    static void _overrideFeatures( ProcessedMaterial* mat,
+                                   U32 stageNum,
+                                   MaterialFeatureData& fd,
+                                   const FeatureSet& features );
+                                   
+    ///
+    BaseMatInstance* mReflectMat;
+    
+    
 };
 
 #endif // _SHADOWMATHOOK_H_

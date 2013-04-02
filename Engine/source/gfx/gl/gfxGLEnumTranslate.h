@@ -28,7 +28,7 @@
 
 namespace GFXGLEnumTranslate
 {
-   void init();
+void init();
 };
 
 extern GLenum GFXGLPrimType[GFXPT_COUNT];

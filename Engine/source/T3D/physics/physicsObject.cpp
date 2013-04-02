@@ -28,25 +28,25 @@
 
 
 PhysicsObject::PhysicsObject()
-   : mQueuedEvent( InvalidEventId )
+    : mQueuedEvent( InvalidEventId )
 {
 }
 
 PhysicsObject::~PhysicsObject()
 {
-   if ( mQueuedEvent != InvalidEventId )
-      Sim::cancelEvent( mQueuedEvent );
+    if( mQueuedEvent != InvalidEventId )
+        Sim::cancelEvent( mQueuedEvent );
 }
 
 void PhysicsObject::queueCallback( U32 ms, Delegate<void()> callback )
 {
-   // Cancel any existing event we may have pending.
-   if ( mQueuedEvent != InvalidEventId )
-      Sim::cancelEvent( mQueuedEvent );
-
-   // Fire off a new event.
-   SimDelegateEvent *event_ = new SimDelegateEvent();
-   event_->mCallback = callback;
-   event_->mEventId = &mQueuedEvent;
-   mQueuedEvent = Sim::postEvent( Sim::getRootGroup(), event_, Sim::getCurrentTime() + ms );
+    // Cancel any existing event we may have pending.
+    if( mQueuedEvent != InvalidEventId )
+        Sim::cancelEvent( mQueuedEvent );
+        
+    // Fire off a new event.
+    SimDelegateEvent* event_ = new SimDelegateEvent();
+    event_->mCallback = callback;
+    event_->mEventId = &mQueuedEvent;
+    mQueuedEvent = Sim::postEvent( Sim::getRootGroup(), event_, Sim::getCurrentTime() + ms );
 }

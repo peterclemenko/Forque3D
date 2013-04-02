@@ -28,23 +28,23 @@
 namespace Zip
 {
 
-ImplementCompressor(Deflate, Deflated);
+ImplementCompressor( Deflate, Deflated );
 
-CompressorCreateReadStream(Deflate)
+CompressorCreateReadStream( Deflate )
 {
-   ZipSubRStream *stream = new ZipSubRStream;
-   stream->attachStream(zipStream);
-   stream->setUncompressedSize(cdir->mUncompressedSize);
-
-   return stream;
+    ZipSubRStream* stream = new ZipSubRStream;
+    stream->attachStream( zipStream );
+    stream->setUncompressedSize( cdir->mUncompressedSize );
+    
+    return stream;
 }
 
-CompressorCreateWriteStream(Deflate)
+CompressorCreateWriteStream( Deflate )
 {
-   ZipSubWStream *stream = new ZipSubWStream;
-   stream->attachStream(zipStream);
-
-   return stream;
+    ZipSubWStream* stream = new ZipSubWStream;
+    stream->attachStream( zipStream );
+    
+    return stream;
 }
 
 } // end namespace Zip

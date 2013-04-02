@@ -33,61 +33,61 @@
 /// Win32 implementation of the window manager interface.
 class Win32WindowManager : public PlatformWindowManager
 {
-   friend class Win32Window;
-
-   virtual void _processCmdLineArgs(const S32 argc, const char **argv);
-
-   /// Link the specified window into the window list.
-   void linkWindow(Win32Window *w);
-
-   /// Remove specified window from the window list.
-   void unlinkWindow(Win32Window *w);
-
-   /// Callback for the process list.
-   void _process();
-
-   /// List of allocated windows.
-   Win32Window *mWindowListHead;
-
-   /// Parent window, used in window setup in web plugin scenarios.
-   HWND mParentWindow;
-
-   /// set via command line -offscreen option, controls whether rendering/input
-   // is intended for offscreen rendering
-   bool mOffscreenRender;
-
-   /// Callback to receive information about available monitors.
-   static BOOL CALLBACK MonitorEnumProc(
-      HMONITOR hMonitor,  // handle to display monitor
-      HDC hdcMonitor,     // handle to monitor DC
-      LPRECT lprcMonitor, // monitor intersection rectangle
-      LPARAM dwData       // data
-      );
-
-   /// If a curtain window is present, then its HWND will be stored here.
-   HWND mCurtainWindow;
-
+    friend class Win32Window;
+    
+    virtual void _processCmdLineArgs( const S32 argc, const char** argv );
+    
+    /// Link the specified window into the window list.
+    void linkWindow( Win32Window* w );
+    
+    /// Remove specified window from the window list.
+    void unlinkWindow( Win32Window* w );
+    
+    /// Callback for the process list.
+    void _process();
+    
+    /// List of allocated windows.
+    Win32Window* mWindowListHead;
+    
+    /// Parent window, used in window setup in web plugin scenarios.
+    HWND mParentWindow;
+    
+    /// set via command line -offscreen option, controls whether rendering/input
+    // is intended for offscreen rendering
+    bool mOffscreenRender;
+    
+    /// Callback to receive information about available monitors.
+    static BOOL CALLBACK MonitorEnumProc(
+        HMONITOR hMonitor,  // handle to display monitor
+        HDC hdcMonitor,     // handle to monitor DC
+        LPRECT lprcMonitor, // monitor intersection rectangle
+        LPARAM dwData       // data
+    );
+    
+    /// If a curtain window is present, then its HWND will be stored here.
+    HWND mCurtainWindow;
+    
 public:
-   Win32WindowManager();
-   ~Win32WindowManager();
-
-   virtual RectI getPrimaryDesktopArea();
-   virtual S32       getDesktopBitDepth();
-   virtual Point2I   getDesktopResolution();
-
-   virtual void getMonitorRegions(Vector<RectI> &regions);
-   virtual PlatformWindow *createWindow(GFXDevice *device, const GFXVideoMode &mode);
-   virtual void getWindows(VectorPtr<PlatformWindow*> &windows);
-
-   virtual void setParentWindow(void* newParent);
-   virtual void* getParentWindow();
-
-   virtual PlatformWindow *getWindowById(WindowId id);
-   virtual PlatformWindow *getFirstWindow();
-   virtual PlatformWindow* getFocusedWindow();
-
-   virtual void lowerCurtain();
-   virtual void raiseCurtain();
+    Win32WindowManager();
+    ~Win32WindowManager();
+    
+    virtual RectI getPrimaryDesktopArea();
+    virtual S32       getDesktopBitDepth();
+    virtual Point2I   getDesktopResolution();
+    
+    virtual void getMonitorRegions( Vector<RectI>& regions );
+    virtual PlatformWindow* createWindow( GFXDevice* device, const GFXVideoMode& mode );
+    virtual void getWindows( VectorPtr<PlatformWindow*>& windows );
+    
+    virtual void setParentWindow( void* newParent );
+    virtual void* getParentWindow();
+    
+    virtual PlatformWindow* getWindowById( WindowId id );
+    virtual PlatformWindow* getFirstWindow();
+    virtual PlatformWindow* getFocusedWindow();
+    
+    virtual void lowerCurtain();
+    virtual void raiseCurtain();
 };
 
 #endif

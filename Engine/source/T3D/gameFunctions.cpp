@@ -39,28 +39,28 @@ static void Process3D();
 
 MODULE_BEGIN( 3D )
 
-   MODULE_INIT_AFTER( Process )
-   MODULE_INIT_AFTER( Scene )
-   
-   MODULE_SHUTDOWN_BEFORE( Process )
-   MODULE_SHUTDOWN_BEFORE( Sim )
-   MODULE_SHUTDOWN_AFTER( Scene )
-   
-   MODULE_INIT
-   {
-      Process::notify(Process3D, PROCESS_TIME_ORDER);
+MODULE_INIT_AFTER( Process )
+MODULE_INIT_AFTER( Scene )
 
-      GameConnection::smFovUpdate.notify(GameSetCameraFov);
+MODULE_SHUTDOWN_BEFORE( Process )
+MODULE_SHUTDOWN_BEFORE( Sim )
+MODULE_SHUTDOWN_AFTER( Scene )
 
-      RegisterGameFunctions();
-   }
-   
-   MODULE_SHUTDOWN
-   {
-      GameConnection::smFovUpdate.remove(GameSetCameraFov);
+MODULE_INIT
+{
+    Process::notify( Process3D, PROCESS_TIME_ORDER );
+    
+    GameConnection::smFovUpdate.notify( GameSetCameraFov );
+    
+    RegisterGameFunctions();
+}
 
-      Process::remove(Process3D);
-   }
+MODULE_SHUTDOWN
+{
+    GameConnection::smFovUpdate.remove( GameSetCameraFov );
+    
+    Process::remove( Process3D );
+}
 
 MODULE_END;
 
@@ -70,36 +70,37 @@ static S32 gEaseIn = Ease::In;
 static S32 gEaseOut = Ease::Out;
 
 static S32 gEaseLinear = Ease::Linear;
-static S32 gEaseQuadratic= Ease::Quadratic;
-static S32 gEaseCubic= Ease::Cubic;
+static S32 gEaseQuadratic = Ease::Quadratic;
+static S32 gEaseCubic = Ease::Cubic;
 static S32 gEaseQuartic = Ease::Quartic;
 static S32 gEaseQuintic = Ease::Quintic;
-static S32 gEaseSinusoidal= Ease::Sinusoidal;
+static S32 gEaseSinusoidal = Ease::Sinusoidal;
 static S32 gEaseExponential = Ease::Exponential;
 static S32 gEaseCircular = Ease::Circular;
 static S32 gEaseElastic = Ease::Elastic;
 static S32 gEaseBack = Ease::Back;
-static S32 gEaseBounce = Ease::Bounce;	
+static S32 gEaseBounce = Ease::Bounce;
 
 
 extern void ShowInit();
 
 //------------------------------------------------------------------------------
 /// Camera and FOV info
-namespace {
+namespace
+{
 
-   const  U32 MaxZoomSpeed             = 2000;     ///< max number of ms to reach target FOV
+const  U32 MaxZoomSpeed             = 2000;     ///< max number of ms to reach target FOV
 
-   static F32 sConsoleCameraFov        = 90.f;     ///< updated to camera FOV each frame
-   static F32 sDefaultFov              = 90.f;     ///< normal FOV
-   static F32 sCameraFov               = 90.f;     ///< current camera FOV
-   static F32 sTargetFov               = 90.f;     ///< the desired FOV
-   static F32 sLastCameraUpdateTime    = 0;        ///< last time camera was updated
-   static S32 sZoomSpeed               = 500;      ///< ms per 90deg fov change
+static F32 sConsoleCameraFov        = 90.f;     ///< updated to camera FOV each frame
+static F32 sDefaultFov              = 90.f;     ///< normal FOV
+static F32 sCameraFov               = 90.f;     ///< current camera FOV
+static F32 sTargetFov               = 90.f;     ///< the desired FOV
+static F32 sLastCameraUpdateTime    = 0;        ///< last time camera was updated
+static S32 sZoomSpeed               = 500;      ///< ms per 90deg fov change
 
-   /// A scale to apply to the normal visible distance
-   /// typically used for tuning performance.
-   static F32 sVisDistanceScale = 1.0f;
+/// A scale to apply to the normal visible distance
+/// typically used for tuning performance.
+static F32 sVisDistanceScale = 1.0f;
 
 } // namespace {}
 
@@ -108,177 +109,177 @@ static SimpleQueryList sgServerQueryList;
 static U32 sgServerQueryIndex = 0;
 
 //SERVER FUNCTIONS ONLY
-ConsoleFunctionGroupBegin( Containers, "Spatial query functions. <b>Server side only!</b>");
+ConsoleFunctionGroupBegin( Containers, "Spatial query functions. <b>Server side only!</b>" );
 
-ConsoleFunction(containerFindFirst, const char*, 6, 6, "(int mask, Point3F point, float x, float y, float z)"
-   "@brief Find objects matching the bitmask type within a box centered at point, with extents x, y, z.\n\n"
-   "@returns The first object found, or an empty string if nothing was found.  Thereafter, you can get more "
-   "results using containerFindNext()."
-   "@see containerFindNext\n"
-   "@ingroup Game")
+ConsoleFunction( containerFindFirst, const char*, 6, 6, "(int mask, Point3F point, float x, float y, float z)"
+                 "@brief Find objects matching the bitmask type within a box centered at point, with extents x, y, z.\n\n"
+                 "@returns The first object found, or an empty string if nothing was found.  Thereafter, you can get more "
+                 "results using containerFindNext()."
+                 "@see containerFindNext\n"
+                 "@ingroup Game" )
 {
-   //find out what we're looking for
-   U32 typeMask = U32(dAtoi(argv[1]));
-
-   //find the center of the container volume
-   Point3F origin(0.0f, 0.0f, 0.0f);
-   dSscanf(argv[2], "%g %g %g", &origin.x, &origin.y, &origin.z);
-
-   //find the box dimensions
-   Point3F size(0.0f, 0.0f, 0.0f);
-   size.x = mFabs(dAtof(argv[3]));
-   size.y = mFabs(dAtof(argv[4]));
-   size.z = mFabs(dAtof(argv[5]));
-
-   //build the container volume
-   Box3F queryBox;
-   queryBox.minExtents = origin;
-   queryBox.maxExtents = origin;
-   queryBox.minExtents -= size;
-   queryBox.maxExtents += size;
-
-   //initialize the list, and do the query
-   sgServerQueryList.mList.clear();
-   gServerContainer.findObjects(queryBox, typeMask, SimpleQueryList::insertionCallback, &sgServerQueryList);
-
-   //return the first element
-   sgServerQueryIndex = 0;
-   char *buff = Con::getReturnBuffer(100);
-   if (sgServerQueryList.mList.size())
-      dSprintf(buff, 100, "%d", sgServerQueryList.mList[sgServerQueryIndex++]->getId());
-   else
-      buff[0] = '\0';
-
-   return buff;
+    //find out what we're looking for
+    U32 typeMask = U32( dAtoi( argv[1] ) );
+    
+    //find the center of the container volume
+    Point3F origin( 0.0f, 0.0f, 0.0f );
+    dSscanf( argv[2], "%g %g %g", &origin.x, &origin.y, &origin.z );
+    
+    //find the box dimensions
+    Point3F size( 0.0f, 0.0f, 0.0f );
+    size.x = mFabs( dAtof( argv[3] ) );
+    size.y = mFabs( dAtof( argv[4] ) );
+    size.z = mFabs( dAtof( argv[5] ) );
+    
+    //build the container volume
+    Box3F queryBox;
+    queryBox.minExtents = origin;
+    queryBox.maxExtents = origin;
+    queryBox.minExtents -= size;
+    queryBox.maxExtents += size;
+    
+    //initialize the list, and do the query
+    sgServerQueryList.mList.clear();
+    gServerContainer.findObjects( queryBox, typeMask, SimpleQueryList::insertionCallback, &sgServerQueryList );
+    
+    //return the first element
+    sgServerQueryIndex = 0;
+    char* buff = Con::getReturnBuffer( 100 );
+    if( sgServerQueryList.mList.size() )
+        dSprintf( buff, 100, "%d", sgServerQueryList.mList[sgServerQueryIndex++]->getId() );
+    else
+        buff[0] = '\0';
+        
+    return buff;
 }
 
 ConsoleFunction( containerFindNext, const char*, 1, 1, "()"
-   "@brief Get more results from a previous call to containerFindFirst().\n\n"
-   "@note You must call containerFindFirst() to begin the search.\n"
-   "@returns The next object found, or an empty string if nothing else was found.\n"
-   "@see containerFindFirst()\n"
-	"@ingroup Game")
+                 "@brief Get more results from a previous call to containerFindFirst().\n\n"
+                 "@note You must call containerFindFirst() to begin the search.\n"
+                 "@returns The next object found, or an empty string if nothing else was found.\n"
+                 "@see containerFindFirst()\n"
+                 "@ingroup Game" )
 {
-   //return the next element
-   char *buff = Con::getReturnBuffer(100);
-   if (sgServerQueryIndex < sgServerQueryList.mList.size())
-      dSprintf(buff, 100, "%d", sgServerQueryList.mList[sgServerQueryIndex++]->getId());
-   else
-      buff[0] = '\0';
-
-   return buff;
+    //return the next element
+    char* buff = Con::getReturnBuffer( 100 );
+    if( sgServerQueryIndex < sgServerQueryList.mList.size() )
+        dSprintf( buff, 100, "%d", sgServerQueryList.mList[sgServerQueryIndex++]->getId() );
+    else
+        buff[0] = '\0';
+        
+    return buff;
 }
 
 ConsoleFunctionGroupEnd( Containers );
 
 //------------------------------------------------------------------------------
 
-bool GameGetCameraTransform(MatrixF *mat, Point3F *velocity)
+bool GameGetCameraTransform( MatrixF* mat, Point3F* velocity )
 {
-   // Return the position and velocity of the control object
-   GameConnection* connection = GameConnection::getConnectionToServer();
-   return connection && connection->getControlCameraTransform(0, mat) &&
-      connection->getControlCameraVelocity(velocity);
+    // Return the position and velocity of the control object
+    GameConnection* connection = GameConnection::getConnectionToServer();
+    return connection && connection->getControlCameraTransform( 0, mat ) &&
+           connection->getControlCameraVelocity( velocity );
 }
 
 //------------------------------------------------------------------------------
-DefineEngineFunction( setDefaultFov, void, ( F32 defaultFOV ),,
-				"@brief Set the default FOV for a camera.\n"
-            "@param defaultFOV The default field of view in degrees\n"
-				"@ingroup CameraSystem")
+DefineEngineFunction( setDefaultFov, void, ( F32 defaultFOV ), ,
+                      "@brief Set the default FOV for a camera.\n"
+                      "@param defaultFOV The default field of view in degrees\n"
+                      "@ingroup CameraSystem" )
 {
-   sDefaultFov = mClampF(defaultFOV, MinCameraFov, MaxCameraFov);
-   if(sCameraFov == sTargetFov)
-      sTargetFov = sDefaultFov;
+    sDefaultFov = mClampF( defaultFOV, MinCameraFov, MaxCameraFov );
+    if( sCameraFov == sTargetFov )
+        sTargetFov = sDefaultFov;
 }
 
-DefineEngineFunction( setZoomSpeed, void, ( S32 speed ),,
-				"@brief Set the zoom speed of the camera.\n"
-            "This affects how quickly the camera changes from one field of view "
-            "to another.\n"
-            "@param speed The camera's zoom speed in ms per 90deg FOV change\n"
-				"@ingroup CameraSystem")
+DefineEngineFunction( setZoomSpeed, void, ( S32 speed ), ,
+                      "@brief Set the zoom speed of the camera.\n"
+                      "This affects how quickly the camera changes from one field of view "
+                      "to another.\n"
+                      "@param speed The camera's zoom speed in ms per 90deg FOV change\n"
+                      "@ingroup CameraSystem" )
 {
-   sZoomSpeed = mClamp(speed, 0, MaxZoomSpeed);
+    sZoomSpeed = mClamp( speed, 0, MaxZoomSpeed );
 }
 
-DefineEngineFunction( setFov, void, ( F32 FOV ),,
-				"@brief Set the FOV of the camera.\n"
-            "@param FOV The camera's new FOV in degrees\n"
-				"@ingroup CameraSystem")
+DefineEngineFunction( setFov, void, ( F32 FOV ), ,
+                      "@brief Set the FOV of the camera.\n"
+                      "@param FOV The camera's new FOV in degrees\n"
+                      "@ingroup CameraSystem" )
 {
-   sTargetFov = mClampF(FOV, MinCameraFov, MaxCameraFov);
+    sTargetFov = mClampF( FOV, MinCameraFov, MaxCameraFov );
 }
 
 F32 GameGetCameraFov()
 {
-   return(sCameraFov);
+    return( sCameraFov );
 }
 
-void GameSetCameraFov(F32 fov)
+void GameSetCameraFov( F32 fov )
 {
-   sTargetFov = sCameraFov = fov;
+    sTargetFov = sCameraFov = fov;
 }
 
-void GameSetCameraTargetFov(F32 fov)
+void GameSetCameraTargetFov( F32 fov )
 {
-   sTargetFov = fov;
+    sTargetFov = fov;
 }
 
 void GameUpdateCameraFov()
 {
-   F32 time = F32(Platform::getVirtualMilliseconds());
-
-   // need to update fov?
-   if(sTargetFov != sCameraFov)
-   {
-      F32 delta = time - sLastCameraUpdateTime;
-
-      // snap zoom?
-      if((sZoomSpeed == 0) || (delta <= 0.f))
-         sCameraFov = sTargetFov;
-      else
-      {
-         // gZoomSpeed is time in ms to zoom 90deg
-         F32 step = 90.f * (delta / F32(sZoomSpeed));
-
-         if(sCameraFov > sTargetFov)
-         {
-            sCameraFov -= step;
-            if(sCameraFov < sTargetFov)
-               sCameraFov = sTargetFov;
-         }
-         else
-         {
-            sCameraFov += step;
-            if(sCameraFov > sTargetFov)
-               sCameraFov = sTargetFov;
-         }
-      }
-   }
-
-   // the game connection controls the vertical and the horizontal
-   GameConnection * connection = GameConnection::getConnectionToServer();
-   if(connection)
-   {
-      // check if fov is valid on control object
-      if(connection->isValidControlCameraFov(sCameraFov))
-         connection->setControlCameraFov(sCameraFov);
-      else
-      {
-         // will set to the closest fov (fails only on invalid control object)
-         if(connection->setControlCameraFov(sCameraFov))
-         {
-            F32 setFov = sCameraFov;
-            connection->getControlCameraFov(&setFov);
-            sTargetFov = sCameraFov = setFov;
-         }
-      }
-   }
-
-   // update the console variable
-   sConsoleCameraFov = sCameraFov;
-   sLastCameraUpdateTime = time;
+    F32 time = F32( Platform::getVirtualMilliseconds() );
+    
+    // need to update fov?
+    if( sTargetFov != sCameraFov )
+    {
+        F32 delta = time - sLastCameraUpdateTime;
+        
+        // snap zoom?
+        if( ( sZoomSpeed == 0 ) || ( delta <= 0.f ) )
+            sCameraFov = sTargetFov;
+        else
+        {
+            // gZoomSpeed is time in ms to zoom 90deg
+            F32 step = 90.f * ( delta / F32( sZoomSpeed ) );
+            
+            if( sCameraFov > sTargetFov )
+            {
+                sCameraFov -= step;
+                if( sCameraFov < sTargetFov )
+                    sCameraFov = sTargetFov;
+            }
+            else
+            {
+                sCameraFov += step;
+                if( sCameraFov > sTargetFov )
+                    sCameraFov = sTargetFov;
+            }
+        }
+    }
+    
+    // the game connection controls the vertical and the horizontal
+    GameConnection* connection = GameConnection::getConnectionToServer();
+    if( connection )
+    {
+        // check if fov is valid on control object
+        if( connection->isValidControlCameraFov( sCameraFov ) )
+            connection->setControlCameraFov( sCameraFov );
+        else
+        {
+            // will set to the closest fov (fails only on invalid control object)
+            if( connection->setControlCameraFov( sCameraFov ) )
+            {
+                F32 setFov = sCameraFov;
+                connection->getControlCameraFov( &setFov );
+                sTargetFov = sCameraFov = setFov;
+            }
+        }
+    }
+    
+    // update the console variable
+    sConsoleCameraFov = sCameraFov;
+    sLastCameraUpdateTime = time;
 }
 //--------------------------------------------------------------------------
 
@@ -340,131 +341,131 @@ void GameUpdateCameraFov()
 // }
 #endif
 
-bool GameProcessCameraQuery(CameraQuery *query)
+bool GameProcessCameraQuery( CameraQuery* query )
 {
-   GameConnection* connection = GameConnection::getConnectionToServer();
-
-   if (connection && connection->getControlCameraTransform(0.032f, &query->cameraMatrix))
-   {
-      query->object = dynamic_cast<ShapeBase*>(connection->getControlObject());
-      query->nearPlane = gClientSceneGraph->getNearClip();
-
-      // Scale the normal visible distance by the performance 
-      // tuning scale which we never let over 1.
-      sVisDistanceScale = mClampF( sVisDistanceScale, 0.01f, 1.0f );
-      query->farPlane = gClientSceneGraph->getVisibleDistance() * sVisDistanceScale;
-
-      F32 cameraFov;
-      if(!connection->getControlCameraFov(&cameraFov))
-         return false;
-
-      query->fov = mDegToRad(cameraFov);
-      return true;
-   }
-   return false;
+    GameConnection* connection = GameConnection::getConnectionToServer();
+    
+    if( connection && connection->getControlCameraTransform( 0.032f, &query->cameraMatrix ) )
+    {
+        query->object = dynamic_cast<ShapeBase*>( connection->getControlObject() );
+        query->nearPlane = gClientSceneGraph->getNearClip();
+        
+        // Scale the normal visible distance by the performance
+        // tuning scale which we never let over 1.
+        sVisDistanceScale = mClampF( sVisDistanceScale, 0.01f, 1.0f );
+        query->farPlane = gClientSceneGraph->getVisibleDistance() * sVisDistanceScale;
+        
+        F32 cameraFov;
+        if( !connection->getControlCameraFov( &cameraFov ) )
+            return false;
+            
+        query->fov = mDegToRad( cameraFov );
+        return true;
+    }
+    return false;
 }
 
 void GameRenderWorld()
 {
-   PROFILE_START(GameRenderWorld);
-   FrameAllocator::setWaterMark(0);
-
-   gClientSceneGraph->renderScene( SPT_Diffuse );
-
-   // renderScene leaves some states dirty, which causes problems if GameTSCtrl is the last Gui object rendered
-   GFX->updateStates();
-
-   AssertFatal(FrameAllocator::getWaterMark() == 0,
-      "Error, someone didn't reset the water mark on the frame allocator!");
-   FrameAllocator::setWaterMark(0);
-   PROFILE_END();
+    PROFILE_START( GameRenderWorld );
+    FrameAllocator::setWaterMark( 0 );
+    
+    gClientSceneGraph->renderScene( SPT_Diffuse );
+    
+    // renderScene leaves some states dirty, which causes problems if GameTSCtrl is the last Gui object rendered
+    GFX->updateStates();
+    
+    AssertFatal( FrameAllocator::getWaterMark() == 0,
+                 "Error, someone didn't reset the water mark on the frame allocator!" );
+    FrameAllocator::setWaterMark( 0 );
+    PROFILE_END();
 }
 
 
 static void Process3D()
 {
-   MATMGR->updateTime();
-   
-   // Update the SFX world, if there is one.
-   
-   if( gSFX3DWorld )
-      gSFX3DWorld->update();
+    MATMGR->updateTime();
+    
+    // Update the SFX world, if there is one.
+    
+    if( gSFX3DWorld )
+        gSFX3DWorld->update();
 }
 
 static void RegisterGameFunctions()
 {
-   Con::addVariable( "$pref::Camera::distanceScale", TypeF32, &sVisDistanceScale, 
-      "A scale to apply to the normal visible distance, typically used for tuning performance.\n"
-	   "@ingroup Game");
-   Con::addVariable( "$cameraFov", TypeF32, &sConsoleCameraFov, 
-      "The camera's Field of View.\n\n"
-	   "@ingroup Game" );
-
-   // Stuff game types into the console
-   Con::setIntVariable("$TypeMasks::StaticObjectType",         StaticObjectType);
-   Con::setIntVariable("$TypeMasks::EnvironmentObjectType",    EnvironmentObjectType);
-   Con::setIntVariable("$TypeMasks::TerrainObjectType",        TerrainObjectType);
-   Con::setIntVariable("$TypeMasks::InteriorObjectType",       InteriorObjectType);
-   Con::setIntVariable("$TypeMasks::WaterObjectType",          WaterObjectType);
-   Con::setIntVariable("$TypeMasks::TriggerObjectType",        TriggerObjectType);
-   Con::setIntVariable("$TypeMasks::MarkerObjectType",         MarkerObjectType);
-   Con::setIntVariable("$TypeMasks::GameBaseObjectType",       GameBaseObjectType);
-   Con::setIntVariable("$TypeMasks::ShapeBaseObjectType",      ShapeBaseObjectType);
-   Con::setIntVariable("$TypeMasks::CameraObjectType",         CameraObjectType);
-   Con::setIntVariable("$TypeMasks::StaticShapeObjectType",    StaticShapeObjectType);
-   Con::setIntVariable("$TypeMasks::DynamicShapeObjectType",   DynamicShapeObjectType);
-   Con::setIntVariable("$TypeMasks::PlayerObjectType",         PlayerObjectType);
-   Con::setIntVariable("$TypeMasks::ItemObjectType",           ItemObjectType);
-   Con::setIntVariable("$TypeMasks::VehicleObjectType",        VehicleObjectType);
-   Con::setIntVariable("$TypeMasks::VehicleBlockerObjectType", VehicleBlockerObjectType);
-   Con::setIntVariable("$TypeMasks::ProjectileObjectType",     ProjectileObjectType);
-   Con::setIntVariable("$TypeMasks::ExplosionObjectType",      ExplosionObjectType);
-   Con::setIntVariable("$TypeMasks::CorpseObjectType",         CorpseObjectType);
-   Con::setIntVariable("$TypeMasks::DebrisObjectType",         DebrisObjectType);
-   Con::setIntVariable("$TypeMasks::PhysicalZoneObjectType",   PhysicalZoneObjectType);
-   Con::setIntVariable("$TypeMasks::LightObjectType",          LightObjectType);
-
-   Con::addVariable("Ease::InOut", TypeS32, &gEaseInOut, 
-      "InOut ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::In", TypeS32, &gEaseIn, 
-      "In ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::Out", TypeS32, &gEaseOut, 
-      "Out ease for curve movement.\n"
-	   "@ingroup Game");
-
-   Con::addVariable("Ease::Linear", TypeS32, &gEaseLinear, 
-      "Linear ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::Quadratic", TypeS32, &gEaseQuadratic, 
-      "Quadratic ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::Cubic", TypeS32, &gEaseCubic, 
-      "Cubic ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::Quartic", TypeS32, &gEaseQuartic, 
-      "Quartic ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::Quintic", TypeS32, &gEaseQuintic, 
-      "Quintic ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::Sinusoidal", TypeS32, &gEaseSinusoidal, 
-      "Sinusoidal ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::Exponential", TypeS32, &gEaseExponential, 
-      "Exponential ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::Circular", TypeS32, &gEaseCircular, 
-      "Circular ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::Elastic", TypeS32, &gEaseElastic, 
-      "Elastic ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::Back", TypeS32, &gEaseBack, 
-      "Backwards ease for curve movement.\n"
-	   "@ingroup Game");
-   Con::addVariable("Ease::Bounce", TypeS32, &gEaseBounce, 
-      "Bounce ease for curve movement.\n"
-	   "@ingroup Game");
+    Con::addVariable( "$pref::Camera::distanceScale", TypeF32, &sVisDistanceScale,
+                      "A scale to apply to the normal visible distance, typically used for tuning performance.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "$cameraFov", TypeF32, &sConsoleCameraFov,
+                      "The camera's Field of View.\n\n"
+                      "@ingroup Game" );
+                      
+    // Stuff game types into the console
+    Con::setIntVariable( "$TypeMasks::StaticObjectType",         StaticObjectType );
+    Con::setIntVariable( "$TypeMasks::EnvironmentObjectType",    EnvironmentObjectType );
+    Con::setIntVariable( "$TypeMasks::TerrainObjectType",        TerrainObjectType );
+    Con::setIntVariable( "$TypeMasks::InteriorObjectType",       InteriorObjectType );
+    Con::setIntVariable( "$TypeMasks::WaterObjectType",          WaterObjectType );
+    Con::setIntVariable( "$TypeMasks::TriggerObjectType",        TriggerObjectType );
+    Con::setIntVariable( "$TypeMasks::MarkerObjectType",         MarkerObjectType );
+    Con::setIntVariable( "$TypeMasks::GameBaseObjectType",       GameBaseObjectType );
+    Con::setIntVariable( "$TypeMasks::ShapeBaseObjectType",      ShapeBaseObjectType );
+    Con::setIntVariable( "$TypeMasks::CameraObjectType",         CameraObjectType );
+    Con::setIntVariable( "$TypeMasks::StaticShapeObjectType",    StaticShapeObjectType );
+    Con::setIntVariable( "$TypeMasks::DynamicShapeObjectType",   DynamicShapeObjectType );
+    Con::setIntVariable( "$TypeMasks::PlayerObjectType",         PlayerObjectType );
+    Con::setIntVariable( "$TypeMasks::ItemObjectType",           ItemObjectType );
+    Con::setIntVariable( "$TypeMasks::VehicleObjectType",        VehicleObjectType );
+    Con::setIntVariable( "$TypeMasks::VehicleBlockerObjectType", VehicleBlockerObjectType );
+    Con::setIntVariable( "$TypeMasks::ProjectileObjectType",     ProjectileObjectType );
+    Con::setIntVariable( "$TypeMasks::ExplosionObjectType",      ExplosionObjectType );
+    Con::setIntVariable( "$TypeMasks::CorpseObjectType",         CorpseObjectType );
+    Con::setIntVariable( "$TypeMasks::DebrisObjectType",         DebrisObjectType );
+    Con::setIntVariable( "$TypeMasks::PhysicalZoneObjectType",   PhysicalZoneObjectType );
+    Con::setIntVariable( "$TypeMasks::LightObjectType",          LightObjectType );
+    
+    Con::addVariable( "Ease::InOut", TypeS32, &gEaseInOut,
+                      "InOut ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::In", TypeS32, &gEaseIn,
+                      "In ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::Out", TypeS32, &gEaseOut,
+                      "Out ease for curve movement.\n"
+                      "@ingroup Game" );
+                      
+    Con::addVariable( "Ease::Linear", TypeS32, &gEaseLinear,
+                      "Linear ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::Quadratic", TypeS32, &gEaseQuadratic,
+                      "Quadratic ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::Cubic", TypeS32, &gEaseCubic,
+                      "Cubic ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::Quartic", TypeS32, &gEaseQuartic,
+                      "Quartic ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::Quintic", TypeS32, &gEaseQuintic,
+                      "Quintic ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::Sinusoidal", TypeS32, &gEaseSinusoidal,
+                      "Sinusoidal ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::Exponential", TypeS32, &gEaseExponential,
+                      "Exponential ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::Circular", TypeS32, &gEaseCircular,
+                      "Circular ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::Elastic", TypeS32, &gEaseElastic,
+                      "Elastic ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::Back", TypeS32, &gEaseBack,
+                      "Backwards ease for curve movement.\n"
+                      "@ingroup Game" );
+    Con::addVariable( "Ease::Bounce", TypeS32, &gEaseBounce,
+                      "Bounce ease for curve movement.\n"
+                      "@ingroup Game" );
 }

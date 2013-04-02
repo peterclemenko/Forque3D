@@ -43,11 +43,11 @@
 #endif
 
 #if defined(TORQUE_OS_MAC) && !defined(__APPLE__)
-   #define __APPLE__
+#define __APPLE__
 #elif defined(TORQUE_OS_LINUX) && !defined(LINUX)
-   #define LINUX
+#define LINUX
 #elif defined(TORQUE_OS_WIN32) && !defined(WIN32)
-   #define WIN32
+#define WIN32
 #endif
 
 #ifndef NX_PHYSICS_NXPHYSICS
@@ -73,7 +73,7 @@
 #include <NxCapsuleController.h>
 
 /// The single global physx sdk object for this process.
-extern NxPhysicsSDK *gPhysicsSDK;
+extern NxPhysicsSDK* gPhysicsSDK;
 
 #include "platform/tmm_on.h"
 

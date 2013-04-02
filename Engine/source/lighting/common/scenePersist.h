@@ -31,37 +31,38 @@ class Stream;
 
 struct PersistInfo
 {
-	struct PersistChunk
-	{
-		enum {
-			MissionChunkType = 0,
-			InteriorChunkType,
-			TerrainChunkType,
-			AtlasLightMapChunkType
-		};
-
-		U32            mChunkType;
-		U32            mChunkCRC;
-
-		virtual ~PersistChunk() {}
-
-		virtual bool read(Stream &);
-		virtual bool write(Stream &);
-	};
-
-	struct MissionChunk : public PersistChunk
-	{
-		typedef PersistChunk Parent;
-		MissionChunk();
-	};
-
-	~PersistInfo();
-
-	Vector<PersistChunk*>      mChunks;
-	static U32                 smFileVersion;
-
-	bool read(Stream &);
-	bool write(Stream &);
+    struct PersistChunk
+    {
+        enum
+        {
+            MissionChunkType = 0,
+            InteriorChunkType,
+            TerrainChunkType,
+            AtlasLightMapChunkType
+        };
+        
+        U32            mChunkType;
+        U32            mChunkCRC;
+        
+        virtual ~PersistChunk() {}
+        
+        virtual bool read( Stream& );
+        virtual bool write( Stream& );
+    };
+    
+    struct MissionChunk : public PersistChunk
+    {
+        typedef PersistChunk Parent;
+        MissionChunk();
+    };
+    
+    ~PersistInfo();
+    
+    Vector<PersistChunk*>      mChunks;
+    static U32                 smFileVersion;
+    
+    bool read( Stream& );
+    bool write( Stream& );
 };
 
 

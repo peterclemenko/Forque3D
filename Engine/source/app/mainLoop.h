@@ -29,25 +29,25 @@
 class StandardMainLoop
 {
 public:
-   /// Initialize core libraries and call registered init functions
-   static void init();
-
-   /// Pass command line arguments to registered functions and main.cs
-   static bool handleCommandLine(S32 argc, const char **argv);
-
-   /// A standard mainloop implementation.
-   static bool doMainLoop();
-
-   /// Shut down the core libraries and call registered shutdown fucntions.
-   static void shutdown();
-
-   static void setRestart( bool restart );
-   static bool requiresRestart();
-
+    /// Initialize core libraries and call registered init functions
+    static void init();
+    
+    /// Pass command line arguments to registered functions and main.cs
+    static bool handleCommandLine( S32 argc, const char** argv );
+    
+    /// A standard mainloop implementation.
+    static bool doMainLoop();
+    
+    /// Shut down the core libraries and call registered shutdown fucntions.
+    static void shutdown();
+    
+    static void setRestart( bool restart );
+    static bool requiresRestart();
+    
 private:
-   /// Handle "pre shutdown" tasks like notifying scripts BEFORE we delete
-   /// stuff from under them.
-   static void preShutdown();
+    /// Handle "pre shutdown" tasks like notifying scripts BEFORE we delete
+    /// stuff from under them.
+    static void preShutdown();
 };
 
 #endif

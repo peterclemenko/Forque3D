@@ -35,13 +35,13 @@
 ///
 class ScenePolyhedralSpace : public ScenePolyhedralObject< SceneSpace >
 {
-   public:
+public:
 
-      typedef ScenePolyhedralObject< SceneSpace > Parent;
-
-      ScenePolyhedralSpace() {}
-      ScenePolyhedralSpace( const PolyhedronType& polyhedron )
-         : Parent( polyhedron ) {}
+    typedef ScenePolyhedralObject< SceneSpace > Parent;
+    
+    ScenePolyhedralSpace() {}
+    ScenePolyhedralSpace( const PolyhedronType& polyhedron )
+        : Parent( polyhedron ) {}
 };
 
 #endif // !_SCENEPOLYHEDRALSPACE_H_

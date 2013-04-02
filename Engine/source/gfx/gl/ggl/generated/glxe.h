@@ -197,7 +197,7 @@ typedef XID GLXContextID;
 
 #ifdef GLX_SGIX_fbconfig
 typedef XID GLXFBConfigIDSGIX;
-typedef struct __GLXFBConfigRec *GLXFBConfigSGIX;
+typedef struct __GLXFBConfigRec* GLXFBConfigSGIX;
 #define GLX_WINDOW_BIT_SGIX 0x00000001
 #define GLX_RGBA_BIT_SGIX 0x00000001
 #define GLX_PIXMAP_BIT_SGIX 0x00000002
@@ -219,7 +219,20 @@ typedef struct __GLXFBConfigRec *GLXFBConfigSGIX;
 
 #ifdef GLX_SGIX_pbuffer
 typedef XID GLXPbufferSGIX;
-typedef struct { int type; unsigned long serial; Bool send_event; Display *display; GLXDrawable drawable; int event_type; int draw_type; unsigned int mask; int x, y; int width, height; int count; } GLXBufferClobberEventSGIX;
+typedef struct
+{
+    int type;
+    unsigned long serial;
+    Bool send_event;
+    Display* display;
+    GLXDrawable drawable;
+    int event_type;
+    int draw_type;
+    unsigned int mask;
+    int x, y;
+    int width, height;
+    int count;
+} GLXBufferClobberEventSGIX;
 #define GLX_FRONT_LEFT_BUFFER_BIT_SGIX 0x00000001
 #define GLX_FRONT_RIGHT_BUFFER_BIT_SGIX 0x00000002
 #define GLX_PBUFFER_BIT_SGIX 0x00000004
@@ -318,9 +331,26 @@ typedef struct { int type; unsigned long serial; Bool send_event; Display *displ
 typedef XID GLXWindow;
 typedef XID GLXPbuffer;
 typedef XID GLXFBConfigID;
-typedef struct __GLXFBConfigRec *GLXFBConfig;
-typedef struct { int event_type; int draw_type; unsigned long serial; Bool send_event; Display *display; GLXDrawable drawable; unsigned int buffer_mask; unsigned int aux_buffer; int x, y; int width, height; int count; } GLXPbufferClobberEvent;
-typedef union __GLXEvent { GLXPbufferClobberEvent glxpbufferclobber; long pad[24]; } GLXEvent;
+typedef struct __GLXFBConfigRec* GLXFBConfig;
+typedef struct
+{
+    int event_type;
+    int draw_type;
+    unsigned long serial;
+    Bool send_event;
+    Display* display;
+    GLXDrawable drawable;
+    unsigned int buffer_mask;
+    unsigned int aux_buffer;
+    int x, y;
+    int width, height;
+    int count;
+} GLXPbufferClobberEvent;
+typedef union __GLXEvent
+{
+    GLXPbufferClobberEvent glxpbufferclobber;
+    long pad[24];
+} GLXEvent;
 #define GLX_WINDOW_BIT 0x00000001
 #define GLX_PIXMAP_BIT 0x00000002
 #define GLX_PBUFFER_BIT 0x00000004

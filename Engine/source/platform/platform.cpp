@@ -51,108 +51,109 @@ static bool gWebDeployment = false;
 
 void Platform::initConsole()
 {
-   Con::addVariable("$platform::backgroundSleepTime", TypeS32, &sgBackgroundProcessSleepTime, "Controls processor time usage when the game window is out of focus.\n"
-	   "@ingroup Platform\n");
-   Con::addVariable("$platform::timeManagerProcessInterval", TypeS32, &sgTimeManagerProcessInterval, "Controls processor time usage when the game window is in focus.\n"
-	   "@ingroup Platform\n");
+    Con::addVariable( "$platform::backgroundSleepTime", TypeS32, &sgBackgroundProcessSleepTime, "Controls processor time usage when the game window is out of focus.\n"
+                      "@ingroup Platform\n" );
+    Con::addVariable( "$platform::timeManagerProcessInterval", TypeS32, &sgTimeManagerProcessInterval, "Controls processor time usage when the game window is in focus.\n"
+                      "@ingroup Platform\n" );
 }
 
 S32 Platform::getBackgroundSleepTime()
 {
-   return sgBackgroundProcessSleepTime;
+    return sgBackgroundProcessSleepTime;
 }
 
-ConsoleToolFunction(restartInstance, void, 1, 1, "restartInstance()")
+ConsoleToolFunction( restartInstance, void, 1, 1, "restartInstance()" )
 {
-   StandardMainLoop::setRestart(true);
-   Platform::postQuitMessage( 0 );
+    StandardMainLoop::setRestart( true );
+    Platform::postQuitMessage( 0 );
 }
 
 void Platform::clearKeyboardInputExclusion()
 {
-   gKeyboardExclusionList.clear();
-   gInitKeyboardExclusionList = true;
+    gKeyboardExclusionList.clear();
+    gInitKeyboardExclusionList = true;
 }
 
-void Platform::addKeyboardInputExclusion(const KeyboardInputExclusion &kie)
+void Platform::addKeyboardInputExclusion( const KeyboardInputExclusion& kie )
 {
-   gKeyboardExclusionList.push_back(kie);
+    gKeyboardExclusionList.push_back( kie );
 }
 
-const bool Platform::checkKeyboardInputExclusion(const InputEventInfo *info)
+const bool Platform::checkKeyboardInputExclusion( const InputEventInfo* info )
 {
-   // Do one-time initialization of platform defaults.
-   if(!gInitKeyboardExclusionList)
-   {
-      gInitKeyboardExclusionList = true;
-
-      // CodeReview Looks like we don't even need to do #ifdefs here since
-      // things like cmd-tab don't appear on windows, and alt-tab is an unlikely
-      // desired bind on other platforms - might be best to simply have a 
-      // global exclusion list and keep it standard on all platforms.
-      // This might not be so, but it's the current assumption. [bjg 5/4/07]
-
-      // Alt-tab
-      {
-         KeyboardInputExclusion kie;
-         kie.key = KEY_TAB;
-         kie.andModifierMask = SI_ALT;
-         addKeyboardInputExclusion(kie);
-      }
-
-      // ... others go here...
-   }
-
-   // Walk the list and look for matches.
-   for(S32 i=0; i<gKeyboardExclusionList.size(); i++)
-   {
-      if(gKeyboardExclusionList[i].checkAgainstInput(info))
-         return true;
-   }
-
-   return false;
+    // Do one-time initialization of platform defaults.
+    if( !gInitKeyboardExclusionList )
+    {
+        gInitKeyboardExclusionList = true;
+        
+        // CodeReview Looks like we don't even need to do #ifdefs here since
+        // things like cmd-tab don't appear on windows, and alt-tab is an unlikely
+        // desired bind on other platforms - might be best to simply have a
+        // global exclusion list and keep it standard on all platforms.
+        // This might not be so, but it's the current assumption. [bjg 5/4/07]
+        
+        // Alt-tab
+        {
+            KeyboardInputExclusion kie;
+            kie.key = KEY_TAB;
+            kie.andModifierMask = SI_ALT;
+            addKeyboardInputExclusion( kie );
+        }
+        
+        // ... others go here...
+    }
+    
+    // Walk the list and look for matches.
+    for( S32 i = 0; i < gKeyboardExclusionList.size(); i++ )
+    {
+        if( gKeyboardExclusionList[i].checkAgainstInput( info ) )
+            return true;
+    }
+    
+    return false;
 }
 
-const bool Platform::KeyboardInputExclusion::checkAgainstInput( const InputEventInfo *info ) const
+const bool Platform::KeyboardInputExclusion::checkAgainstInput( const InputEventInfo* info ) const
 {
-   if(info->objType != SI_KEY)
-      return false;
-
-   if(info->objInst != key)
-      return false;
-
-   if((info->modifier & andModifierMask) != andModifierMask)
-      return false;
-
-   if(info->modifier & !(info->modifier & orModifierMask))
-      return false;
-
-   return true;
+    if( info->objType != SI_KEY )
+        return false;
+        
+    if( info->objInst != key )
+        return false;
+        
+    if( ( info->modifier & andModifierMask ) != andModifierMask )
+        return false;
+        
+    if( info->modifier & !( info->modifier & orModifierMask ) )
+        return false;
+        
+    return true;
 }
 
-S32 Platform::compareModifiedTimes( const char *firstPath, const char *secondPath )
+S32 Platform::compareModifiedTimes( const char* firstPath, const char* secondPath )
 {
-   FileTime firstModTime;
-   if ( !getFileTimes( firstPath, NULL, &firstModTime ) ) {
-      //The reason we failed to get file times could be cause it is in a zip.  Lets check.
-      return Torque::FS::CompareModifiedTimes(firstPath, secondPath);
-   }
-
-   FileTime secondModTime;
-   if ( !getFileTimes( secondPath, NULL, &secondModTime ) )
-      return -1;
-
-   return compareFileTimes( firstModTime, secondModTime );
+    FileTime firstModTime;
+    if( !getFileTimes( firstPath, NULL, &firstModTime ) )
+    {
+        //The reason we failed to get file times could be cause it is in a zip.  Lets check.
+        return Torque::FS::CompareModifiedTimes( firstPath, secondPath );
+    }
+    
+    FileTime secondModTime;
+    if( !getFileTimes( secondPath, NULL, &secondModTime ) )
+        return -1;
+        
+    return compareFileTimes( firstModTime, secondModTime );
 }
 
 bool Platform::getWebDeployment()
 {
-   return gWebDeployment;
+    return gWebDeployment;
 }
 
-void Platform::setWebDeployment(bool v)
+void Platform::setWebDeployment( bool v )
 {
-   gWebDeployment = v;
+    gWebDeployment = v;
 }
 
 

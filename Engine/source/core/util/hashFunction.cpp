@@ -104,46 +104,58 @@ acceptable.  Do NOT use for cryptographic purposes.
 --------------------------------------------------------------------
 */
 
-U32 hash(register const U8 *k, register U32 length, register U32 initval)
+U32 hash( register const U8* k, register U32 length, register U32 initval )
 {
-   register U32 a,b,c,len;
-
-   /* Set up the internal state */
-   len = length;
-   a = b = 0x9e3779b9;  /* the golden ratio; an arbitrary value */
-   c = initval;         /* the previous hash value */
-
-   /*---------------------------------------- handle most of the key */
-   while (len >= 12)
-   {
-      a += (k[0] +((U32)k[1]<<8) +((U32)k[2]<<16) +((U32)k[3]<<24));
-      b += (k[4] +((U32)k[5]<<8) +((U32)k[6]<<16) +((U32)k[7]<<24));
-      c += (k[8] +((U32)k[9]<<8) +((U32)k[10]<<16)+((U32)k[11]<<24));
-      mix(a,b,c);
-      k += 12; len -= 12;
-   }
-
-   /*------------------------------------- handle the last 11 bytes */
-   c += length;
-   switch(len)              /* all the case statements fall through */
-   {
-   case 11: c+=((U32)k[10]<<24);
-   case 10: c+=((U32)k[9]<<16);
-   case 9 : c+=((U32)k[8]<<8);
-      /* the first byte of c is reserved for the length */
-   case 8 : b+=((U32)k[7]<<24);
-   case 7 : b+=((U32)k[6]<<16);
-   case 6 : b+=((U32)k[5]<<8);
-   case 5 : b+=k[4];
-   case 4 : a+=((U32)k[3]<<24);
-   case 3 : a+=((U32)k[2]<<16);
-   case 2 : a+=((U32)k[1]<<8);
-   case 1 : a+=k[0];
-      /* case 0: nothing left to add */
-   }
-   mix(a,b,c);
-   /*-------------------------------------------- report the result */
-   return c;
+    register U32 a, b, c, len;
+    
+    /* Set up the internal state */
+    len = length;
+    a = b = 0x9e3779b9;  /* the golden ratio; an arbitrary value */
+    c = initval;         /* the previous hash value */
+    
+    /*---------------------------------------- handle most of the key */
+    while( len >= 12 )
+    {
+        a += ( k[0] + ( ( U32 )k[1] << 8 ) + ( ( U32 )k[2] << 16 ) + ( ( U32 )k[3] << 24 ) );
+        b += ( k[4] + ( ( U32 )k[5] << 8 ) + ( ( U32 )k[6] << 16 ) + ( ( U32 )k[7] << 24 ) );
+        c += ( k[8] + ( ( U32 )k[9] << 8 ) + ( ( U32 )k[10] << 16 ) + ( ( U32 )k[11] << 24 ) );
+        mix( a, b, c );
+        k += 12;
+        len -= 12;
+    }
+    
+    /*------------------------------------- handle the last 11 bytes */
+    c += length;
+    switch( len )            /* all the case statements fall through */
+    {
+        case 11:
+            c += ( ( U32 )k[10] << 24 );
+        case 10:
+            c += ( ( U32 )k[9] << 16 );
+        case 9 :
+            c += ( ( U32 )k[8] << 8 );
+            /* the first byte of c is reserved for the length */
+        case 8 :
+            b += ( ( U32 )k[7] << 24 );
+        case 7 :
+            b += ( ( U32 )k[6] << 16 );
+        case 6 :
+            b += ( ( U32 )k[5] << 8 );
+        case 5 :
+            b += k[4];
+        case 4 :
+            a += ( ( U32 )k[3] << 24 );
+        case 3 :
+            a += ( ( U32 )k[2] << 16 );
+        case 2 :
+            a += ( ( U32 )k[1] << 8 );
+        case 1 :
+            a += k[0];
+            /* case 0: nothing left to add */
+    }
+    mix( a, b, c );
+    /*-------------------------------------------- report the result */
+    return c;
 }
 
 
@@ -211,61 +223,85 @@ is acceptable.  Do NOT use for cryptographic purposes.
 --------------------------------------------------------------------
 */
 
-U64 hash64( register const U8 *k, register U32 length, register U64 initval )
+U64 hash64( register const U8* k, register U32 length, register U64 initval )
 {
-  register U64 a,b,c,len;
-
-  /* Set up the internal state */
-  len = length;
-  a = b = initval;                         /* the previous hash value */
-  c = 0x9e3779b97f4a7c13LL; /* the golden ratio; an arbitrary value */
-
-  /*---------------------------------------- handle most of the key */
-  while (len >= 24)
-  {
-    a += (k[0]        +((U64)k[ 1]<< 8)+((U64)k[ 2]<<16)+((U64)k[ 3]<<24)
-     +((U64)k[4 ]<<32)+((U64)k[ 5]<<40)+((U64)k[ 6]<<48)+((U64)k[ 7]<<56));
-    b += (k[8]        +((U64)k[ 9]<< 8)+((U64)k[10]<<16)+((U64)k[11]<<24)
-     +((U64)k[12]<<32)+((U64)k[13]<<40)+((U64)k[14]<<48)+((U64)k[15]<<56));
-    c += (k[16]       +((U64)k[17]<< 8)+((U64)k[18]<<16)+((U64)k[19]<<24)
-     +((U64)k[20]<<32)+((U64)k[21]<<40)+((U64)k[22]<<48)+((U64)k[23]<<56));
-    mix64(a,b,c);
-    k += 24; len -= 24;
-  }
-
-  /*------------------------------------- handle the last 23 bytes */
-  c += length;
-  switch(len)              /* all the case statements fall through */
-  {
-  case 23: c+=((U64)k[22]<<56);
-  case 22: c+=((U64)k[21]<<48);
-  case 21: c+=((U64)k[20]<<40);
-  case 20: c+=((U64)k[19]<<32);
-  case 19: c+=((U64)k[18]<<24);
-  case 18: c+=((U64)k[17]<<16);
-  case 17: c+=((U64)k[16]<<8);
-    /* the first byte of c is reserved for the length */
-  case 16: b+=((U64)k[15]<<56);
-  case 15: b+=((U64)k[14]<<48);
-  case 14: b+=((U64)k[13]<<40);
-  case 13: b+=((U64)k[12]<<32);
-  case 12: b+=((U64)k[11]<<24);
-  case 11: b+=((U64)k[10]<<16);
-  case 10: b+=((U64)k[ 9]<<8);
-  case  9: b+=((U64)k[ 8]);
-  case  8: a+=((U64)k[ 7]<<56);
-  case  7: a+=((U64)k[ 6]<<48);
-  case  6: a+=((U64)k[ 5]<<40);
-  case  5: a+=((U64)k[ 4]<<32);
-  case  4: a+=((U64)k[ 3]<<24);
-  case  3: a+=((U64)k[ 2]<<16);
-  case  2: a+=((U64)k[ 1]<<8);
-  case  1: a+=((U64)k[ 0]);
-    /* case 0: nothing left to add */
-  }
-  mix64(a,b,c);
-  /*-------------------------------------------- report the result */
-  return c;
+    register U64 a, b, c, len;
+    
+    /* Set up the internal state */
+    len = length;
+    a = b = initval;                         /* the previous hash value */
+    c = 0x9e3779b97f4a7c13LL; /* the golden ratio; an arbitrary value */
+    
+    /*---------------------------------------- handle most of the key */
+    while( len >= 24 )
+    {
+        a += ( k[0]        + ( ( U64 )k[ 1] << 8 ) + ( ( U64 )k[ 2] << 16 ) + ( ( U64 )k[ 3] << 24 )
+               + ( ( U64 )k[4 ] << 32 ) + ( ( U64 )k[ 5] << 40 ) + ( ( U64 )k[ 6] << 48 ) + ( ( U64 )k[ 7] << 56 ) );
+        b += ( k[8]        + ( ( U64 )k[ 9] << 8 ) + ( ( U64 )k[10] << 16 ) + ( ( U64 )k[11] << 24 )
+               + ( ( U64 )k[12] << 32 ) + ( ( U64 )k[13] << 40 ) + ( ( U64 )k[14] << 48 ) + ( ( U64 )k[15] << 56 ) );
+        c += ( k[16]       + ( ( U64 )k[17] << 8 ) + ( ( U64 )k[18] << 16 ) + ( ( U64 )k[19] << 24 )
+               + ( ( U64 )k[20] << 32 ) + ( ( U64 )k[21] << 40 ) + ( ( U64 )k[22] << 48 ) + ( ( U64 )k[23] << 56 ) );
+        mix64( a, b, c );
+        k += 24;
+        len -= 24;
+    }
+    
+    /*------------------------------------- handle the last 23 bytes */
+    c += length;
+    switch( len )            /* all the case statements fall through */
+    {
+        case 23:
+            c += ( ( U64 )k[22] << 56 );
+        case 22:
+            c += ( ( U64 )k[21] << 48 );
+        case 21:
+            c += ( ( U64 )k[20] << 40 );
+        case 20:
+            c += ( ( U64 )k[19] << 32 );
+        case 19:
+            c += ( ( U64 )k[18] << 24 );
+        case 18:
+            c += ( ( U64 )k[17] << 16 );
+        case 17:
+            c += ( ( U64 )k[16] << 8 );
+            /* the first byte of c is reserved for the length */
+        case 16:
+            b += ( ( U64 )k[15] << 56 );
+        case 15:
+            b += ( ( U64 )k[14] << 48 );
+        case 14:
+            b += ( ( U64 )k[13] << 40 );
+        case 13:
+            b += ( ( U64 )k[12] << 32 );
+        case 12:
+            b += ( ( U64 )k[11] << 24 );
+        case 11:
+            b += ( ( U64 )k[10] << 16 );
+        case 10:
+            b += ( ( U64 )k[ 9] << 8 );
+        case  9:
+            b += ( ( U64 )k[ 8] );
+        case  8:
+            a += ( ( U64 )k[ 7] << 56 );
+        case  7:
+            a += ( ( U64 )k[ 6] << 48 );
+        case  6:
+            a += ( ( U64 )k[ 5] << 40 );
+        case  5:
+            a += ( ( U64 )k[ 4] << 32 );
+        case  4:
+            a += ( ( U64 )k[ 3] << 24 );
+        case  3:
+            a += ( ( U64 )k[ 2] << 16 );
+        case  2:
+            a += ( ( U64 )k[ 1] << 8 );
+        case  1:
+            a += ( ( U64 )k[ 0] );
+            /* case 0: nothing left to add */
+    }
+    mix64( a, b, c );
+    /*-------------------------------------------- report the result */
+    return c;
 }
 
 } // namespace

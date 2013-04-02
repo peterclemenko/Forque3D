@@ -22,7 +22,7 @@
 #ifndef _MATRIXSETDELEGATES_H_
 #define _MATRIXSETDELEGATES_H_
 
-   // Access to the direct value
+// Access to the direct value
 #define MATRIX_SET_GET_VALUE_FN(xfm) _transform_##xfm
 #define MATRIX_SET_GET_VALUE(xfm) inline const MatrixF &MATRIX_SET_GET_VALUE_FN(xfm)() { return mTransform[xfm]; }
 #define MATRIX_SET_BIND_VALUE(xfm) mEvalDelegate[xfm].bind(this, &MatrixSet::MATRIX_SET_GET_VALUE_FN(xfm))

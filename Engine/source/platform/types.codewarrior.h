@@ -27,11 +27,11 @@
 
 // If using the IDE detect if DEBUG build was requested
 #if __ide_target("Torque-W32-Debug")
-   #define TORQUE_DEBUG
+#define TORQUE_DEBUG
 #elif __ide_target("Torque-MacCarb-Debug")
-   #define TORQUE_DEBUG
+#define TORQUE_DEBUG
 #elif __ide_target("Torque-MacX-Debug")
-   #define TORQUE_DEBUG
+#define TORQUE_DEBUG
 #endif
 
 
@@ -63,7 +63,7 @@ typedef unsigned long long U64;     ///< Compiler independent Unsigned 64-bit in
 #     define TORQUE_OS_MAC
 #  endif
 #  include "platform/types.ppc.h"
-#else 
+#else
 #  error "CW: Unsupported Operating System"
 #endif
 
@@ -77,7 +77,7 @@ typedef unsigned long long U64;     ///< Compiler independent Unsigned 64-bit in
 #  define TORQUE_SUPPORTS_NASM
 #  define TORQUE_SUPPORTS_VC_INLINE_X86_ASM
 
-   // Compiling with the CW IDE we cannot use NASM :(
+// Compiling with the CW IDE we cannot use NASM :(
 #  if __ide_target("Torque-W32-Debug")
 #     undef TORQUE_SUPPORTS_NASM
 #  elif __ide_target("Torque-W32-Release")

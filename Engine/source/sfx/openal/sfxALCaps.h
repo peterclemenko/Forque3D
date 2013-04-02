@@ -25,16 +25,16 @@
 
 enum SFXALCaps
 {
-   SFXALCapture = 0,
-   SFXALEFX,
-   SFXALOffset,
-   SFXALLinearDistance,
-   SFXALExponentDistance,
-   SFXALEAX2,
-   SFXALEAX3,
-   SFXALEAX4,
-   SFXALEAX5,
-   SFXALEAXRAM
+    SFXALCapture = 0,
+    SFXALEFX,
+    SFXALOffset,
+    SFXALLinearDistance,
+    SFXALExponentDistance,
+    SFXALEAX2,
+    SFXALEAX3,
+    SFXALEAX4,
+    SFXALEAX5,
+    SFXALEAXRAM
 };
 
 #endif

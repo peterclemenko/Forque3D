@@ -24,7 +24,7 @@
 #define _GUISWATCHBUTTONCTRL_H_
 
 #ifndef _GUIBUTTONBASECTRL_H_
-   #include "gui/buttons/guiButtonBaseCtrl.h"
+#include "gui/buttons/guiButtonBaseCtrl.h"
 #endif
 
 
@@ -32,36 +32,42 @@
 ///
 class GuiSwatchButtonCtrl : public GuiButtonBaseCtrl
 {
-   public:
-      
-      typedef GuiButtonBaseCtrl Parent;
+public:
 
-   protected:
-      
-      /// The color to display on the button.
-      ColorF mSwatchColor;
-      
-      /// Background texture that will show through with transparent colors.
-      GFXTexHandle mGrid;
-      
-   public:
+    typedef GuiButtonBaseCtrl Parent;
+    
+protected:
 
-      GuiSwatchButtonCtrl();
+    /// The color to display on the button.
+    ColorF mSwatchColor;
+    
+    /// Background texture that will show through with transparent colors.
+    GFXTexHandle mGrid;
+    
+public:
 
-      /// Return the color displayed in the swatch.
-      ColorF getColor() { return mSwatchColor; }
-
-      /// Set the color to display in the swatch.
-      void setColor( const ColorF &color ) { mSwatchColor = color; }
-
-      // GuiButtonBaseCtrl
-      virtual bool onWake();
-      virtual void onRender(Point2I offset, const RectI &updateRect);
-
-      static void initPersistFields();
-
-      DECLARE_CONOBJECT( GuiSwatchButtonCtrl );
-      DECLARE_DESCRIPTION( "A color swatch button." );
+    GuiSwatchButtonCtrl();
+    
+    /// Return the color displayed in the swatch.
+    ColorF getColor()
+    {
+        return mSwatchColor;
+    }
+    
+    /// Set the color to display in the swatch.
+    void setColor( const ColorF& color )
+    {
+        mSwatchColor = color;
+    }
+    
+    // GuiButtonBaseCtrl
+    virtual bool onWake();
+    virtual void onRender( Point2I offset, const RectI& updateRect );
+    
+    static void initPersistFields();
+    
+    DECLARE_CONOBJECT( GuiSwatchButtonCtrl );
+    DECLARE_DESCRIPTION( "A color swatch button." );
 };
 
 #endif // _GUISWATCHBUTTONCTRL_H_

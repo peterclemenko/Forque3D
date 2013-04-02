@@ -38,58 +38,64 @@ struct Move;
 
 class ClientProcessList : public ProcessList
 {
-   typedef ProcessList Parent;
-   
+    typedef ProcessList Parent;
+    
 public:
 
-   ClientProcessList();
-   
-   // ProcessList
-   void addObject( ProcessObject *pobj );  
-   
-   /// Called after a correction packet is received from the server.
-   /// If the control object was corrected it will now play back any moves
-   /// which were rolled back.
-   virtual void clientCatchup( GameConnection *conn ) {}
-
-   static ClientProcessList* get() { return smClientProcessList; }
-
-protected:   
-   
-   // ProcessList
-   void onPreTickObject( ProcessObject *pobj );
-
-   /// Returns true if backlogged.
-   bool doBacklogged( SimTime timeDelta );
-
+    ClientProcessList();
+    
+    // ProcessList
+    void addObject( ProcessObject* pobj );
+    
+    /// Called after a correction packet is received from the server.
+    /// If the control object was corrected it will now play back any moves
+    /// which were rolled back.
+    virtual void clientCatchup( GameConnection* conn ) {}
+    
+    static ClientProcessList* get()
+    {
+        return smClientProcessList;
+    }
+    
 protected:
 
-   static ClientProcessList* smClientProcessList;
+    // ProcessList
+    void onPreTickObject( ProcessObject* pobj );
+    
+    /// Returns true if backlogged.
+    bool doBacklogged( SimTime timeDelta );
+    
+protected:
+
+    static ClientProcessList* smClientProcessList;
 };
 
 
 class ServerProcessList : public ProcessList
 {
-   typedef ProcessList Parent;
-
+    typedef ProcessList Parent;
+    
 public:
 
-   ServerProcessList();
-   
-   // ProcessList
-   void addObject( ProcessObject *pobj );
-
-   static ServerProcessList* get() { return smServerProcessList; }
-
+    ServerProcessList();
+    
+    // ProcessList
+    void addObject( ProcessObject* pobj );
+    
+    static ServerProcessList* get()
+    {
+        return smServerProcessList;
+    }
+    
 protected:
 
-   // ProcessList
-   void onPreTickObject( ProcessObject *pobj );
-   void advanceObjects();
-
+    // ProcessList
+    void onPreTickObject( ProcessObject* pobj );
+    void advanceObjects();
+    
 protected:
 
-   static ServerProcessList* smServerProcessList;
+    static ServerProcessList* smServerProcessList;
 };
 
 

@@ -37,17 +37,17 @@
 
 class ScriptObject : public SimObject
 {
-   typedef SimObject Parent;
-
+    typedef SimObject Parent;
+    
 public:
-   ScriptObject();
-   bool onAdd();
-   void onRemove();
-
-   DECLARE_CONOBJECT(ScriptObject);
-
-   DECLARE_CALLBACK(void, onAdd, (SimObjectId ID) );
-   DECLARE_CALLBACK(void, onRemove, (SimObjectId ID));
+    ScriptObject();
+    bool onAdd();
+    void onRemove();
+    
+    DECLARE_CONOBJECT( ScriptObject );
+    
+    DECLARE_CALLBACK( void, onAdd, ( SimObjectId ID ) );
+    DECLARE_CALLBACK( void, onRemove, ( SimObjectId ID ) );
 };
 
 //-----------------------------------------------------------------------------
@@ -56,26 +56,26 @@ public:
 
 class ScriptTickObject : public ScriptObject, public virtual ITickable
 {
-   typedef ScriptObject Parent;
-
+    typedef ScriptObject Parent;
+    
 protected:
-   bool mCallOnAdvanceTime;
-
+    bool mCallOnAdvanceTime;
+    
 public:
-   ScriptTickObject();
-   static void initPersistFields();
-   bool onAdd();
-   void onRemove();
-
-   virtual void interpolateTick( F32 delta );
-   virtual void processTick();
-   virtual void advanceTime( F32 timeDelta );
-
-   DECLARE_CONOBJECT(ScriptTickObject);
-
-   DECLARE_CALLBACK(void, onInterpolateTick, (F32 delta) );
-   DECLARE_CALLBACK(void, onProcessTick, () );
-   DECLARE_CALLBACK(void, onAdvanceTime, (F32 timeDelta) );
+    ScriptTickObject();
+    static void initPersistFields();
+    bool onAdd();
+    void onRemove();
+    
+    virtual void interpolateTick( F32 delta );
+    virtual void processTick();
+    virtual void advanceTime( F32 timeDelta );
+    
+    DECLARE_CONOBJECT( ScriptTickObject );
+    
+    DECLARE_CALLBACK( void, onInterpolateTick, ( F32 delta ) );
+    DECLARE_CALLBACK( void, onProcessTick, () );
+    DECLARE_CALLBACK( void, onAdvanceTime, ( F32 timeDelta ) );
 };
 
 //-----------------------------------------------------------------------------
@@ -84,17 +84,17 @@ public:
 
 class ScriptGroup : public SimGroup
 {
-   typedef SimGroup Parent;
-   
+    typedef SimGroup Parent;
+    
 public:
-   ScriptGroup();
-   bool onAdd();
-   void onRemove();
-
-   DECLARE_CONOBJECT(ScriptGroup);
-
-   DECLARE_CALLBACK(void, onAdd, (SimObjectId ID) );
-   DECLARE_CALLBACK(void, onRemove, (SimObjectId ID));
+    ScriptGroup();
+    bool onAdd();
+    void onRemove();
+    
+    DECLARE_CONOBJECT( ScriptGroup );
+    
+    DECLARE_CALLBACK( void, onAdd, ( SimObjectId ID ) );
+    DECLARE_CALLBACK( void, onRemove, ( SimObjectId ID ) );
 };
 
 #endif

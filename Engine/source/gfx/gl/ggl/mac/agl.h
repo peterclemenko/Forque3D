@@ -43,7 +43,7 @@
 #define GFX_GLX_H
 
 #ifndef GFX_GGL_H
-   #include "../ggl.h"
+#include "../ggl.h"
 #endif
 
 #include "platform/tmm_off.h"
@@ -92,10 +92,12 @@ namespace GL
 //-----------------------------------------------------------------------------
 // Extensions use indirection in order to support multiple contexts
 
-struct AGLExtensionPtrs: public GLExtensionPtrs {
+struct AGLExtensionPtrs: public GLExtensionPtrs
+{
 };
 
-struct AGLExtensionFlags: public GLExtensionFlags {
+struct AGLExtensionFlags: public GLExtensionFlags
+{
 };
 
 #endif // Doxygen

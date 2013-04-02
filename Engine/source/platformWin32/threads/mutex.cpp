@@ -30,7 +30,7 @@
 
 struct PlatformMutexData
 {
-   CRITICAL_SECTION mCriticalSection;
+    CRITICAL_SECTION mCriticalSection;
 };
 
 //-----------------------------------------------------------------------------
@@ -39,15 +39,15 @@ struct PlatformMutexData
 
 Mutex::Mutex()
 {
-   mData = new PlatformMutexData;
-   InitializeCriticalSection( &mData->mCriticalSection );
+    mData = new PlatformMutexData;
+    InitializeCriticalSection( &mData->mCriticalSection );
 }
 
 Mutex::~Mutex()
 {
-   AssertFatal( TryEnterCriticalSection( &mData->mCriticalSection ), "Mutex::~Mutex - Critical section is locked!" );
-   DeleteCriticalSection( &mData->mCriticalSection );
-   SAFE_DELETE( mData );
+    AssertFatal( TryEnterCriticalSection( &mData->mCriticalSection ), "Mutex::~Mutex - Critical section is locked!" );
+    DeleteCriticalSection( &mData->mCriticalSection );
+    SAFE_DELETE( mData );
 }
 
 //-----------------------------------------------------------------------------
@@ -56,19 +56,19 @@ Mutex::~Mutex()
 
 bool Mutex::lock( bool block )
 {
-   AssertFatal( mData, "Mutex::lock - No data!" );
-
-   if( !block )
-      return TryEnterCriticalSection( &mData->mCriticalSection );
-   else
-   {
-      EnterCriticalSection( &mData->mCriticalSection );
-      return true;
-   }
+    AssertFatal( mData, "Mutex::lock - No data!" );
+    
+    if( !block )
+        return TryEnterCriticalSection( &mData->mCriticalSection );
+    else
+    {
+        EnterCriticalSection( &mData->mCriticalSection );
+        return true;
+    }
 }
 
 void Mutex::unlock()
 {
-   AssertFatal( mData, "Mutex::unlock - No data!" );
-   LeaveCriticalSection( &mData->mCriticalSection );
+    AssertFatal( mData, "Mutex::unlock - No data!" );
+    LeaveCriticalSection( &mData->mCriticalSection );
 }

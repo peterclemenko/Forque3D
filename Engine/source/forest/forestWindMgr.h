@@ -34,65 +34,71 @@
 #endif
 #ifndef _FORESTITEM_H_
 #include "forest/forestItem.h"
-#endif 
+#endif
 #ifndef _TSINGLETON_H_
 #include "core/util/tSingleton.h"
 #endif
 
 struct TreePlacementInfo
 {
-   F32 scale;
-   Point3F pos;
-   ForestItemKey itemKey; 
-   ForestItemData *dataBlock;
-}; 
+    F32 scale;
+    Point3F pos;
+    ForestItemKey itemKey;
+    ForestItemData* dataBlock;
+};
 
 class ForestWindMgr : public virtual ITickable
 {
 protected:
 
-   ForestWindEmitterList mEmitters;
-
-   typedef HashTable<U32,ForestWindAccumulator*> IdToWindMap;
-   typedef Signal<void( const Point3F &camPos, const F32 radius, Vector<TreePlacementInfo> *placementInfo )> WindAdvanceSignal;
-
-   IdToWindMap *mSources;
-   IdToWindMap *mPrevSources;
-   Vector<TreePlacementInfo> mPlacementInfo;
-
-   static WindAdvanceSignal smAdvanceSignal;
-
-   virtual void interpolateTick( F32 delta ) {};
-   virtual void processTick();
-   virtual void advanceTime( F32 timeDelta ) {};   
-
+    ForestWindEmitterList mEmitters;
+    
+    typedef HashTable<U32, ForestWindAccumulator*> IdToWindMap;
+    typedef Signal<void( const Point3F& camPos, const F32 radius, Vector<TreePlacementInfo> *placementInfo )> WindAdvanceSignal;
+    
+    IdToWindMap* mSources;
+    IdToWindMap* mPrevSources;
+    Vector<TreePlacementInfo> mPlacementInfo;
+    
+    static WindAdvanceSignal smAdvanceSignal;
+    
+    virtual void interpolateTick( F32 delta ) {};
+    virtual void processTick();
+    virtual void advanceTime( F32 timeDelta ) {};
+    
 public:
 
-   ForestWindMgr();
-   virtual ~ForestWindMgr();
-
-   void addEmitter( ForestWindEmitter *emitter );
-
-   void removeEmitter( ForestWindEmitter *emitter );
-
-   void updateWind(  const Point3F &camPos, 
-                     const TreePlacementInfo &info,
+    ForestWindMgr();
+    virtual ~ForestWindMgr();
+    
+    void addEmitter( ForestWindEmitter* emitter );
+    
+    void removeEmitter( ForestWindEmitter* emitter );
+    
+    void updateWind( const Point3F& camPos,
+                     const TreePlacementInfo& info,
                      F32 timeDelta );
-
-   ForestWindAccumulator* getLocalWind( ForestItemKey key );
-
-   // Returns the first non-radial emitter in the list.
-   ForestWindEmitter* getGlobalWind();
-
-
-   static WindAdvanceSignal& getAdvanceSignal() { return smAdvanceSignal; }
-
-   static F32 smWindEffectRadius;
-
-   static void initConsole();
-
-   // For ManagedSingleton.
-   static const char* getSingletonName() { return "ForestWindMgr"; }    
+                     
+    ForestWindAccumulator* getLocalWind( ForestItemKey key );
+    
+    // Returns the first non-radial emitter in the list.
+    ForestWindEmitter* getGlobalWind();
+    
+    
+    static WindAdvanceSignal& getAdvanceSignal()
+    {
+        return smAdvanceSignal;
+    }
+    
+    static F32 smWindEffectRadius;
+    
+    static void initConsole();
+    
+    // For ManagedSingleton.
+    static const char* getSingletonName()
+    {
+        return "ForestWindMgr";
+    }
 };
 
 /// Returns the ReflectionManager singleton.

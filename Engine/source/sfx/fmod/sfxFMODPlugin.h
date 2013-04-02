@@ -24,7 +24,7 @@
 #define _SFXFMODPLUGIN_H_
 
 #ifndef _SFXSYSTEM_H_
-   #include "sfx/sfxSystem.h"
+#include "sfx/sfxSystem.h"
 #endif
 
 
@@ -37,12 +37,12 @@
 ///
 class SFXFMODPlugin : public SFXSystemPlugin
 {
-   public:
-   
-      typedef SFXSystemPlugin Parent;
-      
-      ///
-      virtual SFXSource* createSource( SFXTrack* track );
+public:
+
+    typedef SFXSystemPlugin Parent;
+    
+    ///
+    virtual SFXSource* createSource( SFXTrack* track );
 };
 
 #endif // !_SFXFMODPLUGIN_H_

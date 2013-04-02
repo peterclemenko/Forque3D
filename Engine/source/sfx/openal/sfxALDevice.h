@@ -48,43 +48,43 @@ class SFXProvider;
 
 class SFXALDevice : public SFXDevice
 {
-   public:
+public:
 
-      typedef SFXDevice Parent;
-      friend class SFXALVoice; // mDistanceFactor, mRolloffFactor
+    typedef SFXDevice Parent;
+    friend class SFXALVoice; // mDistanceFactor, mRolloffFactor
+    
+    SFXALDevice( SFXProvider* provider,
+                 const OPENALFNTABLE& openal,
+                 String name,
+                 bool useHardware,
+                 S32 maxBuffers );
+                 
+    virtual ~SFXALDevice();
+    
+protected:
 
-      SFXALDevice(   SFXProvider *provider, 
-                     const OPENALFNTABLE &openal, 
-                     String name, 
-                     bool useHardware, 
-                     S32 maxBuffers );
+    OPENALFNTABLE mOpenAL;
+    
+    ALCcontext* mContext;
+    
+    ALCdevice* mDevice;
+    
+    SFXDistanceModel mDistanceModel;
+    F32 mDistanceFactor;
+    F32 mRolloffFactor;
+    F32 mUserRolloffFactor;
+    
+    void _setRolloffFactor( F32 factor );
+    
+public:
 
-      virtual ~SFXALDevice();
-
-   protected:
-
-      OPENALFNTABLE mOpenAL;
-
-      ALCcontext *mContext;
-
-      ALCdevice *mDevice;
-      
-      SFXDistanceModel mDistanceModel;
-      F32 mDistanceFactor;
-      F32 mRolloffFactor;
-      F32 mUserRolloffFactor;
-      
-      void _setRolloffFactor( F32 factor );
-
-   public:
-
-      // SFXDevice.
-      virtual SFXBuffer* createBuffer( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
-      virtual SFXVoice* createVoice( bool is3D, SFXBuffer *buffer );
-      virtual void setListener( U32 index, const SFXListenerProperties& listener );
-      virtual void setDistanceModel( SFXDistanceModel model );
-      virtual void setDopplerFactor( F32 factor );
-      virtual void setRolloffFactor( F32 factor );
+    // SFXDevice.
+    virtual SFXBuffer* createBuffer( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
+    virtual SFXVoice* createVoice( bool is3D, SFXBuffer* buffer );
+    virtual void setListener( U32 index, const SFXListenerProperties& listener );
+    virtual void setDistanceModel( SFXDistanceModel model );
+    virtual void setDopplerFactor( F32 factor );
+    virtual void setRolloffFactor( F32 factor );
 };
 
 #endif // _SFXALDEVICE_H_

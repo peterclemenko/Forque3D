@@ -33,16 +33,16 @@
 
 class GuiRadioCtrl : public GuiCheckBoxCtrl
 {
-   typedef GuiCheckBoxCtrl Parent;
-
+    typedef GuiCheckBoxCtrl Parent;
+    
 public:
-   DECLARE_CONOBJECT(GuiRadioCtrl);
-   DECLARE_DESCRIPTION( "A button control with a radio box and a text label.\n"
-                        "This control is used in groups where multiple radio buttons\n"
-                        "present a range of options out of which one can be chosen.\n"
-                        "A radio button automatically signals its siblings when it is\n"
-                        "toggled on." );
-   GuiRadioCtrl();
+    DECLARE_CONOBJECT( GuiRadioCtrl );
+    DECLARE_DESCRIPTION( "A button control with a radio box and a text label.\n"
+                         "This control is used in groups where multiple radio buttons\n"
+                         "present a range of options out of which one can be chosen.\n"
+                         "A radio button automatically signals its siblings when it is\n"
+                         "toggled on." );
+    GuiRadioCtrl();
 };
 
 #endif //_GUI_RADIO_CTRL_H

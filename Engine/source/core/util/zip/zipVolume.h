@@ -29,41 +29,62 @@
 
 namespace Torque
 {
-   using namespace FS;
-   using namespace Zip;
+using namespace FS;
+using namespace Zip;
 
 class ZipFileSystem: public FileSystem
 {
 public:
-   ZipFileSystem(String& zipFilename, bool zipNameIsDir = false);
-   virtual ~ZipFileSystem();
-
-   String   getTypeStr() const { return "Zip"; }
-
-   FileNodeRef resolve(const Path& path);
-
-   // these are unsupported, ZipFileSystem is currently read only access
-   FileNodeRef create(const Path& path,FileNode::Mode) { return 0; }
-   bool remove(const Path& path) { return 0; }
-   bool rename(const Path& a,const Path& b) { return 0; }
-
-   // these are unsupported
-   Path mapTo(const Path& path) { return path; }
-   Path mapFrom(const Path& path) { return path; }
-
+    ZipFileSystem( String& zipFilename, bool zipNameIsDir = false );
+    virtual ~ZipFileSystem();
+    
+    String   getTypeStr() const
+    {
+        return "Zip";
+    }
+    
+    FileNodeRef resolve( const Path& path );
+    
+    // these are unsupported, ZipFileSystem is currently read only access
+    FileNodeRef create( const Path& path, FileNode::Mode )
+    {
+        return 0;
+    }
+    bool remove( const Path& path )
+    {
+        return 0;
+    }
+    bool rename( const Path& a, const Path& b )
+    {
+        return 0;
+    }
+    
+    // these are unsupported
+    Path mapTo( const Path& path )
+    {
+        return path;
+    }
+    Path mapFrom( const Path& path )
+    {
+        return path;
+    }
+    
 public:
-   /// Private interface for use by unit test only. 
-   StrongRefPtr<ZipArchive> getArchive() { return mZipArchive; }
-
+    /// Private interface for use by unit test only.
+    StrongRefPtr<ZipArchive> getArchive()
+    {
+        return mZipArchive;
+    }
+    
 private:
-   void _init();
-
-   bool mInitted;
-   bool mZipNameIsDir;
-   String mZipFilename;
-   String mFakeRoot;
-   FileStream* mZipArchiveStream;
-   StrongRefPtr<ZipArchive> mZipArchive;
+    void _init();
+    
+    bool mInitted;
+    bool mZipNameIsDir;
+    String mZipFilename;
+    String mFakeRoot;
+    FileStream* mZipArchiveStream;
+    StrongRefPtr<ZipArchive> mZipArchive;
 };
 
 }

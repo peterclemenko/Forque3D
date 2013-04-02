@@ -44,24 +44,24 @@
 template< class T >
 struct StaticNamedSingleton
 {
-   typedef StaticNamedSingleton This;
-
-   StaticNamedSingleton( const char* name );
-   virtual ~StaticNamedSingleton() {}
-
-   const char*       getName();
-   T*                getNext();
-
-   static T*         staticGetFirst();
-   static T*         staticFindSingleton( const char* name );
-   static EnumTable* staticCreateEnumTable();
-   static U32        staticGetNumSingletons();
-
+    typedef StaticNamedSingleton This;
+    
+    StaticNamedSingleton( const char* name );
+    virtual ~StaticNamedSingleton() {}
+    
+    const char*       getName();
+    T*                getNext();
+    
+    static T*         staticGetFirst();
+    static T*         staticFindSingleton( const char* name );
+    static EnumTable* staticCreateEnumTable();
+    static U32        staticGetNumSingletons();
+    
 private:
-   const char*       mName;
-   This*             mNext;
-
-   static This*      smSingletons;
+    const char*       mName;
+    This*             mNext;
+    
+    static This*      smSingletons;
 };
 
 template< class T >
@@ -69,28 +69,28 @@ StaticNamedSingleton< T >* StaticNamedSingleton< T >::smSingletons;
 
 template< class T >
 StaticNamedSingleton< T >::StaticNamedSingleton( const char* name )
-   : mName( name )
+    : mName( name )
 {
-   mNext = smSingletons;
-   smSingletons = this;
+    mNext = smSingletons;
+    smSingletons = this;
 }
 
 template< class T >
 inline const char* StaticNamedSingleton< T >::getName()
 {
-   return mName;
+    return mName;
 }
 
 template< class T >
 inline T* StaticNamedSingleton< T >::getNext()
 {
-   return static_cast< T* >( mNext );
+    return static_cast< T* >( mNext );
 }
 
 template< class T >
 T* StaticNamedSingleton< T >::staticGetFirst()
 {
-   return static_cast< T* >( smSingletons );
+    return static_cast< T* >( smSingletons );
 }
 
 /// Find the instance with the given name.  Returns NULL if no such
@@ -99,11 +99,11 @@ T* StaticNamedSingleton< T >::staticGetFirst()
 template< class T >
 T* StaticNamedSingleton< T >::staticFindSingleton( const char* name )
 {
-   for( This* ptr = smSingletons; ptr != 0; ptr = ptr->mNext )
-      if( dStricmp( name, ptr->mName ) == 0 )
-         return static_cast< T* >( ptr );
-
-   return 0;
+    for( This* ptr = smSingletons; ptr != 0; ptr = ptr->mNext )
+        if( dStricmp( name, ptr->mName ) == 0 )
+            return static_cast< T* >( ptr );
+            
+    return 0;
 }
 
 /// Create a TorqueScript EnumTable that contains all registered
@@ -112,23 +112,23 @@ T* StaticNamedSingleton< T >::staticFindSingleton( const char* name )
 template< class T >
 EnumTable* StaticNamedSingleton< T >::staticCreateEnumTable()
 {
-   U32 numSingletons = staticGetNumSingletons();
-
-   // Create the enums.
-   
-   EnumTable::Enums* enums = new EnumTable::Enums[ numSingletons ];
-   This* ptr = smSingletons;
-   for( U32 i = 0; i < numSingletons; ++ i )
-   {
-      enums[ i ].index = i;
-      enums[ i ].label = StringTable->insert( ptr->getName() );
-
-      ptr = ptr->mNext;
-   }
-
-   // Create the table.
-
-   return new EnumTable( numSingletons, enums );
+    U32 numSingletons = staticGetNumSingletons();
+    
+    // Create the enums.
+    
+    EnumTable::Enums* enums = new EnumTable::Enums[ numSingletons ];
+    This* ptr = smSingletons;
+    for( U32 i = 0; i < numSingletons; ++ i )
+    {
+        enums[ i ].index = i;
+        enums[ i ].label = StringTable->insert( ptr->getName() );
+        
+        ptr = ptr->mNext;
+    }
+    
+    // Create the table.
+    
+    return new EnumTable( numSingletons, enums );
 }
 
 /// Return the number of registered named singletons.
@@ -136,10 +136,10 @@ EnumTable* StaticNamedSingleton< T >::staticCreateEnumTable()
 template< class T >
 U32 StaticNamedSingleton< T >::staticGetNumSingletons()
 {
-   U32 numSingletons = 0;
-   for( This* ptr = smSingletons; ptr != 0; ptr = ptr->mNext )
-      numSingletons ++;
-   return numSingletons;
+    U32 numSingletons = 0;
+    for( This* ptr = smSingletons; ptr != 0; ptr = ptr->mNext )
+        numSingletons ++;
+    return numSingletons;
 }
 
 #endif // _TORQUE_CORE_UTIL_NAMEDSINGLETON_H_

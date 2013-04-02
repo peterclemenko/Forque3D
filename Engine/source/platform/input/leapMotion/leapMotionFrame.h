@@ -31,102 +31,120 @@
 
 class LeapMotionFrame : public SimObject
 {
-   typedef SimObject Parent;
-
+    typedef SimObject Parent;
+    
 public:
-   enum PointableType
-   {
-      PT_UNKNOWN = -1,
-      PT_FINGER = 0,
-      PT_TOOL,
-   };
-
+    enum PointableType
+    {
+        PT_UNKNOWN = -1,
+        PT_FINGER = 0,
+        PT_TOOL,
+    };
+    
 protected:
-   static U32 smNextInternalFrameId;
-
-   // Frame
-   bool  mFrameValid;
-   U64   mFrameId;
-   U64   mFrameTimeStamp;
-
-   // Torque 3D frame information
-   U32   mFrameInternalId;
-   S32   mFrameSimTime;
-   S32   mFrameRealTime;
-
-   // Hands
-   U32 mHandCount;
-   Vector<bool>      mHandValid;
-   Vector<S32>       mHandId;
-   Vector<Point3F>   mHandRawPos;
-   Vector<Point3I>   mHandPos;
-   Vector<MatrixF>   mHandRot;
-   Vector<QuatF>     mHandRotQuat;
-   Vector<Point2F>   mHandRotAxis;
-   Vector<U32>       mHandPointablesCount;
-
-   // Pointables
-   U32 mPointableCount;
-   Vector<bool>      mPointableValid;
-   Vector<S32>       mPointableId;
-   Vector<S32>       mPointableHandIndex;
-   Vector<PointableType>   mPointableType;
-   Vector<Point3F>   mPointableRawPos;
-   Vector<Point3I>   mPointablePos;
-   Vector<MatrixF>   mPointableRot;
-   Vector<QuatF>     mPointableRotQuat;
-   Vector<F32>       mPointableLength;
-   Vector<F32>       mPointableWidth;
-
+    static U32 smNextInternalFrameId;
+    
+    // Frame
+    bool  mFrameValid;
+    U64   mFrameId;
+    U64   mFrameTimeStamp;
+    
+    // Torque 3D frame information
+    U32   mFrameInternalId;
+    S32   mFrameSimTime;
+    S32   mFrameRealTime;
+    
+    // Hands
+    U32 mHandCount;
+    Vector<bool>      mHandValid;
+    Vector<S32>       mHandId;
+    Vector<Point3F>   mHandRawPos;
+    Vector<Point3I>   mHandPos;
+    Vector<MatrixF>   mHandRot;
+    Vector<QuatF>     mHandRotQuat;
+    Vector<Point2F>   mHandRotAxis;
+    Vector<U32>       mHandPointablesCount;
+    
+    // Pointables
+    U32 mPointableCount;
+    Vector<bool>      mPointableValid;
+    Vector<S32>       mPointableId;
+    Vector<S32>       mPointableHandIndex;
+    Vector<PointableType>   mPointableType;
+    Vector<Point3F>   mPointableRawPos;
+    Vector<Point3I>   mPointablePos;
+    Vector<MatrixF>   mPointableRot;
+    Vector<QuatF>     mPointableRotQuat;
+    Vector<F32>       mPointableLength;
+    Vector<F32>       mPointableWidth;
+    
 protected:
-   void copyFromFrameHands(const Leap::HandList& hands, const F32& maxHandAxisRadius);
-   void copyFromFramePointables(const Leap::PointableList& pointables);
-
+    void copyFromFrameHands( const Leap::HandList& hands, const F32& maxHandAxisRadius );
+    void copyFromFramePointables( const Leap::PointableList& pointables );
+    
 public:
-   LeapMotionFrame();
-   virtual ~LeapMotionFrame();
-
-   static void initPersistFields();
-
-   virtual bool onAdd();
-   virtual void onRemove();
-
-   void clear();
-
-   /// Copy a Leap Frame into our data structures
-   void copyFromFrame(const Leap::Frame& frame, const F32& maxHandAxisRadius);
-
-   // Frame
-   bool isFrameValid() const { return mFrameValid; }
-   U32 getFrameInternalId() const { return mFrameInternalId; }
-   S32 getFrameSimTime() const { return mFrameSimTime; }
-   S32 getFrameRealTime() const { return mFrameRealTime; }
-
-   // Hands
-   U32 getHandCount() const { return mHandCount; }
-   bool getHandValid(U32 index) const;
-   S32 getHandId(U32 index) const;
-   const Point3F& getHandRawPos(U32 index) const;
-   const Point3I& getHandPos(U32 index) const;
-   const MatrixF& getHandRot(U32 index) const;
-   const QuatF& getHandRotQuat(U32 index) const;
-   const Point2F& getHandRotAxis(U32 index) const;
-   U32 getHandPointablesCount(U32 index) const;
-
-   // Pointables
-   U32 getPointablesCount() const { return mPointableCount; }
-   bool getPointableValid(U32 index) const;
-   S32 getPointableId(U32 index) const;
-   S32 getPointableHandIndex(U32 index) const;
-   PointableType getPointableType(U32 index) const;
-   const Point3F& getPointableRawPos(U32 index) const;
-   const Point3I& getPointablePos(U32 index) const;
-   const MatrixF& getPointableRot(U32 index) const;
-   const QuatF& getPointableRotQuat(U32 index) const;
-   F32 getPointableLength(U32 index) const;
-   F32 getPointableWidth(U32 index) const;
-
-   DECLARE_CONOBJECT(LeapMotionFrame);
+    LeapMotionFrame();
+    virtual ~LeapMotionFrame();
+    
+    static void initPersistFields();
+    
+    virtual bool onAdd();
+    virtual void onRemove();
+    
+    void clear();
+    
+    /// Copy a Leap Frame into our data structures
+    void copyFromFrame( const Leap::Frame& frame, const F32& maxHandAxisRadius );
+    
+    // Frame
+    bool isFrameValid() const
+    {
+        return mFrameValid;
+    }
+    U32 getFrameInternalId() const
+    {
+        return mFrameInternalId;
+    }
+    S32 getFrameSimTime() const
+    {
+        return mFrameSimTime;
+    }
+    S32 getFrameRealTime() const
+    {
+        return mFrameRealTime;
+    }
+    
+    // Hands
+    U32 getHandCount() const
+    {
+        return mHandCount;
+    }
+    bool getHandValid( U32 index ) const;
+    S32 getHandId( U32 index ) const;
+    const Point3F& getHandRawPos( U32 index ) const;
+    const Point3I& getHandPos( U32 index ) const;
+    const MatrixF& getHandRot( U32 index ) const;
+    const QuatF& getHandRotQuat( U32 index ) const;
+    const Point2F& getHandRotAxis( U32 index ) const;
+    U32 getHandPointablesCount( U32 index ) const;
+    
+    // Pointables
+    U32 getPointablesCount() const
+    {
+        return mPointableCount;
+    }
+    bool getPointableValid( U32 index ) const;
+    S32 getPointableId( U32 index ) const;
+    S32 getPointableHandIndex( U32 index ) const;
+    PointableType getPointableType( U32 index ) const;
+    const Point3F& getPointableRawPos( U32 index ) const;
+    const Point3I& getPointablePos( U32 index ) const;
+    const MatrixF& getPointableRot( U32 index ) const;
+    const QuatF& getPointableRotQuat( U32 index ) const;
+    F32 getPointableLength( U32 index ) const;
+    F32 getPointableWidth( U32 index ) const;
+    
+    DECLARE_CONOBJECT( LeapMotionFrame );
 };
 
 typedef LeapMotionFrame::PointableType LeapMotionFramePointableType;
@@ -134,94 +152,94 @@ DefineEnumType( LeapMotionFramePointableType );
 
 //-----------------------------------------------------------------------------
 
-inline bool LeapMotionFrame::getHandValid(U32 index) const
+inline bool LeapMotionFrame::getHandValid( U32 index ) const
 {
-   return (index < mHandCount && mHandValid[index]);
+    return ( index < mHandCount && mHandValid[index] );
 }
 
-inline S32 LeapMotionFrame::getHandId(U32 index) const
+inline S32 LeapMotionFrame::getHandId( U32 index ) const
 {
-   return (index >= mHandCount) ? -1 : mHandId[index];
+    return ( index >= mHandCount ) ? -1 : mHandId[index];
 }
 
-inline const Point3F& LeapMotionFrame::getHandRawPos(U32 index) const
+inline const Point3F& LeapMotionFrame::getHandRawPos( U32 index ) const
 {
-   return (index >= mHandCount) ? Point3F::Zero : mHandRawPos[index];
+    return ( index >= mHandCount ) ? Point3F::Zero : mHandRawPos[index];
 }
 
-inline const Point3I& LeapMotionFrame::getHandPos(U32 index) const
+inline const Point3I& LeapMotionFrame::getHandPos( U32 index ) const
 {
-   return (index >= mHandCount) ? Point3I::Zero : mHandPos[index];
+    return ( index >= mHandCount ) ? Point3I::Zero : mHandPos[index];
 }
 
-inline const MatrixF& LeapMotionFrame::getHandRot(U32 index) const
+inline const MatrixF& LeapMotionFrame::getHandRot( U32 index ) const
 {
-   return (index >= mHandCount) ? MatrixF::Identity : mHandRot[index];
+    return ( index >= mHandCount ) ? MatrixF::Identity : mHandRot[index];
 }
 
-inline const QuatF& LeapMotionFrame::getHandRotQuat(U32 index) const
+inline const QuatF& LeapMotionFrame::getHandRotQuat( U32 index ) const
 {
-   return (index >= mHandCount) ? QuatF::Identity : mHandRotQuat[index];
+    return ( index >= mHandCount ) ? QuatF::Identity : mHandRotQuat[index];
 }
 
-inline const Point2F& LeapMotionFrame::getHandRotAxis(U32 index) const
+inline const Point2F& LeapMotionFrame::getHandRotAxis( U32 index ) const
 {
-   return (index >= mHandCount) ? Point2F::Zero : mHandRotAxis[index];
+    return ( index >= mHandCount ) ? Point2F::Zero : mHandRotAxis[index];
 }
 
-inline U32 LeapMotionFrame::getHandPointablesCount(U32 index) const
+inline U32 LeapMotionFrame::getHandPointablesCount( U32 index ) const
 {
-   return (index >= mHandCount) ? 0 : mHandPointablesCount[index];
+    return ( index >= mHandCount ) ? 0 : mHandPointablesCount[index];
 }
 
-inline bool LeapMotionFrame::getPointableValid(U32 index) const
+inline bool LeapMotionFrame::getPointableValid( U32 index ) const
 {
-   return (index < mPointableCount && mPointableValid[index]);
+    return ( index < mPointableCount && mPointableValid[index] );
 }
 
-inline S32 LeapMotionFrame::getPointableId(U32 index) const
+inline S32 LeapMotionFrame::getPointableId( U32 index ) const
 {
-   return (index >= mPointableCount) ? -1 : mPointableId[index];
+    return ( index >= mPointableCount ) ? -1 : mPointableId[index];
 }
 
-inline S32 LeapMotionFrame::getPointableHandIndex(U32 index) const
+inline S32 LeapMotionFrame::getPointableHandIndex( U32 index ) const
 {
-   return (index >= mPointableCount) ? -1 : mPointableHandIndex[index];
+    return ( index >= mPointableCount ) ? -1 : mPointableHandIndex[index];
 }
 
-inline LeapMotionFrame::PointableType LeapMotionFrame::getPointableType(U32 index) const
+inline LeapMotionFrame::PointableType LeapMotionFrame::getPointableType( U32 index ) const
 {
-   return (index >= mPointableCount) ? PT_UNKNOWN : mPointableType[index];
+    return ( index >= mPointableCount ) ? PT_UNKNOWN : mPointableType[index];
 }
 
-inline const Point3F& LeapMotionFrame::getPointableRawPos(U32 index) const
+inline const Point3F& LeapMotionFrame::getPointableRawPos( U32 index ) const
 {
-   return (index >= mPointableCount) ? Point3F::Zero : mPointableRawPos[index];
+    return ( index >= mPointableCount ) ? Point3F::Zero : mPointableRawPos[index];
 }
 
-inline const Point3I& LeapMotionFrame::getPointablePos(U32 index) const
+inline const Point3I& LeapMotionFrame::getPointablePos( U32 index ) const
 {
-   return (index >= mPointableCount) ? Point3I::Zero : mPointablePos[index];
+    return ( index >= mPointableCount ) ? Point3I::Zero : mPointablePos[index];
 }
 
-inline const MatrixF& LeapMotionFrame::getPointableRot(U32 index) const
+inline const MatrixF& LeapMotionFrame::getPointableRot( U32 index ) const
 {
-   return (index >= mPointableCount) ? MatrixF::Identity : mPointableRot[index];
+    return ( index >= mPointableCount ) ? MatrixF::Identity : mPointableRot[index];
 }
 
-inline const QuatF& LeapMotionFrame::getPointableRotQuat(U32 index) const
+inline const QuatF& LeapMotionFrame::getPointableRotQuat( U32 index ) const
 {
-   return (index >= mPointableCount) ? QuatF::Identity : mPointableRotQuat[index];
+    return ( index >= mPointableCount ) ? QuatF::Identity : mPointableRotQuat[index];
 }
 
-inline F32 LeapMotionFrame::getPointableLength(U32 index) const
+inline F32 LeapMotionFrame::getPointableLength( U32 index ) const
 {
-   return (index >= mPointableCount) ? 0.0f : mPointableLength[index];
+    return ( index >= mPointableCount ) ? 0.0f : mPointableLength[index];
 }
 
-inline F32 LeapMotionFrame::getPointableWidth(U32 index) const
+inline F32 LeapMotionFrame::getPointableWidth( U32 index ) const
 {
-   return (index >= mPointableCount) ? 0.0f : mPointableWidth[index];
+    return ( index >= mPointableCount ) ? 0.0f : mPointableWidth[index];
 }
 
 #endif   // _LEAPMOTIONFRAME_H_

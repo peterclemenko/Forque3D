@@ -38,81 +38,87 @@ class ForestEditorCtrl;
 
 class ForestUndoAction : public UndoAction
 {
-   typedef UndoAction Parent;
-
+    typedef UndoAction Parent;
+    
 public:
 
-   ForestUndoAction( const Resource<ForestData> &data, ForestEditorCtrl *editor, const char *description );   
-
-   // UndoAction
-   virtual void undo() {}
-   virtual void redo() {}
-
+    ForestUndoAction( const Resource<ForestData>& data, ForestEditorCtrl* editor, const char* description );
+    
+    // UndoAction
+    virtual void undo() {}
+    virtual void redo() {}
+    
 protected:
 
-   ForestEditorCtrl *mEditor;
-   Vector<ForestItem> mItems;
-   Resource<ForestData> mData;
+    ForestEditorCtrl* mEditor;
+    Vector<ForestItem> mItems;
+    Resource<ForestData> mData;
 };
 
 class ForestCreateUndoAction : public ForestUndoAction
 {
-   typedef ForestUndoAction Parent;
-
+    typedef ForestUndoAction Parent;
+    
 public:
-  
-   ForestCreateUndoAction( const Resource<ForestData> &data,
-                           ForestEditorCtrl *editor );
 
-   /// Adds the item to the Forest and stores 
-   /// its info for undo later.
-   void addItem( ForestItemData *data,
-                 const Point3F &position,
-                 F32 rotation,
-                 F32 scale );
-
-   // UndoAction
-   virtual void undo();
-   virtual void redo();
+    ForestCreateUndoAction( const Resource<ForestData>& data,
+                            ForestEditorCtrl* editor );
+                            
+    /// Adds the item to the Forest and stores
+    /// its info for undo later.
+    void addItem( ForestItemData* data,
+                  const Point3F& position,
+                  F32 rotation,
+                  F32 scale );
+                  
+    // UndoAction
+    virtual void undo();
+    virtual void redo();
 };
 
 
 class ForestDeleteUndoAction : public ForestUndoAction
 {
-   typedef ForestUndoAction Parent;
-
+    typedef ForestUndoAction Parent;
+    
 public:
-  
-   ForestDeleteUndoAction( const Resource<ForestData> &data,
-                           ForestEditorCtrl *editor );
 
-   ///
-   void removeItem( const ForestItem &item );
-   void removeItem( const Vector<ForestItem> &itemList );
-
-   // UndoAction
-   virtual void undo();
-   virtual void redo();
+    ForestDeleteUndoAction( const Resource<ForestData>& data,
+                            ForestEditorCtrl* editor );
+                            
+    ///
+    void removeItem( const ForestItem& item );
+    void removeItem( const Vector<ForestItem>& itemList );
+    
+    // UndoAction
+    virtual void undo();
+    virtual void redo();
 };
 
 
 class ForestUpdateAction : public ForestUndoAction
 {
-   typedef ForestUndoAction Parent;
-
+    typedef ForestUndoAction Parent;
+    
 public:
-  
-   ForestUpdateAction(  const Resource<ForestData> &data,
-                        ForestEditorCtrl *editor );
 
-   void saveItem( const ForestItem &item );
-
-   virtual void undo() { _swapState(); }
-   virtual void redo() { _swapState(); }
-
+    ForestUpdateAction( const Resource<ForestData>& data,
+                        ForestEditorCtrl* editor );
+                        
+    void saveItem( const ForestItem& item );
+    
+    virtual void undo()
+    {
+        _swapState();
+    }
+    virtual void redo()
+    {
+        _swapState();
+    }
+    
 protected:
 
-   void _swapState();
+    void _swapState();
 };
 
 #endif // _FOREST_EDITOR_UNDO_H_

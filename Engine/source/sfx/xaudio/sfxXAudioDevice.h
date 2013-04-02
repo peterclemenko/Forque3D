@@ -47,55 +47,55 @@ class SFXProvider;
 
 class SFXXAudioDevice : public SFXDevice
 {
-   public:
+public:
 
-      typedef SFXDevice Parent;
-      friend class SFXXAudioVoice; // mXAudio
+    typedef SFXDevice Parent;
+    friend class SFXXAudioVoice; // mXAudio
+    
+protected:
 
-   protected:
+    /// The XAudio engine interface passed
+    /// on creation from the provider.
+    IXAudio2* mXAudio;
+    
+    /// The X3DAudio instance.
+    X3DAUDIO_HANDLE mX3DAudio;
+    
+    /// The one and only mastering voice.
+    IXAudio2MasteringVoice* mMasterVoice;
+    
+    /// The details of the master voice.
+    XAUDIO2_VOICE_DETAILS mMasterVoiceDetails;
+    
+    /// The one listener.
+    X3DAUDIO_LISTENER mListener;
+    
+    SFXDistanceModel mDistanceModel;
+    F32 mRolloffFactor;
+    F32 mDopplerFactor;
+    
+public:
 
-      /// The XAudio engine interface passed 
-      /// on creation from the provider.
-      IXAudio2 *mXAudio;
-
-      /// The X3DAudio instance.
-      X3DAUDIO_HANDLE mX3DAudio;
-
-      /// The one and only mastering voice.
-      IXAudio2MasteringVoice* mMasterVoice;
-
-      /// The details of the master voice.
-      XAUDIO2_VOICE_DETAILS mMasterVoiceDetails;
-
-      /// The one listener.
-      X3DAUDIO_LISTENER mListener;
-
-      SFXDistanceModel mDistanceModel;
-      F32 mRolloffFactor;
-      F32 mDopplerFactor;
-
-   public:
-
-      SFXXAudioDevice(  SFXProvider* provider, 
-                        const String& name,
-                        IXAudio2 *xaudio,
-                        U32 deviceIndex,
-                        U32 speakerChannelMask,
-                        U32 maxBuffers );
-
-      virtual ~SFXXAudioDevice();
-
-      // SFXDevice
-      virtual SFXBuffer* createBuffer( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
-      virtual SFXVoice* createVoice( bool is3D, SFXBuffer *buffer );
-      virtual void update();
-      virtual void setListener( U32 index, const SFXListenerProperties& listener );
-      virtual void setDistanceModel( SFXDistanceModel model );
-      virtual void setRolloffFactor( F32 factor );
-      virtual void setDopplerFactor( F32 factor );
-
-      /// Called from the voice when its about to start playback.
-      void _setOutputMatrix( SFXXAudioVoice *voice );
+    SFXXAudioDevice( SFXProvider* provider,
+                     const String& name,
+                     IXAudio2* xaudio,
+                     U32 deviceIndex,
+                     U32 speakerChannelMask,
+                     U32 maxBuffers );
+                     
+    virtual ~SFXXAudioDevice();
+    
+    // SFXDevice
+    virtual SFXBuffer* createBuffer( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
+    virtual SFXVoice* createVoice( bool is3D, SFXBuffer* buffer );
+    virtual void update();
+    virtual void setListener( U32 index, const SFXListenerProperties& listener );
+    virtual void setDistanceModel( SFXDistanceModel model );
+    virtual void setRolloffFactor( F32 factor );
+    virtual void setDopplerFactor( F32 factor );
+    
+    /// Called from the voice when its about to start playback.
+    void _setOutputMatrix( SFXXAudioVoice* voice );
 };
 
 #endif // _SFXXAUDIODEVICE_H_

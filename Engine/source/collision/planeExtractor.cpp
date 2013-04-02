@@ -35,8 +35,8 @@ static F32 DistanceEpsilon = 100.0f;
 
 PlaneExtractorPolyList::PlaneExtractorPolyList()
 {
-   VECTOR_SET_ASSOCIATION(mVertexList);
-   VECTOR_SET_ASSOCIATION(mPolyPlaneList);
+    VECTOR_SET_ASSOCIATION( mVertexList );
+    VECTOR_SET_ASSOCIATION( mPolyPlaneList );
 }
 
 PlaneExtractorPolyList::~PlaneExtractorPolyList()
@@ -48,53 +48,53 @@ PlaneExtractorPolyList::~PlaneExtractorPolyList()
 
 void PlaneExtractorPolyList::clear()
 {
-   mVertexList.clear();
-   mPolyPlaneList.clear();
+    mVertexList.clear();
+    mPolyPlaneList.clear();
 }
 
-U32 PlaneExtractorPolyList::addPoint(const Point3F& p)
+U32 PlaneExtractorPolyList::addPoint( const Point3F& p )
 {
-   mVertexList.increment();
-   Point3F& v = mVertexList.last();
-   v.x = p.x * mScale.x;
-   v.y = p.y * mScale.y;
-   v.z = p.z * mScale.z;
-   mMatrix.mulP(v);
-   return mVertexList.size() - 1;
+    mVertexList.increment();
+    Point3F& v = mVertexList.last();
+    v.x = p.x * mScale.x;
+    v.y = p.y * mScale.y;
+    v.z = p.z * mScale.z;
+    mMatrix.mulP( v );
+    return mVertexList.size() - 1;
 }
 
-U32 PlaneExtractorPolyList::addPlane(const PlaneF& plane)
+U32 PlaneExtractorPolyList::addPlane( const PlaneF& plane )
 {
-   mPolyPlaneList.increment();
-   mPlaneTransformer.transform(plane, mPolyPlaneList.last());
-
-   return mPolyPlaneList.size() - 1;
+    mPolyPlaneList.increment();
+    mPlaneTransformer.transform( plane, mPolyPlaneList.last() );
+    
+    return mPolyPlaneList.size() - 1;
 }
 
 
 //----------------------------------------------------------------------------
 
-void PlaneExtractorPolyList::plane(U32 v1,U32 v2,U32 v3)
+void PlaneExtractorPolyList::plane( U32 v1, U32 v2, U32 v3 )
 {
-   mPlaneList->last().set(mVertexList[v1],
-      mVertexList[v2],mVertexList[v3]);
+    mPlaneList->last().set( mVertexList[v1],
+                            mVertexList[v2], mVertexList[v3] );
 }
 
-void PlaneExtractorPolyList::plane(const PlaneF& p)
+void PlaneExtractorPolyList::plane( const PlaneF& p )
 {
-   mPlaneTransformer.transform(p, mPlaneList->last());
+    mPlaneTransformer.transform( p, mPlaneList->last() );
 }
 
-void PlaneExtractorPolyList::plane(const U32 index)
+void PlaneExtractorPolyList::plane( const U32 index )
 {
-   AssertFatal(index < mPolyPlaneList.size(), "Out of bounds index!");
-   mPlaneList->last() = mPolyPlaneList[index];
+    AssertFatal( index < mPolyPlaneList.size(), "Out of bounds index!" );
+    mPlaneList->last() = mPolyPlaneList[index];
 }
 
-const PlaneF& PlaneExtractorPolyList::getIndexedPlane(const U32 index)
+const PlaneF& PlaneExtractorPolyList::getIndexedPlane( const U32 index )
 {
-   AssertFatal(index < mPolyPlaneList.size(), "Out of bounds index!");
-   return mPolyPlaneList[index];
+    AssertFatal( index < mPolyPlaneList.size(), "Out of bounds index!" );
+    return mPolyPlaneList[index];
 }
 
 
@@ -102,28 +102,29 @@ const PlaneF& PlaneExtractorPolyList::getIndexedPlane(const U32 index)
 
 bool PlaneExtractorPolyList::isEmpty() const
 {
-   return true;
+    return true;
 }
 
-void PlaneExtractorPolyList::begin(BaseMatInstance*,U32)
+void PlaneExtractorPolyList::begin( BaseMatInstance*, U32 )
 {
-   mPlaneList->increment();
+    mPlaneList->increment();
 }
 
 void PlaneExtractorPolyList::end()
 {
-   // See if there are any duplicate planes
-   PlaneF &plane = mPlaneList->last();
-   PlaneF *ptr = mPlaneList->begin();
-   for (; ptr != &plane; ptr++)
-      if (mFabs(ptr->d - plane.d) < DistanceEpsilon &&
-            mDot(*ptr,plane) > NormalEpsilon) {
-         mPlaneList->decrement();
-         return;
-      }
+    // See if there are any duplicate planes
+    PlaneF& plane = mPlaneList->last();
+    PlaneF* ptr = mPlaneList->begin();
+    for( ; ptr != &plane; ptr++ )
+        if( mFabs( ptr->d - plane.d ) < DistanceEpsilon &&
+                mDot( *ptr, plane ) > NormalEpsilon )
+        {
+            mPlaneList->decrement();
+            return;
+        }
 }
 
-void PlaneExtractorPolyList::vertex(U32)
+void PlaneExtractorPolyList::vertex( U32 )
 {
 }
 

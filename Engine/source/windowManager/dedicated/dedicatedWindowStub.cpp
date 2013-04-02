@@ -23,7 +23,7 @@
 #include "windowManager/dedicated/dedicatedWindowStub.h"
 
 
-PlatformWindowManager *CreatePlatformWindowManager()
+PlatformWindowManager* CreatePlatformWindowManager()
 {
-   return new DedicatedWindowMgr;
+    return new DedicatedWindowMgr;
 }

@@ -38,98 +38,101 @@ struct LeapMotionDeviceData;
 class LeapMotionDevice : public IInputDevice
 {
 protected:
-   class MotionListener : public Leap::Listener
-   {
-   public:
-      MotionListener() {}
-      virtual ~MotionListener() {}
-
-      virtual void onConnect (const Leap::Controller &controller);
-      virtual void onDisconnect (const Leap::Controller &controller);
-   };
-
-   /// The connection to the Leap Motion
-   Leap::Controller* mController;
-
-   /// Our Leap Motion listener class
-   MotionListener* mListener;
-
-   /// Used with the LM listener object
-   void* mActiveMutex;
-
-   /// Is the Leap Motion active
-   bool mActive;
-
-   /// Buffer to store data Leap Motion data in a Torque friendly way
-   LeapMotionDeviceData*  mDataBuffer[2];
-
-   /// Points to the buffers that holds the previously collected data
-   LeapMotionDeviceData*  mPrevData;
-
+    class MotionListener : public Leap::Listener
+    {
+    public:
+        MotionListener() {}
+        virtual ~MotionListener() {}
+        
+        virtual void onConnect( const Leap::Controller& controller );
+        virtual void onDisconnect( const Leap::Controller& controller );
+    };
+    
+    /// The connection to the Leap Motion
+    Leap::Controller* mController;
+    
+    /// Our Leap Motion listener class
+    MotionListener* mListener;
+    
+    /// Used with the LM listener object
+    void* mActiveMutex;
+    
+    /// Is the Leap Motion active
+    bool mActive;
+    
+    /// Buffer to store data Leap Motion data in a Torque friendly way
+    LeapMotionDeviceData*  mDataBuffer[2];
+    
+    /// Points to the buffers that holds the previously collected data
+    LeapMotionDeviceData*  mPrevData;
+    
 protected:
-   /// Build out the codes used for controller actions with the
-   /// Input Event Manager
-   void buildCodeTable();
-
+    /// Build out the codes used for controller actions with the
+    /// Input Event Manager
+    void buildCodeTable();
+    
 public:
-   static bool smEnableDevice;
-
-   // Indicates that events for each hand and pointable will be created
-   static bool smGenerateIndividualEvents;
-
-   // Indicates that we track hand IDs and will ensure that the same hand
-   // will remain at the same index between frames.
-   static bool smKeepHandIndexPersistent;
-
-   // Indicates that we track pointable IDs and will ensure that the same
-   // pointable will remain at the same index between frames.
-   static bool smKeepPointableIndexPersistent;
-
-   // Broadcast single hand rotation as axis
-   static bool smGenerateSingleHandRotationAsAxisEvents;
-
-   // The maximum hand angle when used as an axis event
-   // as measured from a vector pointing straight up (in degrees)
-   static F32 smMaximumHandAxisAngle;
-
-   // Indicates that a whole frame event should be generated and frames
-   // should be buffered.
-   static bool smGenerateWholeFrameEvents;
-
-   // Frame action codes
-   static U32 LM_FRAMEVALIDDATA;    // SI_BUTTON
-
-   // Hand action codes
-   static U32 LM_HAND[LeapMotionConstants::MaxHands];    // SI_POS
-   static U32 LM_HANDROT[LeapMotionConstants::MaxHands]; // SI_ROT
-
-   static U32 LM_HANDAXISX;   // SI_AXIS
-   static U32 LM_HANDAXISY;
-
-   // Pointables action codes
-   static U32 LM_HANDPOINTABLE[LeapMotionConstants::MaxHands][LeapMotionConstants::MaxPointablesPerHand];    // SI_POS
-   static U32 LM_HANDPOINTABLEROT[LeapMotionConstants::MaxHands][LeapMotionConstants::MaxPointablesPerHand]; // SI_ROT
-
-   // Whole frame
-   static U32 LM_FRAME;    // SI_INT
-
+    static bool smEnableDevice;
+    
+    // Indicates that events for each hand and pointable will be created
+    static bool smGenerateIndividualEvents;
+    
+    // Indicates that we track hand IDs and will ensure that the same hand
+    // will remain at the same index between frames.
+    static bool smKeepHandIndexPersistent;
+    
+    // Indicates that we track pointable IDs and will ensure that the same
+    // pointable will remain at the same index between frames.
+    static bool smKeepPointableIndexPersistent;
+    
+    // Broadcast single hand rotation as axis
+    static bool smGenerateSingleHandRotationAsAxisEvents;
+    
+    // The maximum hand angle when used as an axis event
+    // as measured from a vector pointing straight up (in degrees)
+    static F32 smMaximumHandAxisAngle;
+    
+    // Indicates that a whole frame event should be generated and frames
+    // should be buffered.
+    static bool smGenerateWholeFrameEvents;
+    
+    // Frame action codes
+    static U32 LM_FRAMEVALIDDATA;    // SI_BUTTON
+    
+    // Hand action codes
+    static U32 LM_HAND[LeapMotionConstants::MaxHands];    // SI_POS
+    static U32 LM_HANDROT[LeapMotionConstants::MaxHands]; // SI_ROT
+    
+    static U32 LM_HANDAXISX;   // SI_AXIS
+    static U32 LM_HANDAXISY;
+    
+    // Pointables action codes
+    static U32 LM_HANDPOINTABLE[LeapMotionConstants::MaxHands][LeapMotionConstants::MaxPointablesPerHand];    // SI_POS
+    static U32 LM_HANDPOINTABLEROT[LeapMotionConstants::MaxHands][LeapMotionConstants::MaxPointablesPerHand]; // SI_ROT
+    
+    // Whole frame
+    static U32 LM_FRAME;    // SI_INT
+    
 public:
-   LeapMotionDevice();
-   ~LeapMotionDevice();
-
-   static void staticInit();
-
-   bool enable();
-   void disable();
-
-   bool getActive();
-   void setActive(bool state);
-
-   bool process();
-
+    LeapMotionDevice();
+    ~LeapMotionDevice();
+    
+    static void staticInit();
+    
+    bool enable();
+    void disable();
+    
+    bool getActive();
+    void setActive( bool state );
+    
+    bool process();
+    
 public:
-   // For ManagedSingleton.
-   static const char* getSingletonName() { return "LeapMotionDevice"; }   
+    // For ManagedSingleton.
+    static const char* getSingletonName()
+    {
+        return "LeapMotionDevice";
+    }
 };
 
 /// Returns the LeapMotionDevice singleton.

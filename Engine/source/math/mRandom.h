@@ -33,40 +33,43 @@
 class MRandomGenerator
 {
 protected:
-   MRandomGenerator() {}
-   S32  mSeed;
-
+    MRandomGenerator() {}
+    S32  mSeed;
+    
 public:
-   virtual ~MRandomGenerator() {}
-   
-   void setSeed();
-   S32  getSeed() { return mSeed; }
-   virtual void setSeed(S32 s) = 0;
-
-   virtual U32 randI( void ) = 0;      ///< 0..2^31 random number generator
-   virtual F32  randF( void );         ///< 0.0 .. 1.0 F32 random number generator
-   S32 randI(S32 i, S32 n);            ///< i..n integer random number generator
-   F32 randF(F32 i, F32 n);            ///< i..n F32 random number generator
+    virtual ~MRandomGenerator() {}
+    
+    void setSeed();
+    S32  getSeed()
+    {
+        return mSeed;
+    }
+    virtual void setSeed( S32 s ) = 0;
+    
+    virtual U32 randI( void ) = 0;      ///< 0..2^31 random number generator
+    virtual F32  randF( void );         ///< 0.0 .. 1.0 F32 random number generator
+    S32 randI( S32 i, S32 n );          ///< i..n integer random number generator
+    F32 randF( F32 i, F32 n );          ///< i..n F32 random number generator
 };
 
 
 //--------------------------------------
 inline F32 MRandomGenerator::randF()
 {
-   // default: multiply by 1/(2^31)
-   return  F32(randI()) * (1.0f/2147483647.0f);
+    // default: multiply by 1/(2^31)
+    return  F32( randI() ) * ( 1.0f / 2147483647.0f );
 }
 
-inline S32 MRandomGenerator::randI(S32 i, S32 n)
+inline S32 MRandomGenerator::randI( S32 i, S32 n )
 {
-   AssertFatal(i<=n, "MRandomGenerator::randi: inverted range.");
-   return (S32)(i + (randI() % (n - i + 1)) );
+    AssertFatal( i <= n, "MRandomGenerator::randi: inverted range." );
+    return ( S32 )( i + ( randI() % ( n - i + 1 ) ) );
 }
 
-inline F32 MRandomGenerator::randF(F32 i, F32 n)
+inline F32 MRandomGenerator::randF( F32 i, F32 n )
 {
-   AssertFatal(i<=n, "MRandomGenerator::randf: inverted range.");
-   return (i + (n - i) * randF());
+    AssertFatal( i <= n, "MRandomGenerator::randf: inverted range." );
+    return ( i + ( n - i ) * randF() );
 }
 
 
@@ -79,28 +82,28 @@ inline F32 MRandomGenerator::randF(F32 i, F32 n)
 class MRandomLCG : public MRandomGenerator
 {
 protected:
-   static const S32 msQuotient;
-   static const S32 msRemainder;
-
+    static const S32 msQuotient;
+    static const S32 msRemainder;
+    
 public:
-   MRandomLCG();
-   MRandomLCG(S32 s);
-   virtual ~MRandomLCG() {}
-
-   static void setGlobalRandSeed(U32 seed);
-
-   void setSeed(S32 s);
+    MRandomLCG();
+    MRandomLCG( S32 s );
+    virtual ~MRandomLCG() {}
+    
+    static void setGlobalRandSeed( U32 seed );
+    
+    void setSeed( S32 s );
 //   using MRandomGenerator::randI;
-    S32 randI(S32 i, S32 n);            ///< i..n integer generator
-
-   U32 randI( void );
-
+    S32 randI( S32 i, S32 n );          ///< i..n integer generator
+    
+    U32 randI( void );
+    
 };
 
 // Solution to "using" problem.
-inline S32 MRandomLCG::randI(S32 i, S32 n)
+inline S32 MRandomLCG::randI( S32 i, S32 n )
 {
-    return( MRandomGenerator::randI(i,n) );
+    return( MRandomGenerator::randI( i, n ) );
 }
 
 
@@ -118,17 +121,17 @@ inline S32 MRandomLCG::randI(S32 i, S32 n)
 class MRandomR250: public MRandomGenerator
 {
 private:
-   U32 mBuffer[250];
-   S32 mIndex;
-
+    U32 mBuffer[250];
+    S32 mIndex;
+    
 public:
-   MRandomR250();
-   MRandomR250(S32 s);
-   virtual ~MRandomR250() {}
-
-   void setSeed(S32 s);
+    MRandomR250();
+    MRandomR250( S32 s );
+    virtual ~MRandomR250() {}
+    
+    void setSeed( S32 s );
 // using MRandomGenerator::randI;
-   U32 randI();
+    U32 randI();
 };
 
 

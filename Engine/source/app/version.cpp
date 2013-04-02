@@ -28,12 +28,12 @@ static const U32 csgVersionNumber = TORQUE_GAME_ENGINE;
 
 U32 getVersionNumber()
 {
-   return csgVersionNumber;
+    return csgVersionNumber;
 }
 
 const char* getVersionString()
 {
-   return TORQUE_GAME_ENGINE_VERSION_STRING;
+    return TORQUE_GAME_ENGINE_VERSION_STRING;
 }
 
 /// TGE       0001
@@ -46,87 +46,87 @@ const char* getVersionString()
 const char* getEngineProductString()
 {
 #ifndef TORQUE_ENGINE_PRODUCT
-   return "Torque Engine";
+    return "Torque Engine";
 #else
-   switch (TORQUE_ENGINE_PRODUCT)
-   {
-      case 0001:
-         return "Torque Game Engine";
-      case 0002:
-         return "Torque Game Engine Advanced";
-      case 0003:
-         return "Torque 2D";
-      case 0004:
-         return "Torque 360";
-      case 0005:
-         return "Torque for Wii";
-      case 0006:
-         return "Torque 3D";
-
-      default:
-         return "Torque Engine";
-   };
+    switch( TORQUE_ENGINE_PRODUCT )
+    {
+        case 0001:
+            return "Torque Game Engine";
+        case 0002:
+            return "Torque Game Engine Advanced";
+        case 0003:
+            return "Torque 2D";
+        case 0004:
+            return "Torque 360";
+        case 0005:
+            return "Torque for Wii";
+        case 0006:
+            return "Torque 3D";
+    
+        default:
+            return "Torque Engine";
+    };
 #endif
 }
 
 const char* getCompileTimeString()
 {
-   return __DATE__ " at " __TIME__;
+    return __DATE__ " at " __TIME__;
 }
 //----------------------------------------------------------------
 
 ConsoleFunctionGroupBegin( CompileInformation, "Functions to get version information about the current executable." );
 
 ConsoleFunction( getVersionNumber, S32, 1, 1, "Get the version of the build, as a string.\n\n"
-				"@ingroup Debugging")
+                 "@ingroup Debugging" )
 {
-   return getVersionNumber();
+    return getVersionNumber();
 }
 
 ConsoleFunction( getVersionString, const char*, 1, 1, "Get the version of the build, as a string.\n\n"
-				"@ingroup Debugging")
+                 "@ingroup Debugging" )
 {
-   return getVersionString();
+    return getVersionString();
 }
 
 ConsoleFunction( getEngineName, const char*, 1, 1, "Get the name of the engine product that this is running from, as a string.\n\n"
-				"@ingroup Debugging")
+                 "@ingroup Debugging" )
 {
-   return getEngineProductString();
+    return getEngineProductString();
 }
 
 ConsoleFunction( getCompileTimeString, const char*, 1, 1, "Get the time of compilation.\n\n"
-				"@ingroup Debugging")
+                 "@ingroup Debugging" )
 {
-   return getCompileTimeString();
+    return getCompileTimeString();
 }
 
 ConsoleFunction( getBuildString, const char*, 1, 1, "Get the type of build, \"Debug\" or \"Release\".\n\n"
-				"@ingroup Debugging")
+                 "@ingroup Debugging" )
 {
 #ifdef TORQUE_DEBUG
-   return "Debug";
+    return "Debug";
 #else
-   return "Release";
+    return "Release";
 #endif
 }
 
 ConsoleFunctionGroupEnd( CompileInformation );
 
-ConsoleFunction(isDemo, bool, 1, 1, "")
+ConsoleFunction( isDemo, bool, 1, 1, "" )
 {
 #ifdef TORQUE_DEMO
-   return true;
+    return true;
 #else
-   return false;
+    return false;
 #endif
 }
 
-ConsoleFunction(isWebDemo, bool, 1, 1, "")
+ConsoleFunction( isWebDemo, bool, 1, 1, "" )
 {
 #ifdef TORQUE_DEMO
-   return Platform::getWebDeployment();
+    return Platform::getWebDeployment();
 #else
-   return false;
+    return false;
 #endif
 }

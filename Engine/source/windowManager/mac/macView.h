@@ -27,47 +27,64 @@
 #include "windowManager/mac/macWindow.h"
 
 /// GGMacView handles displaying content and responding to user input.
-@interface GGMacView : NSOpenGLView
+@interface GGMacView :
+NSOpenGLView
 {
-   MacWindow* mTorqueWindow;
-   U32 mLastMods;
-   bool mHandledAsCharEvent;
+    MacWindow* mTorqueWindow;
+    U32 mLastMods;
+    bool mHandledAsCharEvent;
 }
-- (void)setTorqueWindow:(MacWindow*)theWindow;
-- (MacWindow*)torqueWindow;
+- ( void )setTorqueWindow:
+( MacWindow* )theWindow;
+- ( MacWindow* )torqueWindow;
 
 /// @name Inherited Mouse Input methods
 /// @{
-- (void)mouseDown:(NSEvent *)theEvent;
-- (void)rightMouseDown:(NSEvent *)theEvent;
-- (void)mouseDragged:(NSEvent *)theEvent;
-- (void)rightMouseDragged:(NSEvent *)theEvent;
-- (void)mouseUp:(NSEvent *)theEvent;
-- (void)rightMouseUp:(NSEvent *)theEvent;
-- (void)mouseMoved:(NSEvent *)theEvent;
-- (void)scrollWheel:(NSEvent *)theEvent;
+- ( void )mouseDown:
+( NSEvent* )theEvent;
+- ( void )rightMouseDown:
+( NSEvent* )theEvent;
+- ( void )mouseDragged:
+( NSEvent* )theEvent;
+- ( void )rightMouseDragged:
+( NSEvent* )theEvent;
+- ( void )mouseUp:
+( NSEvent* )theEvent;
+- ( void )rightMouseUp:
+( NSEvent* )theEvent;
+- ( void )mouseMoved:
+( NSEvent* )theEvent;
+- ( void )scrollWheel:
+( NSEvent* )theEvent;
 /// @}
 
 /// @name Inherited Keyboard Input methods
 /// @{
-- (void)keyDown:(NSEvent *)theEvent;
-- (void)keyUp:(NSEvent *)theEvent;
+- ( void )keyDown:
+( NSEvent* )theEvent;
+- ( void )keyUp:
+( NSEvent* )theEvent;
 /// @}
 
 /// @name Keyboard Input Common Code
 /// @{
-- (void)rawKeyUpDown:(NSEvent *)theEvent keyDown:(BOOL)isKeyDown;
+- ( void )rawKeyUpDown:
+( NSEvent* )theEvent keyDown:
+( BOOL )isKeyDown;
 /// @}
 
 /// @name Mouse Input Common Code
 /// @{
-- (void)mouseUpDown:(NSEvent *)theEvent mouseDown:(BOOL)isMouseDown;
-- (void)mouseMotion:(NSEvent *)theEvent;
+- ( void )mouseUpDown:
+( NSEvent* )theEvent mouseDown:
+( BOOL )isMouseDown;
+- ( void )mouseMotion:
+( NSEvent* )theEvent;
 /// @}
 
-- (BOOL)acceptsFirstResponder;
-- (BOOL)becomeFirstResponder;
-- (BOOL)resignFirstResponder;
+- ( BOOL )acceptsFirstResponder;
+- ( BOOL )becomeFirstResponder;
+- ( BOOL )resignFirstResponder;
 
 
 @end

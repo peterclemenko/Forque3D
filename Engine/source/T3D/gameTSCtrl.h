@@ -43,36 +43,36 @@ class GameBase;
 class GameTSCtrl : public GuiTSCtrl
 {
 private:
-   typedef GuiTSCtrl Parent;
-
+    typedef GuiTSCtrl Parent;
+    
 #ifdef TORQUE_DEMO_WATERMARK
-   Watermark mWatermark;
+    Watermark mWatermark;
 #endif
-
-   void makeScriptCall(const char *func, const GuiEvent &evt) const;
-
+    
+    void makeScriptCall( const char* func, const GuiEvent& evt ) const;
+    
 public:
-   GameTSCtrl();
-
-   DECLARE_CONOBJECT(GameTSCtrl);
-   DECLARE_DESCRIPTION( "A control that renders a 3D view from the current control object." );
-
-   bool processCameraQuery(CameraQuery *query);
-   void renderWorld(const RectI &updateRect);
-
-   // GuiControl
-   virtual void onMouseDown(const GuiEvent &evt);
-   virtual void onRightMouseDown(const GuiEvent &evt);
-   virtual void onMiddleMouseDown(const GuiEvent &evt);
-
-   virtual void onMouseUp(const GuiEvent &evt);
-   virtual void onRightMouseUp(const GuiEvent &evt);
-   virtual void onMiddleMouseUp(const GuiEvent &evt);
-
-   void onMouseMove(const GuiEvent &evt);
-   void onRender(Point2I offset, const RectI &updateRect);
-
-   virtual bool onAdd();
+    GameTSCtrl();
+    
+    DECLARE_CONOBJECT( GameTSCtrl );
+    DECLARE_DESCRIPTION( "A control that renders a 3D view from the current control object." );
+    
+    bool processCameraQuery( CameraQuery* query );
+    void renderWorld( const RectI& updateRect );
+    
+    // GuiControl
+    virtual void onMouseDown( const GuiEvent& evt );
+    virtual void onRightMouseDown( const GuiEvent& evt );
+    virtual void onMiddleMouseDown( const GuiEvent& evt );
+    
+    virtual void onMouseUp( const GuiEvent& evt );
+    virtual void onRightMouseUp( const GuiEvent& evt );
+    virtual void onMiddleMouseUp( const GuiEvent& evt );
+    
+    void onMouseMove( const GuiEvent& evt );
+    void onRender( Point2I offset, const RectI& updateRect );
+    
+    virtual bool onAdd();
 };
 
 #endif

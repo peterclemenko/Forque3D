@@ -29,31 +29,31 @@
 class GuiRectHandles : public GuiControl
 {
 private:
-   typedef GuiControl Parent;
-
+    typedef GuiControl Parent;
+    
 protected:
-   RectF    mHandleRect;
-   S32      mHandleSize;
-   bool     mUseCustomColor;
-   ColorI   mHandleColor;
-   S32      mHitHandle;    // 0 = none, 1-8 = clockwise circle starting upper left, 9 = centre
-   Point2I  mHitPoint;
-
+    RectF    mHandleRect;
+    S32      mHandleSize;
+    bool     mUseCustomColor;
+    ColorI   mHandleColor;
+    S32      mHitHandle;    // 0 = none, 1-8 = clockwise circle starting upper left, 9 = centre
+    Point2I  mHitPoint;
+    
 public:
-   DECLARE_CONOBJECT(GuiRectHandles);
-   DECLARE_CATEGORY( "Gui Other" );
-   DECLARE_DESCRIPTION( "Draws a box with handles for the user to manipulate.");
-
-   GuiRectHandles();
-   virtual ~GuiRectHandles();
-
-   static void initPersistFields();
-
-   virtual void onMouseUp(const GuiEvent &event);
-   virtual void onMouseDown(const GuiEvent &event);
-   virtual void onMouseDragged(const GuiEvent &event);
-
-   virtual void onRender(Point2I offset, const RectI &updateRect);
+    DECLARE_CONOBJECT( GuiRectHandles );
+    DECLARE_CATEGORY( "Gui Other" );
+    DECLARE_DESCRIPTION( "Draws a box with handles for the user to manipulate." );
+    
+    GuiRectHandles();
+    virtual ~GuiRectHandles();
+    
+    static void initPersistFields();
+    
+    virtual void onMouseUp( const GuiEvent& event );
+    virtual void onMouseDown( const GuiEvent& event );
+    virtual void onMouseDragged( const GuiEvent& event );
+    
+    virtual void onRender( Point2I offset, const RectI& updateRect );
 };
 
 #endif

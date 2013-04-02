@@ -37,84 +37,86 @@
 //
 // PlatformWindowManager::get() wrapped in Macro WindowManager
 static AutoPtr< PlatformWindowManager > smWindowManager;
-PlatformWindowManager *PlatformWindowManager::get() 
+PlatformWindowManager* PlatformWindowManager::get()
 {
-   if( smWindowManager.isNull() )
-      smWindowManager = CreatePlatformWindowManager();
-   return smWindowManager.ptr();
+    if( smWindowManager.isNull() )
+        smWindowManager = CreatePlatformWindowManager();
+    return smWindowManager.ptr();
 }
 
-void PlatformWindowManager::processCmdLineArgs( const S32 argc, const char **argv )
+void PlatformWindowManager::processCmdLineArgs( const S32 argc, const char** argv )
 {
-   // Only call the get() routine if we have arguments on the command line
-   if(argc > 0)
-   {
-      PlatformWindowManager::get()->_processCmdLineArgs(argc, argv);
-   }
+    // Only call the get() routine if we have arguments on the command line
+    if( argc > 0 )
+    {
+        PlatformWindowManager::get()->_processCmdLineArgs( argc, argv );
+    }
 }
 
 
-GFXDevice *gDevice          = NULL;
-PlatformWindow *gWindow     = NULL;
+GFXDevice* gDevice          = NULL;
+PlatformWindow* gWindow     = NULL;
 
 // Conversion from window manager input conventions to Torque standard.
-static struct ModifierBitMap {
-   U32 grendelMask,torqueMask;
-} _ModifierBitMap[] = {
-   { IM_LSHIFT, SI_LSHIFT   },
-   { IM_RSHIFT, SI_RSHIFT   },
-   { IM_LALT,   SI_LALT     },
-   { IM_RALT,   SI_RALT     },
-   { IM_LCTRL,  SI_LCTRL    },
-   { IM_RCTRL,  SI_RCTRL    },
-   { IM_LOPT,   SI_MAC_LOPT },
-   { IM_ROPT,   SI_MAC_ROPT },
-};
-static int _ModifierBitMapCount = sizeof(_ModifierBitMap) / sizeof(ModifierBitMap);
-
-InputModifiers convertModifierBits(const U32 in)
+static struct ModifierBitMap
 {
-   U32 out=0;
+    U32 grendelMask, torqueMask;
+} _ModifierBitMap[] =
+{
+    { IM_LSHIFT, SI_LSHIFT   },
+    { IM_RSHIFT, SI_RSHIFT   },
+    { IM_LALT,   SI_LALT     },
+    { IM_RALT,   SI_RALT     },
+    { IM_LCTRL,  SI_LCTRL    },
+    { IM_RCTRL,  SI_RCTRL    },
+    { IM_LOPT,   SI_MAC_LOPT },
+    { IM_ROPT,   SI_MAC_ROPT },
+};
+static int _ModifierBitMapCount = sizeof( _ModifierBitMap ) / sizeof( ModifierBitMap );
 
-   for(S32 i=0; i<_ModifierBitMapCount; i++)
-      if(in & _ModifierBitMap[i].grendelMask)
-         out |= _ModifierBitMap[i].torqueMask;
-
-   return (InputModifiers)out;
+InputModifiers convertModifierBits( const U32 in )
+{
+    U32 out = 0;
+    
+    for( S32 i = 0; i < _ModifierBitMapCount; i++ )
+        if( in & _ModifierBitMap[i].grendelMask )
+            out |= _ModifierBitMap[i].torqueMask;
+            
+    return ( InputModifiers )out;
 }
 
 //------------------------------------------------------------------------------
 
-void Platform::setWindowSize(U32 newWidth, U32 newHeight, bool fullScreen )
+void Platform::setWindowSize( U32 newWidth, U32 newHeight, bool fullScreen )
 {
-   AssertISV(gWindow, "Platform::setWindowSize - no window present!");
-
-   // Grab the curent video settings and diddle them with the new values.
-   GFXVideoMode vm = gWindow->getVideoMode();
-   vm.resolution.set(newWidth, newHeight);
-   vm.fullScreen = fullScreen;
-   gWindow->setVideoMode(vm);
+    AssertISV( gWindow, "Platform::setWindowSize - no window present!" );
+    
+    // Grab the curent video settings and diddle them with the new values.
+    GFXVideoMode vm = gWindow->getVideoMode();
+    vm.resolution.set( newWidth, newHeight );
+    vm.fullScreen = fullScreen;
+    gWindow->setVideoMode( vm );
 }
 
-void Platform::setWindowLocked(bool locked)
+void Platform::setWindowLocked( bool locked )
 {
-   PlatformWindow* window = WindowManager->getFirstWindow();
-   if( window )
-      window->setMouseLocked( locked );
+    PlatformWindow* window = WindowManager->getFirstWindow();
+    if( window )
+        window->setMouseLocked( locked );
 }
 
 void Platform::minimizeWindow()
 {
-   // requires PlatformWindow API extension...
-   if(gWindow)
-      gWindow->minimize();
+    // requires PlatformWindow API extension...
+    if( gWindow )
+        gWindow->minimize();
 }
 
 void Platform::closeWindow()
 {
-   // Shutdown all our stuff.
-   //SAFE_DELETE(gDevice); // <-- device is already cleaned up elsewhere by now...
-   SAFE_DELETE(gWindow);
+    // Shutdown all our stuff.
+    //SAFE_DELETE(gDevice); // <-- device is already cleaned up elsewhere by now...
+    SAFE_DELETE( gWindow );
 }
 
 //------------------------------------------------------------------------------
@@ -128,15 +130,15 @@ void Platform::closeWindow()
 
 HWND getWin32WindowHandle()
 {
-   PlatformWindow* window = WindowManager->getFocusedWindow();
-   if( !window )
-   {
-      window = WindowManager->getFirstWindow();
-      if( !window )
-         return NULL;
-   }
-
-   return ( ( Win32Window* ) window )->getHWND();
+    PlatformWindow* window = WindowManager->getFocusedWindow();
+    if( !window )
+    {
+        window = WindowManager->getFirstWindow();
+        if( !window )
+            return NULL;
+    }
+    
+    return ( ( Win32Window* ) window )->getHWND();
 }
 
 #endif

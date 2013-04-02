@@ -24,7 +24,7 @@
 #include "materials/materialFeatureTypes.h"
 
 
-ImplementFeatureType( MFT_UseInstancing, U32(-1), -1, false );
+ImplementFeatureType( MFT_UseInstancing, U32( -1 ), -1, false );
 
 ImplementFeatureType( MFT_VertTransform, MFG_Transform, 0, true );
 
@@ -58,17 +58,17 @@ ImplementFeatureType( MFT_Fog, MFG_PostProcess, 3.0f, true );
 
 ImplementFeatureType( MFT_HDROut, MFG_PostProcess, 999.0f, true );
 
-ImplementFeatureType( MFT_IsDXTnm, U32(-1), -1, true );
-ImplementFeatureType( MFT_IsTranslucent, U32(-1), -1, true );
-ImplementFeatureType( MFT_IsTranslucentZWrite, U32(-1), -1, true );
-ImplementFeatureType( MFT_IsEmissive, U32(-1), -1, true );
-ImplementFeatureType( MFT_GlossMap, U32(-1), -1, true );
-ImplementFeatureType( MFT_DiffuseMapAtlas, U32(-1), -1, true );
-ImplementFeatureType( MFT_NormalMapAtlas, U32(-1), -1, true );
-ImplementFeatureType( MFT_InterlacedPrePass, U32(-1), -1, true );
+ImplementFeatureType( MFT_IsDXTnm, U32( -1 ), -1, true );
+ImplementFeatureType( MFT_IsTranslucent, U32( -1 ), -1, true );
+ImplementFeatureType( MFT_IsTranslucentZWrite, U32( -1 ), -1, true );
+ImplementFeatureType( MFT_IsEmissive, U32( -1 ), -1, true );
+ImplementFeatureType( MFT_GlossMap, U32( -1 ), -1, true );
+ImplementFeatureType( MFT_DiffuseMapAtlas, U32( -1 ), -1, true );
+ImplementFeatureType( MFT_NormalMapAtlas, U32( -1 ), -1, true );
+ImplementFeatureType( MFT_InterlacedPrePass, U32( -1 ), -1, true );
 
 ImplementFeatureType( MFT_ParaboloidVertTransform, MFG_Transform, -1, false );
-ImplementFeatureType( MFT_IsSinglePassParaboloid, U32(-1), -1, false );
+ImplementFeatureType( MFT_IsSinglePassParaboloid, U32( -1 ), -1, false );
 ImplementFeatureType( MFT_EyeSpaceDepthOut, MFG_PostLighting, 2.0f, false );
 ImplementFeatureType( MFT_DepthOut, MFG_PostLighting, 3.0f, false );
 ImplementFeatureType( MFT_PrePassConditioner, MFG_PostProcess, 1.0f, false );
@@ -81,6 +81,6 @@ ImplementFeatureType( MFT_Foliage, MFG_PreTransform, 1.0f, false );
 
 ImplementFeatureType( MFT_ParticleNormal, MFG_PreTransform, 2.0f, false );
 
-ImplementFeatureType( MFT_ForwardShading, U32(-1), -1, true );
+ImplementFeatureType( MFT_ForwardShading, U32( -1 ), -1, true );
 
 ImplementFeatureType( MFT_ImposterVert, MFG_PreTransform, 1.0, false );

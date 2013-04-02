@@ -33,51 +33,57 @@
 /// Use SceneObject::containsPoint to find out whether a given space contains a particular point.
 class SceneSpace : public SceneObject
 {
-   public:
+public:
 
-      typedef SceneObject Parent;
+    typedef SceneObject Parent;
+    
+protected:
 
-   protected:
+    enum
+    {
+        TransformMask = Parent::NextFreeMask << 0,   ///< Object transform has changed.
+        NextFreeMask  = Parent::NextFreeMask << 1,
+    };
+    
+    ///
+    BaseMatInstance* mEditorRenderMaterial;
+    
+    ///
+    virtual BaseMatInstance* _createEditorRenderMaterial();
+    
+    /// Render a visualization of the volume.
+    virtual void _renderObject( ObjectRenderInst* ri, SceneRenderState* state, BaseMatInstance* overrideMat );
+    
+    ///
+    virtual ColorI _getDefaultEditorSolidColor() const
+    {
+        return ColorI( 255, 255, 255, 45 );
+    }
+    virtual ColorI _getDefaultEditorWireframeColor() const
+    {
+        return ColorI::BLACK;
+    }
+    
+public:
 
-      enum
-      {
-         TransformMask = Parent::NextFreeMask << 0,   ///< Object transform has changed.
-         NextFreeMask  = Parent::NextFreeMask << 1,
-      };
-
-      ///
-      BaseMatInstance* mEditorRenderMaterial;
-
-      ///
-      virtual BaseMatInstance* _createEditorRenderMaterial();
-
-      /// Render a visualization of the volume.
-      virtual void _renderObject( ObjectRenderInst* ri, SceneRenderState* state, BaseMatInstance* overrideMat );
-
-      ///
-      virtual ColorI _getDefaultEditorSolidColor() const { return ColorI( 255, 255, 255, 45 ); }
-      virtual ColorI _getDefaultEditorWireframeColor() const { return ColorI::BLACK; }
-
-   public:
-
-      SceneSpace();
-      ~SceneSpace();
-
-      // SimObject.
-      virtual bool onAdd();
-      virtual void onRemove();
-
-      // SceneObject.
-      virtual void setTransform( const MatrixF &mat );
-      virtual void prepRenderImage( SceneRenderState* state );
-
-      // NetObject.
-      virtual U32 packUpdate( NetConnection* connection, U32 mask, BitStream* stream );
-      virtual void unpackUpdate( NetConnection* connection, BitStream* stream );
-
-      // SimObject.
-      virtual void onEditorEnable();
-      virtual void onEditorDisable();
+    SceneSpace();
+    ~SceneSpace();
+    
+    // SimObject.
+    virtual bool onAdd();
+    virtual void onRemove();
+    
+    // SceneObject.
+    virtual void setTransform( const MatrixF& mat );
+    virtual void prepRenderImage( SceneRenderState* state );
+    
+    // NetObject.
+    virtual U32 packUpdate( NetConnection* connection, U32 mask, BitStream* stream );
+    virtual void unpackUpdate( NetConnection* connection, BitStream* stream );
+    
+    // SimObject.
+    virtual void onEditorEnable();
+    virtual void onEditorDisable();
 };
 
 #endif // !_SCENESPACE_H_

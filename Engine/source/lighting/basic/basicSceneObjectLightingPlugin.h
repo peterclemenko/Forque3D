@@ -42,58 +42,67 @@ class BasicSceneObjectLightingPlugin : public SceneObjectLightingPlugin
 {
 private:
 
-   ShadowBase* mShadow;
-   SceneObject* mParentObject;
-
-   static Vector<BasicSceneObjectLightingPlugin*> smPluginInstances;
-   
+    ShadowBase* mShadow;
+    SceneObject* mParentObject;
+    
+    static Vector<BasicSceneObjectLightingPlugin*> smPluginInstances;
+    
 public:
-   BasicSceneObjectLightingPlugin(SceneObject* parent);
-   ~BasicSceneObjectLightingPlugin();
-
-   static Vector<BasicSceneObjectLightingPlugin*>* getPluginInstances() { return &smPluginInstances; }
-
-   static void cleanupPluginInstances();
-   static void resetAll();
-
-   const F32 getScore() const;
-
-   // Called from BasicLightManager
-   virtual void updateShadow( SceneRenderState *state );
-   virtual void renderShadow( SceneRenderState *state );
-
-   // Called by statics
-   virtual U32  packUpdate(SceneObject* obj, U32 checkMask, NetConnection *conn, U32 mask, BitStream *stream) { return 0; }
-   virtual void unpackUpdate(SceneObject* obj, NetConnection *conn, BitStream *stream) { }
-
-   virtual void reset();
+    BasicSceneObjectLightingPlugin( SceneObject* parent );
+    ~BasicSceneObjectLightingPlugin();
+    
+    static Vector<BasicSceneObjectLightingPlugin*>* getPluginInstances()
+    {
+        return &smPluginInstances;
+    }
+    
+    static void cleanupPluginInstances();
+    static void resetAll();
+    
+    const F32 getScore() const;
+    
+    // Called from BasicLightManager
+    virtual void updateShadow( SceneRenderState* state );
+    virtual void renderShadow( SceneRenderState* state );
+    
+    // Called by statics
+    virtual U32  packUpdate( SceneObject* obj, U32 checkMask, NetConnection* conn, U32 mask, BitStream* stream )
+    {
+        return 0;
+    }
+    virtual void unpackUpdate( SceneObject* obj, NetConnection* conn, BitStream* stream ) { }
+    
+    virtual void reset();
 };
 
 class BasicSceneObjectPluginFactory : public ManagedSingleton< BasicSceneObjectPluginFactory >
 {
 protected:
 
-   /// Called from the light manager on activation.
-   /// @see LightManager::addActivateCallback
-   void _onLMActivate( const char *lm, bool enable );   
-   
-   void _onDecalManagerClear();
-
-   void removeLightPlugin(SceneObject* obj);
-   void addLightPlugin(SceneObject* obj);
-   void addToExistingObjects();
-
-   bool mEnabled;
-
+    /// Called from the light manager on activation.
+    /// @see LightManager::addActivateCallback
+    void _onLMActivate( const char* lm, bool enable );
+    
+    void _onDecalManagerClear();
+    
+    void removeLightPlugin( SceneObject* obj );
+    void addLightPlugin( SceneObject* obj );
+    void addToExistingObjects();
+    
+    bool mEnabled;
+    
 public:
 
-   BasicSceneObjectPluginFactory();
-   ~BasicSceneObjectPluginFactory();
-   
-   // For ManagedSingleton.
-   static const char* getSingletonName() { return "BasicSceneObjectPluginFactory"; }
-   
-   void _setEnabled();
+    BasicSceneObjectPluginFactory();
+    ~BasicSceneObjectPluginFactory();
+    
+    // For ManagedSingleton.
+    static const char* getSingletonName()
+    {
+        return "BasicSceneObjectPluginFactory";
+    }
+    
+    void _setEnabled();
 };
 
 #endif // !_BASICSCENEOBJECTLIGHTINGPLUGIN_H_

@@ -32,42 +32,45 @@ class SFXAmbience;
 template< typename Base >
 class SceneAmbientSoundObject : public Base
 {
-   public:
+public:
 
-      typedef Base Parent;
+    typedef Base Parent;
+    
+protected:
 
-   protected:
+    enum
+    {
+        SoundMask     = Parent::NextFreeMask << 0,   ///< Ambient sound properties have changed.
+        NextFreeMask  = Parent::NextFreeMask << 1,
+    };
+    
+    /// Ambient sound properties for this space.
+    SFXAmbience* mSoundAmbience;
+    
+public:
 
-      enum
-      {
-         SoundMask     = Parent::NextFreeMask << 0,   ///< Ambient sound properties have changed.
-         NextFreeMask  = Parent::NextFreeMask << 1,
-      };
+    SceneAmbientSoundObject();
+    
+    /// Set the ambient sound properties for the space.
+    void setSoundAmbience( SFXAmbience* ambience );
+    
+    // SimObject.
+    static void initPersistFields();
+    
+    // NetObject.
+    virtual U32 packUpdate( NetConnection* connection, U32 mask, BitStream* stream );
+    virtual void unpackUpdate( NetConnection* connection, BitStream* stream );
+    
+    // SceneObject.
+    virtual SFXAmbience* getSoundAmbience() const
+    {
+        return mSoundAmbience;
+    }
+    
+private:
 
-      /// Ambient sound properties for this space.
-      SFXAmbience* mSoundAmbience;
-
-   public:
-
-      SceneAmbientSoundObject();
-
-      /// Set the ambient sound properties for the space.
-      void setSoundAmbience( SFXAmbience* ambience );
-
-      // SimObject.
-      static void initPersistFields();
-
-      // NetObject.
-      virtual U32 packUpdate( NetConnection* connection, U32 mask, BitStream* stream );
-      virtual void unpackUpdate( NetConnection* connection, BitStream* stream );
-
-      // SceneObject.
-      virtual SFXAmbience* getSoundAmbience() const { return mSoundAmbience; }
-
-   private:
-
-      // Console field getters/setters.
-      static bool _setSoundAmbience( void* object, const char* index, const char* data );
+    // Console field getters/setters.
+    static bool _setSoundAmbience( void* object, const char* index, const char* data );
 };
 
 #endif // !_SCENEAMBIENTSOUNDOBJECT_H_

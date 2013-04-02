@@ -31,42 +31,42 @@ class SceneObject;
 class SceneContainer;
 
 
-/// When this NetEvent is processed on the client-side it 
-/// applies a radial impulse to objects in the physics 
+/// When this NetEvent is processed on the client-side it
+/// applies a radial impulse to objects in the physics
 /// simulation.
 class RadialImpulseEvent : public NetEvent
 {
-   typedef NetEvent Parent;
-
+    typedef NetEvent Parent;
+    
 protected:
 
-   struct ImpulseInfo
-   {
-      Point3F pos;
-      F32 radius;
-      F32 magnitude;
-   };
-
-   Point3F mPosition;
-   F32 mRadius;
-   F32 mMagnitude;
-
-   static void _impulseCallback( SceneObject *obj, void *key );
-
+    struct ImpulseInfo
+    {
+        Point3F pos;
+        F32 radius;
+        F32 magnitude;
+    };
+    
+    Point3F mPosition;
+    F32 mRadius;
+    F32 mMagnitude;
+    
+    static void _impulseCallback( SceneObject* obj, void* key );
+    
 public:
 
-   RadialImpulseEvent();      
-   RadialImpulseEvent( const Point3F &pos, F32 radius, F32 magnitude );
-   ~RadialImpulseEvent();   
-
-   virtual void pack( NetConnection* /*ps*/, BitStream *bstream );   
-   virtual void write( NetConnection*, BitStream *bstream );   
-   virtual void unpack( NetConnection *ps, BitStream *bstream );   
-   virtual void process(NetConnection *);
-   
-   static void impulse( SceneContainer *con, const Point3F &position, F32 radius, F32 magnitude );
-
-   DECLARE_CONOBJECT( RadialImpulseEvent );
+    RadialImpulseEvent();
+    RadialImpulseEvent( const Point3F& pos, F32 radius, F32 magnitude );
+    ~RadialImpulseEvent();
+    
+    virtual void pack( NetConnection* /*ps*/, BitStream* bstream );
+    virtual void write( NetConnection*, BitStream* bstream );
+    virtual void unpack( NetConnection* ps, BitStream* bstream );
+    virtual void process( NetConnection* );
+    
+    static void impulse( SceneContainer* con, const Point3F& position, F32 radius, F32 magnitude );
+    
+    DECLARE_CONOBJECT( RadialImpulseEvent );
 };
 
 

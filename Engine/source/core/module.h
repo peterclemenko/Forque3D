@@ -24,10 +24,10 @@
 #define _MODULE_H_
 
 #ifndef _TSINGLETON_H_
-   #include "core/util/tSingleton.h"
+#include "core/util/tSingleton.h"
 #endif
 #ifndef _TVECTOR_H_
-   #include "core/util/tVector.h"
+#include "core/util/tVector.h"
 #endif
 
 
@@ -39,129 +39,129 @@
 /// An engine component that requires initialization and/or cleanup.
 class Module
 {
-   public:
-   
-      typedef void Parent;
-      friend struct ModuleManager;
-      
-   protected:
-   
-      struct Dependency;
-      friend struct Dependency;
-      
-      enum Mode
-      {
-         ModeInitialize,
-         ModeShutdown
-      };
-      
-      /// Direction of a dependency edge.
-      enum DependencyType
-      {
-         DependencyBefore,
-         DependencyAfter
-      };
-   
-      /// Entry in the list of dependencies.
-      struct Dependency
-      {
-         /// Direction of dependence.  A "before" dependence goes the reverse direction.
-         DependencyType mType;
-         
-         /// Name of the module that this module depends on.
-         const char* mModuleName;
-         
-         /// Pointer to module.  Filled by init code.
-         Module* mModule;
-         
-         /// Next dependency or NULL.
-         Dependency* mNext;
-         
-         Dependency( Mode mode, DependencyType type, Module* parentModule, const char* moduleName )
+public:
+
+    typedef void Parent;
+    friend struct ModuleManager;
+    
+protected:
+
+    struct Dependency;
+    friend struct Dependency;
+    
+    enum Mode
+    {
+        ModeInitialize,
+        ModeShutdown
+    };
+    
+    /// Direction of a dependency edge.
+    enum DependencyType
+    {
+        DependencyBefore,
+        DependencyAfter
+    };
+    
+    /// Entry in the list of dependencies.
+    struct Dependency
+    {
+        /// Direction of dependence.  A "before" dependence goes the reverse direction.
+        DependencyType mType;
+        
+        /// Name of the module that this module depends on.
+        const char* mModuleName;
+        
+        /// Pointer to module.  Filled by init code.
+        Module* mModule;
+        
+        /// Next dependency or NULL.
+        Dependency* mNext;
+        
+        Dependency( Mode mode, DependencyType type, Module* parentModule, const char* moduleName )
             : mType( type ),
               mNext( mode == ModeInitialize ? parentModule->mInitDependencies : parentModule->mShutdownDependencies ),
               mModuleName( moduleName ),
               mModule( NULL )
-         {
+        {
             if( mode == ModeInitialize )
-               parentModule->mInitDependencies = this;
+                parentModule->mInitDependencies = this;
             else
-               parentModule->mShutdownDependencies = this;
-         }
-      };
-      
-      /// Record for module that this module overrides.
-      struct Override
-      {
-         /// Name of module being overridden.
-         const char* mModuleName;
-         
-         /// Next override or NULL.
-         Override* mNext;
-         
-         Override( Module* parentModule, const char* moduleName )
+                parentModule->mShutdownDependencies = this;
+        }
+    };
+    
+    /// Record for module that this module overrides.
+    struct Override
+    {
+        /// Name of module being overridden.
+        const char* mModuleName;
+        
+        /// Next override or NULL.
+        Override* mNext;
+        
+        Override( Module* parentModule, const char* moduleName )
             : mModuleName( moduleName ),
               mNext( parentModule->mOverrides )
-         {
+        {
             parentModule->mOverrides = this;
-         }
-      };
-      
-      /// Flag to make sure we don't shutdown modules that have not been initialized.
-      bool mIsInitialized;
-      
-      /// Next module in the global module list.
-      Module* mNext;
-      
-      /// List of modules to which the initialization of this module has dependency relations.
-      Dependency* mInitDependencies;
-            
-      /// List of modules to which the shutdown of this module has dependency relations.
-      Dependency* mShutdownDependencies;
-      
-      /// List of modules being overriden by this module.
-      Override* mOverrides;
-                  
-      /// Global list of modules.
-      static Module* smFirst;
-      
-      /// Return true if this module is constrained to precede "module" in the given "mode".
-      bool _constrainedToComeBefore( Module* module, Mode mode );
-
-      /// Return true if this module is constrained to follow "module" in the given "mode".
-      bool _constrainedToComeAfter( Module* module, Mode mode );
-      
-      ///
-      Dependency* _getDependencies( Mode mode )
-      {
-         if( mode == ModeInitialize )
+        }
+    };
+    
+    /// Flag to make sure we don't shutdown modules that have not been initialized.
+    bool mIsInitialized;
+    
+    /// Next module in the global module list.
+    Module* mNext;
+    
+    /// List of modules to which the initialization of this module has dependency relations.
+    Dependency* mInitDependencies;
+    
+    /// List of modules to which the shutdown of this module has dependency relations.
+    Dependency* mShutdownDependencies;
+    
+    /// List of modules being overriden by this module.
+    Override* mOverrides;
+    
+    /// Global list of modules.
+    static Module* smFirst;
+    
+    /// Return true if this module is constrained to precede "module" in the given "mode".
+    bool _constrainedToComeBefore( Module* module, Mode mode );
+    
+    /// Return true if this module is constrained to follow "module" in the given "mode".
+    bool _constrainedToComeAfter( Module* module, Mode mode );
+    
+    ///
+    Dependency* _getDependencies( Mode mode )
+    {
+        if( mode == ModeInitialize )
             return mInitDependencies;
-         else
+        else
             return mShutdownDependencies;
-      }
-            
-      Module()
-         : mNext( smFirst ),
-           mInitDependencies( NULL ),
-           mShutdownDependencies( NULL ),
-           mOverrides( NULL ),
-           mIsInitialized( false )
-      {
-         smFirst = this;
-      }
-      
-   public:
-   
-      /// Return the module name.
-      virtual const char* getName() const = 0;
-      
-      /// Initialize the module.  This is only called after all modules that this
-      /// module depends on have been initialized.
-      virtual void initialize() {}
-      
-      /// Shut down the module.  This is called before any module that this module
-      /// depends on have been shut down.
-      virtual void shutdown() {}
+    }
+    
+    Module()
+        : mNext( smFirst ),
+          mInitDependencies( NULL ),
+          mShutdownDependencies( NULL ),
+          mOverrides( NULL ),
+          mIsInitialized( false )
+    {
+        smFirst = this;
+    }
+    
+public:
+
+    /// Return the module name.
+    virtual const char* getName() const = 0;
+    
+    /// Initialize the module.  This is only called after all modules that this
+    /// module depends on have been initialized.
+    virtual void initialize() {}
+    
+    /// Shut down the module.  This is called before any module that this module
+    /// depends on have been shut down.
+    virtual void shutdown() {}
 };
 
 
@@ -249,7 +249,7 @@ class Module
                _DepShutdownAfter ## name()                                                         \
                   : Parent::Dependency( ModeShutdown, DependencyAfter, &smInstance, #name ) {}     \
             } mDepShutdownAfter ## name;
-            
+
 /// Replace the given module in both the init and the shutdown sequence.
 ///
 /// @code
@@ -300,10 +300,10 @@ class Module
       };                                                                         \
       _ModuleInst _ModuleInst::smInstance;                                       \
    } }
-   
-   
 
-/// Used to define a function which will be called right 
+
+
+/// Used to define a function which will be called right
 /// after the named module is initialized.
 ///
 /// @code
@@ -334,24 +334,24 @@ class Module
 
 struct ModuleManager
 {
-      /// Initialize all modules registered with the system.
-      static void initializeSystem();
-      
-      /// Shutdown all modules registered with the system.
-      static void shutdownSystem();
-   
-      /// Return the instance of the module called "name" or NULL if no such module is defined.
-      static Module* findModule( const char* name );
+    /// Initialize all modules registered with the system.
+    static void initializeSystem();
+    
+    /// Shutdown all modules registered with the system.
+    static void shutdownSystem();
+    
+    /// Return the instance of the module called "name" or NULL if no such module is defined.
+    static Module* findModule( const char* name );
+    
+private:
 
-   private:
-   
-      static Module* _findOverrideFor( Module* module );
-      static String _moduleListToString( Vector< Module* >& moduleList );
-      static void _printModuleList( Vector< Module* >& moduleList );
-      static void _insertIntoModuleList( Module::Mode mode, Vector< Module* >& moduleList, Module* module );
-      static S32 _getIndexOfModuleInList( Vector< Module* >& moduleList, Module* module );
-      static S32 _getIndexOfModuleInList( Vector< Module* >& moduleList, const char* moduleName );
-      static void _createModuleList( Module::Mode mode, Vector< Module* >& moduleList );
+    static Module* _findOverrideFor( Module* module );
+    static String _moduleListToString( Vector< Module* >& moduleList );
+    static void _printModuleList( Vector< Module* >& moduleList );
+    static void _insertIntoModuleList( Module::Mode mode, Vector< Module* >& moduleList, Module* module );
+    static S32 _getIndexOfModuleInList( Vector< Module* >& moduleList, Module* module );
+    static S32 _getIndexOfModuleInList( Vector< Module* >& moduleList, const char* moduleName );
+    static void _createModuleList( Module::Mode mode, Vector< Module* >& moduleList );
 };
 
 #endif // !_MODULE_H_

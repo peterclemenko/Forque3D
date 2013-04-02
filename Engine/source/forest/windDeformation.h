@@ -36,14 +36,14 @@ class WindDeformationConstHandles : public ShaderFeatureConstHandles
 {
 public:
 
-   GFXShaderConstHandle *mWindDirAndSpeed;
-   GFXShaderConstHandle *mWindParams;
-
-   // ShaderFeatureConstHandles
-   virtual void init( GFXShader *shader );
-   virtual void setConsts( SceneRenderState *state, 
-                           const SceneData &sgData,
-                           GFXShaderConstBuffer *buffer );
+    GFXShaderConstHandle* mWindDirAndSpeed;
+    GFXShaderConstHandle* mWindParams;
+    
+    // ShaderFeatureConstHandles
+    virtual void init( GFXShader* shader );
+    virtual void setConsts( SceneRenderState* state,
+                            const SceneData& sgData,
+                            GFXShaderConstBuffer* buffer );
 };
 
 

@@ -58,23 +58,25 @@ bool gEditingMission = false;
 ConsoleFunctionGroupBegin( InputManagement, "Functions that let you deal with input from scripts" );
 
 ConsoleFunction( deactivateDirectInput, void, 1, 1, "()"
-            "@brief Disables DirectInput.\n\n"
-            "Also deactivates any connected joysticks.\n\n"
-			"@ingroup Input" )
+                 "@brief Disables DirectInput.\n\n"
+                 "Also deactivates any connected joysticks.\n\n"
+                 "@ingroup Input" )
 {
-   TORQUE_UNUSED(argc); TORQUE_UNUSED(argv);
-   if ( Input::isActive() )
-      Input::deactivate();
+    TORQUE_UNUSED( argc );
+    TORQUE_UNUSED( argv );
+    if( Input::isActive() )
+        Input::deactivate();
 }
 
-ConsoleFunction( activateDirectInput, void, 1, 1,"()"
-            "@brief Activates DirectInput.\n\n"
-            "Also activates any connected joysticks."
-			"@ingroup Input")
+ConsoleFunction( activateDirectInput, void, 1, 1, "()"
+                 "@brief Activates DirectInput.\n\n"
+                 "Also activates any connected joysticks."
+                 "@ingroup Input" )
 {
-   TORQUE_UNUSED(argc); TORQUE_UNUSED(argv);
-   if ( !Input::isActive() )
-      Input::activate();
+    TORQUE_UNUSED( argc );
+    TORQUE_UNUSED( argv );
+    if( !Input::isActive() )
+        Input::activate();
 }
 ConsoleFunctionGroupEnd( InputManagement );
 
@@ -83,176 +85,176 @@ ConsoleFunctionGroupEnd( InputManagement );
 static const U32 MaxPlayerNameLength = 16;
 ConsoleFunction( strToPlayerName, const char*, 2, 2, "strToPlayerName( string )" )
 {
-   TORQUE_UNUSED(argc);
-
-   const char* ptr = argv[1];
-
-	// Strip leading spaces and underscores:
-   while ( *ptr == ' ' || *ptr == '_' )
-      ptr++;
-
-   U32 len = dStrlen( ptr );
-   if ( len )
-   {
-      char* ret = Con::getReturnBuffer( MaxPlayerNameLength + 1 );
-      char* rptr = ret;
-      ret[MaxPlayerNameLength - 1] = '\0';
-      ret[MaxPlayerNameLength] = '\0';
-      bool space = false;
-
-      U8 ch;
-      while ( *ptr && dStrlen( ret ) < MaxPlayerNameLength )
-      {
-         ch = (U8) *ptr;
-
-         // Strip all illegal characters:
-         if ( ch < 32 || ch == ',' || ch == '.' || ch == '\'' || ch == '`' )
-         {
-            ptr++;
-            continue;
-         }
-
-         // Don't allow double spaces or space-underline combinations:
-         if ( ch == ' ' || ch == '_' )
-         {
-            if ( space )
+    TORQUE_UNUSED( argc );
+    
+    const char* ptr = argv[1];
+    
+    // Strip leading spaces and underscores:
+    while( *ptr == ' ' || *ptr == '_' )
+        ptr++;
+        
+    U32 len = dStrlen( ptr );
+    if( len )
+    {
+        char* ret = Con::getReturnBuffer( MaxPlayerNameLength + 1 );
+        char* rptr = ret;
+        ret[MaxPlayerNameLength - 1] = '\0';
+        ret[MaxPlayerNameLength] = '\0';
+        bool space = false;
+        
+        U8 ch;
+        while( *ptr && dStrlen( ret ) < MaxPlayerNameLength )
+        {
+            ch = ( U8 ) * ptr;
+            
+            // Strip all illegal characters:
+            if( ch < 32 || ch == ',' || ch == '.' || ch == '\'' || ch == '`' )
             {
-               ptr++;
-               continue;
+                ptr++;
+                continue;
+            }
+            
+            // Don't allow double spaces or space-underline combinations:
+            if( ch == ' ' || ch == '_' )
+            {
+                if( space )
+                {
+                    ptr++;
+                    continue;
+                }
+                else
+                    space = true;
             }
             else
-               space = true;
-         }
-         else
-            space = false;
-
-         *rptr++ = *ptr;
-         ptr++;
-      }
-      *rptr = '\0';
-
-		//finally, strip out the ML text control chars...
-		return GuiMLTextCtrl::stripControlChars(ret);
-   }
-
-	return( "" );
+                space = false;
+                
+            *rptr++ = *ptr;
+            ptr++;
+        }
+        *rptr = '\0';
+        
+        //finally, strip out the ML text control chars...
+        return GuiMLTextCtrl::stripControlChars( ret );
+    }
+    
+    return( "" );
 }
 
-ConsoleFunctionGroupBegin( Platform , "General platform functions.");
+ConsoleFunctionGroupBegin( Platform , "General platform functions." );
 
 ConsoleFunction( lockMouse, void, 2, 2, "(bool isLocked)"
-            "@brief Lock or unlock the mouse to the window.\n\n"
-            "When true, prevents the mouse from leaving the bounds of the game window.\n\n"
-            "@ingroup Input")
+                 "@brief Lock or unlock the mouse to the window.\n\n"
+                 "When true, prevents the mouse from leaving the bounds of the game window.\n\n"
+                 "@ingroup Input" )
 {
-   Platform::setWindowLocked(dAtob(argv[1]));
+    Platform::setWindowLocked( dAtob( argv[1] ) );
 }
 
 
 ConsoleFunction( setNetPort, bool, 2, 3, "(int port, bool bind=true)"
-   "@brief Set the network port for the game to use.\n\n"
+                 "@brief Set the network port for the game to use.\n\n"
 
-   "@param port The port to use.\n"
-   "@param bind True if bind() should be called on the port.\n"
+                 "@param port The port to use.\n"
+                 "@param bind True if bind() should be called on the port.\n"
 
-   "@returns True if the port was successfully opened.\n"
+                 "@returns True if the port was successfully opened.\n"
 
-   "This will trigger a windows firewall prompt.  "
-   "If you don't have firewall tunneling tech you can set this to false to avoid the prompt.\n\n"
-   "@ingroup Networking")
+                 "This will trigger a windows firewall prompt.  "
+                 "If you don't have firewall tunneling tech you can set this to false to avoid the prompt.\n\n"
+                 "@ingroup Networking" )
 {
-   bool bind = true;
-   if (argc == 3)
-      bind = dAtob(argv[2]);
-   return Net::openPort(dAtoi(argv[1]), bind);
+    bool bind = true;
+    if( argc == 3 )
+        bind = dAtob( argv[2] );
+    return Net::openPort( dAtoi( argv[1] ), bind );
 }
 
 ConsoleFunction( closeNetPort, void, 1, 1, "()"
-   "@brief Closes the current network port\n\n"
-   "@ingroup Networking")
+                 "@brief Closes the current network port\n\n"
+                 "@ingroup Networking" )
 {
-   Net::closePort();
+    Net::closePort();
 }
 
 ConsoleFunction( saveJournal, void, 2, 2, "(string filename)"
-                "Save the journal to the specified file.\n\n"
-				"@ingroup Platform")
+                 "Save the journal to the specified file.\n\n"
+                 "@ingroup Platform" )
 {
-   Journal::Record(argv[1]);
+    Journal::Record( argv[1] );
 }
 
 ConsoleFunction( playJournal, void, 2, 3, "(string filename)"
-                "@brief Begin playback of a journal from a specified field.\n\n"
-				"@param filename Name and path of file journal file\n"
-				"@ingroup Platform")
+                 "@brief Begin playback of a journal from a specified field.\n\n"
+                 "@param filename Name and path of file journal file\n"
+                 "@ingroup Platform" )
 {
-   // CodeReview - BJG 4/24/2007 - The break flag needs to be wired back in.
-   // bool jBreak = (argc > 2)? dAtob(argv[2]): false;
-   Journal::Play(argv[1]);
+    // CodeReview - BJG 4/24/2007 - The break flag needs to be wired back in.
+    // bool jBreak = (argc > 2)? dAtob(argv[2]): false;
+    Journal::Play( argv[1] );
 }
 
 ConsoleFunction( getSimTime, S32, 1, 1, "()"
-				"Return the current sim time in milliseconds.\n\n"
-                "@brief Sim time is time since the game started.\n\n"
-				"@ingroup Platform")
+                 "Return the current sim time in milliseconds.\n\n"
+                 "@brief Sim time is time since the game started.\n\n"
+                 "@ingroup Platform" )
 {
-   return Sim::getCurrentTime();
+    return Sim::getCurrentTime();
 }
 
 ConsoleFunction( getRealTime, S32, 1, 1, "()"
-				"@brief Return the current real time in milliseconds.\n\n"
-                "Real time is platform defined; typically time since the computer booted.\n\n"
-				"@ingroup Platform")
+                 "@brief Return the current real time in milliseconds.\n\n"
+                 "Real time is platform defined; typically time since the computer booted.\n\n"
+                 "@ingroup Platform" )
 {
-   return Platform::getRealMilliseconds();
+    return Platform::getRealMilliseconds();
 }
 
-ConsoleFunctionGroupEnd(Platform);
+ConsoleFunctionGroupEnd( Platform );
 
 //-----------------------------------------------------------------------------
 
-bool clientProcess(U32 timeDelta)
+bool clientProcess( U32 timeDelta )
 {
-   bool ret = true;
-
+    bool ret = true;
+    
 #ifndef TORQUE_TGB_ONLY
-   ret = ClientProcessList::get()->advanceTime(timeDelta);
+    ret = ClientProcessList::get()->advanceTime( timeDelta );
 #else
-	ret = gt2dNetworkClientProcess.advanceTime( timeDelta );
+    ret = gt2dNetworkClientProcess.advanceTime( timeDelta );
 #endif
-
-   ITickable::advanceTime(timeDelta);
-
+    
+    ITickable::advanceTime( timeDelta );
+    
 #ifndef TORQUE_TGB_ONLY
-   // Determine if we're lagging
-   GameConnection* connection = GameConnection::getConnectionToServer();
-   if(connection)
-	{
-      connection->detectLag();
-	}
+    // Determine if we're lagging
+    GameConnection* connection = GameConnection::getConnectionToServer();
+    if( connection )
+    {
+        connection->detectLag();
+    }
 #else
-   // Determine if we're lagging
-   t2dGameConnection* connection = t2dGameConnection::getConnectionToServer();
-   if(connection)
-	{
-      connection->detectLag();
-	}
+    // Determine if we're lagging
+    t2dGameConnection* connection = t2dGameConnection::getConnectionToServer();
+    if( connection )
+    {
+        connection->detectLag();
+    }
 #endif
-
-   // Let SFX process.
-   SFX->_update();
-
-   return ret;
+    
+    // Let SFX process.
+    SFX->_update();
+    
+    return ret;
 }
 
-bool serverProcess(U32 timeDelta)
+bool serverProcess( U32 timeDelta )
 {
-   bool ret = true;
+    bool ret = true;
 #ifndef TORQUE_TGB_ONLY
-   ret =  ServerProcessList::get()->advanceTime(timeDelta);
+    ret =  ServerProcessList::get()->advanceTime( timeDelta );
 #else
-   ret =  gt2dNetworkServerProcess.advanceTime( timeDelta );
+    ret =  gt2dNetworkServerProcess.advanceTime( timeDelta );
 #endif
-   return ret;
+    return ret;
 }
 

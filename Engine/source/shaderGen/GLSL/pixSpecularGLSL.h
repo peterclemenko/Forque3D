@@ -33,24 +33,24 @@ class PixelSpecularGLSL : public ShaderFeatureGLSL
 {
 protected:
 
-   ShaderIncludeDependency mDep;
-
+    ShaderIncludeDependency mDep;
+    
 public:
 
-   PixelSpecularGLSL();
-
-   virtual void processVert( Vector<ShaderComponent*> &componentList,
-                             const MaterialFeatureData &fd );
-
-   virtual void processPix( Vector<ShaderComponent*> &componentList, 
-                            const MaterialFeatureData &fd );
-
-   virtual Resources getResources( const MaterialFeatureData &fd );
-   
-   virtual String getName()
-   {
-      return "Pixel Specular";
-   }
+    PixelSpecularGLSL();
+    
+    virtual void processVert( Vector<ShaderComponent*>& componentList,
+                              const MaterialFeatureData& fd );
+                              
+    virtual void processPix( Vector<ShaderComponent*>& componentList,
+                             const MaterialFeatureData& fd );
+                             
+    virtual Resources getResources( const MaterialFeatureData& fd );
+    
+    virtual String getName()
+    {
+        return "Pixel Specular";
+    }
 };
 
 
@@ -59,20 +59,20 @@ class SpecularMapGLSL : public ShaderFeatureGLSL
 {
 
 public:
-   virtual void processPix( Vector<ShaderComponent*> &componentList, 
-      const MaterialFeatureData &fd );
-
-   virtual Resources getResources( const MaterialFeatureData &fd );
-
-   virtual void setTexData( Material::StageData &stageDat,
-      const MaterialFeatureData &fd,
-      RenderPassData &passData,
-      U32 &texIndex );
-
-   virtual String getName()
-   {
-      return "Specular Map";
-   }
+    virtual void processPix( Vector<ShaderComponent*>& componentList,
+                             const MaterialFeatureData& fd );
+                             
+    virtual Resources getResources( const MaterialFeatureData& fd );
+    
+    virtual void setTexData( Material::StageData& stageDat,
+                             const MaterialFeatureData& fd,
+                             RenderPassData& passData,
+                             U32& texIndex );
+                             
+    virtual String getName()
+    {
+        return "Specular Map";
+    }
 };
 
 

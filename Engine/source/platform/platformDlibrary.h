@@ -32,9 +32,9 @@
 
 // Export functions from the DLL
 #if defined(DLL_CODE)
-   #define DLL_DECL DLL_EXPORT_CALL
+#define DLL_DECL DLL_EXPORT_CALL
 #else
-   #define DLL_DECL DLL_IMPORT_CALL
+#define DLL_DECL DLL_IMPORT_CALL
 #endif
 
 
@@ -52,15 +52,15 @@
 class DLibrary: public StrongRefBase
 {
 public:
-   virtual ~DLibrary() {}
-   virtual void *bind( const char *name ) = 0;
+    virtual ~DLibrary() {}
+    virtual void* bind( const char* name ) = 0;
 };
 typedef StrongRefPtr<DLibrary> DLibraryRef;
 
 /// Load a library
 /// Returns 0 if the library fails to load. Symbols are
 /// resolved through the DLibrary interface.
-DLibraryRef OsLoadLibrary( const char *file );
+DLibraryRef OsLoadLibrary( const char* file );
 
 ///@}
 

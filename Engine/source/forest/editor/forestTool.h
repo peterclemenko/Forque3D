@@ -44,40 +44,52 @@ struct Gui3DMouseEvent;
 
 class ForestTool : public SimObject
 {
-   typedef SimObject Parent;
+    typedef SimObject Parent;
+    
+protected:
 
-   protected:
+    SimObjectPtr<Forest> mForest;
+    ForestEditorCtrl* mEditor;
+    
+    void _submitUndo( UndoAction* action );
+    
+public:
 
-      SimObjectPtr<Forest> mForest;
-      ForestEditorCtrl *mEditor;
-
-      void _submitUndo( UndoAction *action );
-
-   public:
-
-      ForestTool();
-      virtual ~ForestTool();
-
-      DECLARE_CONOBJECT( ForestTool );
-
-      virtual void setActiveForest( Forest *forest ) { mForest = forest; }
-      virtual void setParentEditor( ForestEditorCtrl *editor ) { mEditor = editor; }
-
-      virtual void onActivated( const Gui3DMouseEvent &lastEvent ) {}
-      virtual void onDeactivated() {}
-
-      virtual void on3DMouseDown( const Gui3DMouseEvent &evt ) {}
-      virtual void on3DMouseUp( const Gui3DMouseEvent &evt ) {}
-      virtual void on3DMouseMove( const Gui3DMouseEvent &evt ) {}
-      virtual void on3DMouseDragged( const Gui3DMouseEvent &evt ) {}
-      virtual void on3DMouseEnter( const Gui3DMouseEvent &evt ) {}
-      virtual void on3DMouseLeave( const Gui3DMouseEvent &evt ) {}
-      virtual bool onMouseWheel( const GuiEvent &evt ) { return false; }      
-      virtual void onRender3D() {}
-      virtual void onRender2D() {}      
-      virtual void updateGizmo() {}
-      virtual bool updateGuiInfo() { return false; }
-      virtual void onUndoAction() {}
+    ForestTool();
+    virtual ~ForestTool();
+    
+    DECLARE_CONOBJECT( ForestTool );
+    
+    virtual void setActiveForest( Forest* forest )
+    {
+        mForest = forest;
+    }
+    virtual void setParentEditor( ForestEditorCtrl* editor )
+    {
+        mEditor = editor;
+    }
+    
+    virtual void onActivated( const Gui3DMouseEvent& lastEvent ) {}
+    virtual void onDeactivated() {}
+    
+    virtual void on3DMouseDown( const Gui3DMouseEvent& evt ) {}
+    virtual void on3DMouseUp( const Gui3DMouseEvent& evt ) {}
+    virtual void on3DMouseMove( const Gui3DMouseEvent& evt ) {}
+    virtual void on3DMouseDragged( const Gui3DMouseEvent& evt ) {}
+    virtual void on3DMouseEnter( const Gui3DMouseEvent& evt ) {}
+    virtual void on3DMouseLeave( const Gui3DMouseEvent& evt ) {}
+    virtual bool onMouseWheel( const GuiEvent& evt )
+    {
+        return false;
+    }
+    virtual void onRender3D() {}
+    virtual void onRender2D() {}
+    virtual void updateGizmo() {}
+    virtual bool updateGuiInfo()
+    {
+        return false;
+    }
+    virtual void onUndoAction() {}
 };
 
 

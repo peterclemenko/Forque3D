@@ -70,94 +70,99 @@ struct ProfilerRootData;
 /// @endcode
 class Profiler
 {
-   enum {
-      MaxStackDepth = 256,
-      DumpFileNameLength = 256
-   };
-   U32 mCurrentHash;
-
-   ProfilerData *mCurrentProfilerData;
-   ProfilerData *mProfileList;
-   ProfilerData *mRootProfilerData;
-
-   bool mEnabled;
-   S32 mStackDepth;
-   bool mNextEnable;
-   U32 mMaxStackDepth;
-   bool mDumpToConsole;
-   bool mDumpToFile;
-   char mDumpFileName[DumpFileNameLength];
-   void dump();
-   void validate();
+    enum
+    {
+        MaxStackDepth = 256,
+        DumpFileNameLength = 256
+    };
+    U32 mCurrentHash;
+    
+    ProfilerData* mCurrentProfilerData;
+    ProfilerData* mProfileList;
+    ProfilerData* mRootProfilerData;
+    
+    bool mEnabled;
+    S32 mStackDepth;
+    bool mNextEnable;
+    U32 mMaxStackDepth;
+    bool mDumpToConsole;
+    bool mDumpToFile;
+    char mDumpFileName[DumpFileNameLength];
+    void dump();
+    void validate();
 public:
-   Profiler();
-   ~Profiler();
-
-   /// Reset the data in the profiler
-   void reset();
-   /// Dumps the profile to console
-   void dumpToConsole();
-   /// Dumps the profile data to a file
-   /// @param fileName filename to dump data to
-   void dumpToFile(const char *fileName);
-   /// Enable profiling
-   void enable(bool enabled);
-   bool isEnabled() { return mNextEnable; }
-   /// Helper function for macro definition PROFILE_START
-   void hashPush(ProfilerRootData *data);
-   /// Helper function for macro definition PROFILE_END
-   void hashPop(ProfilerRootData *expected=NULL);
-   /// Enable a profiler marker
-   void enableMarker(const char *marker, bool enabled);
+    Profiler();
+    ~Profiler();
+    
+    /// Reset the data in the profiler
+    void reset();
+    /// Dumps the profile to console
+    void dumpToConsole();
+    /// Dumps the profile data to a file
+    /// @param fileName filename to dump data to
+    void dumpToFile( const char* fileName );
+    /// Enable profiling
+    void enable( bool enabled );
+    bool isEnabled()
+    {
+        return mNextEnable;
+    }
+    /// Helper function for macro definition PROFILE_START
+    void hashPush( ProfilerRootData* data );
+    /// Helper function for macro definition PROFILE_END
+    void hashPop( ProfilerRootData* expected = NULL );
+    /// Enable a profiler marker
+    void enableMarker( const char* marker, bool enabled );
 #ifdef TORQUE_ENABLE_PROFILE_PATH
-   /// Get current profile path
-   const char * getProfilePath();
-   /// Construct profile path of given profiler data
-   const char * constructProfilePath(ProfilerData * pd);
+    /// Get current profile path
+    const char* getProfilePath();
+    /// Construct profile path of given profiler data
+    const char* constructProfilePath( ProfilerData* pd );
 #endif
 };
 
-extern Profiler *gProfiler;
+extern Profiler* gProfiler;
 
 struct ProfilerRootData
 {
-   const char *mName;
-   U32 mNameHash;
-   ProfilerData *mFirstProfilerData;
-   ProfilerRootData *mNextRoot;
-   F64 mTotalTime;
-   F64 mSubTime;
-   U32 mTotalInvokeCount;
-   bool mEnabled;
-
-   static ProfilerRootData *sRootList;
-
-   ProfilerRootData(const char *name);
+    const char* mName;
+    U32 mNameHash;
+    ProfilerData* mFirstProfilerData;
+    ProfilerRootData* mNextRoot;
+    F64 mTotalTime;
+    F64 mSubTime;
+    U32 mTotalInvokeCount;
+    bool mEnabled;
+    
+    static ProfilerRootData* sRootList;
+    
+    ProfilerRootData( const char* name );
 };
 
 struct ProfilerData
 {
-   ProfilerRootData *mRoot; ///< link to root node.
-   ProfilerData *mNextForRoot; ///< links together all ProfilerData's for a particular root
-   ProfilerData *mNextProfilerData; ///< links all the profilerDatas
-   ProfilerData *mNextHash;
-   ProfilerData *mParent;
-   ProfilerData *mNextSibling;
-   ProfilerData *mFirstChild;
-   enum {
-      HashTableSize = 32,
-   };
-   ProfilerData *mChildHash[HashTableSize];
-   ProfilerData *mLastSeenProfiler;
-
-   U32 mHash;
-   U32 mSubDepth;
-   U32 mInvokeCount;
-   U32 mStartTime[2];
-   F64 mTotalTime;
-   F64 mSubTime;
+    ProfilerRootData* mRoot; ///< link to root node.
+    ProfilerData* mNextForRoot; ///< links together all ProfilerData's for a particular root
+    ProfilerData* mNextProfilerData; ///< links all the profilerDatas
+    ProfilerData* mNextHash;
+    ProfilerData* mParent;
+    ProfilerData* mNextSibling;
+    ProfilerData* mFirstChild;
+    enum
+    {
+        HashTableSize = 32,
+    };
+    ProfilerData* mChildHash[HashTableSize];
+    ProfilerData* mLastSeenProfiler;
+    
+    U32 mHash;
+    U32 mSubDepth;
+    U32 mInvokeCount;
+    U32 mStartTime[2];
+    F64 mTotalTime;
+    F64 mSubTime;
 #ifdef TORQUE_ENABLE_PROFILE_PATH
-   const char * mPath;
+    const char* mPath;
 #endif
 };
 
@@ -170,14 +175,17 @@ if(gProfiler) gProfiler->hashPush(& pdata##name##obj )
 
 #define PROFILE_END_NAMED(name) if(gProfiler) gProfiler->hashPop(& pdata##name##obj)
 
-class ScopedProfiler {
+class ScopedProfiler
+{
 public:
-   ScopedProfiler(ProfilerRootData *data) {
-      if (gProfiler) gProfiler->hashPush(data);
-   }
-   ~ScopedProfiler() {
-      if (gProfiler) gProfiler->hashPop();
-   }
+    ScopedProfiler( ProfilerRootData* data )
+    {
+        if( gProfiler ) gProfiler->hashPush( data );
+    }
+    ~ScopedProfiler()
+    {
+        if( gProfiler ) gProfiler->hashPop();
+    }
 };
 
 #define PROFILE_SCOPE(name) \

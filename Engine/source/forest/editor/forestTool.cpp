@@ -35,34 +35,34 @@
 IMPLEMENT_CONOBJECT( ForestTool );
 
 ConsoleDocClass( ForestTool,
-   "@brief Base class for Forest Editor specific tools\n\n"
-   "Editor use only.\n\n"
-   "@internal"
-);
+                 "@brief Base class for Forest Editor specific tools\n\n"
+                 "Editor use only.\n\n"
+                 "@internal"
+               );
 
 ForestTool::ForestTool()
-   : mForest( NULL ),
-     mEditor( NULL )
-{   
+    : mForest( NULL ),
+      mEditor( NULL )
+{
 }
 
 ForestTool::~ForestTool()
 {
 }
 
-void ForestTool::_submitUndo( UndoAction *action )
+void ForestTool::_submitUndo( UndoAction* action )
 {
-   AssertFatal( action, "ForestTool::_submitUndo() - No undo action!" );
-
-   // Grab the mission editor undo manager.
-   UndoManager *undoMan = NULL;
-   if ( !Sim::findObject( "EUndoManager", undoMan ) )
-   {
-      Con::errorf( "ForestTool::_submitUndo() - EUndoManager not found!" );
-      return;     
-   }
-
-   undoMan->addAction( action );
-
-   mEditor->updateCollision();
+    AssertFatal( action, "ForestTool::_submitUndo() - No undo action!" );
+    
+    // Grab the mission editor undo manager.
+    UndoManager* undoMan = NULL;
+    if( !Sim::findObject( "EUndoManager", undoMan ) )
+    {
+        Con::errorf( "ForestTool::_submitUndo() - EUndoManager not found!" );
+        return;
+    }
+    
+    undoMan->addAction( action );
+    
+    mEditor->updateCollision();
 }

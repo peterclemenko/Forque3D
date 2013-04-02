@@ -58,35 +58,35 @@ extern HWND getWin32WindowHandle();
 
 struct Win32PlatState
 {
-   FILE *log_fp;
-   HINSTANCE hinstOpenGL;
-   HINSTANCE hinstGLU;
-   HINSTANCE hinstOpenAL;
-   HWND appWindow;
-   HDC appDC;
-   HINSTANCE appInstance;
-   HGLRC hGLRC;
-   DWORD processId;
-   bool renderThreadBlocked;
-   S32 nMessagesPerFrame; ///< The max number of messages to dispatch per frame
-   HMENU appMenu; ///< The menu bar for the window
+    FILE* log_fp;
+    HINSTANCE hinstOpenGL;
+    HINSTANCE hinstGLU;
+    HINSTANCE hinstOpenAL;
+    HWND appWindow;
+    HDC appDC;
+    HINSTANCE appInstance;
+    HGLRC hGLRC;
+    DWORD processId;
+    bool renderThreadBlocked;
+    S32 nMessagesPerFrame; ///< The max number of messages to dispatch per frame
+    HMENU appMenu; ///< The menu bar for the window
 #ifdef UNICODE
-   //HIMC imeHandle;
+    //HIMC imeHandle;
 #endif
-
-   S32 desktopBitsPixel;
-   S32 desktopWidth;
-   S32 desktopHeight;
-   S32 desktopClientWidth;
-   S32 desktopClientHeight;
-   U32 currentTime;
-   
-   // minimum time per frame
-   U32 sleepTicks;
-   // are we in the background?
-   bool backgrounded;
-
-   Win32PlatState();
+    
+    S32 desktopBitsPixel;
+    S32 desktopWidth;
+    S32 desktopHeight;
+    S32 desktopClientWidth;
+    S32 desktopClientHeight;
+    U32 currentTime;
+    
+    // minimum time per frame
+    U32 sleepTicks;
+    // are we in the background?
+    bool backgrounded;
+    
+    Win32PlatState();
 };
 
 extern Win32PlatState winState;
@@ -96,43 +96,43 @@ extern void setModifierKeys( S32 modKeys );
 //-------------------------------------- Helper Functions
 
 template< typename T >
-inline void forwardslashT( T *str )
+inline void forwardslashT( T* str )
 {
-   while(*str)
-   {
-      if(*str == '\\')
-         *str = '/';
-      str++;
-   }
+    while( *str )
+    {
+        if( *str == '\\' )
+            *str = '/';
+        str++;
+    }
 }
 
 inline void forwardslash( char* str )
 {
-   forwardslashT< char >( str );
+    forwardslashT< char >( str );
 }
 inline void forwardslash( WCHAR* str )
 {
-   forwardslashT< WCHAR >( str );
+    forwardslashT< WCHAR >( str );
 }
 
 template< typename T >
-inline void backslashT( T *str )
+inline void backslashT( T* str )
 {
-   while(*str)
-   {
-      if(*str == '/')
-         *str = '\\';
-      str++;
-   }
+    while( *str )
+    {
+        if( *str == '/' )
+            *str = '\\';
+        str++;
+    }
 }
 
 inline void backslash( char* str )
 {
-   backslashT< char >( str );
+    backslashT< char >( str );
 }
 inline void backslash( WCHAR* str )
 {
-   backslashT< WCHAR >( str );
+    backslashT< WCHAR >( str );
 }
 
 #endif //_PLATFORMWIN32_H_

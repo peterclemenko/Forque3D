@@ -42,98 +42,102 @@ class CodeBlock;
 /// @see http://www.planettribes.com/tribes2/editing.shtml for more thorough discussion.
 class TelnetDebugger
 {
-   S32 mAcceptPort;
-   NetSocket mAcceptSocket;
-   NetSocket mDebugSocket;
-
-   enum {
-      
-      // We should only change this is we truely 
-      // break the protocol in a future version.
-      Version = 2,
-
-      PasswordMaxLength = 32,
-      MaxCommandSize = 2048
-   };
-
-   char mDebuggerPassword[PasswordMaxLength+1];
-   enum State
-   {
-      NotConnected,
-      PasswordTry,
-      Initialize,
-      Connected
-   };
-   S32 mState;
-   char mLineBuffer[MaxCommandSize];
-   S32 mCurPos;
-   bool mWaitForClient;
-
-   TelnetDebugger();
-   ~TelnetDebugger();
-
-   struct Breakpoint
-   {
-      StringTableEntry fileName;
-      CodeBlock *code;
-      U32 lineNumber;
-      S32 passCount;
-      S32 curCount;
-      char *testExpression;
-      bool clearOnHit;
-      Breakpoint *next;
-   };
-   Breakpoint *mBreakpoints;
-
-   Breakpoint **findBreakpoint(StringTableEntry fileName, S32 lineNumber);
-
-   bool mProgramPaused;
-   bool mBreakOnNextStatement;
-   S32 mStackPopBreakIndex;
-
-   void addVariableBreakpoint(const char *varName, S32 passCount, const char *evalString);
-   void removeVariableBreakpoint(const char *varName);
-   void addBreakpoint(const char *fileName, S32 line, bool clear, S32 passCount, const char *evalString);
-   void removeBreakpoint(const char *fileName, S32 line);
-   void removeAllBreakpoints();
-
-   void debugBreakNext();
-   void debugContinue();
-   void debugStepIn();
-   void debugStepOver();
-   void debugStepOut();
-   void evaluateExpression(const char *tag, S32 frame, const char *evalBuffer);
-   void dumpFileList();
-   void dumpBreakableList(const char *fileName);
-   void removeBreakpointsFromCode(CodeBlock *code);
-
-   void checkDebugRecv();
-   void processLineBuffer(S32);
-   void sendBreak();
-   void setBreakOnNextStatement( bool enabled );
+    S32 mAcceptPort;
+    NetSocket mAcceptSocket;
+    NetSocket mDebugSocket;
+    
+    enum
+    {
+    
+        // We should only change this is we truely
+        // break the protocol in a future version.
+        Version = 2,
+        
+        PasswordMaxLength = 32,
+        MaxCommandSize = 2048
+    };
+    
+    char mDebuggerPassword[PasswordMaxLength + 1];
+    enum State
+    {
+        NotConnected,
+        PasswordTry,
+        Initialize,
+        Connected
+    };
+    S32 mState;
+    char mLineBuffer[MaxCommandSize];
+    S32 mCurPos;
+    bool mWaitForClient;
+    
+    TelnetDebugger();
+    ~TelnetDebugger();
+    
+    struct Breakpoint
+    {
+        StringTableEntry fileName;
+        CodeBlock* code;
+        U32 lineNumber;
+        S32 passCount;
+        S32 curCount;
+        char* testExpression;
+        bool clearOnHit;
+        Breakpoint* next;
+    };
+    Breakpoint* mBreakpoints;
+    
+    Breakpoint** findBreakpoint( StringTableEntry fileName, S32 lineNumber );
+    
+    bool mProgramPaused;
+    bool mBreakOnNextStatement;
+    S32 mStackPopBreakIndex;
+    
+    void addVariableBreakpoint( const char* varName, S32 passCount, const char* evalString );
+    void removeVariableBreakpoint( const char* varName );
+    void addBreakpoint( const char* fileName, S32 line, bool clear, S32 passCount, const char* evalString );
+    void removeBreakpoint( const char* fileName, S32 line );
+    void removeAllBreakpoints();
+    
+    void debugBreakNext();
+    void debugContinue();
+    void debugStepIn();
+    void debugStepOver();
+    void debugStepOut();
+    void evaluateExpression( const char* tag, S32 frame, const char* evalBuffer );
+    void dumpFileList();
+    void dumpBreakableList( const char* fileName );
+    void removeBreakpointsFromCode( CodeBlock* code );
+    
+    void checkDebugRecv();
+    void processLineBuffer( S32 );
+    void sendBreak();
+    void setBreakOnNextStatement( bool enabled );
 public:
-   static void create();
-   static void destroy();
-
-   void disconnect();
-   bool isConnected() const { return mState == Connected; }
-
-   void process();
-   void popStackFrame();
-   void pushStackFrame();
-   void addAllBreakpoints(CodeBlock *code);
-
-   void clearCodeBlockPointers(CodeBlock *code);
-
-   void breakProcess();
-
-   virtual void executionStopped(CodeBlock *code, U32 lineNumber);
-   void send(const char *s);
-   void setDebugParameters(S32 port, const char *password, bool waitForClient);
-   void processConsoleLine(const char *consoleLine);
+    static void create();
+    static void destroy();
+    
+    void disconnect();
+    bool isConnected() const
+    {
+        return mState == Connected;
+    }
+    
+    void process();
+    void popStackFrame();
+    void pushStackFrame();
+    void addAllBreakpoints( CodeBlock* code );
+    
+    void clearCodeBlockPointers( CodeBlock* code );
+    
+    void breakProcess();
+    
+    virtual void executionStopped( CodeBlock* code, U32 lineNumber );
+    void send( const char* s );
+    void setDebugParameters( S32 port, const char* password, bool waitForClient );
+    void processConsoleLine( const char* consoleLine );
 };
 
-extern TelnetDebugger *TelDebugger;
+extern TelnetDebugger* TelDebugger;
 
 #endif
 

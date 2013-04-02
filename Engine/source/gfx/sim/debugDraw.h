@@ -94,104 +94,109 @@ class GFont;
 class DebugDrawer : public SimObject
 {
 public:
-   DECLARE_CONOBJECT(DebugDrawer);
-
-   DebugDrawer();
-   ~DebugDrawer();
-
-   static DebugDrawer* get();
-   
-   /// Called at engine init to set up the global debug draw object.
-   static void init();
-
-   /// Called globally to render debug draw state. Also does state updates.
-   void render();
-
-   void toggleFreeze()  { shouldToggleFreeze = true; };
-   void toggleDrawing() 
-   {
+    DECLARE_CONOBJECT( DebugDrawer );
+    
+    DebugDrawer();
+    ~DebugDrawer();
+    
+    static DebugDrawer* get();
+    
+    /// Called at engine init to set up the global debug draw object.
+    static void init();
+    
+    /// Called globally to render debug draw state. Also does state updates.
+    void render();
+    
+    void toggleFreeze()
+    {
+        shouldToggleFreeze = true;
+    };
+    void toggleDrawing()
+    {
 #ifdef ENABLE_DEBUGDRAW
-      isDrawing = !isDrawing;
+        isDrawing = !isDrawing;
 #endif
-   };
-
-
-   /// @name ddrawmeth Debug Draw Methods
-   ///
-   /// @{
-
-   void drawBox(const Point3F &a, const Point3F &b, const ColorF &color = ColorF(1.0f,1.0f,1.0f));
-   void drawLine(const Point3F &a, const Point3F &b, const ColorF &color = ColorF(1.0f,1.0f,1.0f));	
-   void drawTri(const Point3F &a, const Point3F &b, const Point3F &c, const ColorF &color = ColorF(1.0f,1.0f,1.0f));
-   void drawText(const Point3F& pos, const String& text, const ColorF &color = ColorF(1.0f,1.0f,1.0f));
-
-   /// Render a wireframe view of the given polyhedron.
-   void drawPolyhedron( const AnyPolyhedron& polyhedron, const ColorF& color = ColorF( 1.f, 1.f, 1.f ) );
-
-   /// Render the plane indices, edge indices, edge direction indicators, and point coordinates
-   /// of the given polyhedron for debugging.
-   ///
-   /// Green lines are plane normals.  Red lines point from edge midpoints along the edge direction (i.e. to the
-   /// second vertex).  This shows if the orientation is correct to yield CW ordering for face[0].  Indices and
-   /// coordinates of vertices are shown in white.  Plane indices are rendered in black.  Edge indices and their
-   /// plane indices are rendered in white.
-   void drawPolyhedronDebugInfo( const AnyPolyhedron& polyhedron, const MatrixF& transform, const Point3F& scale );
-
-   /// Set the TTL for the last item we entered...
-   ///
-   /// Primitives default to lasting one frame (ie, ttl=0)
-   enum {
-      DD_INFINITE = U32_MAX
-   };
-   // How long should this primitive be draw for, 0 = one frame, DD_INFINITE = draw forever
-   void setLastTTL(U32 ms);
-
-   /// Disable/enable z testing on the last primitive.
-   ///
-   /// Primitives default to z testing on.
-   void setLastZTest(bool enabled);
-
-   /// @}
+    };
+    
+    
+    /// @name ddrawmeth Debug Draw Methods
+    ///
+    /// @{
+    
+    void drawBox( const Point3F& a, const Point3F& b, const ColorF& color = ColorF( 1.0f, 1.0f, 1.0f ) );
+    void drawLine( const Point3F& a, const Point3F& b, const ColorF& color = ColorF( 1.0f, 1.0f, 1.0f ) );
+    void drawTri( const Point3F& a, const Point3F& b, const Point3F& c, const ColorF& color = ColorF( 1.0f, 1.0f, 1.0f ) );
+    void drawText( const Point3F& pos, const String& text, const ColorF& color = ColorF( 1.0f, 1.0f, 1.0f ) );
+    
+    /// Render a wireframe view of the given polyhedron.
+    void drawPolyhedron( const AnyPolyhedron& polyhedron, const ColorF& color = ColorF( 1.f, 1.f, 1.f ) );
+    
+    /// Render the plane indices, edge indices, edge direction indicators, and point coordinates
+    /// of the given polyhedron for debugging.
+    ///
+    /// Green lines are plane normals.  Red lines point from edge midpoints along the edge direction (i.e. to the
+    /// second vertex).  This shows if the orientation is correct to yield CW ordering for face[0].  Indices and
+    /// coordinates of vertices are shown in white.  Plane indices are rendered in black.  Edge indices and their
+    /// plane indices are rendered in white.
+    void drawPolyhedronDebugInfo( const AnyPolyhedron& polyhedron, const MatrixF& transform, const Point3F& scale );
+    
+    /// Set the TTL for the last item we entered...
+    ///
+    /// Primitives default to lasting one frame (ie, ttl=0)
+    enum
+    {
+        DD_INFINITE = U32_MAX
+    };
+    // How long should this primitive be draw for, 0 = one frame, DD_INFINITE = draw forever
+    void setLastTTL( U32 ms );
+    
+    /// Disable/enable z testing on the last primitive.
+    ///
+    /// Primitives default to z testing on.
+    void setLastZTest( bool enabled );
+    
+    /// @}
 private:
-   typedef SimObject Parent;
-
-   static DebugDrawer* sgDebugDrawer;
-
-   struct DebugPrim
-   {
-      /// Color used for this primitive.
-      ColorF color;
-
-      /// Points used to store positional data. Exact semantics determined by type.
-      Point3F a, b, c;
-      enum {
-         Tri,
-         Box,
-         Line,
-         Text
-      } type;	   ///< Type of the primitive. The meanings of a,b,c are determined by this.
-
-      SimTime dieTime;   ///< Time at which we should remove this from the list.
-      bool useZ; ///< If true, do z-checks for this primitive.      
-      char mText[256];      // Text to display
-
-      DebugPrim *next;
-   };
-
-
-   FreeListChunker<DebugPrim> mPrimChunker;
-   DebugPrim *mHead;
-
-   bool isFrozen;
-   bool shouldToggleFreeze;
-   bool isDrawing;   
-
-   GFXStateBlockRef mRenderZOffSB;
-   GFXStateBlockRef mRenderZOnSB;
-
-   Resource<GFont> mFont;
-
-   void setupStateBlocks();
+    typedef SimObject Parent;
+    
+    static DebugDrawer* sgDebugDrawer;
+    
+    struct DebugPrim
+    {
+        /// Color used for this primitive.
+        ColorF color;
+        
+        /// Points used to store positional data. Exact semantics determined by type.
+        Point3F a, b, c;
+        enum
+        {
+            Tri,
+            Box,
+            Line,
+            Text
+        } type;	   ///< Type of the primitive. The meanings of a,b,c are determined by this.
+        
+        SimTime dieTime;   ///< Time at which we should remove this from the list.
+        bool useZ; ///< If true, do z-checks for this primitive.
+        char mText[256];      // Text to display
+        
+        DebugPrim* next;
+    };
+    
+    
+    FreeListChunker<DebugPrim> mPrimChunker;
+    DebugPrim* mHead;
+    
+    bool isFrozen;
+    bool shouldToggleFreeze;
+    bool isDrawing;
+    
+    GFXStateBlockRef mRenderZOffSB;
+    GFXStateBlockRef mRenderZOnSB;
+    
+    Resource<GFont> mFont;
+    
+    void setupStateBlocks();
 };
 
 #endif // _DEBUGDRAW_H_

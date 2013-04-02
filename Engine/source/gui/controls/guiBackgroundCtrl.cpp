@@ -23,32 +23,32 @@
 #include "console/console.h"
 #include "gui/controls/guiBackgroundCtrl.h"
 
-IMPLEMENT_CONOBJECT(GuiBackgroundCtrl);
+IMPLEMENT_CONOBJECT( GuiBackgroundCtrl );
 
 ConsoleDocClass( GuiBackgroundCtrl,
-   "@brief Renders a background, so you can have a backdrop for your GUI.\n\n"
+                 "@brief Renders a background, so you can have a backdrop for your GUI.\n\n"
 
-   "Deprecated\n\n"
+                 "Deprecated\n\n"
 
-   "@ingroup GuiImages\n"
+                 "@ingroup GuiImages\n"
 
-   "@internal"
-);
+                 "@internal"
+               );
 
 //--------------------------------------------------------------------------
 GuiBackgroundCtrl::GuiBackgroundCtrl() : GuiControl()
 {
-   mDraw = false;
-   mIsContainer = true;
+    mDraw = false;
+    mIsContainer = true;
 }
 
 //--------------------------------------------------------------------------
-void GuiBackgroundCtrl::onRender(Point2I offset, const RectI &updateRect)
+void GuiBackgroundCtrl::onRender( Point2I offset, const RectI& updateRect )
 {
-   if ( mDraw )
-      Parent::onRender( offset, updateRect );
-
-   renderChildControls(offset, updateRect);
+    if( mDraw )
+        Parent::onRender( offset, updateRect );
+        
+    renderChildControls( offset, updateRect );
 }
 
 

@@ -31,25 +31,34 @@ class SimGroup;
 class RazerHydraFrameStore
 {
 public:
-   // The maximum number of frames to keep
-   static S32 smMaximumFramesStored;
-
-   static SimGroup* smFrameGroup;
-
+    // The maximum number of frames to keep
+    static S32 smMaximumFramesStored;
+    
+    static SimGroup* smFrameGroup;
+    
 public:
-   RazerHydraFrameStore();
-   virtual ~RazerHydraFrameStore();
-
-   static void staticInit();
-
-   static bool isFrameGroupDefined() { return smFrameGroup != NULL; }
-   static SimGroup* getFrameGroup() { return smFrameGroup; }
-
-   S32 generateNewFrame(const sixenseAllControllerData& frame, const F32& maxAxisRadius);
-
+    RazerHydraFrameStore();
+    virtual ~RazerHydraFrameStore();
+    
+    static void staticInit();
+    
+    static bool isFrameGroupDefined()
+    {
+        return smFrameGroup != NULL;
+    }
+    static SimGroup* getFrameGroup()
+    {
+        return smFrameGroup;
+    }
+    
+    S32 generateNewFrame( const sixenseAllControllerData& frame, const F32& maxAxisRadius );
+    
 public:
-   // For ManagedSingleton.
-   static const char* getSingletonName() { return "RazerHydraFrameStore"; }   
+    // For ManagedSingleton.
+    static const char* getSingletonName()
+    {
+        return "RazerHydraFrameStore";
+    }
 };
 
 /// Returns the LeapMotionFrameStore singleton.

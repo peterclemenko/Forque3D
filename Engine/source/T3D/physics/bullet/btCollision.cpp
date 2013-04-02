@@ -29,177 +29,177 @@
 #include "T3D/physics/bullet/btCasts.h"
 
 
-BtCollision::BtCollision() 
-   :  mCompound( NULL ),
-      mLocalXfm( true )
+BtCollision::BtCollision()
+    :  mCompound( NULL ),
+       mLocalXfm( true )
 {
 }
 
 BtCollision::~BtCollision()
 {
-   SAFE_DELETE( mCompound );
-
-   for ( U32 i=0; i < mShapes.size(); i++ )
-      delete mShapes[i];
-
-   for ( U32 i=0; i < mMeshInterfaces.size(); i++ )
-      delete mMeshInterfaces[i];
+    SAFE_DELETE( mCompound );
+    
+    for( U32 i = 0; i < mShapes.size(); i++ )
+        delete mShapes[i];
+        
+    for( U32 i = 0; i < mMeshInterfaces.size(); i++ )
+        delete mMeshInterfaces[i];
 }
 
-btCollisionShape* BtCollision::getShape() 
-{   
-   if ( mCompound )
-      return mCompound;
-   
-   if ( mShapes.empty() )
-      return NULL;
-
-   return mShapes.first();
-}
-
-void BtCollision::_addShape( btCollisionShape *shape, const MatrixF &localXfm )
+btCollisionShape* BtCollision::getShape()
 {
-   AssertFatal( !shape->isCompound(), "BtCollision::_addShape - Shape should not be a compound!" );
-
-   // Stick the shape into the array to delete later.  Remember
-   // that the compound shape doesn't delete its children.
-   mShapes.push_back( shape );
-
-   // If this is the first shape then just store the
-   // local transform and we're done.
-   if ( mShapes.size() == 1 )
-   {
-      mLocalXfm = localXfm;
-      return;
-   }
-
-   // We use a compound to store the shapes with their
-   // local transforms... so create it if we haven't already.
-   if ( !mCompound )
-   {
-      mCompound = new btCompoundShape();
-
-      // There should only be one shape now... add it and
-      // clear the local transform.
-      mCompound->addChildShape( btCast<btTransform>( mLocalXfm ), mShapes.first() );
-      mLocalXfm = MatrixF::Identity;
-   }
-
-   // Add the new shape to the compound.
-   mCompound->addChildShape( btCast<btTransform>( localXfm ), shape );
+    if( mCompound )
+        return mCompound;
+        
+    if( mShapes.empty() )
+        return NULL;
+        
+    return mShapes.first();
 }
 
-void BtCollision::addPlane( const PlaneF &plane )
+void BtCollision::_addShape( btCollisionShape* shape, const MatrixF& localXfm )
 {
-   // NOTE: Torque uses a negative D... thats why we flip it here.
-   btStaticPlaneShape *shape = new btStaticPlaneShape( btVector3( plane.x, plane.y, plane.z ), -plane.d );
-   _addShape( shape, MatrixF::Identity );
+    AssertFatal( !shape->isCompound(), "BtCollision::_addShape - Shape should not be a compound!" );
+    
+    // Stick the shape into the array to delete later.  Remember
+    // that the compound shape doesn't delete its children.
+    mShapes.push_back( shape );
+    
+    // If this is the first shape then just store the
+    // local transform and we're done.
+    if( mShapes.size() == 1 )
+    {
+        mLocalXfm = localXfm;
+        return;
+    }
+    
+    // We use a compound to store the shapes with their
+    // local transforms... so create it if we haven't already.
+    if( !mCompound )
+    {
+        mCompound = new btCompoundShape();
+        
+        // There should only be one shape now... add it and
+        // clear the local transform.
+        mCompound->addChildShape( btCast<btTransform>( mLocalXfm ), mShapes.first() );
+        mLocalXfm = MatrixF::Identity;
+    }
+    
+    // Add the new shape to the compound.
+    mCompound->addChildShape( btCast<btTransform>( localXfm ), shape );
 }
 
-void BtCollision::addBox(  const Point3F &halfWidth,
-                           const MatrixF &localXfm )
+void BtCollision::addPlane( const PlaneF& plane )
 {
-   btBoxShape *shape = new btBoxShape( btVector3( halfWidth.x, halfWidth.y, halfWidth.z ) );
-   shape->setMargin( 0.01f );
-   _addShape( shape, localXfm );
+    // NOTE: Torque uses a negative D... thats why we flip it here.
+    btStaticPlaneShape* shape = new btStaticPlaneShape( btVector3( plane.x, plane.y, plane.z ), -plane.d );
+    _addShape( shape, MatrixF::Identity );
 }
 
-void BtCollision::addSphere(  const F32 radius,
-                              const MatrixF &localXfm )
+void BtCollision::addBox( const Point3F& halfWidth,
+                          const MatrixF& localXfm )
 {
-   btSphereShape *shape = new btSphereShape( radius );
-   shape->setMargin( 0.01f );
-   _addShape( shape, localXfm );
+    btBoxShape* shape = new btBoxShape( btVector3( halfWidth.x, halfWidth.y, halfWidth.z ) );
+    shape->setMargin( 0.01f );
+    _addShape( shape, localXfm );
+}
+
+void BtCollision::addSphere( const F32 radius,
+                             const MatrixF& localXfm )
+{
+    btSphereShape* shape = new btSphereShape( radius );
+    shape->setMargin( 0.01f );
+    _addShape( shape, localXfm );
 }
 
 void BtCollision::addCapsule( F32 radius,
                               F32 height,
-                              const MatrixF &localXfm )
+                              const MatrixF& localXfm )
 {
-   btCapsuleShape *shape = new btCapsuleShape( radius, height );
-   shape->setMargin( 0.01f );
-   _addShape( shape, localXfm );
+    btCapsuleShape* shape = new btCapsuleShape( radius, height );
+    shape->setMargin( 0.01f );
+    _addShape( shape, localXfm );
 }
 
-bool BtCollision::addConvex(  const Point3F *points, 
-                              U32 count,
-                              const MatrixF &localXfm )
+bool BtCollision::addConvex( const Point3F* points,
+                             U32 count,
+                             const MatrixF& localXfm )
 {
-   btConvexHullShape *shape = new btConvexHullShape( (btScalar*)points, count, sizeof( Point3F ) );
-   shape->setMargin( 0.01f );
-   _addShape( shape, localXfm );
-   return true;
+    btConvexHullShape* shape = new btConvexHullShape( ( btScalar* )points, count, sizeof( Point3F ) );
+    shape->setMargin( 0.01f );
+    _addShape( shape, localXfm );
+    return true;
 }
 
-bool BtCollision::addTriangleMesh(  const Point3F *vert,
-                                    U32 vertCount,
-                                    const U32 *index,
-                                    U32 triCount,
-                                    const MatrixF &localXfm )
+bool BtCollision::addTriangleMesh( const Point3F* vert,
+                                   U32 vertCount,
+                                   const U32* index,
+                                   U32 triCount,
+                                   const MatrixF& localXfm )
 {
-   // Setup the interface for loading the triangles.
-   btTriangleMesh *meshInterface = new btTriangleMesh( true, false );
-   for ( ; triCount-- ; )
-   {
-      meshInterface->addTriangle(   btCast<btVector3>( vert[ *( index + 0 ) ] ),
+    // Setup the interface for loading the triangles.
+    btTriangleMesh* meshInterface = new btTriangleMesh( true, false );
+    for( ; triCount-- ; )
+    {
+        meshInterface->addTriangle( btCast<btVector3>( vert[ *( index + 0 ) ] ),
                                     btCast<btVector3>( vert[ *( index + 1 ) ] ),
                                     btCast<btVector3>( vert[ *( index + 2 ) ] ),
                                     false );
-
-      index += 3;
-   }
-   mMeshInterfaces.push_back( meshInterface );
-
-   btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape( meshInterface, true, true );
-   shape->setMargin( 0.01f );
-   _addShape( shape, localXfm );
-   
-   return true;
+                                    
+        index += 3;
+    }
+    mMeshInterfaces.push_back( meshInterface );
+    
+    btBvhTriangleMeshShape* shape = new btBvhTriangleMeshShape( meshInterface, true, true );
+    shape->setMargin( 0.01f );
+    _addShape( shape, localXfm );
+    
+    return true;
 }
 
-bool BtCollision::addHeightfield(   const U16 *heights,
-                                    const bool *holes,   // TODO: Bullet height fields do not support holes
-                                    U32 blockSize,
-                                    F32 metersPerSample,
-                                    const MatrixF &localXfm )
+bool BtCollision::addHeightfield( const U16* heights,
+                                  const bool* holes,   // TODO: Bullet height fields do not support holes
+                                  U32 blockSize,
+                                  F32 metersPerSample,
+                                  const MatrixF& localXfm )
 {
-   // We pass the absolute maximum and minimum of a U16 height
-   // field and not the actual min and max.  This helps with
-   // placement.
-   const F32 heightScale = 0.03125f;
-   const F32 minHeight = 0;
-   const F32 maxHeight = 65535 * heightScale;
-
-   btHeightfieldTerrainShape *shape = new btHeightfieldTerrainShape( blockSize, blockSize,
-                                                                     (void*)heights,
-                                                                     heightScale,
-                                                                     minHeight, maxHeight,
-                                                                     2, // Z up! 
-                                                                     PHY_SHORT, 
-                                                                     false );
-   shape->setMargin( 0.01f );
-   shape->setLocalScaling( btVector3( metersPerSample, metersPerSample, 1.0f ) );
-   shape->setUseDiamondSubdivision( true );
-
-   // The local axis of the heightfield is the exact center of
-   // its bounds defined as...
-   //
-   // ( blockSize * samplesPerMeter, blockSize * samplesPerMeter, maxHeight ) / 2.0f
-   //
-   // So we create a local transform to move it to the min point 
-   // of the bounds so it matched Torque terrain.
-   Point3F offset(   (F32)blockSize * metersPerSample / 2.0f,
-                     (F32)blockSize * metersPerSample / 2.0f,
-                     maxHeight / 2.0f );
-
-   // And also bump it by half a sample square size.
-   offset.x -= metersPerSample / 2.0f;
-   offset.y -= metersPerSample / 2.0f;
-
-   MatrixF offsetXfm( true );
-   offsetXfm.setPosition( offset );
-
-   _addShape( shape, offsetXfm );
-
-   return true;
+    // We pass the absolute maximum and minimum of a U16 height
+    // field and not the actual min and max.  This helps with
+    // placement.
+    const F32 heightScale = 0.03125f;
+    const F32 minHeight = 0;
+    const F32 maxHeight = 65535 * heightScale;
+    
+    btHeightfieldTerrainShape* shape = new btHeightfieldTerrainShape( blockSize, blockSize,
+            ( void* )heights,
+            heightScale,
+            minHeight, maxHeight,
+            2, // Z up!
+            PHY_SHORT,
+            false );
+    shape->setMargin( 0.01f );
+    shape->setLocalScaling( btVector3( metersPerSample, metersPerSample, 1.0f ) );
+    shape->setUseDiamondSubdivision( true );
+    
+    // The local axis of the heightfield is the exact center of
+    // its bounds defined as...
+    //
+    // ( blockSize * samplesPerMeter, blockSize * samplesPerMeter, maxHeight ) / 2.0f
+    //
+    // So we create a local transform to move it to the min point
+    // of the bounds so it matched Torque terrain.
+    Point3F offset( ( F32 )blockSize * metersPerSample / 2.0f,
+                    ( F32 )blockSize * metersPerSample / 2.0f,
+                    maxHeight / 2.0f );
+                    
+    // And also bump it by half a sample square size.
+    offset.x -= metersPerSample / 2.0f;
+    offset.y -= metersPerSample / 2.0f;
+    
+    MatrixF offsetXfm( true );
+    offsetXfm.setPosition( offset );
+    
+    _addShape( shape, offsetXfm );
+    
+    return true;
 }

@@ -54,94 +54,98 @@
 //*****************************************************************************
 class WaterPlane : public WaterObject
 {
-   typedef WaterObject Parent;
-
+    typedef WaterObject Parent;
+    
 public:
 
-   // LEGACY support
-   enum EWaterType
-   {
-      eWater            = 0,
-      eOceanWater       = 1,
-      eRiverWater       = 2,
-      eStagnantWater    = 3,
-      eLava             = 4,
-      eHotLava          = 5,
-      eCrustyLava       = 6,
-      eQuicksand        = 7,
-   }; 
-
+    // LEGACY support
+    enum EWaterType
+    {
+        eWater            = 0,
+        eOceanWater       = 1,
+        eRiverWater       = 2,
+        eStagnantWater    = 3,
+        eLava             = 4,
+        eHotLava          = 5,
+        eCrustyLava       = 6,
+        eQuicksand        = 7,
+    };
+    
 private:
 
-   enum MaskBits {
-      UpdateMask =   Parent::NextFreeMask,
-      NextFreeMask = Parent::NextFreeMask << 1
-   };
-   
-   // vertex / index buffers
-   GFXVertexBufferHandle<GFXWaterVertex> mVertBuff;
-   GFXPrimitiveBufferHandle mPrimBuff;
-
-   // misc
-   U32            mGridSize;
-   U32            mGridSizeMinusOne;
-   F32            mGridElementSize;
-   U32            mVertCount;
-   U32            mIndxCount;
-   U32            mPrimCount;   
-   Frustum        mFrustum;
-   
-   SceneData setupSceneGraphInfo( SceneRenderState *state );
-   void setShaderParams( SceneRenderState *state, BaseMatInstance* mat, const WaterMatParams& paramHandles );
-   void setupVBIB( SceneRenderState *state );
-   virtual void prepRenderImage( SceneRenderState *state );
-   virtual void innerRender( SceneRenderState *state );
-   void setMultiPassProjection();
-
+    enum MaskBits
+    {
+        UpdateMask =   Parent::NextFreeMask,
+        NextFreeMask = Parent::NextFreeMask << 1
+    };
+    
+    // vertex / index buffers
+    GFXVertexBufferHandle<GFXWaterVertex> mVertBuff;
+    GFXPrimitiveBufferHandle mPrimBuff;
+    
+    // misc
+    U32            mGridSize;
+    U32            mGridSizeMinusOne;
+    F32            mGridElementSize;
+    U32            mVertCount;
+    U32            mIndxCount;
+    U32            mPrimCount;
+    Frustum        mFrustum;
+    
+    SceneData setupSceneGraphInfo( SceneRenderState* state );
+    void setShaderParams( SceneRenderState* state, BaseMatInstance* mat, const WaterMatParams& paramHandles );
+    void setupVBIB( SceneRenderState* state );
+    virtual void prepRenderImage( SceneRenderState* state );
+    virtual void innerRender( SceneRenderState* state );
+    void setMultiPassProjection();
+    
 protected:
 
-   //-------------------------------------------------------
-   // Standard engine functions
-   //-------------------------------------------------------
-   bool onAdd();
-   void onRemove();   
-   U32  packUpdate  (NetConnection *conn, U32 mask, BitStream *stream);
-   void unpackUpdate(NetConnection *conn,           BitStream *stream);
-   bool castRay(const Point3F &start, const Point3F &end, RayInfo* info);
-
+    //-------------------------------------------------------
+    // Standard engine functions
+    //-------------------------------------------------------
+    bool onAdd();
+    void onRemove();
+    U32  packUpdate( NetConnection* conn, U32 mask, BitStream* stream );
+    void unpackUpdate( NetConnection* conn,           BitStream* stream );
+    bool castRay( const Point3F& start, const Point3F& end, RayInfo* info );
+    
 public:
-   WaterPlane();
-   virtual ~WaterPlane();
-
-   DECLARE_CONOBJECT(WaterPlane);   
-
-   static void initPersistFields();
-   void onStaticModified( const char* slotName, const char*newValue = NULL );
-   virtual void inspectPostApply();
-   virtual void setTransform( const MatrixF & mat );
-   virtual F32 distanceTo( const Point3F& point ) const;
-
-   // WaterObject
-   virtual F32 getWaterCoverage( const Box3F &worldBox ) const;
-   virtual F32 getSurfaceHeight( const Point2F &pos ) const;
-   virtual void onReflectionInfoChanged();
-   virtual bool isUnderwater( const Point3F &pnt ) const;
-
-   // WaterBlock   
-   bool isPointSubmerged ( const Point3F &pos, bool worldSpace = true ) const{ return true; }
-
-   // WaterPlane
-   void setGridSize( U32 inSize );
-   void setGridElementSize( F32 inSize );
-   
-   // Protected Set'ers
-   static bool protectedSetGridSize( void *object, const char *index, const char *data );
-   static bool protectedSetGridElementSize( void *object, const char *index, const char *data );
-
+    WaterPlane();
+    virtual ~WaterPlane();
+    
+    DECLARE_CONOBJECT( WaterPlane );
+    
+    static void initPersistFields();
+    void onStaticModified( const char* slotName, const char* newValue = NULL );
+    virtual void inspectPostApply();
+    virtual void setTransform( const MatrixF& mat );
+    virtual F32 distanceTo( const Point3F& point ) const;
+    
+    // WaterObject
+    virtual F32 getWaterCoverage( const Box3F& worldBox ) const;
+    virtual F32 getSurfaceHeight( const Point2F& pos ) const;
+    virtual void onReflectionInfoChanged();
+    virtual bool isUnderwater( const Point3F& pnt ) const;
+    
+    // WaterBlock
+    bool isPointSubmerged( const Point3F& pos, bool worldSpace = true ) const
+    {
+        return true;
+    }
+    
+    // WaterPlane
+    void setGridSize( U32 inSize );
+    void setGridElementSize( F32 inSize );
+    
+    // Protected Set'ers
+    static bool protectedSetGridSize( void* object, const char* index, const char* data );
+    static bool protectedSetGridElementSize( void* object, const char* index, const char* data );
+    
 protected:
 
-   // WaterObject
-   virtual void _getWaterPlane( const Point3F &camPos, PlaneF &outPlane, Point3F &outPos );
+    // WaterObject
+    virtual void _getWaterPlane( const Point3F& camPos, PlaneF& outPlane, Point3F& outPos );
 };
 
 #endif // _WATERPLANE_H_

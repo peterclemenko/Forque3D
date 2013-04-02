@@ -26,37 +26,37 @@
 
 //------------------------------------------------------------------------------
 
-IMPLEMENT_CONOBJECT(GuiScriptNotifyCtrl);
+IMPLEMENT_CONOBJECT( GuiScriptNotifyCtrl );
 
 ConsoleDocClass( GuiScriptNotifyCtrl,
-	"@brief A control which adds several reactions to other GUIs via callbacks.\n\n"
+                 "@brief A control which adds several reactions to other GUIs via callbacks.\n\n"
 
-	"GuiScriptNotifyCtrl does not exist to render anything. When parented or made a child of "
-	"other controls, you can toggle flags on or off to make use of its specialized callbacks. "
-	"Normally these callbacks are used as utility functions by the GUI Editor, or other container "
-	"classes. However, for very fancy GUI work where controls interact with each other "
-	"constantly, this is a handy utility to make use of.\n\n "
+                 "GuiScriptNotifyCtrl does not exist to render anything. When parented or made a child of "
+                 "other controls, you can toggle flags on or off to make use of its specialized callbacks. "
+                 "Normally these callbacks are used as utility functions by the GUI Editor, or other container "
+                 "classes. However, for very fancy GUI work where controls interact with each other "
+                 "constantly, this is a handy utility to make use of.\n\n "
 
-	"@tsexample\n"
-	"// Common member fields left out for sake of example\n"
-	"new GuiScriptNotifyCtrl()\n"
-	"{\n"
-	"	onChildAdded = \"0\";\n"
-	"	onChildRemoved = \"0\";\n"
-	"	onChildResized = \"0\";\n"
-	"	onParentResized = \"0\";\n"
-	"};\n"
-	"@endtsexample\n\n"
+                 "@tsexample\n"
+                 "// Common member fields left out for sake of example\n"
+                 "new GuiScriptNotifyCtrl()\n"
+                 "{\n"
+                 "	onChildAdded = \"0\";\n"
+                 "	onChildRemoved = \"0\";\n"
+                 "	onChildResized = \"0\";\n"
+                 "	onParentResized = \"0\";\n"
+                 "};\n"
+                 "@endtsexample\n\n"
 
-	"@ingroup GuiUtil\n");
+                 "@ingroup GuiUtil\n" );
 
 GuiScriptNotifyCtrl::GuiScriptNotifyCtrl()
 {
-   mOnChildAdded = false;
-   mOnChildRemoved = false;
-   mOnResize = false;
-   mOnChildResized = false;
-   mOnParentResized = false;
+    mOnChildAdded = false;
+    mOnChildRemoved = false;
+    mOnResize = false;
+    mOnChildResized = false;
+    mOnParentResized = false;
 }
 
 GuiScriptNotifyCtrl::~GuiScriptNotifyCtrl()
@@ -65,142 +65,142 @@ GuiScriptNotifyCtrl::~GuiScriptNotifyCtrl()
 
 void GuiScriptNotifyCtrl::initPersistFields()
 {
-   // Callbacks Group
-   addGroup("Callbacks");
-   addField("onChildAdded", TypeBool, Offset( mOnChildAdded, GuiScriptNotifyCtrl ), "Enables/disables onChildAdded callback" );
-   addField("onChildRemoved", TypeBool, Offset( mOnChildRemoved, GuiScriptNotifyCtrl ), "Enables/disables onChildRemoved callback" );
-   addField("onChildResized", TypeBool, Offset( mOnChildResized, GuiScriptNotifyCtrl ), "Enables/disables onChildResized callback" );
-   addField("onParentResized", TypeBool, Offset( mOnParentResized, GuiScriptNotifyCtrl ), "Enables/disables onParentResized callback" );
-   addField("onResize", TypeBool, Offset( mOnResize, GuiScriptNotifyCtrl ), "Enables/disables onResize callback" );
-   addField("onLoseFirstResponder", TypeBool, Offset( mOnLoseFirstResponder, GuiScriptNotifyCtrl ), "Enables/disables onLoseFirstResponder callback" );
-   addField("onGainFirstResponder", TypeBool, Offset( mOnGainFirstResponder, GuiScriptNotifyCtrl ), "Enables/disables onGainFirstResponder callback" );
-   endGroup("Callbacks");
-
-   Parent::initPersistFields();
+    // Callbacks Group
+    addGroup( "Callbacks" );
+    addField( "onChildAdded", TypeBool, Offset( mOnChildAdded, GuiScriptNotifyCtrl ), "Enables/disables onChildAdded callback" );
+    addField( "onChildRemoved", TypeBool, Offset( mOnChildRemoved, GuiScriptNotifyCtrl ), "Enables/disables onChildRemoved callback" );
+    addField( "onChildResized", TypeBool, Offset( mOnChildResized, GuiScriptNotifyCtrl ), "Enables/disables onChildResized callback" );
+    addField( "onParentResized", TypeBool, Offset( mOnParentResized, GuiScriptNotifyCtrl ), "Enables/disables onParentResized callback" );
+    addField( "onResize", TypeBool, Offset( mOnResize, GuiScriptNotifyCtrl ), "Enables/disables onResize callback" );
+    addField( "onLoseFirstResponder", TypeBool, Offset( mOnLoseFirstResponder, GuiScriptNotifyCtrl ), "Enables/disables onLoseFirstResponder callback" );
+    addField( "onGainFirstResponder", TypeBool, Offset( mOnGainFirstResponder, GuiScriptNotifyCtrl ), "Enables/disables onGainFirstResponder callback" );
+    endGroup( "Callbacks" );
+    
+    Parent::initPersistFields();
 }
 
 IMPLEMENT_CALLBACK( GuiScriptNotifyCtrl, onResize, void, ( SimObjectId ID ), ( ID ),
-	"Called when this GUI is resized.\n\n"
-	"@param ID Unique object ID assigned when created (%this in script).\n"
-);
+                    "Called when this GUI is resized.\n\n"
+                    "@param ID Unique object ID assigned when created (%this in script).\n"
+                  );
 IMPLEMENT_CALLBACK( GuiScriptNotifyCtrl, onChildAdded, void, ( SimObjectId ID, SimObjectId childID ), ( ID, childID ),
-	"Called when a child is added to this GUI.\n\n"
-	"@param ID Unique object ID assigned when created (%this in script).\n"
-	"@param childID Unique object ID of child being added.\n"
-);
+                    "Called when a child is added to this GUI.\n\n"
+                    "@param ID Unique object ID assigned when created (%this in script).\n"
+                    "@param childID Unique object ID of child being added.\n"
+                  );
 IMPLEMENT_CALLBACK( GuiScriptNotifyCtrl, onChildRemoved, void, ( SimObjectId ID, SimObjectId childID ), ( ID, childID ),
-	"Called when a child is removed from this GUI.\n\n"
-	"@param ID Unique object ID assigned when created (%this in script).\n"
-	"@param childID Unique object ID of child being removed.\n"
-);
+                    "Called when a child is removed from this GUI.\n\n"
+                    "@param ID Unique object ID assigned when created (%this in script).\n"
+                    "@param childID Unique object ID of child being removed.\n"
+                  );
 IMPLEMENT_CALLBACK( GuiScriptNotifyCtrl, onChildResized, void, ( SimObjectId ID, SimObjectId childID ), ( ID, childID ),
-	"Called when a child is of this GUI is being resized.\n\n"
-	"@param ID Unique object ID assigned when created (%this in script).\n"
-	"@param childID Unique object ID of child being resized.\n"
-);
+                    "Called when a child is of this GUI is being resized.\n\n"
+                    "@param ID Unique object ID assigned when created (%this in script).\n"
+                    "@param childID Unique object ID of child being resized.\n"
+                  );
 IMPLEMENT_CALLBACK( GuiScriptNotifyCtrl, onParentResized, void, ( SimObjectId ID ), ( ID ),
-	"Called when this GUI's parent is resized.\n\n"
-	"@param ID Unique object ID assigned when created (%this in script).\n"
-);
+                    "Called when this GUI's parent is resized.\n\n"
+                    "@param ID Unique object ID assigned when created (%this in script).\n"
+                  );
 IMPLEMENT_CALLBACK( GuiScriptNotifyCtrl, onLoseFirstResponder, void, ( SimObjectId ID ), ( ID ),
-	"Called when this GUI loses focus.\n\n"
-	"@param ID Unique object ID assigned when created (%this in script).\n"
-);
+                    "Called when this GUI loses focus.\n\n"
+                    "@param ID Unique object ID assigned when created (%this in script).\n"
+                  );
 IMPLEMENT_CALLBACK( GuiScriptNotifyCtrl, onGainFirstResponder, void, ( SimObjectId ID ), ( ID ),
-	"Called when this GUI gains focus.\n\n"
-	"@param ID Unique object ID assigned when created (%this in script).\n"
-);
+                    "Called when this GUI gains focus.\n\n"
+                    "@param ID Unique object ID assigned when created (%this in script).\n"
+                  );
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //
-void GuiScriptNotifyCtrl::onChildAdded( GuiControl *child )
+void GuiScriptNotifyCtrl::onChildAdded( GuiControl* child )
 {
-   Parent::onChildAdded( child );
-
-   // Call Script.
-   if( mOnChildAdded )
-      onChildAdded_callback(getId(), child->getId());
+    Parent::onChildAdded( child );
+    
+    // Call Script.
+    if( mOnChildAdded )
+        onChildAdded_callback( getId(), child->getId() );
 }
 
-void GuiScriptNotifyCtrl::onChildRemoved( GuiControl *child )
+void GuiScriptNotifyCtrl::onChildRemoved( GuiControl* child )
 {
-   Parent::onChildRemoved( child );
-
-   // Call Script.
-   if( mOnChildRemoved )
-      onChildRemoved_callback(getId(), child->getId());
+    Parent::onChildRemoved( child );
+    
+    // Call Script.
+    if( mOnChildRemoved )
+        onChildRemoved_callback( getId(), child->getId() );
 }
 //----------------------------------------------------------------
 
-bool GuiScriptNotifyCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
+bool GuiScriptNotifyCtrl::resize( const Point2I& newPosition, const Point2I& newExtent )
 {
-   if( !Parent::resize( newPosition, newExtent ) )
-      return false;
-
-   // Call Script.
-   if( mOnResize )
-      onResize_callback(getId());
-
-   return true;
+    if( !Parent::resize( newPosition, newExtent ) )
+        return false;
+        
+    // Call Script.
+    if( mOnResize )
+        onResize_callback( getId() );
+        
+    return true;
 }
 
-void GuiScriptNotifyCtrl::childResized(GuiScriptNotifyCtrl *child)
+void GuiScriptNotifyCtrl::childResized( GuiScriptNotifyCtrl* child )
 {
-   Parent::childResized( child );
-
-   // Call Script.
-   if( mOnChildResized )
-      onChildResized_callback(getId(), child->getId());
+    Parent::childResized( child );
+    
+    // Call Script.
+    if( mOnChildResized )
+        onChildResized_callback( getId(), child->getId() );
 }
 
-void GuiScriptNotifyCtrl::parentResized(const RectI &oldParentRect, const RectI &newParentRect)
+void GuiScriptNotifyCtrl::parentResized( const RectI& oldParentRect, const RectI& newParentRect )
 {
-   Parent::parentResized( oldParentRect, newParentRect );
-
-   // Call Script.
-   if( mOnParentResized )
-      onParentResized_callback(getId());
+    Parent::parentResized( oldParentRect, newParentRect );
+    
+    // Call Script.
+    if( mOnParentResized )
+        onParentResized_callback( getId() );
 }
- 
+
 void GuiScriptNotifyCtrl::onLoseFirstResponder()
 {
-   Parent::onLoseFirstResponder();
-
-   // Call Script.
-   if( mOnLoseFirstResponder )
-      onLoseFirstResponder_callback(getId());
+    Parent::onLoseFirstResponder();
+    
+    // Call Script.
+    if( mOnLoseFirstResponder )
+        onLoseFirstResponder_callback( getId() );
 }
 
 void GuiScriptNotifyCtrl::setFirstResponder( GuiControl* firstResponder )
 {
-   Parent::setFirstResponder( firstResponder );
-
-   // Call Script.
-   if( mOnGainFirstResponder && isFirstResponder() )
-      onGainFirstResponder_callback(getId());
+    Parent::setFirstResponder( firstResponder );
+    
+    // Call Script.
+    if( mOnGainFirstResponder && isFirstResponder() )
+        onGainFirstResponder_callback( getId() );
 }
 
 void GuiScriptNotifyCtrl::setFirstResponder()
 {
-   Parent::setFirstResponder();
-
-   // Call Script.
-   if( mOnGainFirstResponder && isFirstResponder() )
-      onGainFirstResponder_callback(getId());
+    Parent::setFirstResponder();
+    
+    // Call Script.
+    if( mOnGainFirstResponder && isFirstResponder() )
+        onGainFirstResponder_callback( getId() );
 }
 
-void GuiScriptNotifyCtrl::onMessage(GuiScriptNotifyCtrl *sender, S32 msg)
+void GuiScriptNotifyCtrl::onMessage( GuiScriptNotifyCtrl* sender, S32 msg )
 {
-   Parent::onMessage( sender, msg );
+    Parent::onMessage( sender, msg );
 }
 
 void GuiScriptNotifyCtrl::onDialogPush()
 {
-   Parent::onDialogPush();
+    Parent::onDialogPush();
 }
 
 void GuiScriptNotifyCtrl::onDialogPop()
 {
-   Parent::onDialogPop();
+    Parent::onDialogPop();
 }
 
 

@@ -47,7 +47,7 @@ class MessageQueue;
 
 //-----------------------------------------------------------------------------
 /// @brief Base class for messages
-/// 
+///
 /// Message is the base class for C++ defined messages, and may also be used
 /// in script for script defined messages if no C++ subclass is appropriate.
 ///
@@ -77,67 +77,73 @@ class MessageQueue;
 /// fields. Messages that need to be handled in C++ as well as script
 /// provide the relevant data through persistent fields in a subclass of
 /// Message to provide best performance on the C++ side. Script defined
-/// messages usually their through dynamic fields, and may be accessed in 
+/// messages usually their through dynamic fields, and may be accessed in
 /// C++ using the SimObject::getDataField() method.
 //-----------------------------------------------------------------------------
 class Message : public SimObject
 {
-   typedef SimObject Parent;
-
+    typedef SimObject Parent;
+    
 public:
-   Message();
-   DECLARE_CONOBJECT(Message);
-   DECLARE_CALLBACK( void, onAdd, () );
-   DECLARE_CALLBACK( void, onRemove, () );
-
-   //-----------------------------------------------------------------------------
-   /// @brief Obtain next available #SimObjectId for messages
-   ///
-   /// This is used in combination with the newmsg script operator to provide
-   /// ID pooling for messages and works similarly to datablock IDs.
-   ///
-   /// By default, the 64 IDs following the datablock IDs are used for messages.
-   /// As message objects generally have a short life time this prevents them
-   /// from eating object IDs as if they haven't eaten for a year.
-   ///
-   /// Note that unlike SimObjects and datablocks, Messages IDs are re-used.
-   /// If you store a message object in script and do not clear the variable
-   /// containing the object ID after freeing the message, it is probable that
-   /// the object ID will become valid again.
-   /// 
-   /// @return Next available SimObjectId
-   //-----------------------------------------------------------------------------
-   static SimObjectId getNextMessageID();
-
-   virtual bool onAdd();
-   virtual void onRemove();
-
-   //-----------------------------------------------------------------------------
-   /// @brief Get the type of the message
-   ///
-   /// The message type is either the script class name or the C++ class name
-   /// if it has not been overridden in script. This allows easy identification
-   /// of message types with minimum effort.
-   /// 
-   /// @return Type of message
-   //-----------------------------------------------------------------------------
-   const char *getType();
-
-   //-----------------------------------------------------------------------------
-   /// @brief Add a reference to the reference count of this message
-   ///
-   /// Use freeReference() to free the reference when you are done with it.
-   /// 
-   /// @see freeReference()
-   //-----------------------------------------------------------------------------
-   void addReference() { incRefCount(); }
-
-   //-----------------------------------------------------------------------------
-   /// @brief Free a reference to this message
-   /// 
-   /// @see addReference()
-   //-----------------------------------------------------------------------------
-   void freeReference() { decRefCount(); }
+    Message();
+    DECLARE_CONOBJECT( Message );
+    DECLARE_CALLBACK( void, onAdd, () );
+    DECLARE_CALLBACK( void, onRemove, () );
+    
+    //-----------------------------------------------------------------------------
+    /// @brief Obtain next available #SimObjectId for messages
+    ///
+    /// This is used in combination with the newmsg script operator to provide
+    /// ID pooling for messages and works similarly to datablock IDs.
+    ///
+    /// By default, the 64 IDs following the datablock IDs are used for messages.
+    /// As message objects generally have a short life time this prevents them
+    /// from eating object IDs as if they haven't eaten for a year.
+    ///
+    /// Note that unlike SimObjects and datablocks, Messages IDs are re-used.
+    /// If you store a message object in script and do not clear the variable
+    /// containing the object ID after freeing the message, it is probable that
+    /// the object ID will become valid again.
+    ///
+    /// @return Next available SimObjectId
+    //-----------------------------------------------------------------------------
+    static SimObjectId getNextMessageID();
+    
+    virtual bool onAdd();
+    virtual void onRemove();
+    
+    //-----------------------------------------------------------------------------
+    /// @brief Get the type of the message
+    ///
+    /// The message type is either the script class name or the C++ class name
+    /// if it has not been overridden in script. This allows easy identification
+    /// of message types with minimum effort.
+    ///
+    /// @return Type of message
+    //-----------------------------------------------------------------------------
+    const char* getType();
+    
+    //-----------------------------------------------------------------------------
+    /// @brief Add a reference to the reference count of this message
+    ///
+    /// Use freeReference() to free the reference when you are done with it.
+    ///
+    /// @see freeReference()
+    //-----------------------------------------------------------------------------
+    void addReference()
+    {
+        incRefCount();
+    }
+    
+    //-----------------------------------------------------------------------------
+    /// @brief Free a reference to this message
+    ///
+    /// @see addReference()
+    //-----------------------------------------------------------------------------
+    void freeReference()
+    {
+        decRefCount();
+    }
 };
 
 // @}

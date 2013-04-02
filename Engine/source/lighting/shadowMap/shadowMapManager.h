@@ -49,54 +49,66 @@ class SceneRenderState;
 
 class ShadowMapManager : public ShadowManager
 {
-   typedef ShadowManager Parent;
-
-   friend class ShadowMapPass;
-
+    typedef ShadowManager Parent;
+    
+    friend class ShadowMapPass;
+    
 public:
 
-   ShadowMapManager();
-   virtual ~ShadowMapManager();
-
-   /// Sets the current shadowmap (used in setLightInfo/setTextureStage calls)
-   void setLightShadowMap( LightShadowMap *lm ) { mCurrentShadowMap = lm; }
-   
-   /// Looks up the shadow map for the light then sets it.
-   void setLightShadowMapForLight( LightInfo *light );
-
-   /// Return the current shadow map
-   LightShadowMap* getCurrentShadowMap() const { return mCurrentShadowMap; }
-
-   ShadowMapPass* getShadowMapPass() const { return mShadowMapPass; }
-
-   // Shadow manager
-   virtual void activate();
-   virtual void deactivate();
-
-   GFXTextureObject* getTapRotationTex();
-
-   /// The shadow map deactivation signal.
-   static Signal<void(void)> smShadowDeactivateSignal;
-
-   static void updateShadowDisable();
-
+    ShadowMapManager();
+    virtual ~ShadowMapManager();
+    
+    /// Sets the current shadowmap (used in setLightInfo/setTextureStage calls)
+    void setLightShadowMap( LightShadowMap* lm )
+    {
+        mCurrentShadowMap = lm;
+    }
+    
+    /// Looks up the shadow map for the light then sets it.
+    void setLightShadowMapForLight( LightInfo* light );
+    
+    /// Return the current shadow map
+    LightShadowMap* getCurrentShadowMap() const
+    {
+        return mCurrentShadowMap;
+    }
+    
+    ShadowMapPass* getShadowMapPass() const
+    {
+        return mShadowMapPass;
+    }
+    
+    // Shadow manager
+    virtual void activate();
+    virtual void deactivate();
+    
+    GFXTextureObject* getTapRotationTex();
+    
+    /// The shadow map deactivation signal.
+    static Signal<void( void )> smShadowDeactivateSignal;
+    
+    static void updateShadowDisable();
+    
 protected:
 
-   void _onTextureEvent( GFXTexCallbackCode code );
-
-   void _onPreRender( SceneManager *sg, const SceneRenderState* state );
-
-   ShadowMapPass *mShadowMapPass;
-   LightShadowMap *mCurrentShadowMap;
-
-   ///
-   GFXTexHandle mTapRotationTex;
-
-   bool mIsActive;
-
+    void _onTextureEvent( GFXTexCallbackCode code );
+    
+    void _onPreRender( SceneManager* sg, const SceneRenderState* state );
+    
+    ShadowMapPass* mShadowMapPass;
+    LightShadowMap* mCurrentShadowMap;
+    
+    ///
+    GFXTexHandle mTapRotationTex;
+    
+    bool mIsActive;
+    
 public:
-   // For ManagedSingleton.
-   static const char* getSingletonName() { return "ShadowMapManager"; }   
+    // For ManagedSingleton.
+    static const char* getSingletonName()
+    {
+        return "ShadowMapManager";
+    }
 };
 
 

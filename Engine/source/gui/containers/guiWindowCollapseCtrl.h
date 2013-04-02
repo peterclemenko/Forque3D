@@ -24,7 +24,7 @@
 #define _GUIWINDOWCOLLAPSECTRL_H_
 
 #ifndef _GUIWINDOWCTRL_H_
-   #include "gui/containers/guiWindowCtrl.h"
+#include "gui/containers/guiWindowCtrl.h"
 #endif
 
 
@@ -38,14 +38,14 @@
 /// @{
 class GuiWindowCollapseCtrl : public GuiWindowCtrl
 {
-	public:
+public:
 
-		typedef GuiWindowCtrl Parent;
-
-      GuiWindowCollapseCtrl();
-
-      DECLARE_CONOBJECT(GuiWindowCollapseCtrl);
-      DECLARE_DESCRIPTION( "Legacy control.  Use GuiWindowCtrl with canCollapse=true." );
+    typedef GuiWindowCtrl Parent;
+    
+    GuiWindowCollapseCtrl();
+    
+    DECLARE_CONOBJECT( GuiWindowCollapseCtrl );
+    DECLARE_DESCRIPTION( "Legacy control.  Use GuiWindowCtrl with canCollapse=true." );
 };
 /// @}
 

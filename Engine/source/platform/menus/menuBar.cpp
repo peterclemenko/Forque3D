@@ -31,97 +31,97 @@
 
 MenuBar::MenuBar()
 {
-   createPlatformPopupMenuData();
-
-   mCanvas = NULL;
+    createPlatformPopupMenuData();
+    
+    mCanvas = NULL;
 }
 
 MenuBar::~MenuBar()
 {
-   removeFromCanvas();
-
-   deletePlatformPopupMenuData();
+    removeFromCanvas();
+    
+    deletePlatformPopupMenuData();
 }
 
-IMPLEMENT_CONOBJECT(MenuBar);
+IMPLEMENT_CONOBJECT( MenuBar );
 
 ConsoleDocClass( MenuBar,
-   "@brief Used for rendering platform menu bars\n\n"
-   "Internal use only\n\n"
-   "@internal"
-);
+                 "@brief Used for rendering platform menu bars\n\n"
+                 "Internal use only\n\n"
+                 "@internal"
+               );
 
 //-----------------------------------------------------------------------------
 // Public Methods
 //-----------------------------------------------------------------------------
 
-void MenuBar::addObject(SimObject *obj)
+void MenuBar::addObject( SimObject* obj )
 {
-   Parent::addObject(obj);
-   updateMenuBar(dynamic_cast<PopupMenu *>(obj));
+    Parent::addObject( obj );
+    updateMenuBar( dynamic_cast<PopupMenu*>( obj ) );
 }
 
-void MenuBar::removeObject(SimObject *obj)
+void MenuBar::removeObject( SimObject* obj )
 {
-   Parent::removeObject(obj);
-   updateMenuBar(dynamic_cast<PopupMenu *>(obj));
+    Parent::removeObject( obj );
+    updateMenuBar( dynamic_cast<PopupMenu*>( obj ) );
 }
 
-void MenuBar::insertObject(SimObject *obj, S32 pos)
+void MenuBar::insertObject( SimObject* obj, S32 pos )
 {
-   Parent::addObject(obj);
-   
-   if(pos >= size())
-      pos = size() - 1;
-
-   if(pos < size())
-   {
-      if(pos < 0) pos = 0;
-      Parent::reOrder(obj, at(pos));
-   }
-   updateMenuBar(dynamic_cast<PopupMenu *>(obj));
+    Parent::addObject( obj );
+    
+    if( pos >= size() )
+        pos = size() - 1;
+        
+    if( pos < size() )
+    {
+        if( pos < 0 ) pos = 0;
+        Parent::reOrder( obj, at( pos ) );
+    }
+    updateMenuBar( dynamic_cast<PopupMenu*>( obj ) );
 }
 
-void MenuBar::pushObject(SimObject *obj)
+void MenuBar::pushObject( SimObject* obj )
 {
-   Parent::pushObject(obj);
-   updateMenuBar(dynamic_cast<PopupMenu *>(obj));
+    Parent::pushObject( obj );
+    updateMenuBar( dynamic_cast<PopupMenu*>( obj ) );
 }
 
 void MenuBar::popObject()
 {
-   Parent::popObject();
-   updateMenuBar();
+    Parent::popObject();
+    updateMenuBar();
 }
 
-bool MenuBar::reOrder(SimObject *obj, SimObject *target /*= 0*/)
+bool MenuBar::reOrder( SimObject* obj, SimObject* target /*= 0*/ )
 {
-   bool ret = Parent::reOrder(obj, target);
-   if(ret)
-      updateMenuBar(dynamic_cast<PopupMenu *>(obj));
-   return ret;
+    bool ret = Parent::reOrder( obj, target );
+    if( ret )
+        updateMenuBar( dynamic_cast<PopupMenu*>( obj ) );
+    return ret;
 }
 
 //-----------------------------------------------------------------------------
 // Console Methods
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(MenuBar, attachToCanvas, void, 4, 4, "(GuiCanvas, pos)")
+ConsoleMethod( MenuBar, attachToCanvas, void, 4, 4, "(GuiCanvas, pos)" )
 {
-   object->attachToCanvas(dynamic_cast<GuiCanvas*>(Sim::findObject(argv[2])), dAtoi(argv[3]));
+    object->attachToCanvas( dynamic_cast<GuiCanvas*>( Sim::findObject( argv[2] ) ), dAtoi( argv[3] ) );
 }
 
-ConsoleMethod(MenuBar, removeFromCanvas, void, 2, 2, "()")
+ConsoleMethod( MenuBar, removeFromCanvas, void, 2, 2, "()" )
 {
-   object->removeFromCanvas();
+    object->removeFromCanvas();
 }
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(MenuBar, insert, void, 4, 4,"(object, pos) insert object at position")
+ConsoleMethod( MenuBar, insert, void, 4, 4, "(object, pos) insert object at position" )
 {
-   SimObject* pObject = Sim::findObject(argv[2]);
-
-   if(pObject)
-      object->insertObject(pObject, dAtoi(argv[3]));
+    SimObject* pObject = Sim::findObject( argv[2] );
+    
+    if( pObject )
+        object->insertObject( pObject, dAtoi( argv[3] ) );
 }

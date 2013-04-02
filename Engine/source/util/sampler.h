@@ -78,30 +78,30 @@
 
 namespace Sampler
 {
-   void init();
-   void destroy();
+void init();
+void destroy();
 
-   void beginFrame();
-   void endFrame();
+void beginFrame();
+void endFrame();
 
-   void sample( U32 key, bool value );
-   void sample( U32 key, S32 value );
-   void sample( U32 key, F32 value );
-   void sample( U32 key, const char* value );
-   
-   inline void sample( U32 key, U32 value )
-   {
-      sample( key, S32( value ) );
-   }
+void sample( U32 key, bool value );
+void sample( U32 key, S32 value );
+void sample( U32 key, F32 value );
+void sample( U32 key, const char* value );
 
-   /// Register a new sample key.
-   ///
-   /// @note Note that all keys are disabled by default.
-   U32 registerKey( const char* name );
+inline void sample( U32 key, U32 value )
+{
+    sample( key, S32( value ) );
+}
 
-   /// Enable sampling for all keys that match the given name
-   /// pattern.  Slashes are treated as separators.
-   void enableKeys( const char* pattern, bool state = true );
+/// Register a new sample key.
+///
+/// @note Note that all keys are disabled by default.
+U32 registerKey( const char* name );
+
+/// Enable sampling for all keys that match the given name
+/// pattern.  Slashes are treated as separators.
+void enableKeys( const char* pattern, bool state = true );
 };
 
 #ifdef TORQUE_ENABLE_SAMPLING

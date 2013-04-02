@@ -24,57 +24,57 @@
 #define _SFXWAVSTREAM_H_
 
 #ifndef _SFXFILESTREAM_H_
-   #include "sfx/sfxFileStream.h"
+#include "sfx/sfxFileStream.h"
 #endif
 #include "core/util/safeDelete.h"
 
 
 /// An SFXFileStream that loads sample data from a WAV file.
 class SFXWavStream : public SFXFileStream,
-                     public IPositionable< U32 >
+    public IPositionable< U32 >
 {
-   public:
+public:
 
-      typedef SFXFileStream Parent;
+    typedef SFXFileStream Parent;
+    
+protected:
 
-   protected:
+    /// The file position of the start of
+    /// the PCM data for fast reset().
+    U32 mDataStart;
+    
+    // SFXFileStream
+    virtual bool _readHeader();
+    virtual void _close();
+    
+public:
 
-      /// The file position of the start of
-      /// the PCM data for fast reset().
-      U32 mDataStart;
-
-      // SFXFileStream
-      virtual bool _readHeader();
-      virtual void _close();
-
-   public:
-
-      ///
-      static SFXWavStream* create( Stream *stream );
-
-      ///
-	   SFXWavStream();
-
-      ///
-      SFXWavStream( const SFXWavStream& cloneFrom );
-
-      /// Destructor.
-      virtual ~SFXWavStream();
-
-      // SFXStream
-      virtual void reset();
-      virtual U32 read( U8 *buffer, U32 length );
-      virtual SFXStream* clone() const
-      {
-         SFXWavStream* stream = new SFXWavStream( *this );
-         if( !stream->mStream )
+    ///
+    static SFXWavStream* create( Stream* stream );
+    
+    ///
+    SFXWavStream();
+    
+    ///
+    SFXWavStream( const SFXWavStream& cloneFrom );
+    
+    /// Destructor.
+    virtual ~SFXWavStream();
+    
+    // SFXStream
+    virtual void reset();
+    virtual U32 read( U8* buffer, U32 length );
+    virtual SFXStream* clone() const
+    {
+        SFXWavStream* stream = new SFXWavStream( *this );
+        if( !stream->mStream )
             SAFE_DELETE( stream );
-         return stream;
-      }
-
-      // IPositionable
-      virtual U32 getPosition() const;
-      virtual void setPosition( U32 offset );
+        return stream;
+    }
+    
+    // IPositionable
+    virtual U32 getPosition() const;
+    virtual void setPosition( U32 offset );
 };
 
 #endif  // _SFXWAVSTREAM_H_

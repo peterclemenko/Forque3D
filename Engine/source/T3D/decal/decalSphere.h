@@ -41,43 +41,43 @@ class SceneZoneSpaceManager;
 /// as a lookup and culling optimization.
 class DecalSphere
 {
-   public:
+public:
 
-      static F32 smDistanceTolerance;
-      static F32 smRadiusTolerance;
-
-      DecalSphere()
-      {
-         VECTOR_SET_ASSOCIATION( mItems );
-         VECTOR_SET_ASSOCIATION( mZones );
-      }
-      DecalSphere( const Point3F &position, F32 radius )
-      {
-         VECTOR_SET_ASSOCIATION( mItems );
-         VECTOR_SET_ASSOCIATION( mZones );
-
-         mWorldSphere.center = position;
-         mWorldSphere.radius = radius;
-      }
-
-      /// Recompute #mWorldSphere from the current instance list.
-      void updateWorldSphere();
-
-      /// Recompute the zoning information from the current bounds.
-      void updateZoning( SceneZoneSpaceManager* zoneManager );
-
-      /// Decal instances in this sphere.
-      Vector< DecalInstance* > mItems;
-
-      /// Zones that intersect with this sphere.  If this is empty, the zoning
-      /// state of the sphere is uninitialized.
-      Vector< U32 > mZones;
-
-      /// World-space sphere corresponding to this DecalSphere.
-      SphereF mWorldSphere;
-
-      ///
-      bool tryAddItem( DecalInstance* inst );
+    static F32 smDistanceTolerance;
+    static F32 smRadiusTolerance;
+    
+    DecalSphere()
+    {
+        VECTOR_SET_ASSOCIATION( mItems );
+        VECTOR_SET_ASSOCIATION( mZones );
+    }
+    DecalSphere( const Point3F& position, F32 radius )
+    {
+        VECTOR_SET_ASSOCIATION( mItems );
+        VECTOR_SET_ASSOCIATION( mZones );
+        
+        mWorldSphere.center = position;
+        mWorldSphere.radius = radius;
+    }
+    
+    /// Recompute #mWorldSphere from the current instance list.
+    void updateWorldSphere();
+    
+    /// Recompute the zoning information from the current bounds.
+    void updateZoning( SceneZoneSpaceManager* zoneManager );
+    
+    /// Decal instances in this sphere.
+    Vector< DecalInstance* > mItems;
+    
+    /// Zones that intersect with this sphere.  If this is empty, the zoning
+    /// state of the sphere is uninitialized.
+    Vector< U32 > mZones;
+    
+    /// World-space sphere corresponding to this DecalSphere.
+    SphereF mWorldSphere;
+    
+    ///
+    bool tryAddItem( DecalInstance* inst );
 };
 
 #endif // !_DECALSPHERE_H_

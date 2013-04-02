@@ -29,22 +29,23 @@
 
 //----------------------------------------------------------------------------
 
-struct StaticShapeData: public ShapeBaseData {
-   typedef ShapeBaseData Parent;
-
-  public:
-   StaticShapeData();
-
-   bool  noIndividualDamage;
-   S32   dynamicTypeField;
-   bool  isShielded;
-   F32   energyPerDamagePoint;
-
-   //
-   DECLARE_CONOBJECT(StaticShapeData);
-   static void initPersistFields();
-   virtual void packData(BitStream* stream);
-   virtual void unpackData(BitStream* stream);
+struct StaticShapeData: public ShapeBaseData
+{
+    typedef ShapeBaseData Parent;
+    
+public:
+    StaticShapeData();
+    
+    bool  noIndividualDamage;
+    S32   dynamicTypeField;
+    bool  isShielded;
+    F32   energyPerDamagePoint;
+    
+    //
+    DECLARE_CONOBJECT( StaticShapeData );
+    static void initPersistFields();
+    virtual void packData( BitStream* stream );
+    virtual void unpackData( BitStream* stream );
 };
 
 
@@ -52,41 +53,48 @@ struct StaticShapeData: public ShapeBaseData {
 
 class StaticShape: public ShapeBase
 {
-   typedef ShapeBase Parent;
-
-   StaticShapeData*  mDataBlock;
-   bool              mPowered;
-
-   void onUnmount(ShapeBase* obj,S32 node);
-
+    typedef ShapeBase Parent;
+    
+    StaticShapeData*  mDataBlock;
+    bool              mPowered;
+    
+    void onUnmount( ShapeBase* obj, S32 node );
+    
 protected:
-   enum MaskBits {
-      PositionMask = Parent::NextFreeMask,	  
-      NextFreeMask = Parent::NextFreeMask << 1
-   };
-
+    enum MaskBits
+    {
+        PositionMask = Parent::NextFreeMask,
+        NextFreeMask = Parent::NextFreeMask << 1
+    };
+    
 public:
-   DECLARE_CONOBJECT(StaticShape);
-
-   StaticShape();
-   ~StaticShape();
-
-   bool onAdd();
-   void onRemove();
-   bool onNewDataBlock(GameBaseData *dptr, bool reload);
-
-   void processTick(const Move *move);
-   void interpolateTick(F32 delta);
-   void setTransform(const MatrixF &mat);
-
-   U32  packUpdate  (NetConnection *conn, U32 mask, BitStream *stream);
-   void unpackUpdate(NetConnection *conn,           BitStream *stream);
-
-   // power
-   void setPowered(bool power)      {mPowered = power;}
-   bool isPowered()                 {return(mPowered);}
-
-   static void initPersistFields();   
+    DECLARE_CONOBJECT( StaticShape );
+    
+    StaticShape();
+    ~StaticShape();
+    
+    bool onAdd();
+    void onRemove();
+    bool onNewDataBlock( GameBaseData* dptr, bool reload );
+    
+    void processTick( const Move* move );
+    void interpolateTick( F32 delta );
+    void setTransform( const MatrixF& mat );
+    
+    U32  packUpdate( NetConnection* conn, U32 mask, BitStream* stream );
+    void unpackUpdate( NetConnection* conn,           BitStream* stream );
+    
+    // power
+    void setPowered( bool power )
+    {
+        mPowered = power;
+    }
+    bool isPowered()
+    {
+        return( mPowered );
+    }
+    
+    static void initPersistFields();
 };
 
 

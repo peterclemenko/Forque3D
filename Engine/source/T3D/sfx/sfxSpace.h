@@ -39,25 +39,28 @@
 /// A convex space that defines a custom ambient sound space.
 class SFXSpace : public SceneAmbientSoundObject< ScenePolyhedralObject< SceneSpace > >
 {
-   public:
+public:
 
-      typedef SceneAmbientSoundObject< ScenePolyhedralObject< SceneSpace > > Parent;
+    typedef SceneAmbientSoundObject< ScenePolyhedralObject< SceneSpace > > Parent;
+    
+protected:
 
-   protected:
+    // SceneSpace.
+    virtual ColorI _getDefaultEditorSolidColor() const
+    {
+        return ColorI( 244, 135, 18, 45 );
+    }
+    
+public:
 
-      // SceneSpace.
-      virtual ColorI _getDefaultEditorSolidColor() const { return ColorI( 244, 135, 18, 45 ); }
-
-   public:
-
-      SFXSpace();
-
-      // SimObject.
-      DECLARE_CONOBJECT( SFXSpace );
-      DECLARE_DESCRIPTION( "A box volume that defines an ambient sound space." );
-      DECLARE_CATEGORY( "3D Sound" );
-
-      static void consoleInit();
+    SFXSpace();
+    
+    // SimObject.
+    DECLARE_CONOBJECT( SFXSpace );
+    DECLARE_DESCRIPTION( "A box volume that defines an ambient sound space." );
+    DECLARE_CATEGORY( "3D Sound" );
+    
+    static void consoleInit();
 };
 
 #endif // !_SFXSPACE_H_

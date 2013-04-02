@@ -40,171 +40,171 @@
 
 static void _onRegisterFeatures( GFXAdapterType type )
 {
-   FEATUREMGR->registerFeature( MFT_WindEffect, new WindDeformationGLSL );
+    FEATUREMGR->registerFeature( MFT_WindEffect, new WindDeformationGLSL );
 }
 
 
 MODULE_BEGIN( WindDeformationGLSL )
 
-   MODULE_INIT_AFTER( ShaderGen )
-   
-   MODULE_INIT
-   {
-      SHADERGEN->getFeatureInitSignal().notify( _onRegisterFeatures );   
-   }
+MODULE_INIT_AFTER( ShaderGen )
+
+MODULE_INIT
+{
+    SHADERGEN->getFeatureInitSignal().notify( _onRegisterFeatures );
+}
 
 MODULE_END;
 
 
 WindDeformationGLSL::WindDeformationGLSL()
-   : mDep( "shaders/common/gl/wind.glsl" )
+    : mDep( "shaders/common/gl/wind.glsl" )
 {
-   addDependency( &mDep );
+    addDependency( &mDep );
 }
 
-void WindDeformationGLSL::determineFeature(  Material *material,
-                                             const GFXVertexFormat *vertexFormat,
-                                             U32 stageNum,
-                                             const FeatureType &type,
-                                             const FeatureSet &features,
-                                             MaterialFeatureData *outFeatureData )
+void WindDeformationGLSL::determineFeature( Material* material,
+        const GFXVertexFormat* vertexFormat,
+        U32 stageNum,
+        const FeatureType& type,
+        const FeatureSet& features,
+        MaterialFeatureData* outFeatureData )
 {
-   bool enabled = vertexFormat->hasColor() && features.hasFeature( MFT_WindEffect );
-   outFeatureData->features.setFeature( type, enabled );   
+    bool enabled = vertexFormat->hasColor() && features.hasFeature( MFT_WindEffect );
+    outFeatureData->features.setFeature( type, enabled );
 }
 
-void WindDeformationGLSL::processVert( Vector<ShaderComponent*> &componentList, 
-                                       const MaterialFeatureData &fd )
+void WindDeformationGLSL::processVert( Vector<ShaderComponent*>& componentList,
+                                       const MaterialFeatureData& fd )
 {
-   MultiLine *meta = new MultiLine;
-   output = meta;
-
-   // We combined all the tree parameters into one float4 to
-   // save constant space and reduce the memory copied to the
-   // card.
-   //
-   // This in particular helps when we're instancing.
-   //
-   // .x = bend scale
-   // .y = branch amplitude
-   // .z = detail amplitude
-   // .w = detail frequency
-   //
-   Var *windParams;
-   if ( fd.features[MFT_UseInstancing] ) 
-   {
-      ShaderConnector *vertStruct = dynamic_cast<ShaderConnector *>( componentList[C_VERT_STRUCT] );
-      windParams = vertStruct->getElement( RT_TEXCOORD );
-      windParams->setName( "inst_windParams" );
-      windParams->setType( "vec4" );
-
-      mInstancingFormat->addElement( "windParams", GFXDeclType_Float4, windParams->constNum );
-   }
-   else
-   {
-      windParams = new Var( "windParams", "vec4" );
-      windParams->uniform = true;
-      windParams->constSortPos = cspPotentialPrimitive;
-   }
-
-   // If we're instancing then we need to instance the wind direction
-   // and speed as its unique for each tree instance.
-   Var *windDirAndSpeed;
-   if ( fd.features[MFT_UseInstancing] ) 
-   {
-      ShaderConnector *vertStruct = dynamic_cast<ShaderConnector *>( componentList[C_VERT_STRUCT] );
-      windDirAndSpeed = vertStruct->getElement( RT_TEXCOORD );
-      windDirAndSpeed->setName( "inst_windDirAndSpeed" );
-      windDirAndSpeed->setType( "vec3" );
-
-      mInstancingFormat->addElement( "windDirAndSpeed", GFXDeclType_Float3, windDirAndSpeed->constNum );
-   }
-   else
-   {
-      windDirAndSpeed = new Var( "windDirAndSpeed", "vec3" );
-      windDirAndSpeed->uniform = true;
-      windDirAndSpeed->constSortPos = cspPrimitive;
-   }
-
-   Var *accumTime = (Var*)LangElement::find( "accumTime" );
-   if ( !accumTime )
-   {
-      accumTime = new Var( "accumTime", "float" );
-      accumTime->uniform = true;
-      accumTime->constSortPos = cspPass;  
-   }
-
-   // Get the transform to world space.
-   Var *objTrans = getObjTrans( componentList, fd.features[MFT_UseInstancing], meta );
-
-   // First check for an input position from a previous feature
-   // then look for the default vertex position.
-   Var *inPosition = (Var*)LangElement::find( "inPosition" );
-   if ( !inPosition )
-      inPosition = (Var*)LangElement::find( "position" );
-
-   // Get the incoming color data
-   Var *inColor = (Var*)LangElement::find( "diffuse" );
-
-   // Do the branch and detail bending first so that 
-   // it can work in pure object space of the tree.
-   LangElement *effect = 
-      new GenOp(  "windBranchBending( "
-
-                     "@.xyz, "                  // vPos
-                     "normalize( normal ), " // vNormal
-
-                     "@, " // fTime
-                     "@.z, " // fWindSpeed
-
-                     "@.g, "  // fBranchPhase
-                     "@.y, "    // fBranchAmp
-                     "@.r, "  // fBranchAtten
-
-                     "dot( @[3], vec4( 1.0 ) ), "    // fDetailPhase
-                     "@.z, "  // fDetailAmp
-                     "@.w, "  // fDetailFreq
-
-                     "@.b )", // fEdgeAtten
-
-         inPosition,    // vPos
-                        // vNormal
-
-         accumTime,  // fTime
-         windDirAndSpeed,  // fWindSpeed
-
-         inColor,    // fBranchPhase
-         windParams,  // fBranchAmp
-         inColor,    // fBranchAtten
-
-         objTrans,     // fDetailPhase
-         windParams, // fDetailAmp
-         windParams, // fDetailFreq
-
-         inColor ); // fEdgeAtten
-
-   Var *outPosition = (Var*)LangElement::find( "inPosition" );
-   if ( outPosition )
-      meta->addStatement( new GenOp( "   @.xyz = @;\r\n", outPosition, effect, inPosition ) );
-   else    
-   {
-      outPosition = new Var;
-      outPosition->setType( "vec3" );
-      outPosition->setName( "inPosition" );
-      meta->addStatement( new GenOp("   vec3 inPosition = @;\r\n", effect, inPosition ) );
-   }
-
-   // Now do the trunk bending.
-   effect = new GenOp( "windTrunkBending( @, @.xy, @.z * @.x )",
+    MultiLine* meta = new MultiLine;
+    output = meta;
+    
+    // We combined all the tree parameters into one float4 to
+    // save constant space and reduce the memory copied to the
+    // card.
+    //
+    // This in particular helps when we're instancing.
+    //
+    // .x = bend scale
+    // .y = branch amplitude
+    // .z = detail amplitude
+    // .w = detail frequency
+    //
+    Var* windParams;
+    if( fd.features[MFT_UseInstancing] )
+    {
+        ShaderConnector* vertStruct = dynamic_cast<ShaderConnector*>( componentList[C_VERT_STRUCT] );
+        windParams = vertStruct->getElement( RT_TEXCOORD );
+        windParams->setName( "inst_windParams" );
+        windParams->setType( "vec4" );
+        
+        mInstancingFormat->addElement( "windParams", GFXDeclType_Float4, windParams->constNum );
+    }
+    else
+    {
+        windParams = new Var( "windParams", "vec4" );
+        windParams->uniform = true;
+        windParams->constSortPos = cspPotentialPrimitive;
+    }
+    
+    // If we're instancing then we need to instance the wind direction
+    // and speed as its unique for each tree instance.
+    Var* windDirAndSpeed;
+    if( fd.features[MFT_UseInstancing] )
+    {
+        ShaderConnector* vertStruct = dynamic_cast<ShaderConnector*>( componentList[C_VERT_STRUCT] );
+        windDirAndSpeed = vertStruct->getElement( RT_TEXCOORD );
+        windDirAndSpeed->setName( "inst_windDirAndSpeed" );
+        windDirAndSpeed->setType( "vec3" );
+        
+        mInstancingFormat->addElement( "windDirAndSpeed", GFXDeclType_Float3, windDirAndSpeed->constNum );
+    }
+    else
+    {
+        windDirAndSpeed = new Var( "windDirAndSpeed", "vec3" );
+        windDirAndSpeed->uniform = true;
+        windDirAndSpeed->constSortPos = cspPrimitive;
+    }
+    
+    Var* accumTime = ( Var* )LangElement::find( "accumTime" );
+    if( !accumTime )
+    {
+        accumTime = new Var( "accumTime", "float" );
+        accumTime->uniform = true;
+        accumTime->constSortPos = cspPass;
+    }
+    
+    // Get the transform to world space.
+    Var* objTrans = getObjTrans( componentList, fd.features[MFT_UseInstancing], meta );
+    
+    // First check for an input position from a previous feature
+    // then look for the default vertex position.
+    Var* inPosition = ( Var* )LangElement::find( "inPosition" );
+    if( !inPosition )
+        inPosition = ( Var* )LangElement::find( "position" );
+        
+    // Get the incoming color data
+    Var* inColor = ( Var* )LangElement::find( "diffuse" );
+    
+    // Do the branch and detail bending first so that
+    // it can work in pure object space of the tree.
+    LangElement* effect =
+        new GenOp( "windBranchBending( "
+        
+                   "@.xyz, "                  // vPos
+                   "normalize( normal ), " // vNormal
+                   
+                   "@, " // fTime
+                   "@.z, " // fWindSpeed
+                   
+                   "@.g, "  // fBranchPhase
+                   "@.y, "    // fBranchAmp
+                   "@.r, "  // fBranchAtten
+                   
+                   "dot( @[3], vec4( 1.0 ) ), "    // fDetailPhase
+                   "@.z, "  // fDetailAmp
+                   "@.w, "  // fDetailFreq
+                   
+                   "@.b )", // fEdgeAtten
+                   
+                   inPosition,    // vPos
+                   // vNormal
+                   
+                   accumTime,  // fTime
+                   windDirAndSpeed,  // fWindSpeed
+                   
+                   inColor,    // fBranchPhase
+                   windParams,  // fBranchAmp
+                   inColor,    // fBranchAtten
+                   
+                   objTrans,     // fDetailPhase
+                   windParams, // fDetailAmp
+                   windParams, // fDetailFreq
+                   
+                   inColor ); // fEdgeAtten
+                   
+    Var* outPosition = ( Var* )LangElement::find( "inPosition" );
+    if( outPosition )
+        meta->addStatement( new GenOp( "   @.xyz = @;\r\n", outPosition, effect, inPosition ) );
+    else
+    {
+        outPosition = new Var;
+        outPosition->setType( "vec3" );
+        outPosition->setName( "inPosition" );
+        meta->addStatement( new GenOp( "   vec3 inPosition = @;\r\n", effect, inPosition ) );
+    }
+    
+    // Now do the trunk bending.
+    effect = new GenOp( "windTrunkBending( @, @.xy, @.z * @.x )",
                         outPosition, windDirAndSpeed, outPosition, windParams );
-
-   meta->addStatement( new GenOp("   @ = @;\r\n", outPosition, effect ) );
+                        
+    meta->addStatement( new GenOp( "   @ = @;\r\n", outPosition, effect ) );
 }
 
-ShaderFeatureConstHandles* WindDeformationGLSL::createConstHandles( GFXShader *shader, SimObject *userObject )
+ShaderFeatureConstHandles* WindDeformationGLSL::createConstHandles( GFXShader* shader, SimObject* userObject )
 {
-   WindDeformationConstHandles *handles = new WindDeformationConstHandles();
-   handles->init( shader );      
-
-   return handles;
+    WindDeformationConstHandles* handles = new WindDeformationConstHandles();
+    handles->init( shader );
+    
+    return handles;
 }

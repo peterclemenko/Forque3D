@@ -30,21 +30,21 @@
 
 class GuiVariableInspector : public GuiInspector
 {
-   typedef GuiInspector Parent;
-
+    typedef GuiInspector Parent;
+    
 public:
 
-   GuiVariableInspector();
-   virtual ~GuiVariableInspector();
-
-   DECLARE_CONOBJECT( GuiVariableInspector );
-   DECLARE_CATEGORY( "Gui Editor" );
-
-   virtual void inspectObject( SimObject *object ) {}
-
-   virtual void loadVars( String searchString );
-
-
+    GuiVariableInspector();
+    virtual ~GuiVariableInspector();
+    
+    DECLARE_CONOBJECT( GuiVariableInspector );
+    DECLARE_CATEGORY( "Gui Editor" );
+    
+    virtual void inspectObject( SimObject* object ) {}
+    
+    virtual void loadVars( String searchString );
+    
+    
 protected:
 
 };

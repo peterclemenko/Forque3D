@@ -27,23 +27,23 @@
 
 struct FPSTracker
 {
-   F32 fpsRealLast;
-   F32 fpsReal;
-   F32 fpsRealMin;
-   F32 fpsRealMax;
-   F32 fpsVirtualLast;
-   F32 fpsVirtual;
-   F32 fpsFrames;
-   F32 fpsNext;
-   F32 mUpdateInterval;
-
-   FPSTracker();
-
-   /// Resets the FPS variables
-   void reset();
-
-   /// Updates the FPS variables
-   void update();
+    F32 fpsRealLast;
+    F32 fpsReal;
+    F32 fpsRealMin;
+    F32 fpsRealMax;
+    F32 fpsVirtualLast;
+    F32 fpsVirtual;
+    F32 fpsFrames;
+    F32 fpsNext;
+    F32 mUpdateInterval;
+    
+    FPSTracker();
+    
+    /// Resets the FPS variables
+    void reset();
+    
+    /// Updates the FPS variables
+    void update();
 };
 
 extern FPSTracker gFPS;

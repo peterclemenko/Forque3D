@@ -30,19 +30,19 @@
 
 class ParaboloidLightShadowMap : public LightShadowMap
 {
-   typedef LightShadowMap Parent;
+    typedef LightShadowMap Parent;
 public:
-   ParaboloidLightShadowMap( LightInfo *light );
-   ~ParaboloidLightShadowMap();
-
-   // LightShadowMap
-   virtual ShadowType getShadowType() const;
-   virtual void _render( RenderPassManager* renderPass, const SceneRenderState *diffuseState );
-   virtual void setShaderParameters(GFXShaderConstBuffer* params, LightingShaderConstants* lsc);
-
+    ParaboloidLightShadowMap( LightInfo* light );
+    ~ParaboloidLightShadowMap();
+    
+    // LightShadowMap
+    virtual ShadowType getShadowType() const;
+    virtual void _render( RenderPassManager* renderPass, const SceneRenderState* diffuseState );
+    virtual void setShaderParameters( GFXShaderConstBuffer* params, LightingShaderConstants* lsc );
+    
 protected:
-   Point2F mShadowMapScale;
-   Point2F mShadowMapOffset;
+    Point2F mShadowMapScale;
+    Point2F mShadowMapOffset;
 };
 
 #endif

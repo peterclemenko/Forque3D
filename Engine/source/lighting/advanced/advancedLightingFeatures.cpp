@@ -43,59 +43,59 @@
 
 bool AdvancedLightingFeatures::smFeaturesRegistered = false;
 
-void AdvancedLightingFeatures::registerFeatures( const GFXFormat &prepassTargetFormat, const GFXFormat &lightInfoTargetFormat )
+void AdvancedLightingFeatures::registerFeatures( const GFXFormat& prepassTargetFormat, const GFXFormat& lightInfoTargetFormat )
 {
-   AssertFatal( !smFeaturesRegistered, "AdvancedLightingFeatures::registerFeatures() - Features already registered. Bad!" );
-
-   // If we ever need this...
-   TORQUE_UNUSED(lightInfoTargetFormat);
-
-   ConditionerFeature *cond = NULL;
-
-   if(GFX->getAdapterType() == OpenGL)
-   {
+    AssertFatal( !smFeaturesRegistered, "AdvancedLightingFeatures::registerFeatures() - Features already registered. Bad!" );
+    
+    // If we ever need this...
+    TORQUE_UNUSED( lightInfoTargetFormat );
+    
+    ConditionerFeature* cond = NULL;
+    
+    if( GFX->getAdapterType() == OpenGL )
+    {
 #if defined( TORQUE_OS_MAC ) || defined( TORQUE_OS_LINUX )
-      cond = new GBufferConditionerGLSL( prepassTargetFormat );
-      FEATUREMGR->registerFeature(MFT_PrePassConditioner, cond);
-      FEATUREMGR->registerFeature(MFT_RTLighting, new DeferredRTLightingFeatGLSL());
-      FEATUREMGR->registerFeature(MFT_NormalMap, new DeferredBumpFeatGLSL());
-      FEATUREMGR->registerFeature(MFT_PixSpecular, new DeferredPixelSpecularGLSL());
-      FEATUREMGR->registerFeature(MFT_MinnaertShading, new DeferredMinnaertGLSL());
-      FEATUREMGR->registerFeature(MFT_SubSurface, new DeferredSubSurfaceGLSL());
+        cond = new GBufferConditionerGLSL( prepassTargetFormat );
+        FEATUREMGR->registerFeature( MFT_PrePassConditioner, cond );
+        FEATUREMGR->registerFeature( MFT_RTLighting, new DeferredRTLightingFeatGLSL() );
+        FEATUREMGR->registerFeature( MFT_NormalMap, new DeferredBumpFeatGLSL() );
+        FEATUREMGR->registerFeature( MFT_PixSpecular, new DeferredPixelSpecularGLSL() );
+        FEATUREMGR->registerFeature( MFT_MinnaertShading, new DeferredMinnaertGLSL() );
+        FEATUREMGR->registerFeature( MFT_SubSurface, new DeferredSubSurfaceGLSL() );
 #endif
-   }
-   else
-   {
+    }
+    else
+    {
 #if !defined( TORQUE_OS_MAC ) && !defined( TORQUE_OS_LINUX )
-      cond = new GBufferConditionerHLSL( prepassTargetFormat, GBufferConditionerHLSL::ViewSpace );
-      FEATUREMGR->registerFeature(MFT_PrePassConditioner, cond);
-      FEATUREMGR->registerFeature(MFT_RTLighting, new DeferredRTLightingFeatHLSL());
-      FEATUREMGR->registerFeature(MFT_NormalMap, new DeferredBumpFeatHLSL());
-      FEATUREMGR->registerFeature(MFT_PixSpecular, new DeferredPixelSpecularHLSL());
-      FEATUREMGR->registerFeature(MFT_MinnaertShading, new DeferredMinnaertHLSL());
-      FEATUREMGR->registerFeature(MFT_SubSurface, new DeferredSubSurfaceHLSL());
+        cond = new GBufferConditionerHLSL( prepassTargetFormat, GBufferConditionerHLSL::ViewSpace );
+        FEATUREMGR->registerFeature( MFT_PrePassConditioner, cond );
+        FEATUREMGR->registerFeature( MFT_RTLighting, new DeferredRTLightingFeatHLSL() );
+        FEATUREMGR->registerFeature( MFT_NormalMap, new DeferredBumpFeatHLSL() );
+        FEATUREMGR->registerFeature( MFT_PixSpecular, new DeferredPixelSpecularHLSL() );
+        FEATUREMGR->registerFeature( MFT_MinnaertShading, new DeferredMinnaertHLSL() );
+        FEATUREMGR->registerFeature( MFT_SubSurface, new DeferredSubSurfaceHLSL() );
 #endif
-   }
-
-   NamedTexTarget *target = NamedTexTarget::find( "prepass" );
-   if ( target )
-      target->setConditioner( cond );
-
-   smFeaturesRegistered = true;
+    }
+    
+    NamedTexTarget* target = NamedTexTarget::find( "prepass" );
+    if( target )
+        target->setConditioner( cond );
+        
+    smFeaturesRegistered = true;
 }
 
 void AdvancedLightingFeatures::unregisterFeatures()
 {
-   NamedTexTarget *target = NamedTexTarget::find( "prepass" );
-   if ( target )
-      target->setConditioner( NULL );
-
-   FEATUREMGR->unregisterFeature(MFT_PrePassConditioner);
-   FEATUREMGR->unregisterFeature(MFT_RTLighting);
-   FEATUREMGR->unregisterFeature(MFT_NormalMap);
-   FEATUREMGR->unregisterFeature(MFT_PixSpecular);
-   FEATUREMGR->unregisterFeature(MFT_MinnaertShading);
-   FEATUREMGR->unregisterFeature(MFT_SubSurface);
-
-   smFeaturesRegistered = false;
+    NamedTexTarget* target = NamedTexTarget::find( "prepass" );
+    if( target )
+        target->setConditioner( NULL );
+        
+    FEATUREMGR->unregisterFeature( MFT_PrePassConditioner );
+    FEATUREMGR->unregisterFeature( MFT_RTLighting );
+    FEATUREMGR->unregisterFeature( MFT_NormalMap );
+    FEATUREMGR->unregisterFeature( MFT_PixSpecular );
+    FEATUREMGR->unregisterFeature( MFT_MinnaertShading );
+    FEATUREMGR->unregisterFeature( MFT_SubSurface );
+    
+    smFeaturesRegistered = false;
 }

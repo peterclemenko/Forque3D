@@ -35,24 +35,24 @@
 class GuiProgressCtrl : public GuiTextCtrl
 {
 private:
-   typedef GuiTextCtrl Parent;
-
-   F32 mProgress;
-
+    typedef GuiTextCtrl Parent;
+    
+    F32 mProgress;
+    
 public:
-   //creation methods
-   DECLARE_CONOBJECT(GuiProgressCtrl);
-   DECLARE_CATEGORY( "Gui Values" );
-   DECLARE_DESCRIPTION( "A control that display a horizontal progress bar.  The bar is\n"
-      "rendered using as a filled rectangle (properties determined by profile)." );
-   GuiProgressCtrl();
-
-   //console related methods
-   virtual const char *getScriptValue();
-   virtual void setScriptValue(const char *value);
-
-   void onPreRender();
-   void onRender(Point2I offset, const RectI &updateRect);
+    //creation methods
+    DECLARE_CONOBJECT( GuiProgressCtrl );
+    DECLARE_CATEGORY( "Gui Values" );
+    DECLARE_DESCRIPTION( "A control that display a horizontal progress bar.  The bar is\n"
+                         "rendered using as a filled rectangle (properties determined by profile)." );
+    GuiProgressCtrl();
+    
+    //console related methods
+    virtual const char* getScriptValue();
+    virtual void setScriptValue( const char* value );
+    
+    void onPreRender();
+    void onRender( Point2I offset, const RectI& updateRect );
 };
 
 #endif

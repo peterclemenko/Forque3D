@@ -36,13 +36,19 @@ class ParaboloidVertTransformHLSL : public ShaderFeatureHLSL
 {
 public:
 
-   // ShaderFeature
-   virtual void processVert( Vector<ShaderComponent*> &componentList, const MaterialFeatureData &fd );
-   virtual void processPix( Vector<ShaderComponent*> &componentList, const MaterialFeatureData &fd );
-   virtual Resources getResources( const MaterialFeatureData &fd );
-   virtual String getName() { return "Paraboloid Vert Transform"; }
-   virtual Material::BlendOp getBlendOp() { return Material::None; }
-
+    // ShaderFeature
+    virtual void processVert( Vector<ShaderComponent*>& componentList, const MaterialFeatureData& fd );
+    virtual void processPix( Vector<ShaderComponent*>& componentList, const MaterialFeatureData& fd );
+    virtual Resources getResources( const MaterialFeatureData& fd );
+    virtual String getName()
+    {
+        return "Paraboloid Vert Transform";
+    }
+    virtual Material::BlendOp getBlendOp()
+    {
+        return Material::None;
+    }
+    
 };
 
 #endif // _PARABOLOID_HLSL_H_

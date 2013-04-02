@@ -24,11 +24,11 @@
 #define _MATHTYPES_H_
 
 #ifndef _DYNAMIC_CONSOLETYPES_H_
-   #include "console/dynamicTypes.h"
+#include "console/dynamicTypes.h"
 #endif
 
 
-void RegisterMathFunctions(void);
+void RegisterMathFunctions( void );
 
 
 class Point2I;
@@ -71,7 +71,7 @@ DefineConsoleType( TypePoint4F, Point4F )
 DefineConsoleType( TypeRectI, RectI )
 DefineConsoleType( TypeRectF, RectF )
 DefineConsoleType( TypeMatrixF, MatrixF )
-DefineConsoleType( TypeMatrixPosition, MatrixF)
+DefineConsoleType( TypeMatrixPosition, MatrixF )
 DefineConsoleType( TypeMatrixRotation, MatrixF )
 DefineConsoleType( TypeAngAxisF, AngAxisF )
 DefineConsoleType( TypeTransformF, TransformF )

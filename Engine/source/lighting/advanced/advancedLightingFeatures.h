@@ -31,12 +31,12 @@ class AdvancedLightingFeatures
 {
 public:
 
-   static void registerFeatures( const GFXFormat &prepassTargetFormat, const GFXFormat &lightInfoTargetFormat );
-   static void unregisterFeatures();
-
+    static void registerFeatures( const GFXFormat& prepassTargetFormat, const GFXFormat& lightInfoTargetFormat );
+    static void unregisterFeatures();
+    
 private:
 
-   static bool smFeaturesRegistered;
+    static bool smFeaturesRegistered;
 };
 
 #endif // _ADVANCEDLIGHTINGFEATURES_H_

@@ -36,82 +36,83 @@
 /* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     rwDEFINE = 258,
-     rwENDDEF = 259,
-     rwDECLARE = 260,
-     rwDECLARESINGLETON = 261,
-     rwBREAK = 262,
-     rwELSE = 263,
-     rwCONTINUE = 264,
-     rwGLOBAL = 265,
-     rwIF = 266,
-     rwNIL = 267,
-     rwRETURN = 268,
-     rwWHILE = 269,
-     rwDO = 270,
-     rwENDIF = 271,
-     rwENDWHILE = 272,
-     rwENDFOR = 273,
-     rwDEFAULT = 274,
-     rwFOR = 275,
-     rwFOREACH = 276,
-     rwFOREACHSTR = 277,
-     rwIN = 278,
-     rwDATABLOCK = 279,
-     rwSWITCH = 280,
-     rwCASE = 281,
-     rwSWITCHSTR = 282,
-     rwCASEOR = 283,
-     rwPACKAGE = 284,
-     rwNAMESPACE = 285,
-     rwCLASS = 286,
-     rwASSERT = 287,
-     ILLEGAL_TOKEN = 288,
-     CHRCONST = 289,
-     INTCONST = 290,
-     TTAG = 291,
-     VAR = 292,
-     IDENT = 293,
-     TYPEIDENT = 294,
-     DOCBLOCK = 295,
-     STRATOM = 296,
-     TAGATOM = 297,
-     FLTCONST = 298,
-     opINTNAME = 299,
-     opINTNAMER = 300,
-     opMINUSMINUS = 301,
-     opPLUSPLUS = 302,
-     STMT_SEP = 303,
-     opSHL = 304,
-     opSHR = 305,
-     opPLASN = 306,
-     opMIASN = 307,
-     opMLASN = 308,
-     opDVASN = 309,
-     opMODASN = 310,
-     opANDASN = 311,
-     opXORASN = 312,
-     opORASN = 313,
-     opSLASN = 314,
-     opSRASN = 315,
-     opCAT = 316,
-     opEQ = 317,
-     opNE = 318,
-     opGE = 319,
-     opLE = 320,
-     opAND = 321,
-     opOR = 322,
-     opSTREQ = 323,
-     opCOLONCOLON = 324,
-     opNTASN = 325,
-     opNDASN = 326,
-     opMDASN = 327,
-     opSTRNE = 328,
-     UNARY = 329
-   };
+/* Put the tokens into the symbol table, so that GDB and other debuggers
+   know about them.  */
+enum yytokentype
+{
+    rwDEFINE = 258,
+    rwENDDEF = 259,
+    rwDECLARE = 260,
+    rwDECLARESINGLETON = 261,
+    rwBREAK = 262,
+    rwELSE = 263,
+    rwCONTINUE = 264,
+    rwGLOBAL = 265,
+    rwIF = 266,
+    rwNIL = 267,
+    rwRETURN = 268,
+    rwWHILE = 269,
+    rwDO = 270,
+    rwENDIF = 271,
+    rwENDWHILE = 272,
+    rwENDFOR = 273,
+    rwDEFAULT = 274,
+    rwFOR = 275,
+    rwFOREACH = 276,
+    rwFOREACHSTR = 277,
+    rwIN = 278,
+    rwDATABLOCK = 279,
+    rwSWITCH = 280,
+    rwCASE = 281,
+    rwSWITCHSTR = 282,
+    rwCASEOR = 283,
+    rwPACKAGE = 284,
+    rwNAMESPACE = 285,
+    rwCLASS = 286,
+    rwASSERT = 287,
+    ILLEGAL_TOKEN = 288,
+    CHRCONST = 289,
+    INTCONST = 290,
+    TTAG = 291,
+    VAR = 292,
+    IDENT = 293,
+    TYPEIDENT = 294,
+    DOCBLOCK = 295,
+    STRATOM = 296,
+    TAGATOM = 297,
+    FLTCONST = 298,
+    opINTNAME = 299,
+    opINTNAMER = 300,
+    opMINUSMINUS = 301,
+    opPLUSPLUS = 302,
+    STMT_SEP = 303,
+    opSHL = 304,
+    opSHR = 305,
+    opPLASN = 306,
+    opMIASN = 307,
+    opMLASN = 308,
+    opDVASN = 309,
+    opMODASN = 310,
+    opANDASN = 311,
+    opXORASN = 312,
+    opORASN = 313,
+    opSLASN = 314,
+    opSRASN = 315,
+    opCAT = 316,
+    opEQ = 317,
+    opNE = 318,
+    opGE = 319,
+    opLE = 320,
+    opAND = 321,
+    opOR = 322,
+    opSTREQ = 323,
+    opCOLONCOLON = 324,
+    opNTASN = 325,
+    opNDASN = 326,
+    opMDASN = 327,
+    opSTRNE = 328,
+    UNARY = 329
+};
 #endif
 /* Tokens.  */
 #define rwDEFINE 258
@@ -194,25 +195,25 @@
 typedef union YYSTYPE
 #line 82 "CMDgram.y"
 {
-   Token< char >           c;
-   Token< int >            i;
-   Token< const char* >    s;
-   Token< char* >          str;
-   Token< double >         f;
-   StmtNode*               stmt;
-   ExprNode*               expr;
-   SlotAssignNode*         slist;
-   VarNode*                var;
-   SlotDecl                slot;
-   InternalSlotDecl        intslot;
-   ObjectBlockDecl         odcl;
-   ObjectDeclNode*         od;
-   AssignDecl              asn;
-   IfStmtNode*             ifnode;
+    Token< char >           c;
+    Token< int >            i;
+    Token< const char* >    s;
+    Token< char* >          str;
+    Token< double >         f;
+    StmtNode*               stmt;
+    ExprNode*               expr;
+    SlotAssignNode*         slist;
+    VarNode*                var;
+    SlotDecl                slot;
+    InternalSlotDecl        intslot;
+    ObjectBlockDecl         odcl;
+    ObjectDeclNode*         od;
+    AssignDecl              asn;
+    IfStmtNode*             ifnode;
 }
 /* Line 1529 of yacc.c.  */
 #line 215 "cmdgram.h"
-	YYSTYPE;
+YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1

@@ -36,38 +36,38 @@
 /// unit testing functionality from within an instantiated component.
 class UnitTestComponentInterface : public ComponentInterface, UnitTesting::UnitTest
 {
-   typedef ComponentInterface Parent;
-
+    typedef ComponentInterface Parent;
+    
 private:
-   StringTableEntry mName;
-   UnitTesting::DynamicTestRegistration *mTestReg;
-
-   // Constructors/Destructors
+    StringTableEntry mName;
+    UnitTesting::DynamicTestRegistration* mTestReg;
+    
+    // Constructors/Destructors
 public:
-   UnitTestComponentInterface( const char *name )
-   {
-      mName = StringTable->insert( name );
-
-      mTestReg = new UnitTesting::DynamicTestRegistration( name, this );
-   }
-
-   virtual ~UnitTestComponentInterface()
-   {
-      delete mTestReg;
-   }
-   
-   // ComponentInterface overrides
+    UnitTestComponentInterface( const char* name )
+    {
+        mName = StringTable->insert( name );
+        
+        mTestReg = new UnitTesting::DynamicTestRegistration( name, this );
+    }
+    
+    virtual ~UnitTestComponentInterface()
+    {
+        delete mTestReg;
+    }
+    
+    // ComponentInterface overrides
 public:
-   virtual bool isValid() const 
-   { 
-      return Parent::isValid() && ( mTestReg != NULL ); 
-   }
-
-   // UnitTest overrides
+    virtual bool isValid() const
+    {
+        return Parent::isValid() && ( mTestReg != NULL );
+    }
+    
+    // UnitTest overrides
 public:
-   /// This is the only function you need to overwrite to add a unit test interface
-   /// your component.
-   virtual void run() = 0;
+    /// This is the only function you need to overwrite to add a unit test interface
+    /// your component.
+    virtual void run() = 0;
 };
 
 // Macros

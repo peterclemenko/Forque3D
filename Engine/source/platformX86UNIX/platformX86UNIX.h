@@ -46,24 +46,24 @@ extern bool GL_EXT_Init( void );
 extern void PlatformBlitInit( void );
 
 // Process Control functions
-void Cleanup(bool minimal=false);
-void ImmediateShutdown(S32 exitCode, S32 signalNum = 0);
+void Cleanup( bool minimal = false );
+void ImmediateShutdown( S32 exitCode, S32 signalNum = 0 );
 void ProcessControlInit();
-bool AcquireProcessMutex(const char *mutexName);
+bool AcquireProcessMutex( const char* mutexName );
 
 // Utility functions
 // Convert a string to lowercase in place
-char *strtolwr(char* str);
+char* strtolwr( char* str );
 
-void DisplayErrorAlert(const char* errMsg, bool showSDLError = true);
+void DisplayErrorAlert( const char* errMsg, bool showSDLError = true );
 
 // Just like strstr, except case insensitive
 // (Found this function at http://www.codeguru.com/string/stristr.html)
-extern char *stristr(char *szStringToBeSearched, const char *szSubstringToSearchFor);
+extern char* stristr( char* szStringToBeSearched, const char* szSubstringToSearchFor );
 
 extern "C"
 {
-   // x86UNIX doesn't have a way to automatically get the executable file name
-   void setExePathName(const char* exePathName);
+    // x86UNIX doesn't have a way to automatically get the executable file name
+    void setExePathName( const char* exePathName );
 }
 #endif

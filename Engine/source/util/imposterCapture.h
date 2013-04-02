@@ -52,59 +52,59 @@ class RenderMeshMgr;
 
 class ImposterCapture
 {
-   
+
 protected:
 
-   S32 mDl;
-   S32 mDim;
-
-   /// The bounding radius of the shape used to size the billboard.
-   F32 mRadius;
-
-   /// 
-   Point3F mCenter;
-
-   GBitmap *mBlackBmp;
-   GBitmap *mWhiteBmp;
-
-   GFXTexHandle mBlackTex;
-   GFXTexHandle mWhiteTex;
-   GFXTexHandle mNormalTex;
-
-   SceneRenderState *mState;
-   TSShapeInstance *mShapeInstance;
-   TSRenderState mRData;
-
-   GFXTextureTarget *mRenderTarget;
-
-   RenderPassManager *mRenderPass;
-   RenderMeshMgr     *mMeshRenderBin;
-
-   void _colorAverageFilter(  U32 dimensions, const U8 *inBmpBits, U8 *outBmpBits );
-   void _renderToTexture( GFXTexHandle texHandle, GBitmap *outBitmap, const ColorI &color ); 
-
-   void _separateAlpha( GBitmap *imposterOut );
-
-   void _convertDXT5nm( GBitmap *imposterOut );
-
+    S32 mDl;
+    S32 mDim;
+    
+    /// The bounding radius of the shape used to size the billboard.
+    F32 mRadius;
+    
+    ///
+    Point3F mCenter;
+    
+    GBitmap* mBlackBmp;
+    GBitmap* mWhiteBmp;
+    
+    GFXTexHandle mBlackTex;
+    GFXTexHandle mWhiteTex;
+    GFXTexHandle mNormalTex;
+    
+    SceneRenderState* mState;
+    TSShapeInstance* mShapeInstance;
+    TSRenderState mRData;
+    
+    GFXTextureTarget* mRenderTarget;
+    
+    RenderPassManager* mRenderPass;
+    RenderMeshMgr*     mMeshRenderBin;
+    
+    void _colorAverageFilter( U32 dimensions, const U8* inBmpBits, U8* outBmpBits );
+    void _renderToTexture( GFXTexHandle texHandle, GBitmap* outBitmap, const ColorI& color );
+    
+    void _separateAlpha( GBitmap* imposterOut );
+    
+    void _convertDXT5nm( GBitmap* imposterOut );
+    
 public:
 
-   ImposterCapture();
-
-   ~ImposterCapture();
-
-   void begin( TSShapeInstance *shapeInst,
-               S32 dl, 
-               S32 dim,
-               F32 radius,
-               const Point3F &center );
-
-   void capture(  const MatrixF &rotMatrix, 
-                  GBitmap **imposterOut,
-                  GBitmap **normalMapOut );
-
-   void end();
-
+    ImposterCapture();
+    
+    ~ImposterCapture();
+    
+    void begin( TSShapeInstance* shapeInst,
+                S32 dl,
+                S32 dim,
+                F32 radius,
+                const Point3F& center );
+                
+    void capture( const MatrixF& rotMatrix,
+                  GBitmap** imposterOut,
+                  GBitmap** normalMapOut );
+                  
+    void end();
+    
 };
 
 #endif // _IMPOSTERCAPTURE_H_

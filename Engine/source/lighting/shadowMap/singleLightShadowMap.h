@@ -33,13 +33,16 @@
 class SingleLightShadowMap : public LightShadowMap
 {
 public:
-   SingleLightShadowMap( LightInfo *light );
-   ~SingleLightShadowMap();
-
-   // LightShadowMap
-   virtual ShadowType getShadowType() const { return ShadowType_Spot; }
-   virtual void _render( RenderPassManager* renderPass, const SceneRenderState *diffuseState );
-   virtual void setShaderParameters(GFXShaderConstBuffer* params, LightingShaderConstants* lsc);
+    SingleLightShadowMap( LightInfo* light );
+    ~SingleLightShadowMap();
+    
+    // LightShadowMap
+    virtual ShadowType getShadowType() const
+    {
+        return ShadowType_Spot;
+    }
+    virtual void _render( RenderPassManager* renderPass, const SceneRenderState* diffuseState );
+    virtual void setShaderParameters( GFXShaderConstBuffer* params, LightingShaderConstants* lsc );
 };
 
 

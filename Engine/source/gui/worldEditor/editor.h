@@ -36,30 +36,30 @@ class GameBase;
 
 class EditManager : public GuiControl
 {
-   private:
-      typedef GuiControl Parent;
-
-   public:
-      EditManager();
-      ~EditManager();
-
-      bool onWake();
-      void onSleep();
-
-      // SimObject
-      bool onAdd();
-
-      /// Perform the onEditorEnabled callback on all SimObjects
-      /// and set gEditingMission true.
-      void editorEnabled();
-
-      /// Perform the onEditorDisabled callback on all SimObjects
-      /// and set gEditingMission false.
-      void editorDisabled();
-
-      MatrixF mBookmarks[10];
-      DECLARE_CONOBJECT(EditManager);
-      DECLARE_CATEGORY( "Gui Editor" );
+private:
+    typedef GuiControl Parent;
+    
+public:
+    EditManager();
+    ~EditManager();
+    
+    bool onWake();
+    void onSleep();
+    
+    // SimObject
+    bool onAdd();
+    
+    /// Perform the onEditorEnabled callback on all SimObjects
+    /// and set gEditingMission true.
+    void editorEnabled();
+    
+    /// Perform the onEditorDisabled callback on all SimObjects
+    /// and set gEditingMission false.
+    void editorDisabled();
+    
+    MatrixF mBookmarks[10];
+    DECLARE_CONOBJECT( EditManager );
+    DECLARE_CATEGORY( "Gui Editor" );
 };
 
 extern bool gEditingMission;

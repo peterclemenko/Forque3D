@@ -32,27 +32,27 @@
 
 enum MBButtons
 {
-   MBOk,
-   MBOkCancel,
-   MBRetryCancel,
-   MBSaveDontSave,
-   MBSaveDontSaveCancel,
+    MBOk,
+    MBOkCancel,
+    MBRetryCancel,
+    MBSaveDontSave,
+    MBSaveDontSaveCancel,
 };
 
 enum MBIcons
 {
-   MIWarning,
-   MIInformation,
-   MIQuestion,
-   MIStop,
+    MIWarning,
+    MIInformation,
+    MIQuestion,
+    MIStop,
 };
 
 enum MBReturnVal
 {
-   MROk = 1,   // Start from 1 to allow use of 0 for errors
-   MRCancel,
-   MRRetry,
-   MRDontSave,
+    MROk = 1,   // Start from 1 to allow use of 0 for errors
+    MRCancel,
+    MRRetry,
+    MRDontSave,
 };
 
 

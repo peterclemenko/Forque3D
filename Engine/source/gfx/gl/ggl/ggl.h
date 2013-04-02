@@ -37,9 +37,9 @@
 //-----------------------------------------------------------------------------
 
 #if defined(__CYGWIN__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32)
-   #define XGL_DLL __stdcall
+#define XGL_DLL __stdcall
 #else
-   #define XGL_DLL
+#define XGL_DLL
 #endif
 
 
@@ -68,34 +68,42 @@ namespace GL
 //-----------------------------------------------------------------------------
 // Extensions use indirection in order to support multiple contexts
 
-struct GLExtensionPtrs {
-   bool bound;
-
-   // Include all OpenGL extensions for all platform
-   #define GL_GROUP_BEGIN(name)
-   #define GL_FUNCTION(name, type, args) type (XGL_DLL *_##name) args;
-   #define GL_GROUP_END()
-   #include "gfx/gl/ggl/generated/glefn.h"
-   #undef GL_GROUP_BEGIN
-   #undef GL_FUNCTION
-   #undef GL_GROUP_END
-
-   GLExtensionPtrs() { bound = false; }
+struct GLExtensionPtrs
+{
+    bool bound;
+    
+    // Include all OpenGL extensions for all platform
+#define GL_GROUP_BEGIN(name)
+#define GL_FUNCTION(name, type, args) type (XGL_DLL *_##name) args;
+#define GL_GROUP_END()
+#include "gfx/gl/ggl/generated/glefn.h"
+#undef GL_GROUP_BEGIN
+#undef GL_FUNCTION
+#undef GL_GROUP_END
+    
+    GLExtensionPtrs()
+    {
+        bound = false;
+    }
 };
 
-struct GLExtensionFlags {
-   bool bound;
-
-   // Define extension "has" variables
-   #define GL_GROUP_BEGIN(name) bool has_##name;
-   #define GL_FUNCTION(name, type, args)
-   #define GL_GROUP_END()
-   #include "gfx/gl/ggl/generated/glefn.h"
-   #undef GL_GROUP_BEGIN
-   #undef GL_FUNCTION
-   #undef GL_GROUP_END
-
-   GLExtensionFlags() { bound = false; }
+struct GLExtensionFlags
+{
+    bool bound;
+    
+    // Define extension "has" variables
+#define GL_GROUP_BEGIN(name) bool has_##name;
+#define GL_FUNCTION(name, type, args)
+#define GL_GROUP_END()
+#include "gfx/gl/ggl/generated/glefn.h"
+#undef GL_GROUP_BEGIN
+#undef GL_FUNCTION
+#undef GL_GROUP_END
+    
+    GLExtensionFlags()
+    {
+        bound = false;
+    }
 };
 
 // Extension loading has been reimplemented on each platform, and each platform

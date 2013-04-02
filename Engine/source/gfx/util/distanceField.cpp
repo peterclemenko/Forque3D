@@ -27,22 +27,22 @@
 //-----------------------------------------------------------------------------
 struct DistanceFieldSearchSpaceStruct
 {
-   S32 xOffset;
-   S32 yOffset;
-   F32 distance;
+    S32 xOffset;
+    S32 yOffset;
+    F32 distance;
 };
 
-int QSORT_CALLBACK cmpSortDistanceFieldSearchSpaceStruct(const void* p1, const void* p2)
+int QSORT_CALLBACK cmpSortDistanceFieldSearchSpaceStruct( const void* p1, const void* p2 )
 {
-   const DistanceFieldSearchSpaceStruct* sp1 = (const DistanceFieldSearchSpaceStruct*)p1;
-   const DistanceFieldSearchSpaceStruct* sp2 = (const DistanceFieldSearchSpaceStruct*)p2;
-
-   if (sp2->distance > sp1->distance)
-      return -1;
-   else if (sp2->distance == sp1->distance)
-      return 0;
-   else
-      return 1;
+    const DistanceFieldSearchSpaceStruct* sp1 = ( const DistanceFieldSearchSpaceStruct* )p1;
+    const DistanceFieldSearchSpaceStruct* sp2 = ( const DistanceFieldSearchSpaceStruct* )p2;
+    
+    if( sp2->distance > sp1->distance )
+        return -1;
+    else if( sp2->distance == sp1->distance )
+        return 0;
+    else
+        return 1;
 }
 
 //GBitmap * GFXUtil::DistanceField::makeDistanceField(GBitmap * sourceBmp, S32 targetSizeX, S32 targetSizeY, F32 rangePct)
@@ -132,75 +132,75 @@ int QSORT_CALLBACK cmpSortDistanceFieldSearchSpaceStruct(const void* p1, const v
 //   return targetBmp;
 //}
 
-void GFXUtil::DistanceField::makeDistanceField( const U8 * sourceData, S32 sourceSizeX, S32 sourceSizeY, U8 * targetData, S32 targetSizeX, S32 targetSizeY, F32 radius )
+void GFXUtil::DistanceField::makeDistanceField( const U8* sourceData, S32 sourceSizeX, S32 sourceSizeY, U8* targetData, S32 targetSizeX, S32 targetSizeY, F32 radius )
 {
-   static Vector<DistanceFieldSearchSpaceStruct> searchSpace;
-
-   S32 targetToSourceScalarX = sourceSizeX / targetSizeX;
-   S32 targetToSourceScalarY = sourceSizeY / targetSizeY;
-   S32 targetToSourcePixOffsetX = targetToSourceScalarX / 2;
-   S32 targetToSourcePixOffsetY = targetToSourceScalarY / 2;
-
-   F32 radius2 = radius * 2.f;
-
-   {
-      S32 intRange = mCeil(radius);
-      for(S32 spaceY = -intRange; spaceY < intRange; spaceY++)
-      {
-         for(S32 spaceX = -intRange; spaceX < intRange; spaceX++)
-         {
-            if(spaceX == 0 && spaceY == 0)
-               continue;
-
-            F32 distance = Point2F(spaceX,spaceY).len();
-            if(distance <= radius)
+    static Vector<DistanceFieldSearchSpaceStruct> searchSpace;
+    
+    S32 targetToSourceScalarX = sourceSizeX / targetSizeX;
+    S32 targetToSourceScalarY = sourceSizeY / targetSizeY;
+    S32 targetToSourcePixOffsetX = targetToSourceScalarX / 2;
+    S32 targetToSourcePixOffsetY = targetToSourceScalarY / 2;
+    
+    F32 radius2 = radius * 2.f;
+    
+    {
+        S32 intRange = mCeil( radius );
+        for( S32 spaceY = -intRange; spaceY < intRange; spaceY++ )
+        {
+            for( S32 spaceX = -intRange; spaceX < intRange; spaceX++ )
             {
-               searchSpace.increment();
-               searchSpace.last().distance = distance;
-               searchSpace.last().xOffset = spaceX;
-               searchSpace.last().yOffset = spaceY;
+                if( spaceX == 0 && spaceY == 0 )
+                    continue;
+                    
+                F32 distance = Point2F( spaceX, spaceY ).len();
+                if( distance <= radius )
+                {
+                    searchSpace.increment();
+                    searchSpace.last().distance = distance;
+                    searchSpace.last().xOffset = spaceX;
+                    searchSpace.last().yOffset = spaceY;
+                }
             }
-         }
-      }
-   }
-   dQsort(searchSpace.address(), searchSpace.size(), sizeof(DistanceFieldSearchSpaceStruct), cmpSortDistanceFieldSearchSpaceStruct);
-
-   for(S32 y = 0; y < targetSizeY; y++)
-   {
-      for(S32 x = 0; x < targetSizeX; x++)
-      {
-         S32 sourceX = x * targetToSourceScalarX + targetToSourcePixOffsetX;
-         S32 sourceY = y * targetToSourceScalarY + targetToSourcePixOffsetY;
-
-         bool thisPixelEmpty = sourceData[sourceY * sourceSizeX + sourceX] < 127;
-
-         F32 closestDist = F32_MAX;
-
-         for(DistanceFieldSearchSpaceStruct * seachSpaceStructPtr = searchSpace.begin(); seachSpaceStructPtr <= searchSpace.end(); seachSpaceStructPtr++)
-         {
-            DistanceFieldSearchSpaceStruct & searchSpaceStruct = *seachSpaceStructPtr;
-            S32 cx = sourceX + searchSpaceStruct.xOffset;
-            if(cx < 0 || cx >= sourceSizeX)
-               continue;
-
-            S32 cy = sourceY + searchSpaceStruct.yOffset;
-            if(cy < 0 || cy >= sourceSizeY)
-               continue;
-
-            if((sourceData[cy * sourceSizeX + cx] < 127) != thisPixelEmpty)
+        }
+    }
+    dQsort( searchSpace.address(), searchSpace.size(), sizeof( DistanceFieldSearchSpaceStruct ), cmpSortDistanceFieldSearchSpaceStruct );
+    
+    for( S32 y = 0; y < targetSizeY; y++ )
+    {
+        for( S32 x = 0; x < targetSizeX; x++ )
+        {
+            S32 sourceX = x * targetToSourceScalarX + targetToSourcePixOffsetX;
+            S32 sourceY = y * targetToSourceScalarY + targetToSourcePixOffsetY;
+            
+            bool thisPixelEmpty = sourceData[sourceY * sourceSizeX + sourceX] < 127;
+            
+            F32 closestDist = F32_MAX;
+            
+            for( DistanceFieldSearchSpaceStruct* seachSpaceStructPtr = searchSpace.begin(); seachSpaceStructPtr <= searchSpace.end(); seachSpaceStructPtr++ )
             {
-               closestDist = searchSpaceStruct.distance;
-               break;
+                DistanceFieldSearchSpaceStruct& searchSpaceStruct = *seachSpaceStructPtr;
+                S32 cx = sourceX + searchSpaceStruct.xOffset;
+                if( cx < 0 || cx >= sourceSizeX )
+                    continue;
+                    
+                S32 cy = sourceY + searchSpaceStruct.yOffset;
+                if( cy < 0 || cy >= sourceSizeY )
+                    continue;
+                    
+                if( ( sourceData[cy * sourceSizeX + cx] < 127 ) != thisPixelEmpty )
+                {
+                    closestDist = searchSpaceStruct.distance;
+                    break;
+                }
             }
-         }
-
-         F32 diff = thisPixelEmpty ? getMax(-0.5f,-(closestDist / radius2)) : getMin(0.5f,closestDist / radius2);
-         F32 targetValue = 0.5f + diff;
-
-         *targetData = targetValue * 255;
-         targetData++;
-      }
-   }
-
-   searchSpace.clear();
+            
+            F32 diff = thisPixelEmpty ? getMax( -0.5f, -( closestDist / radius2 ) ) : getMin( 0.5f, closestDist / radius2 );
+            F32 targetValue = 0.5f + diff;
+            
+            *targetData = targetValue * 255;
+            targetData++;
+        }
+    }
+    
+    searchSpace.clear();
 }

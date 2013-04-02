@@ -37,85 +37,85 @@
 
 SceneRootZone::SceneRootZone()
 {
-   setGlobalBounds();
-   resetWorldBox();
-
-   // Clear netflags we have inherited.  We don't
-   // network scene roots.
-   mNetFlags.clear( Ghostable | ScopeAlways );
-
-   // Clear type flags we have inherited.
-   mTypeMask &= ~StaticObjectType;
+    setGlobalBounds();
+    resetWorldBox();
+    
+    // Clear netflags we have inherited.  We don't
+    // network scene roots.
+    mNetFlags.clear( Ghostable | ScopeAlways );
+    
+    // Clear type flags we have inherited.
+    mTypeMask &= ~StaticObjectType;
 }
 
 //-----------------------------------------------------------------------------
 
 String SceneRootZone::describeSelf() const
 {
-   String str = Parent::describeSelf();
-
-   str += "|SceneRootZone";
-   
-   return str;
+    String str = Parent::describeSelf();
+    
+    str += "|SceneRootZone";
+    
+    return str;
 }
 
 //-----------------------------------------------------------------------------
 
 bool SceneRootZone::onSceneAdd()
 {
-   if( !Parent::onSceneAdd() )
-      return false;
-
-   AssertFatal( getZoneRangeStart() == SceneZoneSpaceManager::RootZoneId, "SceneRootZone::onSceneAdd - SceneRootZone must be first scene object zone manager!" );
-
-   return true;
+    if( !Parent::onSceneAdd() )
+        return false;
+        
+    AssertFatal( getZoneRangeStart() == SceneZoneSpaceManager::RootZoneId, "SceneRootZone::onSceneAdd - SceneRootZone must be first scene object zone manager!" );
+    
+    return true;
 }
 
 //-----------------------------------------------------------------------------
 
 void SceneRootZone::onSceneRemove()
 {
-   AssertFatal( getZoneRangeStart() == SceneZoneSpaceManager::RootZoneId, "SceneRootZone::onSceneRemove - SceneRootZone must be first scene object zone manager!");
-   Parent::onSceneRemove();
+    AssertFatal( getZoneRangeStart() == SceneZoneSpaceManager::RootZoneId, "SceneRootZone::onSceneRemove - SceneRootZone must be first scene object zone manager!" );
+    Parent::onSceneRemove();
 }
 
 //-----------------------------------------------------------------------------
 
 bool SceneRootZone::onAdd()
 {
-   AssertFatal( false, "SceneRootZone::onAdd - Must not register SceneRootZone!" );
-   return false;
+    AssertFatal( false, "SceneRootZone::onAdd - Must not register SceneRootZone!" );
+    return false;
 }
 
 //-----------------------------------------------------------------------------
 
 void SceneRootZone::onRemove()
 {
-   AssertFatal( false, "SceneRootZone::onRemove - Must not be called!" );
+    AssertFatal( false, "SceneRootZone::onRemove - Must not be called!" );
 }
 
 //-----------------------------------------------------------------------------
 
-U32 SceneRootZone::getPointZone( const Point3F &p ) const
+U32 SceneRootZone::getPointZone( const Point3F& p ) const
 {
-   return 0;
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
 
 bool SceneRootZone::getOverlappingZones( const Box3F& aabb, U32* outZones, U32& outNumZones )
 {
-   // Everything overlaps the outside zone.
-
-   outZones[ 0 ]  = SceneZoneSpaceManager::RootZoneId;
-   outNumZones = 1;
-
-   return false;
+    // Everything overlaps the outside zone.
+    
+    outZones[ 0 ]  = SceneZoneSpaceManager::RootZoneId;
+    outNumZones = 1;
+    
+    return false;
 }
 
 //-----------------------------------------------------------------------------
 
-bool SceneRootZone::containsPoint( const Point3F &point ) const
+bool SceneRootZone::containsPoint( const Point3F& point ) const
 {
-   return true;
+    return true;
 }

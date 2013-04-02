@@ -29,106 +29,106 @@
 #include "console/consoleTypes.h"
 #include "math/util/matrixSet.h"
 
-IMPLEMENT_CONOBJECT(ForcedMaterialMeshMgr);
+IMPLEMENT_CONOBJECT( ForcedMaterialMeshMgr );
 
 ConsoleDocClass( ForcedMaterialMeshMgr,
-   "@brief Basically the same as RenderMeshMgr, but will override the material "
-   "of the instance. Exists for backwards compatibility, not currently used, soon to be deprecated\n\n"
-   "@internal"
-);
+                 "@brief Basically the same as RenderMeshMgr, but will override the material "
+                 "of the instance. Exists for backwards compatibility, not currently used, soon to be deprecated\n\n"
+                 "@internal"
+               );
 
 ForcedMaterialMeshMgr::ForcedMaterialMeshMgr()
 {
-   mOverrideInstance = NULL;
-   mOverrideMaterial = NULL;
+    mOverrideInstance = NULL;
+    mOverrideMaterial = NULL;
 }
 
-ForcedMaterialMeshMgr::ForcedMaterialMeshMgr(RenderInstType riType, F32 renderOrder, F32 processAddOrder, BaseMatInstance* overrideMaterial)
-: RenderMeshMgr(riType, renderOrder, processAddOrder)
+ForcedMaterialMeshMgr::ForcedMaterialMeshMgr( RenderInstType riType, F32 renderOrder, F32 processAddOrder, BaseMatInstance* overrideMaterial )
+    : RenderMeshMgr( riType, renderOrder, processAddOrder )
 {
-   mOverrideInstance = overrideMaterial;
-   mOverrideMaterial = NULL;
+    mOverrideInstance = overrideMaterial;
+    mOverrideMaterial = NULL;
 }
 
-void ForcedMaterialMeshMgr::setOverrideMaterial(BaseMatInstance* overrideMaterial)
+void ForcedMaterialMeshMgr::setOverrideMaterial( BaseMatInstance* overrideMaterial )
 {
-   SAFE_DELETE(mOverrideInstance);
-   mOverrideInstance = overrideMaterial;
+    SAFE_DELETE( mOverrideInstance );
+    mOverrideInstance = overrideMaterial;
 }
 
 ForcedMaterialMeshMgr::~ForcedMaterialMeshMgr()
 {
-   setOverrideMaterial(NULL);
+    setOverrideMaterial( NULL );
 }
 
 void ForcedMaterialMeshMgr::initPersistFields()
 {
-   addProtectedField("material", TYPEID< Material >(), Offset(mOverrideMaterial, ForcedMaterialMeshMgr),
-      &_setOverrideMat, &_getOverrideMat, "Material used to draw all meshes in the render bin.");
-
-   Parent::initPersistFields();
+    addProtectedField( "material", TYPEID< Material >(), Offset( mOverrideMaterial, ForcedMaterialMeshMgr ),
+                       &_setOverrideMat, &_getOverrideMat, "Material used to draw all meshes in the render bin." );
+                       
+    Parent::initPersistFields();
 }
 
-void ForcedMaterialMeshMgr::render(SceneRenderState * state)
+void ForcedMaterialMeshMgr::render( SceneRenderState* state )
 {
-   PROFILE_SCOPE(ForcedMaterialMeshMgr_render);
-
-   if(!mOverrideInstance && mOverrideMaterial.isValid())
-   {
-      mOverrideInstance = mOverrideMaterial->createMatInstance();
-      mOverrideInstance->init( MATMGR->getDefaultFeatures(), getGFXVertexFormat<GFXVertexPNTBT>() );
-   }
-
-   // Early out if nothing to draw.
-   if(!mElementList.size() || !mOverrideInstance)
-      return;
-
-   GFXDEBUGEVENT_SCOPE(ForcedMaterialMeshMgr_Render, ColorI::RED);
-
-   // Automagically save & restore our viewport and transforms.
-   GFXTransformSaver saver;
-
-   // init loop data
-   SceneData sgData;
-   sgData.init( state );
-
-   MeshRenderInst *ri = static_cast<MeshRenderInst*>(mElementList[0].inst);
-   setupSGData( ri, sgData );
-
-   while (mOverrideInstance->setupPass(state, sgData))
-   {   
-      for( U32 j=0; j<mElementList.size(); j++)
-      {
-         MeshRenderInst* passRI = static_cast<MeshRenderInst*>(mElementList[j].inst);
-         if(passRI->primBuff->getPointer()->mPrimitiveArray[passRI->primBuffIndex].numVertices < 1)
-            continue;
-
-         getRenderPass()->getMatrixSet().setWorld(*passRI->objectToWorld);
-         getRenderPass()->getMatrixSet().setView(*passRI->worldToCamera);
-         getRenderPass()->getMatrixSet().setProjection(*passRI->projection);
-         mOverrideInstance->setTransforms(getRenderPass()->getMatrixSet(), state);
-
-         mOverrideInstance->setBuffers(passRI->vertBuff, passRI->primBuff);
-         GFX->drawPrimitive( passRI->primBuffIndex );                  
-      }
-   }
+    PROFILE_SCOPE( ForcedMaterialMeshMgr_render );
+    
+    if( !mOverrideInstance && mOverrideMaterial.isValid() )
+    {
+        mOverrideInstance = mOverrideMaterial->createMatInstance();
+        mOverrideInstance->init( MATMGR->getDefaultFeatures(), getGFXVertexFormat<GFXVertexPNTBT>() );
+    }
+    
+    // Early out if nothing to draw.
+    if( !mElementList.size() || !mOverrideInstance )
+        return;
+        
+    GFXDEBUGEVENT_SCOPE( ForcedMaterialMeshMgr_Render, ColorI::RED );
+    
+    // Automagically save & restore our viewport and transforms.
+    GFXTransformSaver saver;
+    
+    // init loop data
+    SceneData sgData;
+    sgData.init( state );
+    
+    MeshRenderInst* ri = static_cast<MeshRenderInst*>( mElementList[0].inst );
+    setupSGData( ri, sgData );
+    
+    while( mOverrideInstance->setupPass( state, sgData ) )
+    {
+        for( U32 j = 0; j < mElementList.size(); j++ )
+        {
+            MeshRenderInst* passRI = static_cast<MeshRenderInst*>( mElementList[j].inst );
+            if( passRI->primBuff->getPointer()->mPrimitiveArray[passRI->primBuffIndex].numVertices < 1 )
+                continue;
+                
+            getRenderPass()->getMatrixSet().setWorld( *passRI->objectToWorld );
+            getRenderPass()->getMatrixSet().setView( *passRI->worldToCamera );
+            getRenderPass()->getMatrixSet().setProjection( *passRI->projection );
+            mOverrideInstance->setTransforms( getRenderPass()->getMatrixSet(), state );
+            
+            mOverrideInstance->setBuffers( passRI->vertBuff, passRI->primBuff );
+            GFX->drawPrimitive( passRI->primBuffIndex );
+        }
+    }
 }
 
-const char* ForcedMaterialMeshMgr::_getOverrideMat( void *object, const char *data )
+const char* ForcedMaterialMeshMgr::_getOverrideMat( void* object, const char* data )
 {
-   ForcedMaterialMeshMgr &mgr = *reinterpret_cast<ForcedMaterialMeshMgr *>( object );
-   if( mgr.mOverrideMaterial.isValid() )
-      return mgr.mOverrideMaterial->getIdString();
-   else
-      return "0";
+    ForcedMaterialMeshMgr& mgr = *reinterpret_cast<ForcedMaterialMeshMgr*>( object );
+    if( mgr.mOverrideMaterial.isValid() )
+        return mgr.mOverrideMaterial->getIdString();
+    else
+        return "0";
 }
 
-bool ForcedMaterialMeshMgr::_setOverrideMat( void *object, const char *index, const char *data )
+bool ForcedMaterialMeshMgr::_setOverrideMat( void* object, const char* index, const char* data )
 {
-   ForcedMaterialMeshMgr &mgr = *reinterpret_cast<ForcedMaterialMeshMgr *>( object );   
-   BaseMatInstance* material;
-   Sim::findObject( data, material );
-   mgr.setOverrideMaterial( material );
-   return false;
+    ForcedMaterialMeshMgr& mgr = *reinterpret_cast<ForcedMaterialMeshMgr*>( object );
+    BaseMatInstance* material;
+    Sim::findObject( data, material );
+    mgr.setOverrideMaterial( material );
+    return false;
 }
 

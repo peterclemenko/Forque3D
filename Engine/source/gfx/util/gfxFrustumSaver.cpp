@@ -25,10 +25,10 @@
 
 GFXFrustumSaver::GFXFrustumSaver()
 {
-   mFrustum = GFX->getFrustum();
+    mFrustum = GFX->getFrustum();
 }
 
 GFXFrustumSaver::~GFXFrustumSaver()
-{   
-   GFX->setFrustum( mFrustum );   
+{
+    GFX->setFrustum( mFrustum );
 }

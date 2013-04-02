@@ -54,44 +54,44 @@ enum FontCharset
     TGE_BALTIC_CHARSET
 };
 
-extern const char *getCharSetName(const U32 charSet);
+extern const char* getCharSetName( const U32 charSet );
 
 class PlatformFont
 {
 public:
-   struct CharInfo
-   {
-      S16 bitmapIndex;     ///< @note -1 indicates character is NOT to be
-                           ///        rendered, i.e., \n, \r, etc.
-      U32  xOffset;        ///< x offset into bitmap sheet
-      U32  yOffset;        ///< y offset into bitmap sheet
-      U32  width;          ///< width of character (pixels)
-      U32  height;         ///< height of character (pixels)
-      S32  xOrigin;
-      S32  yOrigin;
-      S32  xIncrement;
-      U8  *bitmapData;     ///< temp storage for bitmap data
-   };
-   
-   virtual ~PlatformFont() {}
-   
-   /// Is the specified character valid for rendering?
-   virtual bool isValidChar(const UTF16 ch) const = 0;
-   virtual bool isValidChar(const UTF8 *str) const = 0;
-
-   virtual U32 getFontHeight() const = 0;
-   virtual U32 getFontBaseLine() const = 0;
-
-   virtual PlatformFont::CharInfo &getCharInfo(const UTF16 ch) const = 0;
-   virtual PlatformFont::CharInfo &getCharInfo(const UTF8 *str) const = 0;
-
-   /// This is just for createPlatformFont to call.
-   ///
-   /// @todo Rethink this so we don't have a private public.
-   virtual bool create(const char *name, U32 size, U32 charset = TGE_ANSI_CHARSET) = 0;
-   static void enumeratePlatformFonts( Vector<StringTableEntry>& fonts, UTF16* fontFamily = NULL );
+    struct CharInfo
+    {
+        S16 bitmapIndex;     ///< @note -1 indicates character is NOT to be
+        ///        rendered, i.e., \n, \r, etc.
+        U32  xOffset;        ///< x offset into bitmap sheet
+        U32  yOffset;        ///< y offset into bitmap sheet
+        U32  width;          ///< width of character (pixels)
+        U32  height;         ///< height of character (pixels)
+        S32  xOrigin;
+        S32  yOrigin;
+        S32  xIncrement;
+        U8*  bitmapData;     ///< temp storage for bitmap data
+    };
+    
+    virtual ~PlatformFont() {}
+    
+    /// Is the specified character valid for rendering?
+    virtual bool isValidChar( const UTF16 ch ) const = 0;
+    virtual bool isValidChar( const UTF8* str ) const = 0;
+    
+    virtual U32 getFontHeight() const = 0;
+    virtual U32 getFontBaseLine() const = 0;
+    
+    virtual PlatformFont::CharInfo& getCharInfo( const UTF16 ch ) const = 0;
+    virtual PlatformFont::CharInfo& getCharInfo( const UTF8* str ) const = 0;
+    
+    /// This is just for createPlatformFont to call.
+    ///
+    /// @todo Rethink this so we don't have a private public.
+    virtual bool create( const char* name, U32 size, U32 charset = TGE_ANSI_CHARSET ) = 0;
+    static void enumeratePlatformFonts( Vector<StringTableEntry>& fonts, UTF16* fontFamily = NULL );
 };
 
-extern PlatformFont *createPlatformFont(const char *name, U32 size, U32 charset = TGE_ANSI_CHARSET);
+extern PlatformFont* createPlatformFont( const char* name, U32 size, U32 charset = TGE_ANSI_CHARSET );
 
 #endif // _PLATFORMFONT_H_

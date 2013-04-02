@@ -25,10 +25,10 @@
 
 namespace Zip
 {
-   class ZipArchive;
+class ZipArchive;
 }
 
-extern Zip::ZipArchive *openEmbeddedVFSArchive();
+extern Zip::ZipArchive* openEmbeddedVFSArchive();
 extern void closeEmbeddedVFSArchive();
 
 #endif // _PLATFORMVFS_H_

@@ -28,18 +28,18 @@ MODULE_BEGIN( LightMapParams )
 MODULE_INIT_AFTER( ShadowMapParams )
 MODULE_INIT
 {
-   LightMapParams::Type = "LightMapParams";
+    LightMapParams::Type = "LightMapParams";
 }
 MODULE_END;
 
 LightInfoExType LightMapParams::Type( "" );
 
-LightMapParams::LightMapParams( LightInfo *light ) :
-   representedInLightmap(false), 
-   includeLightmappedGeometryInShadow(false), 
-   shadowDarkenColor(0.0f, 0.0f, 0.0f, -1.0f)
+LightMapParams::LightMapParams( LightInfo* light ) :
+    representedInLightmap( false ),
+    includeLightmappedGeometryInShadow( false ),
+    shadowDarkenColor( 0.0f, 0.0f, 0.0f, -1.0f )
 {
-   
+
 }
 
 LightMapParams::~LightMapParams()
@@ -47,24 +47,24 @@ LightMapParams::~LightMapParams()
 
 }
 
-void LightMapParams::set( const LightInfoEx *ex )
+void LightMapParams::set( const LightInfoEx* ex )
 {
-   // TODO: Do we even need this?
+    // TODO: Do we even need this?
 }
 
-void LightMapParams::packUpdate( BitStream *stream ) const
+void LightMapParams::packUpdate( BitStream* stream ) const
 {
-   stream->writeFlag(representedInLightmap);
-   stream->writeFlag(includeLightmappedGeometryInShadow);
-   stream->write(shadowDarkenColor);
+    stream->writeFlag( representedInLightmap );
+    stream->writeFlag( includeLightmappedGeometryInShadow );
+    stream->write( shadowDarkenColor );
 }
 
-void LightMapParams::unpackUpdate( BitStream *stream )
+void LightMapParams::unpackUpdate( BitStream* stream )
 {
-   representedInLightmap = stream->readFlag();
-   includeLightmappedGeometryInShadow = stream->readFlag();
-   stream->read(&shadowDarkenColor);
-
-   // Always make sure that the alpha value of the shadowDarkenColor is -1.0
-   shadowDarkenColor.alpha = -1.0f;
+    representedInLightmap = stream->readFlag();
+    includeLightmappedGeometryInShadow = stream->readFlag();
+    stream->read( &shadowDarkenColor );
+    
+    // Always make sure that the alpha value of the shadowDarkenColor is -1.0
+    shadowDarkenColor.alpha = -1.0f;
 }

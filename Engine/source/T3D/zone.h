@@ -44,29 +44,32 @@
 /// the same time.
 class Zone : public SceneAmbientSoundObject< ScenePolyhedralZone >
 {
-   public:
+public:
 
-      typedef SceneAmbientSoundObject< ScenePolyhedralZone > Parent;
+    typedef SceneAmbientSoundObject< ScenePolyhedralZone > Parent;
+    
+protected:
 
-   protected:
+    // SceneVolume.
+    virtual ColorI _getDefaultEditorSolidColor() const
+    {
+        return ColorI( 255, 0, 0, 45 );
+    }
+    
+public:
 
-      // SceneVolume.
-      virtual ColorI _getDefaultEditorSolidColor() const { return ColorI( 255, 0, 0, 45 ); }
-
-   public:
-
-      Zone() {}
-      Zone( const Polyhedron& polyhedron )
-      {
-         mPolyhedron = polyhedron;
-      }
-
-      // SimObject
-      DECLARE_CONOBJECT( Zone );
-      DECLARE_DESCRIPTION( "A volume that encloses objects for visibility culling." );
-      DECLARE_CATEGORY( "3D" );
-
-      static void consoleInit();
+    Zone() {}
+    Zone( const Polyhedron& polyhedron )
+    {
+        mPolyhedron = polyhedron;
+    }
+    
+    // SimObject
+    DECLARE_CONOBJECT( Zone );
+    DECLARE_DESCRIPTION( "A volume that encloses objects for visibility culling." );
+    DECLARE_CATEGORY( "3D" );
+    
+    static void consoleInit();
 };
 
 #endif // _ZONE_H_

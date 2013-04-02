@@ -32,12 +32,12 @@ class PxContactReporter : public NxUserContactReport
 {
 protected:
 
-   virtual void onContactNotify( NxContactPair& pair, NxU32 events );
-
+    virtual void onContactNotify( NxContactPair& pair, NxU32 events );
+    
 public:
 
-   PxContactReporter();
-   virtual ~PxContactReporter();
+    PxContactReporter();
+    virtual ~PxContactReporter();
 };
 
 
@@ -45,9 +45,9 @@ public:
 class PxUserNotify : public NxUserNotify
 {
 public:
-   virtual bool onJointBreak( NxReal breakingForce, NxJoint &brokenJoint );   
-   virtual void onWake( NxActor **actors, NxU32 count ) {}
-   virtual void onSleep ( NxActor **actors, NxU32 count ) {}
+    virtual bool onJointBreak( NxReal breakingForce, NxJoint& brokenJoint );
+    virtual void onWake( NxActor** actors, NxU32 count ) {}
+    virtual void onSleep( NxActor** actors, NxU32 count ) {}
 };
 
 

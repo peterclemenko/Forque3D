@@ -31,27 +31,27 @@
 #include <libgen.h>
 #include <dirent.h>
 
-int x86UNIXOpen(const char *path, int oflag)
+int x86UNIXOpen( const char* path, int oflag )
 {
-   return open(path, oflag, 0666);
+    return open( path, oflag, 0666 );
 }
 
-int x86UNIXClose(int fd)
+int x86UNIXClose( int fd )
 {
-   return close(fd);
+    return close( fd );
 }
 
-ssize_t x86UNIXRead(int fd, void *buf, size_t nbytes)
+ssize_t x86UNIXRead( int fd, void* buf, size_t nbytes )
 {
-   return read(fd, buf, nbytes);
+    return read( fd, buf, nbytes );
 }
 
-ssize_t x86UNIXWrite(int fd, const void *buf, size_t nbytes)
+ssize_t x86UNIXWrite( int fd, const void* buf, size_t nbytes )
 {
-   return write(fd, buf, nbytes);
+    return write( fd, buf, nbytes );
 }
 
-bool Torque::FS::VerifyWriteAccess(const Torque::Path &path)
+bool Torque::FS::VerifyWriteAccess( const Torque::Path& path )
 {
-   return true;
+    return true;
 }

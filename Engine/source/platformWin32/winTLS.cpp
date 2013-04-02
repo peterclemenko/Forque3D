@@ -33,31 +33,31 @@
 
 struct PlatformThreadStorage
 {
-   DWORD mTlsIndex;
+    DWORD mTlsIndex;
 };
 
 //-----------------------------------------------------------------------------
 
 ThreadStorage::ThreadStorage()
 {
-   TORQUE_ALLOC_STORAGE(mThreadStorage, PlatformThreadStorage, mStorage);
-   mThreadStorage->mTlsIndex = TlsAlloc();
+    TORQUE_ALLOC_STORAGE( mThreadStorage, PlatformThreadStorage, mStorage );
+    mThreadStorage->mTlsIndex = TlsAlloc();
 }
 
 ThreadStorage::~ThreadStorage()
 {
-   TlsFree(mThreadStorage->mTlsIndex);
-   destructInPlace(mThreadStorage);
+    TlsFree( mThreadStorage->mTlsIndex );
+    destructInPlace( mThreadStorage );
 }
 
-void *ThreadStorage::get()
+void* ThreadStorage::get()
 {
-   return TlsGetValue(mThreadStorage->mTlsIndex);
+    return TlsGetValue( mThreadStorage->mTlsIndex );
 }
 
-void ThreadStorage::set(void *value)
+void ThreadStorage::set( void* value )
 {
-   TlsSetValue(mThreadStorage->mTlsIndex, value);
+    TlsSetValue( mThreadStorage->mTlsIndex, value );
 }
 
 /* POSIX IMPLEMENTATION LOOKS LIKE THIS:

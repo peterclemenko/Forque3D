@@ -35,13 +35,13 @@
 
 namespace DebugOutputConsumer
 {
-   extern bool debugOutputEnabled;
+extern bool debugOutputEnabled;
 
-   void init();
-   void destroy();
-   void logCallback( U32 level, const char *consoleLine );
+void init();
+void destroy();
+void logCallback( U32 level, const char* consoleLine );
 
-   void enableDebugOutput( bool enable = true );
+void enableDebugOutput( bool enable = true );
 };
 
 #endif

@@ -24,10 +24,10 @@
 #define _GUIBITMAPBUTTON_H_
 
 #ifndef _GUIBUTTONCTRL_H_
-   #include "gui/buttons/guiButtonCtrl.h"
+#include "gui/buttons/guiButtonCtrl.h"
 #endif
 #ifndef _GFXTEXTUREMANAGER_H_
-   #include "gfx/gfxTextureManager.h"
+#include "gfx/gfxTextureManager.h"
 #endif
 
 
@@ -51,122 +51,122 @@
 ///
 class GuiBitmapButtonCtrl : public GuiButtonCtrl
 {
-   public:
-   
-      typedef GuiButtonCtrl Parent;
-      
-      enum BitmapMode
-      {
-         BitmapStretched,
-         BitmapCentered,
-      };
+public:
 
-   protected:
-   
-      enum Modifier
-      {
-         ModifierNone,
-         ModifierCtrl,
-         ModifierAlt,
-         ModifierShift,
-         
-         NumModifiers
-      };
-   
-      enum State
-      {
-         NORMAL,
-         HILIGHT,
-         DEPRESSED,
-         INACTIVE
-      };
-      
-      struct Textures
-      {
-         /// Texture for normal state.
-         GFXTexHandle mTextureNormal;
-         
-         /// Texture for highlight state.
-         GFXTexHandle mTextureHilight;
-         
-         /// Texture for depressed state.
-         GFXTexHandle mTextureDepressed;
-         
-         /// Texture for inactive state.
-         GFXTexHandle mTextureInactive;
-      };
+    typedef GuiButtonCtrl Parent;
+    
+    enum BitmapMode
+    {
+        BitmapStretched,
+        BitmapCentered,
+    };
+    
+protected:
 
-      /// Make control extents equal to bitmap size.
-      bool mAutoFitExtents;
-      
-      /// Allow switching out images according to modifier presses.
-      bool mUseModifiers;
-      
-      /// Allow switching images according to mouse states.  On by default.
-      /// Switch off when not needed as it otherwise results in a lot of costly
-      /// texture loads.
-      bool mUseStates;
-      
-      ///
-      BitmapMode mBitmapMode;
-
-      /// File name for bitmap.
-      String mBitmapName;
-      
-      ///
-      Textures mTextures[ NumModifiers ];
-      
-      virtual void renderButton( GFXTexHandle &texture, const Point2I& offset, const RectI& updateRect );
-      
-      static bool _setAutoFitExtents( void *object, const char *index, const char *data );
-      static bool _setBitmap( void *object, const char *index, const char *data );
-      
-      State getState() const
-      {
-         if( mActive )
-         {
-				if( mDepressed || mStateOn ) return DEPRESSED;
+    enum Modifier
+    {
+        ModifierNone,
+        ModifierCtrl,
+        ModifierAlt,
+        ModifierShift,
+        
+        NumModifiers
+    };
+    
+    enum State
+    {
+        NORMAL,
+        HILIGHT,
+        DEPRESSED,
+        INACTIVE
+    };
+    
+    struct Textures
+    {
+        /// Texture for normal state.
+        GFXTexHandle mTextureNormal;
+        
+        /// Texture for highlight state.
+        GFXTexHandle mTextureHilight;
+        
+        /// Texture for depressed state.
+        GFXTexHandle mTextureDepressed;
+        
+        /// Texture for inactive state.
+        GFXTexHandle mTextureInactive;
+    };
+    
+    /// Make control extents equal to bitmap size.
+    bool mAutoFitExtents;
+    
+    /// Allow switching out images according to modifier presses.
+    bool mUseModifiers;
+    
+    /// Allow switching images according to mouse states.  On by default.
+    /// Switch off when not needed as it otherwise results in a lot of costly
+    /// texture loads.
+    bool mUseStates;
+    
+    ///
+    BitmapMode mBitmapMode;
+    
+    /// File name for bitmap.
+    String mBitmapName;
+    
+    ///
+    Textures mTextures[ NumModifiers ];
+    
+    virtual void renderButton( GFXTexHandle& texture, const Point2I& offset, const RectI& updateRect );
+    
+    static bool _setAutoFitExtents( void* object, const char* index, const char* data );
+    static bool _setBitmap( void* object, const char* index, const char* data );
+    
+    State getState() const
+    {
+        if( mActive )
+        {
+            if( mDepressed || mStateOn ) return DEPRESSED;
             if( mMouseOver ) return HILIGHT;
             return NORMAL;
-         }
-         else
+        }
+        else
             return INACTIVE;
-      }
-      
-      Modifier getCurrentModifier();
-      GFXTexHandle& getTextureForCurrentState();
-      
-      /// @name Callbacks
-      /// @{
-      
-      DECLARE_CALLBACK( void, onDefaultClick, () );
-      DECLARE_CALLBACK( void, onCtrlClick, () );
-      DECLARE_CALLBACK( void, onAltClick, () );
-      DECLARE_CALLBACK( void, onShiftClick, () );
-      
-      /// @}
+    }
+    
+    Modifier getCurrentModifier();
+    GFXTexHandle& getTextureForCurrentState();
+    
+    /// @name Callbacks
+    /// @{
+    
+    DECLARE_CALLBACK( void, onDefaultClick, () );
+    DECLARE_CALLBACK( void, onCtrlClick, () );
+    DECLARE_CALLBACK( void, onAltClick, () );
+    DECLARE_CALLBACK( void, onShiftClick, () );
+    
+    /// @}
+    
+public:
 
-   public:
-                           
-      GuiBitmapButtonCtrl();
-
-      void setAutoFitExtents( bool state );
-      void setBitmap( const String& name );
-      void setBitmapHandles( GFXTexHandle normal, GFXTexHandle highlighted, GFXTexHandle depressed, GFXTexHandle inactive );
-
-      //Parent methods
-      virtual bool onWake();
-      virtual void onSleep();
-      virtual void onAction();
-      virtual void inspectPostApply();
-
-      virtual void onRender(Point2I offset, const RectI &updateRect);
-
-      static void initPersistFields();
-
-      DECLARE_CONOBJECT(GuiBitmapButtonCtrl);
-      DECLARE_DESCRIPTION( "A button control rendered entirely from bitmaps.\n"
-                           "The individual button states are represented with separate bitmaps." );
+    GuiBitmapButtonCtrl();
+    
+    void setAutoFitExtents( bool state );
+    void setBitmap( const String& name );
+    void setBitmapHandles( GFXTexHandle normal, GFXTexHandle highlighted, GFXTexHandle depressed, GFXTexHandle inactive );
+    
+    //Parent methods
+    virtual bool onWake();
+    virtual void onSleep();
+    virtual void onAction();
+    virtual void inspectPostApply();
+    
+    virtual void onRender( Point2I offset, const RectI& updateRect );
+    
+    static void initPersistFields();
+    
+    DECLARE_CONOBJECT( GuiBitmapButtonCtrl );
+    DECLARE_DESCRIPTION( "A button control rendered entirely from bitmaps.\n"
+                         "The individual button states are represented with separate bitmaps." );
 };
 
 typedef GuiBitmapButtonCtrl::BitmapMode GuiBitmapMode;
@@ -175,19 +175,19 @@ DefineEnumType( GuiBitmapMode );
 /// Extension of GuiBitmapButtonCtrl that also display a text label on the button.
 class GuiBitmapButtonTextCtrl : public GuiBitmapButtonCtrl
 {
-   public:
-   
-      typedef GuiBitmapButtonCtrl Parent;
-      
-   protected:
-   
-      virtual void renderButton( GFXTexHandle &texture, const Point2I& offset, const RectI& updateRect );
+public:
 
-   public:
+    typedef GuiBitmapButtonCtrl Parent;
+    
+protected:
 
-      DECLARE_CONOBJECT( GuiBitmapButtonTextCtrl );
-      DECLARE_DESCRIPTION( "An extension of GuiBitmapButtonCtrl that also renders a text\n"
-                           "label on the button." );
+    virtual void renderButton( GFXTexHandle& texture, const Point2I& offset, const RectI& updateRect );
+    
+public:
+
+    DECLARE_CONOBJECT( GuiBitmapButtonTextCtrl );
+    DECLARE_DESCRIPTION( "An extension of GuiBitmapButtonCtrl that also renders a text\n"
+                         "label on the button." );
 };
 
 #endif //_GUI_BITMAP_BUTTON_CTRL_H

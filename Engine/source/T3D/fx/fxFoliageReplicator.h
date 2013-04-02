@@ -66,16 +66,16 @@
 class fxFoliageItem
 {
 public:
-   MatrixF     Transform;		
-   F32         Width;			
-   F32         Height;			
-   Box3F			FoliageBox;		
-   bool			Flipped;			
-   F32         SwayPhase;     
-   F32         SwayTimeRatio; 
-   F32         LightPhase;		
-   F32         LightTimeRatio; 
-	U32         LastFrameSerialID; 
+    MatrixF     Transform;
+    F32         Width;
+    F32         Height;
+    Box3F			FoliageBox;
+    bool			Flipped;
+    F32         SwayPhase;
+    F32         SwayTimeRatio;
+    F32         LightPhase;
+    F32         LightTimeRatio;
+    U32         LastFrameSerialID;
 };
 
 //------------------------------------------------------------------------------
@@ -84,31 +84,38 @@ public:
 class fxFoliageCulledList
 {
 public:
-   fxFoliageCulledList() {};
-   fxFoliageCulledList(Box3F SearchBox, fxFoliageCulledList* InVec);
-   ~fxFoliageCulledList() {};
-
-   void FindCandidates(Box3F SearchBox, fxFoliageCulledList* InVec);
-
-   U32 GetListCount(void) { return mCulledObjectSet.size(); };
-   fxFoliageItem* GetElement(U32 index) { return mCulledObjectSet[index]; };
-
-   Vector<fxFoliageItem*>   mCulledObjectSet;      // Culled Object Set.
+    fxFoliageCulledList() {};
+    fxFoliageCulledList( Box3F SearchBox, fxFoliageCulledList* InVec );
+    ~fxFoliageCulledList() {};
+    
+    void FindCandidates( Box3F SearchBox, fxFoliageCulledList* InVec );
+    
+    U32 GetListCount( void )
+    {
+        return mCulledObjectSet.size();
+    };
+    fxFoliageItem* GetElement( U32 index )
+    {
+        return mCulledObjectSet[index];
+    };
+    
+    Vector<fxFoliageItem*>   mCulledObjectSet;      // Culled Object Set.
 };
 
 
 //------------------------------------------------------------------------------
 // Class: fxFoliageQuadNode
 //------------------------------------------------------------------------------
-class fxFoliageQuadrantNode {
+class fxFoliageQuadrantNode
+{
 public:
-   U32                  Level;
-   Box3F               QuadrantBox;
-   fxFoliageQuadrantNode*   QuadrantChildNode[4];
-   Vector<fxFoliageItem*>   RenderList;
-	// Used in DrawIndexPrimitive call.
-	U32							 startIndex;
-	U32							 primitiveCount;
+    U32                  Level;
+    Box3F               QuadrantBox;
+    fxFoliageQuadrantNode*   QuadrantChildNode[4];
+    Vector<fxFoliageItem*>   RenderList;
+    // Used in DrawIndexPrimitive call.
+    U32							 startIndex;
+    U32							 primitiveCount;
 };
 
 
@@ -119,26 +126,26 @@ class fxFoliageRenderList
 {
 public:
 
-   Box3F                   mBox;               // Clipping Box.
-   Frustum                 mFrustum;           // View frustum.
-
-   Vector<fxFoliageItem*>     mVisObjectSet;   // Visible Object Set.
-   F32                        mHeightLerp;         // Height Lerp.
-
+    Box3F                   mBox;               // Clipping Box.
+    Frustum                 mFrustum;           // View frustum.
+    
+    Vector<fxFoliageItem*>     mVisObjectSet;   // Visible Object Set.
+    F32                        mHeightLerp;         // Height Lerp.
+    
 public:
-   bool IsQuadrantVisible(const Box3F VisBox, const MatrixF& RenderTransform);
-   void SetupClipPlanes(SceneRenderState* state, const F32 FarClipPlane);
-   void DrawQuadBox(const Box3F& QuadBox, const ColorF Colour);
+    bool IsQuadrantVisible( const Box3F VisBox, const MatrixF& RenderTransform );
+    void SetupClipPlanes( SceneRenderState* state, const F32 FarClipPlane );
+    void DrawQuadBox( const Box3F& QuadBox, const ColorF Colour );
 };
 
 
-// Define a vertex 
+// Define a vertex
 GFXDeclareVertexFormat( GFXVertexFoliage )
 {
-   Point3F point;
-   Point3F normal;
-   Point2F texCoord;
-   Point2F texCoord2;
+    Point3F point;
+    Point3F normal;
+    Point2F texCoord;
+    Point2F texCoord2;
 };
 
 
@@ -148,245 +155,245 @@ GFXDeclareVertexFormat( GFXVertexFoliage )
 class fxFoliageReplicator : public SceneObject
 {
 private:
-   typedef SceneObject      Parent;
-
+    typedef SceneObject      Parent;
+    
 protected:
 
-   void CreateFoliage(void);
-   void DestroyFoliage(void);
-	void DestroyFoliageItems();
-
-
-   void SyncFoliageReplicators(void);
-
-   Box3F FetchQuadrant(Box3F Box, U32 Quadrant);
-   void ProcessQuadrant(fxFoliageQuadrantNode* pParentNode, fxFoliageCulledList* pCullList, U32 Quadrant);
-   void ProcessNodeChildren(fxFoliageQuadrantNode* pParentNode, fxFoliageCulledList* pCullList);
-
-   enum {   FoliageReplicationMask   = (1 << 0) };
-
-
-   U32   mCreationAreaAngle;
-   bool  mClientReplicationStarted;
-   U32   mCurrentFoliageCount;
-
-   Vector<fxFoliageQuadrantNode*>   mFoliageQuadTree;
-   Vector<fxFoliageItem*>           mReplicatedFoliage;
-   fxFoliageRenderList              mFrustumRenderSet;
-
-	GFXVertexBufferHandle<GFXVertexFoliage> mVertexBuffer;
-	GFXPrimitiveBufferHandle	mPrimBuffer;
-   GFXShaderRef               mShader;
-   ShaderData*                mShaderData;
-	GBitmap*							mAlphaLookup;
-
-   MRandomLCG                 RandomGen;
-   F32                        mFadeInGradient;
-   F32                        mFadeOutGradient;
-   S32                        mLastRenderTime;
-   F32                        mGlobalSwayPhase;
-   F32                        mGlobalSwayTimeRatio;
-   F32                        mGlobalLightPhase;
-   F32                        mGlobalLightTimeRatio;
-   U32                        mFrameSerialID;
-
-   U32                        mQuadTreeLevels;            // Quad-Tree Levels.
-   U32                        mPotentialFoliageNodes;     // Potential Foliage Nodes.
-   U32                        mNextAllocatedNodeIdx;      // Next Allocated Node Index.
-   U32                        mBillboardsAcquired;        // Billboards Acquired.
-
-	// Used for alpha lookup in the pixel shader
-	GFXTexHandle					mAlphaTexture;
-
-   GFXStateBlockRef  mPlacementSB;
-   GFXStateBlockRef  mRenderSB;
-   GFXStateBlockRef  mDebugSB;
-
-   GFXShaderConstBufferRef mFoliageShaderConsts;
-
-   GFXShaderConstHandle* mFoliageShaderProjectionSC;
-   GFXShaderConstHandle* mFoliageShaderWorldSC;
-   GFXShaderConstHandle* mFoliageShaderGlobalSwayPhaseSC;
-   GFXShaderConstHandle* mFoliageShaderSwayMagnitudeSideSC;
-   GFXShaderConstHandle* mFoliageShaderSwayMagnitudeFrontSC;
-   GFXShaderConstHandle* mFoliageShaderGlobalLightPhaseSC;
-   GFXShaderConstHandle* mFoliageShaderLuminanceMagnitudeSC;
-   GFXShaderConstHandle* mFoliageShaderLuminanceMidpointSC;
-   GFXShaderConstHandle* mFoliageShaderDistanceRangeSC;
-   GFXShaderConstHandle* mFoliageShaderCameraPosSC;
-   GFXShaderConstHandle* mFoliageShaderTrueBillboardSC;
-
-   //pixel shader
-   GFXShaderConstHandle* mFoliageShaderGroundAlphaSC;
-   GFXShaderConstHandle* mFoliageShaderAmbientColorSC;
-   GFXShaderConstHandle* mDiffuseTextureSC;
-   GFXShaderConstHandle* mAlphaMapTextureSC;
-
-
-
-   bool              mDirty;
-	
-   void SetupShader();
-	void SetupBuffers();
-   void renderObject(ObjectRenderInst *ri, SceneRenderState *state, BaseMatInstance*);
-	void renderBuffers(SceneRenderState* state);
-	void renderArc(const F32 fRadiusX, const F32 fRadiusY);
-	void renderPlacementArea(const F32 ElapsedTime);
-	void renderQuad(fxFoliageQuadrantNode* quadNode, const MatrixF& RenderTransform, const bool UseDebug);
-	void computeAlphaTex();
+    void CreateFoliage( void );
+    void DestroyFoliage( void );
+    void DestroyFoliageItems();
+    
+    
+    void SyncFoliageReplicators( void );
+    
+    Box3F FetchQuadrant( Box3F Box, U32 Quadrant );
+    void ProcessQuadrant( fxFoliageQuadrantNode* pParentNode, fxFoliageCulledList* pCullList, U32 Quadrant );
+    void ProcessNodeChildren( fxFoliageQuadrantNode* pParentNode, fxFoliageCulledList* pCullList );
+    
+    enum {   FoliageReplicationMask   = ( 1 << 0 ) };
+    
+    
+    U32   mCreationAreaAngle;
+    bool  mClientReplicationStarted;
+    U32   mCurrentFoliageCount;
+    
+    Vector<fxFoliageQuadrantNode*>   mFoliageQuadTree;
+    Vector<fxFoliageItem*>           mReplicatedFoliage;
+    fxFoliageRenderList              mFrustumRenderSet;
+    
+    GFXVertexBufferHandle<GFXVertexFoliage> mVertexBuffer;
+    GFXPrimitiveBufferHandle	mPrimBuffer;
+    GFXShaderRef               mShader;
+    ShaderData*                mShaderData;
+    GBitmap*							mAlphaLookup;
+    
+    MRandomLCG                 RandomGen;
+    F32                        mFadeInGradient;
+    F32                        mFadeOutGradient;
+    S32                        mLastRenderTime;
+    F32                        mGlobalSwayPhase;
+    F32                        mGlobalSwayTimeRatio;
+    F32                        mGlobalLightPhase;
+    F32                        mGlobalLightTimeRatio;
+    U32                        mFrameSerialID;
+    
+    U32                        mQuadTreeLevels;            // Quad-Tree Levels.
+    U32                        mPotentialFoliageNodes;     // Potential Foliage Nodes.
+    U32                        mNextAllocatedNodeIdx;      // Next Allocated Node Index.
+    U32                        mBillboardsAcquired;        // Billboards Acquired.
+    
+    // Used for alpha lookup in the pixel shader
+    GFXTexHandle					mAlphaTexture;
+    
+    GFXStateBlockRef  mPlacementSB;
+    GFXStateBlockRef  mRenderSB;
+    GFXStateBlockRef  mDebugSB;
+    
+    GFXShaderConstBufferRef mFoliageShaderConsts;
+    
+    GFXShaderConstHandle* mFoliageShaderProjectionSC;
+    GFXShaderConstHandle* mFoliageShaderWorldSC;
+    GFXShaderConstHandle* mFoliageShaderGlobalSwayPhaseSC;
+    GFXShaderConstHandle* mFoliageShaderSwayMagnitudeSideSC;
+    GFXShaderConstHandle* mFoliageShaderSwayMagnitudeFrontSC;
+    GFXShaderConstHandle* mFoliageShaderGlobalLightPhaseSC;
+    GFXShaderConstHandle* mFoliageShaderLuminanceMagnitudeSC;
+    GFXShaderConstHandle* mFoliageShaderLuminanceMidpointSC;
+    GFXShaderConstHandle* mFoliageShaderDistanceRangeSC;
+    GFXShaderConstHandle* mFoliageShaderCameraPosSC;
+    GFXShaderConstHandle* mFoliageShaderTrueBillboardSC;
+    
+    //pixel shader
+    GFXShaderConstHandle* mFoliageShaderGroundAlphaSC;
+    GFXShaderConstHandle* mFoliageShaderAmbientColorSC;
+    GFXShaderConstHandle* mDiffuseTextureSC;
+    GFXShaderConstHandle* mAlphaMapTextureSC;
+    
+    
+    
+    bool              mDirty;
+    
+    void SetupShader();
+    void SetupBuffers();
+    void renderObject( ObjectRenderInst* ri, SceneRenderState* state, BaseMatInstance* );
+    void renderBuffers( SceneRenderState* state );
+    void renderArc( const F32 fRadiusX, const F32 fRadiusY );
+    void renderPlacementArea( const F32 ElapsedTime );
+    void renderQuad( fxFoliageQuadrantNode* quadNode, const MatrixF& RenderTransform, const bool UseDebug );
+    void computeAlphaTex();
 public:
-   fxFoliageReplicator();
-   ~fxFoliageReplicator();
-
-   void StartUp(void);
-   void ShowReplication(void);
-   void HideReplication(void);
-
-   // SceneObject
-   virtual void prepRenderImage( SceneRenderState *state );
-
-   // SimObject
-   bool onAdd();
-   void onRemove();
-   void inspectPostApply();
-
-   // NetObject
-   U32 packUpdate(NetConnection *conn, U32 mask, BitStream *stream);
-   void unpackUpdate(NetConnection *conn, BitStream *stream);
-
-   // Editor
-   void onGhostAlwaysDone();
-
-   // ConObject.
-   static void initPersistFields();
-
-   // Field Data.
-   class tagFieldData
-   {
-      public:
-
-      bool              mUseDebugInfo;
-      F32               mDebugBoxHeight;
-      U32               mSeed;
-      StringTableEntry  mFoliageFile;
-      GFXTexHandle      mFoliageTexture;
-      U32               mFoliageCount;
-      U32               mFoliageRetries;
-
-      U32               mInnerRadiusX;
-      U32               mInnerRadiusY;
-      U32               mOuterRadiusX;
-      U32               mOuterRadiusY;
-
-      F32               mMinWidth;
-      F32               mMaxWidth;
-      F32               mMinHeight;
-      F32               mMaxHeight;
-      bool              mFixAspectRatio;
-      bool              mFixSizeToMax;
-      F32               mOffsetZ;
-      bool              mRandomFlip;
-      bool              mUseTrueBillboards;
-
-      bool              mUseCulling;
-      U32               mCullResolution;
-      F32               mViewDistance;
-      F32               mViewClosest;
-      F32               mFadeInRegion;
-      F32               mFadeOutRegion;
-      F32               mAlphaCutoff;
-      F32               mGroundAlpha;
-
-      bool              mSwayOn;
-      bool              mSwaySync;
-      F32               mSwayMagnitudeSide;
-      F32               mSwayMagnitudeFront;
-      F32               mMinSwayTime;
-      F32               mMaxSwayTime;
-
-      bool              mLightOn;
-      bool              mLightSync;
-      F32               mMinLuminance;
-      F32               mMaxLuminance;
-      F32               mLightTime;
-
-      bool            mAllowOnTerrain;
-      bool            mAllowOnInteriors;
-      bool            mAllowStatics;
-      bool            mAllowOnWater;
-      bool            mAllowWaterSurface;
-      S32             mAllowedTerrainSlope;
-
-      bool            mHideFoliage;
-      bool            mShowPlacementArea;
-      U32             mPlacementBandHeight;
-      ColorF          mPlaceAreaColour;
-
-      tagFieldData()
-      {
-         // Set Defaults.
-         mUseDebugInfo         = false;
-         mDebugBoxHeight       = 1.0f;
-         mSeed                 = 1376312589;
-         mFoliageFile          = StringTable->insert("");
-         mFoliageTexture       = GFXTexHandle();
-         mFoliageCount         = 10;
-         mFoliageRetries       = 100;
-
-         mInnerRadiusX         = 0;
-         mInnerRadiusY         = 0;
-         mOuterRadiusX         = 128;
-         mOuterRadiusY         = 128;
-
-         mMinWidth             = 1;
-         mMaxWidth             = 3;
-         mMinHeight            = 1;
-         mMaxHeight            = 5;
-         mFixAspectRatio       = true;
-         mFixSizeToMax         = false;
-         mOffsetZ              = 0;
-         mRandomFlip           = true;
-         mUseTrueBillboards    = false;
-
-         mUseCulling           = true;
-         mCullResolution       = 64;
-         mViewDistance         = 50.0f;
-         mViewClosest          = 1.0f;
-         mFadeInRegion         = 10.0f;
-         mFadeOutRegion        = 1.0f;
-         mAlphaCutoff          = 0.2f;
-         mGroundAlpha          = 1.0f;
-
-         mSwayOn               = false;
-         mSwaySync             = false;
-         mSwayMagnitudeSide    = 0.1f;
-         mSwayMagnitudeFront   = 0.2f;
-         mMinSwayTime          = 3.0f;
-         mMaxSwayTime          = 10.0f;
-
-         mLightOn              = false;
-         mLightSync            = false;
-         mMinLuminance         = 0.7f;
-         mMaxLuminance         = 1.0f;
-         mLightTime            = 5.0f;
-
-         mAllowOnTerrain       = true;
-         mAllowOnInteriors     = true;
-         mAllowStatics         = true;
-         mAllowOnWater         = false;
-         mAllowWaterSurface    = false;
-         mAllowedTerrainSlope  = 90;
-
-         mHideFoliage          = false;
-         mShowPlacementArea    = true;
-         mPlacementBandHeight  = 25;
-         mPlaceAreaColour      .set(0.4f, 0, 0.8f);
-      }
-
-   } mFieldData;
-
-   // Declare Console Object.
-   DECLARE_CONOBJECT(fxFoliageReplicator);
+    fxFoliageReplicator();
+    ~fxFoliageReplicator();
+    
+    void StartUp( void );
+    void ShowReplication( void );
+    void HideReplication( void );
+    
+    // SceneObject
+    virtual void prepRenderImage( SceneRenderState* state );
+    
+    // SimObject
+    bool onAdd();
+    void onRemove();
+    void inspectPostApply();
+    
+    // NetObject
+    U32 packUpdate( NetConnection* conn, U32 mask, BitStream* stream );
+    void unpackUpdate( NetConnection* conn, BitStream* stream );
+    
+    // Editor
+    void onGhostAlwaysDone();
+    
+    // ConObject.
+    static void initPersistFields();
+    
+    // Field Data.
+    class tagFieldData
+    {
+    public:
+    
+        bool              mUseDebugInfo;
+        F32               mDebugBoxHeight;
+        U32               mSeed;
+        StringTableEntry  mFoliageFile;
+        GFXTexHandle      mFoliageTexture;
+        U32               mFoliageCount;
+        U32               mFoliageRetries;
+        
+        U32               mInnerRadiusX;
+        U32               mInnerRadiusY;
+        U32               mOuterRadiusX;
+        U32               mOuterRadiusY;
+        
+        F32               mMinWidth;
+        F32               mMaxWidth;
+        F32               mMinHeight;
+        F32               mMaxHeight;
+        bool              mFixAspectRatio;
+        bool              mFixSizeToMax;
+        F32               mOffsetZ;
+        bool              mRandomFlip;
+        bool              mUseTrueBillboards;
+        
+        bool              mUseCulling;
+        U32               mCullResolution;
+        F32               mViewDistance;
+        F32               mViewClosest;
+        F32               mFadeInRegion;
+        F32               mFadeOutRegion;
+        F32               mAlphaCutoff;
+        F32               mGroundAlpha;
+        
+        bool              mSwayOn;
+        bool              mSwaySync;
+        F32               mSwayMagnitudeSide;
+        F32               mSwayMagnitudeFront;
+        F32               mMinSwayTime;
+        F32               mMaxSwayTime;
+        
+        bool              mLightOn;
+        bool              mLightSync;
+        F32               mMinLuminance;
+        F32               mMaxLuminance;
+        F32               mLightTime;
+        
+        bool            mAllowOnTerrain;
+        bool            mAllowOnInteriors;
+        bool            mAllowStatics;
+        bool            mAllowOnWater;
+        bool            mAllowWaterSurface;
+        S32             mAllowedTerrainSlope;
+        
+        bool            mHideFoliage;
+        bool            mShowPlacementArea;
+        U32             mPlacementBandHeight;
+        ColorF          mPlaceAreaColour;
+        
+        tagFieldData()
+        {
+            // Set Defaults.
+            mUseDebugInfo         = false;
+            mDebugBoxHeight       = 1.0f;
+            mSeed                 = 1376312589;
+            mFoliageFile          = StringTable->insert( "" );
+            mFoliageTexture       = GFXTexHandle();
+            mFoliageCount         = 10;
+            mFoliageRetries       = 100;
+            
+            mInnerRadiusX         = 0;
+            mInnerRadiusY         = 0;
+            mOuterRadiusX         = 128;
+            mOuterRadiusY         = 128;
+            
+            mMinWidth             = 1;
+            mMaxWidth             = 3;
+            mMinHeight            = 1;
+            mMaxHeight            = 5;
+            mFixAspectRatio       = true;
+            mFixSizeToMax         = false;
+            mOffsetZ              = 0;
+            mRandomFlip           = true;
+            mUseTrueBillboards    = false;
+            
+            mUseCulling           = true;
+            mCullResolution       = 64;
+            mViewDistance         = 50.0f;
+            mViewClosest          = 1.0f;
+            mFadeInRegion         = 10.0f;
+            mFadeOutRegion        = 1.0f;
+            mAlphaCutoff          = 0.2f;
+            mGroundAlpha          = 1.0f;
+            
+            mSwayOn               = false;
+            mSwaySync             = false;
+            mSwayMagnitudeSide    = 0.1f;
+            mSwayMagnitudeFront   = 0.2f;
+            mMinSwayTime          = 3.0f;
+            mMaxSwayTime          = 10.0f;
+            
+            mLightOn              = false;
+            mLightSync            = false;
+            mMinLuminance         = 0.7f;
+            mMaxLuminance         = 1.0f;
+            mLightTime            = 5.0f;
+            
+            mAllowOnTerrain       = true;
+            mAllowOnInteriors     = true;
+            mAllowStatics         = true;
+            mAllowOnWater         = false;
+            mAllowWaterSurface    = false;
+            mAllowedTerrainSlope  = 90;
+            
+            mHideFoliage          = false;
+            mShowPlacementArea    = true;
+            mPlacementBandHeight  = 25;
+            mPlaceAreaColour      .set( 0.4f, 0, 0.8f );
+        }
+        
+    } mFieldData;
+    
+    // Declare Console Object.
+    DECLARE_CONOBJECT( fxFoliageReplicator );
 };
-#pragma warning( pop ) 
+#pragma warning( pop )
 #endif // _FOLIAGEREPLICATOR_H_

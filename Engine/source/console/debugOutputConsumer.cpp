@@ -33,21 +33,21 @@ bool debugOutputEnabled = false;
 
 void init()
 {
-   Con::addConsumer( DebugOutputConsumer::logCallback );
+    Con::addConsumer( DebugOutputConsumer::logCallback );
 }
 
 void destroy()
 {
-   Con::removeConsumer( DebugOutputConsumer::logCallback );
+    Con::removeConsumer( DebugOutputConsumer::logCallback );
 }
 
-void logCallback( U32 level, const char *consoleLine )
+void logCallback( U32 level, const char* consoleLine )
 {
-   TORQUE_UNUSED(level);
-   if( debugOutputEnabled )
-   {
-      Platform::outputDebugString( "%s", consoleLine );
-   }
+    TORQUE_UNUSED( level );
+    if( debugOutputEnabled )
+    {
+        Platform::outputDebugString( "%s", consoleLine );
+    }
 }
 
 }

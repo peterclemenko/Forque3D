@@ -24,14 +24,14 @@
 #define GFX_WGL_H
 
 #ifndef GFX_GGL_H
-   #include "../ggl.h"
+#include "../ggl.h"
 #endif
 #ifndef _PLATFORMDLIBRARY_H
-   #include "platform/platformDlibrary.h"
+#include "platform/platformDlibrary.h"
 #endif
 
 #ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
+#define _WIN32_WINNT 0x0500
 #endif
 #include <windows.h>
 
@@ -61,33 +61,35 @@ namespace GL
 //-----------------------------------------------------------------------------
 // Extensions use indirection in order to support multiple contexts
 
-struct WGLExtensionPtrs: public GLExtensionPtrs {
-   // Include all OpenGL extensions for all platform
-   #define GL_GROUP_BEGIN(name)
-   #define GL_FUNCTION(name, type, args) type (XGL_DLL *_##name) args;
-   #define GL_GROUP_END()
-   #include "../generated/wglefn.h"
-   #undef GL_GROUP_BEGIN
-   #undef GL_FUNCTION
-   #undef GL_GROUP_END
+struct WGLExtensionPtrs: public GLExtensionPtrs
+{
+    // Include all OpenGL extensions for all platform
+#define GL_GROUP_BEGIN(name)
+#define GL_FUNCTION(name, type, args) type (XGL_DLL *_##name) args;
+#define GL_GROUP_END()
+#include "../generated/wglefn.h"
+#undef GL_GROUP_BEGIN
+#undef GL_FUNCTION
+#undef GL_GROUP_END
 };
 
-struct WGLExtensionFlags: public GLExtensionFlags {
-   // Define extension "has" variables
-   #define GL_GROUP_BEGIN(name) bool has_##name;
-   #define GL_FUNCTION(name, type, args)
-   #define GL_GROUP_END()
-   #include "../generated/wglefn.h"
-   #undef GL_GROUP_BEGIN
-   #undef GL_FUNCTION
-   #undef GL_GROUP_END
+struct WGLExtensionFlags: public GLExtensionFlags
+{
+    // Define extension "has" variables
+#define GL_GROUP_BEGIN(name) bool has_##name;
+#define GL_FUNCTION(name, type, args)
+#define GL_GROUP_END()
+#include "../generated/wglefn.h"
+#undef GL_GROUP_BEGIN
+#undef GL_FUNCTION
+#undef GL_GROUP_END
 };
 #endif // Doyxygen
 
 
 //-----------------------------------------------------------------------------
 
-bool gglBindExtensions(DLibrary*,WGLExtensionPtrs*,WGLExtensionFlags*,HDC);
+bool gglBindExtensions( DLibrary*, WGLExtensionPtrs*, WGLExtensionFlags*, HDC );
 
 #undef XGL_FUNCPTR
 #define XGL_FUNCPTR(name) (((GL::WGLExtensionPtrs*)GL::_GGLptr)->_##name)

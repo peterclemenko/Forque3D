@@ -24,40 +24,40 @@
 #define _GUIEASEVIEWCTRL_H_
 
 #ifndef _GUICONTROL_H_
-   #include "gui/core/guiControl.h"
+#include "gui/core/guiControl.h"
 #endif
 #ifndef _MEASE_H_
-   #include "math/mEase.h"
+#include "math/mEase.h"
 #endif
 
 
 /// Control to visualize an EaseF.
 class GuiEaseViewCtrl : public GuiControl
 {
-   public:
-   
-      typedef GuiControl Parent;
+public:
 
-   protected:
+    typedef GuiControl Parent;
+    
+protected:
 
-      EaseF mEase;         // ease we are visualizing
-      ColorF mAxisColor;   // color to draw axis in
-      ColorF mEaseColor;   // color to draw ease in
-      F32 mEaseWidth;      // width of lines
-   
-   public:
-   
-      GuiEaseViewCtrl();
+    EaseF mEase;         // ease we are visualizing
+    ColorF mAxisColor;   // color to draw axis in
+    ColorF mEaseColor;   // color to draw ease in
+    F32 mEaseWidth;      // width of lines
+    
+public:
 
-      bool onWake();
-      void onSleep();
-
-      void onRender( Point2I, const RectI &);
-      static void initPersistFields();
-      
-      DECLARE_CONOBJECT( GuiEaseViewCtrl );
-      DECLARE_CATEGORY( "Gui Editor" );
-      DECLARE_DESCRIPTION( "Control that display an EaseF curve." );
+    GuiEaseViewCtrl();
+    
+    bool onWake();
+    void onSleep();
+    
+    void onRender( Point2I, const RectI& );
+    static void initPersistFields();
+    
+    DECLARE_CONOBJECT( GuiEaseViewCtrl );
+    DECLARE_CATEGORY( "Gui Editor" );
+    DECLARE_DESCRIPTION( "Control that display an EaseF curve." );
 };
 
 #endif // !_GUIEASEVIEWCTRL_H_

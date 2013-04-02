@@ -30,74 +30,74 @@
 class PlatformAssert
 {
 public:
-   enum Type 
-   {
-      Warning   = 3,
-      Fatal     = 2,
-      Fatal_ISV = 1
-   };
-
+    enum Type
+    {
+        Warning   = 3,
+        Fatal     = 2,
+        Fatal_ISV = 1
+    };
+    
 private:
-   static PlatformAssert *platformAssert;
-   bool processing;
-
-   virtual bool displayMessageBox(const char *title, const char *message, bool retry);
-   virtual bool process(Type         assertType,
-                const char*  filename,
-                U32          lineNumber,
-                const char*  message);
-
-   PlatformAssert();
-   virtual ~PlatformAssert();
-
+    static PlatformAssert* platformAssert;
+    bool processing;
+    
+    virtual bool displayMessageBox( const char* title, const char* message, bool retry );
+    virtual bool process( Type         assertType,
+                          const char*  filename,
+                          U32          lineNumber,
+                          const char*  message );
+                          
+    PlatformAssert();
+    virtual ~PlatformAssert();
+    
 public:
-   static void create( PlatformAssert* newAssertClass = NULL );
-   static void destroy();
-   static bool processAssert(Type         assertType,
-                             const char*  filename,
-                             U32          lineNumber,
-                             const char*  message);
-   static char *message(const char *message, ...);
-   static bool processingAssert();
+    static void create( PlatformAssert* newAssertClass = NULL );
+    static void destroy();
+    static bool processAssert( Type         assertType,
+                               const char*  filename,
+                               U32          lineNumber,
+                               const char*  message );
+    static char* message( const char* message, ... );
+    static bool processingAssert();
 };
 
 
 #ifdef TORQUE_ENABLE_ASSERTS
-   /*!
-      Assert that the statement x is true, and continue processing.
+/*!
+   Assert that the statement x is true, and continue processing.
 
-      If the statment x is true, continue processing.
+   If the statment x is true, continue processing.
 
-      If the statement x is false, log the file and line where the assert occured,
-      the message y and continue processing.
+   If the statement x is false, log the file and line where the assert occured,
+   the message y and continue processing.
 
-      These asserts are only present in DEBUG builds.
-    */
-   #define AssertWarn(x, y)      \
+   These asserts are only present in DEBUG builds.
+ */
+#define AssertWarn(x, y)      \
          { if ((x)==0) \
             ::PlatformAssert::processAssert(::PlatformAssert::Warning, __FILE__, __LINE__,  y); }
 
-   /*!
-      Assert that the statement x is true, otherwise halt.
+/*!
+   Assert that the statement x is true, otherwise halt.
 
-      If the statement x is true, continue processing.
+   If the statement x is true, continue processing.
 
-      If the statement x is false, log the file and line where the assert occured,
-      the message y and displaying a dialog containing the message y. The user then
-      has the option to halt or continue causing the debugger to break.
+   If the statement x is false, log the file and line where the assert occured,
+   the message y and displaying a dialog containing the message y. The user then
+   has the option to halt or continue causing the debugger to break.
 
-      These asserts are only present in DEBUG builds.
+   These asserts are only present in DEBUG builds.
 
-      This assert is very useful for verifying data as well as function entry and
-      exit conditions.
-    */
-   #define AssertFatal(x, y)         \
+   This assert is very useful for verifying data as well as function entry and
+   exit conditions.
+ */
+#define AssertFatal(x, y)         \
          { if (((bool)(x))==(bool)0) \
             { if ( ::PlatformAssert::processAssert(::PlatformAssert::Fatal, __FILE__, __LINE__,  y) ) { ::Platform::debugBreak(); } } }
 
 #else
-   #define AssertFatal(x, y)   { (void)sizeof(x); (void)sizeof(y); }
-   #define AssertWarn(x, y)    { (void)sizeof(x); (void)sizeof(y); }
+#define AssertFatal(x, y)   { (void)sizeof(x); (void)sizeof(y); }
+#define AssertWarn(x, y)    { (void)sizeof(x); (void)sizeof(y); }
 #endif
 
 /*!
@@ -133,7 +133,7 @@ public:
    @warning avar uses a static fixed buffer.  Treat the buffer as volatile data
    and use it immediately.  Other functions my use avar too and clobber the buffer.
  */
-const char* avar(const char *in_msg, ...);
+const char* avar( const char* in_msg, ... );
 
 
 

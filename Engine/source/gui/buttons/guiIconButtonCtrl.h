@@ -37,83 +37,83 @@
 class GuiIconButtonCtrl : public GuiButtonCtrl
 {
 private:
-   typedef GuiButtonCtrl Parent;
-
+    typedef GuiButtonCtrl Parent;
+    
 protected:
 
-   StringTableEntry  mBitmapName;
-   GFXTexHandle      mTextureNormal;
-   S32               mIconLocation;
-   S32               mTextLocation;
-   S32               mTextMargin;
-   Point2I           mButtonMargin;
-   
-   /// Make the bitmap fill the button extent.
-   bool mFitBitmapToButton;
-   
-   /// Keep a square aspect ration on the icon.
-   bool mMakeIconSquare;
-
-   /// Calculate extent based on icon size, text width, and layout options.
-   bool mAutoSize;          
-
-   //  Optional bitmap to be displayed when the proper bitmap cannot be found
-   StringTableEntry mErrorBitmapName;
-   GFXTexHandle mErrorTextureHandle;
-
-   void renderButton( Point2I &offset, const RectI& updateRect);
-
-   enum 
-   {
-      stateNormal,
-      stateMouseOver,
-      statePressed,
-      stateDisabled,
-   };
-
-   void renderBitmapArray(RectI &bounds, S32 state);
-
-public:   
-   enum TextLocation
-   {
-      TextLocNone,
-      TextLocBottom,
-      TextLocRight,
-      TextLocTop,
-      TextLocLeft,
-      TextLocCenter,
-   };
-
-   enum IconLocation
-   {
-      IconLocNone,
-      IconLocLeft,
-      IconLocRight,
-      IconLocCenter      
-   };
-
-
-   DECLARE_CONOBJECT(GuiIconButtonCtrl);
-   DECLARE_DESCRIPTION( "A button control that displays an icon on the button in addition\n"
-                        "to the optional text label." );
-                        
-   GuiIconButtonCtrl();
-
-   static void initPersistFields();
-
-   //Parent methods
-   bool onWake();
-   void onSleep();
-   void inspectPostApply();
-   void onStaticModified(const char* slotName, const char* newValue = NULL);
-   bool resize(const Point2I &newPosition, const Point2I &newExtent);
-
-   void setBitmap(const char *name);
-
-   //  Used to set the optional error bitmap
-   void setErrorBitmap(const char *name);
-
-   void onRender(Point2I offset, const RectI &updateRect);
+    StringTableEntry  mBitmapName;
+    GFXTexHandle      mTextureNormal;
+    S32               mIconLocation;
+    S32               mTextLocation;
+    S32               mTextMargin;
+    Point2I           mButtonMargin;
+    
+    /// Make the bitmap fill the button extent.
+    bool mFitBitmapToButton;
+    
+    /// Keep a square aspect ration on the icon.
+    bool mMakeIconSquare;
+    
+    /// Calculate extent based on icon size, text width, and layout options.
+    bool mAutoSize;
+    
+    //  Optional bitmap to be displayed when the proper bitmap cannot be found
+    StringTableEntry mErrorBitmapName;
+    GFXTexHandle mErrorTextureHandle;
+    
+    void renderButton( Point2I& offset, const RectI& updateRect );
+    
+    enum
+    {
+        stateNormal,
+        stateMouseOver,
+        statePressed,
+        stateDisabled,
+    };
+    
+    void renderBitmapArray( RectI& bounds, S32 state );
+    
+public:
+    enum TextLocation
+    {
+        TextLocNone,
+        TextLocBottom,
+        TextLocRight,
+        TextLocTop,
+        TextLocLeft,
+        TextLocCenter,
+    };
+    
+    enum IconLocation
+    {
+        IconLocNone,
+        IconLocLeft,
+        IconLocRight,
+        IconLocCenter
+    };
+    
+    
+    DECLARE_CONOBJECT( GuiIconButtonCtrl );
+    DECLARE_DESCRIPTION( "A button control that displays an icon on the button in addition\n"
+                         "to the optional text label." );
+                         
+    GuiIconButtonCtrl();
+    
+    static void initPersistFields();
+    
+    //Parent methods
+    bool onWake();
+    void onSleep();
+    void inspectPostApply();
+    void onStaticModified( const char* slotName, const char* newValue = NULL );
+    bool resize( const Point2I& newPosition, const Point2I& newExtent );
+    
+    void setBitmap( const char* name );
+    
+    //  Used to set the optional error bitmap
+    void setErrorBitmap( const char* name );
+    
+    void onRender( Point2I offset, const RectI& updateRect );
 };
 
 typedef GuiIconButtonCtrl::TextLocation GuiIconButtonTextLocation;

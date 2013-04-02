@@ -31,40 +31,40 @@
 
 typedef struct
 {
-	char           strDeviceName[256];
-	int				iMajorVersion;
-	int				iMinorVersion;
-	unsigned int	uiSourceCount;
-	int iCapsFlags;
-	bool			bSelected;
+    char           strDeviceName[256];
+    int				iMajorVersion;
+    int				iMinorVersion;
+    unsigned int	uiSourceCount;
+    int iCapsFlags;
+    bool			bSelected;
 } ALDEVICEINFO, *LPALDEVICEINFO;
 
 class ALDeviceList
 {
 private:
-	OPENALFNTABLE	ALFunction;
-	Vector<ALDEVICEINFO> vDeviceInfo;
-	int defaultDeviceIndex;
-	int filterIndex;
-
+    OPENALFNTABLE	ALFunction;
+    Vector<ALDEVICEINFO> vDeviceInfo;
+    int defaultDeviceIndex;
+    int filterIndex;
+    
 public:
-	ALDeviceList ( const OPENALFNTABLE &oalft );
-	~ALDeviceList ();
-	int GetNumDevices();
-	const char *GetDeviceName(int index);
-	void GetDeviceVersion(int index, int *major, int *minor);
-	unsigned int GetMaxNumSources(int index);
-	bool IsExtensionSupported(int index, SFXALCaps caps);
-	int GetDefaultDevice();
-	void FilterDevicesMinVer(int major, int minor);
-	void FilterDevicesMaxVer(int major, int minor);
-	void FilterDevicesExtension(SFXALCaps caps);
-	void ResetFilters();
-	int GetFirstFilteredDevice();
-	int GetNextFilteredDevice();
-
+    ALDeviceList( const OPENALFNTABLE& oalft );
+    ~ALDeviceList();
+    int GetNumDevices();
+    const char* GetDeviceName( int index );
+    void GetDeviceVersion( int index, int* major, int* minor );
+    unsigned int GetMaxNumSources( int index );
+    bool IsExtensionSupported( int index, SFXALCaps caps );
+    int GetDefaultDevice();
+    void FilterDevicesMinVer( int major, int minor );
+    void FilterDevicesMaxVer( int major, int minor );
+    void FilterDevicesExtension( SFXALCaps caps );
+    void ResetFilters();
+    int GetFirstFilteredDevice();
+    int GetNextFilteredDevice();
+    
 private:
-	unsigned int GetMaxNumSources();
+    unsigned int GetMaxNumSources();
 };
 
 #endif // ALDEVICELIST_H

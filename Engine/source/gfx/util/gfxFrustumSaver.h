@@ -32,14 +32,14 @@
 class GFXFrustumSaver
 {
 public:
-   /// Saves the current frustum state.
-   GFXFrustumSaver();
-   
-   /// Restores the saved frustum state.
-   ~GFXFrustumSaver();
-   
+    /// Saves the current frustum state.
+    GFXFrustumSaver();
+    
+    /// Restores the saved frustum state.
+    ~GFXFrustumSaver();
+    
 private:
-   Frustum mFrustum;
+    Frustum mFrustum;
 };
 
 #endif

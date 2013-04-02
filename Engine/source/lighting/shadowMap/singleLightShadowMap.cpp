@@ -33,96 +33,96 @@
 #include "gfx/gfxTransformSaver.h"
 #include "renderInstance/renderPassManager.h"
 
-SingleLightShadowMap::SingleLightShadowMap(  LightInfo *light )
-   :  LightShadowMap( light )
+SingleLightShadowMap::SingleLightShadowMap( LightInfo* light )
+    :  LightShadowMap( light )
 {
 }
 
 SingleLightShadowMap::~SingleLightShadowMap()
 {
-   releaseTextures();
+    releaseTextures();
 }
 
 void SingleLightShadowMap::_render( RenderPassManager* renderPass,
-                                    const SceneRenderState *diffuseState )
+                                    const SceneRenderState* diffuseState )
 {
-   PROFILE_SCOPE(SingleLightShadowMap_render);
-
-   const LightMapParams *lmParams = mLight->getExtended<LightMapParams>();
-   const bool bUseLightmappedGeometry = lmParams ? !lmParams->representedInLightmap || lmParams->includeLightmappedGeometryInShadow : true;
-
-   const U32 texSize = getBestTexSize();
-
-   if (  mShadowMapTex.isNull() ||
-         mTexSize != texSize )
-   {
-      mTexSize = texSize;
-
-      mShadowMapTex.set(   mTexSize, mTexSize, 
-                           ShadowMapFormat, &ShadowMapProfile, 
+    PROFILE_SCOPE( SingleLightShadowMap_render );
+    
+    const LightMapParams* lmParams = mLight->getExtended<LightMapParams>();
+    const bool bUseLightmappedGeometry = lmParams ? !lmParams->representedInLightmap || lmParams->includeLightmappedGeometryInShadow : true;
+    
+    const U32 texSize = getBestTexSize();
+    
+    if( mShadowMapTex.isNull() ||
+            mTexSize != texSize )
+    {
+        mTexSize = texSize;
+        
+        mShadowMapTex.set( mTexSize, mTexSize,
+                           ShadowMapFormat, &ShadowMapProfile,
                            "SingleLightShadowMap" );
-   }
-
-   GFXFrustumSaver frustSaver;
-   GFXTransformSaver saver;
-
-   MatrixF lightMatrix;
-   calcLightMatrices( lightMatrix, diffuseState->getFrustum() );
-   lightMatrix.inverse();
-   GFX->setWorldMatrix(lightMatrix);
-
-   const MatrixF& lightProj = GFX->getProjectionMatrix();
-   mWorldToLightProj = lightProj * lightMatrix;
-
-   // Render the shadowmap!
-   GFX->pushActiveRenderTarget();
-   mTarget->attachTexture( GFXTextureTarget::Color0, mShadowMapTex );
-   mTarget->attachTexture( GFXTextureTarget::DepthStencil, 
-      _getDepthTarget( mShadowMapTex->getWidth(), mShadowMapTex->getHeight() ) );
-   GFX->setActiveRenderTarget(mTarget);
-   GFX->clear(GFXClearStencil | GFXClearZBuffer | GFXClearTarget, ColorI(255,255,255), 1.0f, 0);
-
-   SceneManager* sceneManager = diffuseState->getSceneManager();
-   
-   SceneRenderState shadowRenderState
-   (
-      sceneManager,
-      SPT_Shadow,
-      SceneCameraState::fromGFXWithViewport( diffuseState->getViewport() ),
-      renderPass
-   );
-
-   shadowRenderState.getMaterialDelegate().bind( this, &LightShadowMap::getShadowMaterial );
-   shadowRenderState.renderNonLightmappedMeshes( true );
-   shadowRenderState.renderLightmappedMeshes( bUseLightmappedGeometry );
-   shadowRenderState.setDiffuseCameraTransform( diffuseState->getCameraTransform() );
-   shadowRenderState.setWorldToScreenScale( diffuseState->getWorldToScreenScale() );
-
-   sceneManager->renderSceneNoLights( &shadowRenderState, SHADOW_TYPEMASK );
-
-   _debugRender( &shadowRenderState );
-
-   mTarget->resolve();
-   GFX->popActiveRenderTarget();
+    }
+    
+    GFXFrustumSaver frustSaver;
+    GFXTransformSaver saver;
+    
+    MatrixF lightMatrix;
+    calcLightMatrices( lightMatrix, diffuseState->getFrustum() );
+    lightMatrix.inverse();
+    GFX->setWorldMatrix( lightMatrix );
+    
+    const MatrixF& lightProj = GFX->getProjectionMatrix();
+    mWorldToLightProj = lightProj * lightMatrix;
+    
+    // Render the shadowmap!
+    GFX->pushActiveRenderTarget();
+    mTarget->attachTexture( GFXTextureTarget::Color0, mShadowMapTex );
+    mTarget->attachTexture( GFXTextureTarget::DepthStencil,
+                            _getDepthTarget( mShadowMapTex->getWidth(), mShadowMapTex->getHeight() ) );
+    GFX->setActiveRenderTarget( mTarget );
+    GFX->clear( GFXClearStencil | GFXClearZBuffer | GFXClearTarget, ColorI( 255, 255, 255 ), 1.0f, 0 );
+    
+    SceneManager* sceneManager = diffuseState->getSceneManager();
+    
+    SceneRenderState shadowRenderState
+    (
+        sceneManager,
+        SPT_Shadow,
+        SceneCameraState::fromGFXWithViewport( diffuseState->getViewport() ),
+        renderPass
+    );
+    
+    shadowRenderState.getMaterialDelegate().bind( this, &LightShadowMap::getShadowMaterial );
+    shadowRenderState.renderNonLightmappedMeshes( true );
+    shadowRenderState.renderLightmappedMeshes( bUseLightmappedGeometry );
+    shadowRenderState.setDiffuseCameraTransform( diffuseState->getCameraTransform() );
+    shadowRenderState.setWorldToScreenScale( diffuseState->getWorldToScreenScale() );
+    
+    sceneManager->renderSceneNoLights( &shadowRenderState, SHADOW_TYPEMASK );
+    
+    _debugRender( &shadowRenderState );
+    
+    mTarget->resolve();
+    GFX->popActiveRenderTarget();
 }
 
-void SingleLightShadowMap::setShaderParameters(GFXShaderConstBuffer* params, LightingShaderConstants* lsc)
+void SingleLightShadowMap::setShaderParameters( GFXShaderConstBuffer* params, LightingShaderConstants* lsc )
 {
-   if ( lsc->mTapRotationTexSC->isValid() )
-      GFX->setTexture( lsc->mTapRotationTexSC->getSamplerRegister(), 
-                        SHADOWMGR->getTapRotationTex() );
-
-   ShadowMapParams *p = mLight->getExtended<ShadowMapParams>();
-
-   if ( lsc->mLightParamsSC->isValid() )
-   {
-      Point4F lightParams( mLight->getRange().x, 
-                           p->overDarkFactor.x, 
-                           0.0f, 
-                           0.0f );
-      params->set(lsc->mLightParamsSC, lightParams);
-   }
-
-   // The softness is a factor of the texel size.
-   params->setSafe( lsc->mShadowSoftnessConst, p->shadowSoftness * ( 1.0f / mTexSize ) );
+    if( lsc->mTapRotationTexSC->isValid() )
+        GFX->setTexture( lsc->mTapRotationTexSC->getSamplerRegister(),
+                         SHADOWMGR->getTapRotationTex() );
+                         
+    ShadowMapParams* p = mLight->getExtended<ShadowMapParams>();
+    
+    if( lsc->mLightParamsSC->isValid() )
+    {
+        Point4F lightParams( mLight->getRange().x,
+                             p->overDarkFactor.x,
+                             0.0f,
+                             0.0f );
+        params->set( lsc->mLightParamsSC, lightParams );
+    }
+    
+    // The softness is a factor of the texel size.
+    params->setSafe( lsc->mShadowSoftnessConst, p->shadowSoftness * ( 1.0f / mTexSize ) );
 }

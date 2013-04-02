@@ -65,17 +65,17 @@ class SimPersistID;
 
 // Define Core Console Types
 DefineConsoleType( TypeBool, bool )
-DefineConsoleType( TypeBoolVector, Vector<bool>)
+DefineConsoleType( TypeBoolVector, Vector<bool> )
 DefineConsoleType( TypeS8,  S8 )
 DefineConsoleType( TypeS32, S32 )
 DefineConsoleType( TypeS32Vector, Vector<S32> )
 DefineConsoleType( TypeF32, F32 )
 DefineConsoleType( TypeF32Vector, Vector<F32> )
-DefineUnmappedConsoleType( TypeString, const char * ) // plain UTF-8 strings are not supported in new interop
-DefineConsoleType( TypeCaseString, const char * )
+DefineUnmappedConsoleType( TypeString, const char* )  // plain UTF-8 strings are not supported in new interop
+DefineConsoleType( TypeCaseString, const char* )
 DefineConsoleType( TypeRealString, String )
 DefineConsoleType( TypeCommand, String )
-DefineConsoleType( TypeFilename, const char * )
+DefineConsoleType( TypeFilename, const char* )
 DefineConsoleType( TypeStringFilename, String )
 
 /// A universally unique identifier.
@@ -91,41 +91,41 @@ DefineUnmappedConsoleType( TypePID, SimPersistID* );
 DefineConsoleType( TypeImageFilename, String )
 
 /// TypePrefabFilename is equivalent to TypeStringFilename in its usage,
-/// it exists for the benefit of GuiInspector, which will provide a 
+/// it exists for the benefit of GuiInspector, which will provide a
 /// custom InspectorField for this type.
 DefineConsoleType( TypePrefabFilename, String )
 
 /// TypeShapeFilename is equivalent to TypeStringFilename in its usage,
-/// it exists for the benefit of GuiInspector, which will provide a 
+/// it exists for the benefit of GuiInspector, which will provide a
 /// custom InspectorField for this type.
 DefineConsoleType( TypeShapeFilename, String )
 
 /// TypeMaterialName is equivalent to TypeRealString in its usage,
-/// it exists for the benefit of GuiInspector, which will provide a 
+/// it exists for the benefit of GuiInspector, which will provide a
 /// custom InspectorField for this type.
 DefineConsoleType( TypeMaterialName, String )
 
 /// TypeTerrainMaterialIndex is equivalent to TypeS32 in its usage,
-/// it exists for the benefit of GuiInspector, which will provide a 
+/// it exists for the benefit of GuiInspector, which will provide a
 /// custom InspectorField for this type.
 DefineConsoleType( TypeTerrainMaterialIndex, S32 )
 
 /// TypeTerrainMaterialName is equivalent to TypeString in its usage,
-/// it exists for the benefit of GuiInspector, which will provide a 
+/// it exists for the benefit of GuiInspector, which will provide a
 /// custom InspectorField for this type.
-DefineConsoleType( TypeTerrainMaterialName, const char * )
+DefineConsoleType( TypeTerrainMaterialName, const char* )
 
 /// TypeCubemapName is equivalent to TypeRealString in its usage,
 /// but the Inspector will provide a drop-down list of CubemapData objects.
 DefineConsoleType( TypeCubemapName, String )
 
-DefineConsoleType( TypeParticleParameterString, const char * )
+DefineConsoleType( TypeParticleParameterString, const char* )
 
 DefineConsoleType( TypeFlag, S32 )
 DefineConsoleType( TypeColorI, ColorI )
 DefineConsoleType( TypeColorF, ColorF )
 DefineConsoleType( TypeSimObjectName, SimObject* )
-DefineConsoleType( TypeShader, GFXShader * )
+DefineConsoleType( TypeShader, GFXShader* )
 
 /// A persistent reference to an object.  This reference indirectly goes
 /// through the referenced object's persistent ID.
@@ -135,7 +135,7 @@ DefineConsoleType( TypeSimPersistId, SimPersistID* )
 DefineConsoleType( TypeName, const char* )
 
 /// TypeRectUV is equivalent to TypeRectF in its usage,
-/// it exists for the benefit of GuiInspector, which will provide a 
+/// it exists for the benefit of GuiInspector, which will provide a
 /// custom InspectorField for this type.
 DefineConsoleType( TypeRectUV, RectF )
 

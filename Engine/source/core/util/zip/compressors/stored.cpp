@@ -28,20 +28,20 @@
 namespace Zip
 {
 
-ImplementCompressor(Stored, Stored);
+ImplementCompressor( Stored, Stored );
 
-CompressorCreateReadStream(Stored)
+CompressorCreateReadStream( Stored )
 {
-   ResizeFilterStream *resStream = new ResizeFilterStream;
-   resStream->attachStream(zipStream);
-   resStream->setStreamOffset(zipStream->getPosition(), cdir->mCompressedSize);
-
-   return resStream;
+    ResizeFilterStream* resStream = new ResizeFilterStream;
+    resStream->attachStream( zipStream );
+    resStream->setStreamOffset( zipStream->getPosition(), cdir->mCompressedSize );
+    
+    return resStream;
 }
 
-CompressorCreateWriteStream(Stored)
+CompressorCreateWriteStream( Stored )
 {
-   return zipStream;
+    return zipStream;
 }
 
 } // end namespace Zip

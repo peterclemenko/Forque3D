@@ -34,41 +34,44 @@
 ///
 class GBufferConditionerGLSL : public ConditionerFeature
 {
-   typedef ConditionerFeature Parent;
-
+    typedef ConditionerFeature Parent;
+    
 public:
-   enum NormalStorage
-   {
-      CartesianXYZ,
-      CartesianXY,
-      Spherical,
-   };
-   
+    enum NormalStorage
+    {
+        CartesianXYZ,
+        CartesianXY,
+        Spherical,
+    };
+    
 protected:
 
-   NormalStorage mNormalStorageType;
-   bool mCanWriteNegativeValues;
-   U32 mBitsPerChannel;
-
+    NormalStorage mNormalStorageType;
+    bool mCanWriteNegativeValues;
+    U32 mBitsPerChannel;
+    
 public:
 
-   GBufferConditionerGLSL( const GFXFormat bufferFormat );
-   virtual ~GBufferConditionerGLSL();
-
-
-   virtual void processVert( Vector<ShaderComponent*> &componentList, const MaterialFeatureData &fd );
-   virtual void processPix( Vector<ShaderComponent*> &componentList, const MaterialFeatureData &fd );
-   virtual Resources getResources( const MaterialFeatureData &fd );
-   virtual String getName() { return "GBuffer Conditioner"; }
-
+    GBufferConditionerGLSL( const GFXFormat bufferFormat );
+    virtual ~GBufferConditionerGLSL();
+    
+    
+    virtual void processVert( Vector<ShaderComponent*>& componentList, const MaterialFeatureData& fd );
+    virtual void processPix( Vector<ShaderComponent*>& componentList, const MaterialFeatureData& fd );
+    virtual Resources getResources( const MaterialFeatureData& fd );
+    virtual String getName()
+    {
+        return "GBuffer Conditioner";
+    }
+    
 protected:
 
-   virtual Var *printMethodHeader( MethodType methodType, const String &methodName, Stream &stream, MultiLine *meta );
-
-   virtual GenOp* _posnegEncode( GenOp *val );
-   virtual GenOp* _posnegDecode( GenOp *val );
-   virtual Var* _conditionOutput( Var *unconditionedOutput, MultiLine *meta );
-   virtual Var* _unconditionInput( Var *conditionedInput, MultiLine *meta );
+    virtual Var* printMethodHeader( MethodType methodType, const String& methodName, Stream& stream, MultiLine* meta );
+    
+    virtual GenOp* _posnegEncode( GenOp* val );
+    virtual GenOp* _posnegDecode( GenOp* val );
+    virtual Var* _conditionOutput( Var* unconditionedOutput, MultiLine* meta );
+    virtual Var* _unconditionInput( Var* conditionedInput, MultiLine* meta );
 };
 
 #endif // _GBUFFER_CONDITIONER_GLSL_H_

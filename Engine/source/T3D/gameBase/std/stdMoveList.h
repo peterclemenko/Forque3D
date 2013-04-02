@@ -29,27 +29,27 @@
 
 class StdMoveList : public MoveList
 {
-   typedef MoveList Parent;
-
+    typedef MoveList Parent;
+    
 public:
 
-   StdMoveList();
-
-   void clientWriteMovePacket(BitStream *);
-   void clientReadMovePacket(BitStream *);
-
-   void serverWriteMovePacket(BitStream *);
-   void serverReadMovePacket(BitStream *);
-
-   U32 getMoves(Move**,U32* numMoves);
-   void clearMoves(U32 count);
-
-   void advanceMove();
-   void onAdvanceObjects() {}
-
+    StdMoveList();
+    
+    void clientWriteMovePacket( BitStream* );
+    void clientReadMovePacket( BitStream* );
+    
+    void serverWriteMovePacket( BitStream* );
+    void serverReadMovePacket( BitStream* );
+    
+    U32 getMoves( Move**, U32* numMoves );
+    void clearMoves( U32 count );
+    
+    void advanceMove();
+    void onAdvanceObjects() {}
+    
 protected:
 
-   U32 mMoveCredit;
+    U32 mMoveCredit;
 };
 
 #endif // _MOVELIST_STD_H_

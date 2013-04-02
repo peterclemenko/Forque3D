@@ -24,10 +24,10 @@
 #define _ENGINEFUNCTIONS_H_
 
 #ifndef _ENGINEEXPORTS_H_
-   #include "console/engineExports.h"
+#include "console/engineExports.h"
 #endif
 #ifndef _ENGINETYPEINFO_H_
-   #include "console/engineTypeInfo.h"
+#include "console/engineTypeInfo.h"
 #endif
 
 
@@ -36,18 +36,18 @@
 
 
 #ifdef TORQUE_COMPILER_VISUALC
-   #define TORQUE_API extern "C" __declspec( dllexport )
+#define TORQUE_API extern "C" __declspec( dllexport )
 #elif defined( TORQUE_COMPILER_GCC )
-   #define TORQUE_API extern "C" __attribute__( ( visibility( "default" ) ) )
+#define TORQUE_API extern "C" __attribute__( ( visibility( "default" ) ) )
 #else
-   #error Unsupported compiler.
+#error Unsupported compiler.
 #endif
 
 
 // #pragma pack is bugged in GCC in that the packing in place at the template instantiation
 // sites rather than their definition sites is used.  Enable workarounds.
 #ifdef TORQUE_COMPILER_GCC
-   #define _PACK_BUG_WORKAROUNDS
+#define _PACK_BUG_WORKAROUNDS
 #endif
 
 
@@ -56,29 +56,29 @@
 /// frame.
 struct EngineFunctionDefaultArguments
 {
-   /// Number of default arguments for the function call frame.
-   ///
-   /// @warn This is @b NOT the size of the memory block returned by getArgs() and also
-   ///   not the number of elements it contains.
-   U32 mNumDefaultArgs;
-   
-   /// Return a pointer to the variable-sized array of default argument values.
-   ///
-   /// @warn The arguments must be stored @b IMMEDIATELY after #mNumDefaultArgs.
-   /// @warn This is a @b FULL frame and not just the default arguments, i.e. it starts with the
-   ///   first argument that the function takes and ends with the last argument it takes.
-   /// @warn If the compiler's #pragma pack is buggy, the elements in this structure are allowed
-   ///   to be 4-byte aligned rather than byte-aligned as they should be.
-   const U8* getArgs() const
-   {
-      return ( const U8* ) &( mNumDefaultArgs ) + sizeof( mNumDefaultArgs );
-   }
+    /// Number of default arguments for the function call frame.
+    ///
+    /// @warn This is @b NOT the size of the memory block returned by getArgs() and also
+    ///   not the number of elements it contains.
+    U32 mNumDefaultArgs;
+    
+    /// Return a pointer to the variable-sized array of default argument values.
+    ///
+    /// @warn The arguments must be stored @b IMMEDIATELY after #mNumDefaultArgs.
+    /// @warn This is a @b FULL frame and not just the default arguments, i.e. it starts with the
+    ///   first argument that the function takes and ends with the last argument it takes.
+    /// @warn If the compiler's #pragma pack is buggy, the elements in this structure are allowed
+    ///   to be 4-byte aligned rather than byte-aligned as they should be.
+    const U8* getArgs() const
+    {
+        return ( const U8* ) & ( mNumDefaultArgs ) + sizeof( mNumDefaultArgs );
+    }
 };
 
 
 // Need byte-aligned packing for the default argument structures.
 #pragma pack( push, 1 )
-   
+
 
 // Structure encapsulating default arguments to an engine API function.
 template< typename T >
@@ -86,690 +86,872 @@ struct _EngineFunctionDefaultArguments {};
 template<>
 struct _EngineFunctionDefaultArguments< void() > : public EngineFunctionDefaultArguments
 {
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
 };
 template< typename A >
 struct _EngineFunctionDefaultArguments< void( A ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( A a )
-      : a( a )
-      { mNumDefaultArgs = 1; }
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( A a )
+    : a( a )
+{
+    mNumDefaultArgs = 1;
+}
 };
 template< typename A, typename B >
 struct _EngineFunctionDefaultArguments< void( A, B ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
-   
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( B b )
-      : b( b )
-      { mNumDefaultArgs = 1; }
-   _EngineFunctionDefaultArguments( A a, B b )
-      : a( a ),
-        b( b )
-      { mNumDefaultArgs = 2; }
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+    typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
+
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( B b )
+    : b( b )
+{
+    mNumDefaultArgs = 1;
+}
+_EngineFunctionDefaultArguments( A a, B b )
+    : a( a ),
+    b( b )
+{
+    mNumDefaultArgs = 2;
+}
 };
 template< typename A, typename B, typename C >
 struct _EngineFunctionDefaultArguments< void( A, B, C ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
-   typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
-   
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( C c )
-      : c( c )
-      { mNumDefaultArgs = 1; }
-   _EngineFunctionDefaultArguments( B b, C c )
-      : b( b ),
-        c( c )
-      { mNumDefaultArgs = 2; }
-   _EngineFunctionDefaultArguments( A a, B b, C c )
-      : a( a ),
-        b( b ),
-        c( c )
-      { mNumDefaultArgs = 3; }
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+    typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
+    typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
+
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( C c )
+    : c( c )
+{
+    mNumDefaultArgs = 1;
+}
+_EngineFunctionDefaultArguments( B b, C c )
+    : b( b ),
+    c( c )
+{
+    mNumDefaultArgs = 2;
+}
+_EngineFunctionDefaultArguments( A a, B b, C c )
+    : a( a ),
+    b( b ),
+    c( c )
+{
+    mNumDefaultArgs = 3;
+}
 };
 template< typename A, typename B, typename C, typename D >
 struct _EngineFunctionDefaultArguments< void( A, B, C, D ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
-   typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
-   typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
-   
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( D d )
-      : d( d )
-      { mNumDefaultArgs = 1; }
-   _EngineFunctionDefaultArguments( C c, D d )
-      : c( c ),
-        d( d )
-      { mNumDefaultArgs = 2; }
-   _EngineFunctionDefaultArguments( B b, C c, D d )
-      : b( b ),
-        c( c ),
-        d( d )
-      { mNumDefaultArgs = 3; }
-   _EngineFunctionDefaultArguments( A a, B b, C c, D d )
-      : a( a ),
-        b( b ),
-        c( c ),
-        d( d )
-      { mNumDefaultArgs = 4; }
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+    typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
+    typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
+    typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
+
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( D d )
+    : d( d )
+{
+    mNumDefaultArgs = 1;
+}
+_EngineFunctionDefaultArguments( C c, D d )
+    : c( c ),
+    d( d )
+{
+    mNumDefaultArgs = 2;
+}
+_EngineFunctionDefaultArguments( B b, C c, D d )
+    : b( b ),
+    c( c ),
+    d( d )
+{
+    mNumDefaultArgs = 3;
+}
+_EngineFunctionDefaultArguments( A a, B b, C c, D d )
+    : a( a ),
+    b( b ),
+    c( c ),
+    d( d )
+{
+    mNumDefaultArgs = 4;
+}
 };
 template< typename A, typename B, typename C, typename D, typename E >
 struct _EngineFunctionDefaultArguments< void( A, B, C, D, E ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
-   typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
-   typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
-   typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
-   
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( E e )
-      : e( e )
-      { mNumDefaultArgs = 1; }
-   _EngineFunctionDefaultArguments( D d, E e )
-      : d( d ),
-        e( e )
-      { mNumDefaultArgs = 2; }
-   _EngineFunctionDefaultArguments( C c, D d, E e )
-      : c( c ),
-        d( d ),
-        e( e )
-      { mNumDefaultArgs = 3; }
-   _EngineFunctionDefaultArguments( B b, C c, D d, E e )
-      : b( b ),
-        c( c ),
-        d( d ),
-        e( e )
-      { mNumDefaultArgs = 4; }
-   _EngineFunctionDefaultArguments( A a, B b, C c, D d, E e )
-      : a( a ),
-        b( b ),
-        c( c ),
-        d( d ),
-        e( e )
-      { mNumDefaultArgs = 5; }
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+    typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
+    typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
+    typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
+    typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
+
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( E e )
+    : e( e )
+{
+    mNumDefaultArgs = 1;
+}
+_EngineFunctionDefaultArguments( D d, E e )
+    : d( d ),
+    e( e )
+{
+    mNumDefaultArgs = 2;
+}
+_EngineFunctionDefaultArguments( C c, D d, E e )
+    : c( c ),
+    d( d ),
+    e( e )
+{
+    mNumDefaultArgs = 3;
+}
+_EngineFunctionDefaultArguments( B b, C c, D d, E e )
+    : b( b ),
+    c( c ),
+    d( d ),
+    e( e )
+{
+    mNumDefaultArgs = 4;
+}
+_EngineFunctionDefaultArguments( A a, B b, C c, D d, E e )
+    : a( a ),
+    b( b ),
+    c( c ),
+    d( d ),
+    e( e )
+{
+    mNumDefaultArgs = 5;
+}
 };
 template< typename A, typename B, typename C, typename D, typename E, typename F >
 struct _EngineFunctionDefaultArguments< void( A, B, C, D, E, F ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
-   typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
-   typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
-   typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
-   typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
-   
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( F f )
-      : f( f )
-      { mNumDefaultArgs = 1; }
-   _EngineFunctionDefaultArguments( E e, F f )
-      : e( e ),
-        f( f )
-      { mNumDefaultArgs = 2; }
-   _EngineFunctionDefaultArguments( D d, E e, F f )
-      : d( d ),
-        e( e ),
-        f( f )
-      { mNumDefaultArgs = 3; }
-   _EngineFunctionDefaultArguments( C c, D d, E e, F f )
-      : c( c ),
-        d( d ),
-        e( e ),
-        f( f )
-      { mNumDefaultArgs = 4; }
-   _EngineFunctionDefaultArguments( B b, C c, D d, E e, F f )
-      : b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f )
-      { mNumDefaultArgs = 5; }
-   _EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f )
-      : a( a ),
-        b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f )
-      { mNumDefaultArgs = 6; }
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+    typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
+    typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
+    typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
+    typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
+    typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
+
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( F f )
+    : f( f )
+{
+    mNumDefaultArgs = 1;
+}
+_EngineFunctionDefaultArguments( E e, F f )
+    : e( e ),
+    f( f )
+{
+    mNumDefaultArgs = 2;
+}
+_EngineFunctionDefaultArguments( D d, E e, F f )
+    : d( d ),
+    e( e ),
+    f( f )
+{
+    mNumDefaultArgs = 3;
+}
+_EngineFunctionDefaultArguments( C c, D d, E e, F f )
+    : c( c ),
+    d( d ),
+    e( e ),
+    f( f )
+{
+    mNumDefaultArgs = 4;
+}
+_EngineFunctionDefaultArguments( B b, C c, D d, E e, F f )
+    : b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f )
+{
+    mNumDefaultArgs = 5;
+}
+_EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f )
+    : a( a ),
+    b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f )
+{
+    mNumDefaultArgs = 6;
+}
 };
 template< typename A, typename B, typename C, typename D, typename E, typename F, typename G >
 struct _EngineFunctionDefaultArguments< void( A, B, C, D, E, F, G ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
-   typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
-   typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
-   typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
-   typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
-   typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
-   
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( G g )
-      : g( g )
-      { mNumDefaultArgs = 1; }
-   _EngineFunctionDefaultArguments( F f, G g )
-      : f( f ),
-        g( g )
-      { mNumDefaultArgs = 2; }
-   _EngineFunctionDefaultArguments( E e, F f, G g )
-      : e( e ),
-        f( f ),
-        g( g )
-      { mNumDefaultArgs = 3; }
-   _EngineFunctionDefaultArguments( D d, E e, F f, G g )
-      : d( d ),
-        e( e ),
-        f( f ),
-        g( g )
-      { mNumDefaultArgs = 4; }
-   _EngineFunctionDefaultArguments( C c, D d, E e, F f, G g )
-      : c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g )
-      { mNumDefaultArgs = 5; }
-   _EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g )
-      : b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g )
-      { mNumDefaultArgs = 6; }
-   _EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g )
-      : a( a ),
-        b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g )
-      { mNumDefaultArgs = 7; }
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+    typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
+    typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
+    typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
+    typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
+    typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
+    typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
+
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( G g )
+    : g( g )
+{
+    mNumDefaultArgs = 1;
+}
+_EngineFunctionDefaultArguments( F f, G g )
+    : f( f ),
+    g( g )
+{
+    mNumDefaultArgs = 2;
+}
+_EngineFunctionDefaultArguments( E e, F f, G g )
+    : e( e ),
+    f( f ),
+    g( g )
+{
+    mNumDefaultArgs = 3;
+}
+_EngineFunctionDefaultArguments( D d, E e, F f, G g )
+    : d( d ),
+    e( e ),
+    f( f ),
+    g( g )
+{
+    mNumDefaultArgs = 4;
+}
+_EngineFunctionDefaultArguments( C c, D d, E e, F f, G g )
+    : c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g )
+{
+    mNumDefaultArgs = 5;
+}
+_EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g )
+    : b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g )
+{
+    mNumDefaultArgs = 6;
+}
+_EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g )
+    : a( a ),
+    b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g )
+{
+    mNumDefaultArgs = 7;
+}
 };
 template< typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H >
 struct _EngineFunctionDefaultArguments< void( A, B, C, D, E, F, G, H ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
-   typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
-   typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
-   typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
-   typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
-   typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
-   typename EngineTypeTraits< H >::DefaultArgumentValueStoreType h;
-   
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( H h )
-      : h( h )
-      { mNumDefaultArgs = 1; }
-   _EngineFunctionDefaultArguments( G g, H h )
-      : g( g ),
-        h( h )
-      { mNumDefaultArgs = 2; }
-   _EngineFunctionDefaultArguments( F f, G g, H h )
-      : f( f ),
-        g( g ),
-        h( h )
-      { mNumDefaultArgs = 3; }
-   _EngineFunctionDefaultArguments( E e, F f, G g, H h )
-      : e( e ),
-        f( f ),
-        g( g ),
-        h( h )
-      { mNumDefaultArgs = 4; }
-   _EngineFunctionDefaultArguments( D d, E e, F f, G g, H h )
-      : d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h )
-      { mNumDefaultArgs = 5; }
-   _EngineFunctionDefaultArguments( C c, D d, E e, F f, G g, H h )
-      : c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h )
-      { mNumDefaultArgs = 6; }
-   _EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g, H h )
-      : b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h )
-      { mNumDefaultArgs = 7; }
-   _EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g, H h )
-      : a( a ),
-        b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h )
-      { mNumDefaultArgs = 8; }
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+    typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
+    typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
+    typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
+    typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
+    typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
+    typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
+    typename EngineTypeTraits< H >::DefaultArgumentValueStoreType h;
+
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( H h )
+    : h( h )
+{
+    mNumDefaultArgs = 1;
+}
+_EngineFunctionDefaultArguments( G g, H h )
+    : g( g ),
+    h( h )
+{
+    mNumDefaultArgs = 2;
+}
+_EngineFunctionDefaultArguments( F f, G g, H h )
+    : f( f ),
+    g( g ),
+    h( h )
+{
+    mNumDefaultArgs = 3;
+}
+_EngineFunctionDefaultArguments( E e, F f, G g, H h )
+    : e( e ),
+    f( f ),
+    g( g ),
+    h( h )
+{
+    mNumDefaultArgs = 4;
+}
+_EngineFunctionDefaultArguments( D d, E e, F f, G g, H h )
+    : d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h )
+{
+    mNumDefaultArgs = 5;
+}
+_EngineFunctionDefaultArguments( C c, D d, E e, F f, G g, H h )
+    : c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h )
+{
+    mNumDefaultArgs = 6;
+}
+_EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g, H h )
+    : b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h )
+{
+    mNumDefaultArgs = 7;
+}
+_EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g, H h )
+    : a( a ),
+    b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h )
+{
+    mNumDefaultArgs = 8;
+}
 };
 template< typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H, typename I >
 struct _EngineFunctionDefaultArguments< void( A, B, C, D, E, F, G, H, I ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
-   typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
-   typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
-   typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
-   typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
-   typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
-   typename EngineTypeTraits< H >::DefaultArgumentValueStoreType h;
-   typename EngineTypeTraits< I >::DefaultArgumentValueStoreType i;
-   
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( I i )
-      : i( i )
-      { mNumDefaultArgs = 1; }
-   _EngineFunctionDefaultArguments( H h, I i )
-      : h( h ),
-        i( i )
-      { mNumDefaultArgs = 2; }
-   _EngineFunctionDefaultArguments( G g, H h, I i )
-      : g( g ),
-        h( h ),
-        i( i )
-      { mNumDefaultArgs = 3; }
-   _EngineFunctionDefaultArguments( F f, G g, H h, I i )
-      : f( f ),
-        g( g ),
-        h( h ),
-        i( i )
-      { mNumDefaultArgs = 4; }
-   _EngineFunctionDefaultArguments( E e, F f, G g, H h, I i )
-      : e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i )
-      { mNumDefaultArgs = 5; }
-   _EngineFunctionDefaultArguments( D d, E e, F f, G g, H h, I i )
-      : d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i )
-      { mNumDefaultArgs = 6; }
-   _EngineFunctionDefaultArguments( C c, D d, E e, F f, G g, H h, I i )
-      : c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i )
-      { mNumDefaultArgs = 7; }
-   _EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g, H h, I i )
-      : b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i )
-      { mNumDefaultArgs = 8; }
-   _EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g, H h, I i )
-      : a( a ),
-        b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i )
-      { mNumDefaultArgs = 9; }
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+    typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
+    typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
+    typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
+    typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
+    typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
+    typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
+    typename EngineTypeTraits< H >::DefaultArgumentValueStoreType h;
+    typename EngineTypeTraits< I >::DefaultArgumentValueStoreType i;
+
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( I i )
+    : i( i )
+{
+    mNumDefaultArgs = 1;
+}
+_EngineFunctionDefaultArguments( H h, I i )
+    : h( h ),
+    i( i )
+{
+    mNumDefaultArgs = 2;
+}
+_EngineFunctionDefaultArguments( G g, H h, I i )
+    : g( g ),
+    h( h ),
+    i( i )
+{
+    mNumDefaultArgs = 3;
+}
+_EngineFunctionDefaultArguments( F f, G g, H h, I i )
+    : f( f ),
+    g( g ),
+    h( h ),
+    i( i )
+{
+    mNumDefaultArgs = 4;
+}
+_EngineFunctionDefaultArguments( E e, F f, G g, H h, I i )
+    : e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i )
+{
+    mNumDefaultArgs = 5;
+}
+_EngineFunctionDefaultArguments( D d, E e, F f, G g, H h, I i )
+    : d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i )
+{
+    mNumDefaultArgs = 6;
+}
+_EngineFunctionDefaultArguments( C c, D d, E e, F f, G g, H h, I i )
+    : c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i )
+{
+    mNumDefaultArgs = 7;
+}
+_EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g, H h, I i )
+    : b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i )
+{
+    mNumDefaultArgs = 8;
+}
+_EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g, H h, I i )
+    : a( a ),
+    b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i )
+{
+    mNumDefaultArgs = 9;
+}
 };
 template< typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H, typename I, typename J >
 struct _EngineFunctionDefaultArguments< void( A, B, C, D, E, F, G, H, I, J ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
-   typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
-   typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
-   typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
-   typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
-   typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
-   typename EngineTypeTraits< H >::DefaultArgumentValueStoreType h;
-   typename EngineTypeTraits< I >::DefaultArgumentValueStoreType i;
-   typename EngineTypeTraits< J >::DefaultArgumentValueStoreType j;
-   
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( J j )
-      : j( j )
-      { mNumDefaultArgs = 1; }
-   _EngineFunctionDefaultArguments( I i, J j )
-      : i( i ),
-        j( j )
-      { mNumDefaultArgs = 2; }
-   _EngineFunctionDefaultArguments( H h, I i, J j )
-      : h( h ),
-        i( i ),
-        j( j )
-      { mNumDefaultArgs = 3; }
-   _EngineFunctionDefaultArguments( G g, H h, I i, J j )
-      : g( g ),
-        h( h ),
-        i( i ),
-        j( j )
-      { mNumDefaultArgs = 4; }
-   _EngineFunctionDefaultArguments( F f, G g, H h, I i, J j )
-      : f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j )
-      { mNumDefaultArgs = 5; }
-   _EngineFunctionDefaultArguments( E e, F f, G g, H h, I i, J j )
-      : e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j )
-      { mNumDefaultArgs = 6; }
-   _EngineFunctionDefaultArguments( D d, E e, F f, G g, H h, I i, J j )
-      : d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j )
-      { mNumDefaultArgs = 7; }
-   _EngineFunctionDefaultArguments( C c, D d, E e, F f, G g, H h, I i, J j )
-      : c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j )
-      { mNumDefaultArgs = 8; }
-   _EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g, H h, I i, J j )
-      : b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j )
-      { mNumDefaultArgs = 9; }
-   _EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g, H h, I i, J j )
-      : a( a ),
-        b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j )
-      { mNumDefaultArgs = 10; }
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+    typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
+    typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
+    typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
+    typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
+    typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
+    typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
+    typename EngineTypeTraits< H >::DefaultArgumentValueStoreType h;
+    typename EngineTypeTraits< I >::DefaultArgumentValueStoreType i;
+    typename EngineTypeTraits< J >::DefaultArgumentValueStoreType j;
+
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( J j )
+    : j( j )
+{
+    mNumDefaultArgs = 1;
+}
+_EngineFunctionDefaultArguments( I i, J j )
+    : i( i ),
+    j( j )
+{
+    mNumDefaultArgs = 2;
+}
+_EngineFunctionDefaultArguments( H h, I i, J j )
+    : h( h ),
+    i( i ),
+    j( j )
+{
+    mNumDefaultArgs = 3;
+}
+_EngineFunctionDefaultArguments( G g, H h, I i, J j )
+    : g( g ),
+    h( h ),
+    i( i ),
+    j( j )
+{
+    mNumDefaultArgs = 4;
+}
+_EngineFunctionDefaultArguments( F f, G g, H h, I i, J j )
+    : f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j )
+{
+    mNumDefaultArgs = 5;
+}
+_EngineFunctionDefaultArguments( E e, F f, G g, H h, I i, J j )
+    : e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j )
+{
+    mNumDefaultArgs = 6;
+}
+_EngineFunctionDefaultArguments( D d, E e, F f, G g, H h, I i, J j )
+    : d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j )
+{
+    mNumDefaultArgs = 7;
+}
+_EngineFunctionDefaultArguments( C c, D d, E e, F f, G g, H h, I i, J j )
+    : c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j )
+{
+    mNumDefaultArgs = 8;
+}
+_EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g, H h, I i, J j )
+    : b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j )
+{
+    mNumDefaultArgs = 9;
+}
+_EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g, H h, I i, J j )
+    : a( a ),
+    b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j )
+{
+    mNumDefaultArgs = 10;
+}
 };
 template< typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H, typename I, typename J, typename K >
 struct _EngineFunctionDefaultArguments< void( A, B, C, D, E, F, G, H, I, J, K ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
-   typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
-   typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
-   typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
-   typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
-   typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
-   typename EngineTypeTraits< H >::DefaultArgumentValueStoreType h;
-   typename EngineTypeTraits< I >::DefaultArgumentValueStoreType i;
-   typename EngineTypeTraits< J >::DefaultArgumentValueStoreType j;
-   typename EngineTypeTraits< K >::DefaultArgumentValueStoreType k;
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+    typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
+    typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
+    typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
+    typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
+    typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
+    typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
+    typename EngineTypeTraits< H >::DefaultArgumentValueStoreType h;
+    typename EngineTypeTraits< I >::DefaultArgumentValueStoreType i;
+    typename EngineTypeTraits< J >::DefaultArgumentValueStoreType j;
+    typename EngineTypeTraits< K >::DefaultArgumentValueStoreType k;
 
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( K k )
-      : k( k )
-      { mNumDefaultArgs = 1; }
-   _EngineFunctionDefaultArguments( J j, K k )
-      : j( j ),
-        k( k )
-      { mNumDefaultArgs = 2; }
-   _EngineFunctionDefaultArguments( I i, J j, K k )
-      : i( i ),
-        j( j ),
-        k( k )
-      { mNumDefaultArgs = 3; }
-   _EngineFunctionDefaultArguments( H h, I i, J j, K k )
-      : h( h ),
-        i( i ),
-        j( j ),
-        k( k )
-      { mNumDefaultArgs = 4; }
-   _EngineFunctionDefaultArguments( G g, H h, I i, J j, K k )
-      : g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k )
-      { mNumDefaultArgs = 5; }
-   _EngineFunctionDefaultArguments( F f, G g, H h, I i, J j, K k )
-      : f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k )
-      { mNumDefaultArgs = 6; }
-   _EngineFunctionDefaultArguments( E e, F f, G g, H h, I i, J j, K k )
-      : e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k )
-      { mNumDefaultArgs = 7; }
-   _EngineFunctionDefaultArguments( D d, E e, F f, G g, H h, I i, J j, K k )
-      : d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k )
-      { mNumDefaultArgs = 8; }
-   _EngineFunctionDefaultArguments( C c, D d, E e, F f, G g, H h, I i, J j, K k )
-      : c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k )
-      { mNumDefaultArgs = 9; }
-   _EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g, H h, I i, J j, K k )
-      : b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k )
-      { mNumDefaultArgs = 10; }
-   _EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, K k )
-      : a( a ),
-        b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k )
-      { mNumDefaultArgs = 11; }
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( K k )
+    : k( k )
+{
+    mNumDefaultArgs = 1;
+}
+_EngineFunctionDefaultArguments( J j, K k )
+    : j( j ),
+    k( k )
+{
+    mNumDefaultArgs = 2;
+}
+_EngineFunctionDefaultArguments( I i, J j, K k )
+    : i( i ),
+    j( j ),
+    k( k )
+{
+    mNumDefaultArgs = 3;
+}
+_EngineFunctionDefaultArguments( H h, I i, J j, K k )
+    : h( h ),
+    i( i ),
+    j( j ),
+    k( k )
+{
+    mNumDefaultArgs = 4;
+}
+_EngineFunctionDefaultArguments( G g, H h, I i, J j, K k )
+    : g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k )
+{
+    mNumDefaultArgs = 5;
+}
+_EngineFunctionDefaultArguments( F f, G g, H h, I i, J j, K k )
+    : f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k )
+{
+    mNumDefaultArgs = 6;
+}
+_EngineFunctionDefaultArguments( E e, F f, G g, H h, I i, J j, K k )
+    : e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k )
+{
+    mNumDefaultArgs = 7;
+}
+_EngineFunctionDefaultArguments( D d, E e, F f, G g, H h, I i, J j, K k )
+    : d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k )
+{
+    mNumDefaultArgs = 8;
+}
+_EngineFunctionDefaultArguments( C c, D d, E e, F f, G g, H h, I i, J j, K k )
+    : c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k )
+{
+    mNumDefaultArgs = 9;
+}
+_EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g, H h, I i, J j, K k )
+    : b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k )
+{
+    mNumDefaultArgs = 10;
+}
+_EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, K k )
+    : a( a ),
+    b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k )
+{
+    mNumDefaultArgs = 11;
+}
 };
 template< typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H, typename I, typename J, typename K, typename L >
 struct _EngineFunctionDefaultArguments< void( A, B, C, D, E, F, G, H, I, J, K, L ) > : public EngineFunctionDefaultArguments
 {
-   typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
-   typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
-   typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
-   typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
-   typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
-   typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
-   typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
-   typename EngineTypeTraits< H >::DefaultArgumentValueStoreType h;
-   typename EngineTypeTraits< I >::DefaultArgumentValueStoreType i;
-   typename EngineTypeTraits< J >::DefaultArgumentValueStoreType j;
-   typename EngineTypeTraits< K >::DefaultArgumentValueStoreType k;
-   typename EngineTypeTraits< L >::DefaultArgumentValueStoreType l;
+    typename EngineTypeTraits< A >::DefaultArgumentValueStoreType a;
+    typename EngineTypeTraits< B >::DefaultArgumentValueStoreType b;
+    typename EngineTypeTraits< C >::DefaultArgumentValueStoreType c;
+    typename EngineTypeTraits< D >::DefaultArgumentValueStoreType d;
+    typename EngineTypeTraits< E >::DefaultArgumentValueStoreType e;
+    typename EngineTypeTraits< F >::DefaultArgumentValueStoreType f;
+    typename EngineTypeTraits< G >::DefaultArgumentValueStoreType g;
+    typename EngineTypeTraits< H >::DefaultArgumentValueStoreType h;
+    typename EngineTypeTraits< I >::DefaultArgumentValueStoreType i;
+    typename EngineTypeTraits< J >::DefaultArgumentValueStoreType j;
+    typename EngineTypeTraits< K >::DefaultArgumentValueStoreType k;
+    typename EngineTypeTraits< L >::DefaultArgumentValueStoreType l;
 
-   _EngineFunctionDefaultArguments()
-      { mNumDefaultArgs = 0; }
-   _EngineFunctionDefaultArguments( L l )
-      : l( l )
-      { mNumDefaultArgs = 1; }
-   _EngineFunctionDefaultArguments( K k, L l )
-      : k( k ),
-        l( l )
-      { mNumDefaultArgs = 2; }
-   _EngineFunctionDefaultArguments( J j, K k, L l )
-      : j( j ),
-        k( k ),
-        l( l )
-      { mNumDefaultArgs = 3; }
-   _EngineFunctionDefaultArguments( I i, J j, K k, L l )
-      : i( i ),
-        j( j ),
-        k( k ),
-        l( l )
-      { mNumDefaultArgs = 4; }
-   _EngineFunctionDefaultArguments( H h, I i, J j, K k, L l )
-      : h( h ),
-        i( i ),
-        j( j ),
-        k( k ),
-        l( l )
-      { mNumDefaultArgs = 5; }
-   _EngineFunctionDefaultArguments( G g, H h, I i, J j, K k, L l )
-      : g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k ),
-        l( l )
-      { mNumDefaultArgs = 6; }
-   _EngineFunctionDefaultArguments( F f, G g, H h, I i, J j, K k, L l )
-      : f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k ),
-        l( l )
-      { mNumDefaultArgs = 7; }
-   _EngineFunctionDefaultArguments( E e, F f, G g, H h, I i, J j, K k, L l )
-      : e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k ),
-        l( l )
-      { mNumDefaultArgs = 8; }
-   _EngineFunctionDefaultArguments( D d, E e, F f, G g, H h, I i, J j, K k, L l )
-      : d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k ),
-        l( l )
-      { mNumDefaultArgs = 9; }
-   _EngineFunctionDefaultArguments( C c, D d, E e, F f, G g, H h, I i, J j, K k, L l )
-      : c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k ),
-        l( l )
-      { mNumDefaultArgs = 10; }
-   _EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g, H h, I i, J j, K k, L l )
-      : b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k ),
-        l( l )
-      { mNumDefaultArgs = 11; }
-   _EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, K k, L l )
-      : a( a ),
-        b( b ),
-        c( c ),
-        d( d ),
-        e( e ),
-        f( f ),
-        g( g ),
-        h( h ),
-        i( i ),
-        j( j ),
-        k( k ),
-        l( l )
-      { mNumDefaultArgs = 12; }
+    _EngineFunctionDefaultArguments()
+{
+    mNumDefaultArgs = 0;
+}
+_EngineFunctionDefaultArguments( L l )
+    : l( l )
+{
+    mNumDefaultArgs = 1;
+}
+_EngineFunctionDefaultArguments( K k, L l )
+    : k( k ),
+    l( l )
+{
+    mNumDefaultArgs = 2;
+}
+_EngineFunctionDefaultArguments( J j, K k, L l )
+    : j( j ),
+    k( k ),
+    l( l )
+{
+    mNumDefaultArgs = 3;
+}
+_EngineFunctionDefaultArguments( I i, J j, K k, L l )
+    : i( i ),
+    j( j ),
+    k( k ),
+    l( l )
+{
+    mNumDefaultArgs = 4;
+}
+_EngineFunctionDefaultArguments( H h, I i, J j, K k, L l )
+    : h( h ),
+    i( i ),
+    j( j ),
+    k( k ),
+    l( l )
+{
+    mNumDefaultArgs = 5;
+}
+_EngineFunctionDefaultArguments( G g, H h, I i, J j, K k, L l )
+    : g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k ),
+    l( l )
+{
+    mNumDefaultArgs = 6;
+}
+_EngineFunctionDefaultArguments( F f, G g, H h, I i, J j, K k, L l )
+    : f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k ),
+    l( l )
+{
+    mNumDefaultArgs = 7;
+}
+_EngineFunctionDefaultArguments( E e, F f, G g, H h, I i, J j, K k, L l )
+    : e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k ),
+    l( l )
+{
+    mNumDefaultArgs = 8;
+}
+_EngineFunctionDefaultArguments( D d, E e, F f, G g, H h, I i, J j, K k, L l )
+    : d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k ),
+    l( l )
+{
+    mNumDefaultArgs = 9;
+}
+_EngineFunctionDefaultArguments( C c, D d, E e, F f, G g, H h, I i, J j, K k, L l )
+    : c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k ),
+    l( l )
+{
+    mNumDefaultArgs = 10;
+}
+_EngineFunctionDefaultArguments( B b, C c, D d, E e, F f, G g, H h, I i, J j, K k, L l )
+    : b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k ),
+    l( l )
+{
+    mNumDefaultArgs = 11;
+}
+_EngineFunctionDefaultArguments( A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, K k, L l )
+    : a( a ),
+    b( b ),
+    c( c ),
+    d( d ),
+    e( e ),
+    f( f ),
+    g( g ),
+    h( h ),
+    i( i ),
+    j( j ),
+    k( k ),
+    l( l )
+{
+    mNumDefaultArgs = 12;
+}
 };
 
 #pragma pack( pop )
@@ -778,21 +960,24 @@ struct _EngineFunctionDefaultArguments< void( A, B, C, D, E, F, G, H, I, J, K, L
 // Helper to allow flags argument to DEFINE_FUNCTION to be empty.
 struct _EngineFunctionFlags
 {
-   U32 val;
-   _EngineFunctionFlags()
-      : val( 0 ) {}
-   _EngineFunctionFlags( U32 val )
-      : val( val ) {}
-   operator U32() const { return val; }
+    U32 val;
+    _EngineFunctionFlags()
+        : val( 0 ) {}
+    _EngineFunctionFlags( U32 val )
+        : val( val ) {}
+    operator U32() const
+    {
+        return val;
+    }
 };
 
 
 ///
 enum EngineFunctionFlags
 {
-   /// Function is a callback into the control layer.  If this flag is not set,
-   /// the function is a call-in.
-   EngineFunctionCallout = BIT( 0 ),
+    /// Function is a callback into the control layer.  If this flag is not set,
+    /// the function is a call-in.
+    EngineFunctionCallout = BIT( 0 ),
 };
 
 
@@ -839,7 +1024,7 @@ enum EngineFunctionFlags
 ///
 /// Call-outs are exposed as pointer-sized memory locations into which the control layer needs
 /// to install addresses of functions that receive the call from the engine back into the control
-/// layer.  The function has to follow C calling conventions and 
+/// layer.  The function has to follow C calling conventions and
 ///
 /// A call-out will initially be set to NULL and while being NULL, will simply cause the engine
 /// to skip and ignore the call-out.  This allows the control layer to only install call-outs
@@ -847,92 +1032,122 @@ enum EngineFunctionFlags
 ///
 class EngineFunctionInfo : public EngineExport
 {
-   public:
-   
-      DECLARE_CLASS( EngineFunctionInfo, EngineExport );
-   
-   protected:
-   
-      /// A combination of EngineFunctionFlags.
-      BitSet32 mFunctionFlags;
-      
-      /// The type of the function.
-      const EngineTypeInfo* mFunctionType;
-         
-      /// Default values for the function arguments.
-      const EngineFunctionDefaultArguments* mDefaultArgumentValues;
-            
-      /// Name of the DLL symbol denoting the address of the exported entity.
-      const char* mBindingName;
-      
-      /// Full function prototype string.  Useful for quick printing and most importantly,
-      /// this will be the only place containing information about the argument names.
-      const char* mPrototypeString;
-      
-      /// Address of either the function implementation or the variable taking the address
-      /// of a call-out.
-      void* mAddress;
-      
-      /// Next function in the global link chain of engine functions.
-      EngineFunctionInfo* mNextFunction;
-      
-      /// First function in the global link chain of engine functions.
-      static EngineFunctionInfo* smFirstFunction;
-      
-   public:
-   
-      ///
-      EngineFunctionInfo(  const char* name,
-                           EngineExportScope* scope,
-                           const char* docString,
-                           const char* protoypeString,
-                           const char* bindingName,
-                           const EngineTypeInfo* functionType,
-                           const EngineFunctionDefaultArguments* defaultArgs,
-                           void* address,
-                           U32 flags );
-      
-      /// Return the name of the function.
-      const char* getFunctionName() const { return getExportName(); }
-      
-      /// Return the function's full prototype string including the return type, function name,
-      /// and argument list.
-      const char* getPrototypeString() const { return mPrototypeString; }
-      
-      /// Return the DLL export symbol name.
-      const char* getBindingName() const { return mBindingName; }
-      
-      /// Test whether this is a callout function.
-      bool isCallout() const { return mFunctionFlags.test( EngineFunctionCallout ); }
-      
-      /// Test whether the function is variadic, i.e. takes a variable number of arguments.
-      bool isVariadic() const { return mFunctionType->isVariadic(); }
-         
-      /// Return the type of this function.
-      const EngineTypeInfo* getFunctionType() const { return mFunctionType; }
-      
-      /// Return the return type of the function.
-      const EngineTypeInfo* getReturnType() const { return getFunctionType()->getArgumentTypeTable()->getReturnType(); }
-      
-      /// Return the number of arguments that this function takes.  If the function is variadic,
-      /// this is the number of fixed arguments.
-      U32 getNumArguments() const { return getFunctionType()->getArgumentTypeTable()->getNumArguments(); }
-      
-      ///
-      const EngineTypeInfo* getArgumentType( U32 index ) const { return ( *( getFunctionType()->getArgumentTypeTable() ) )[ index ]; }
-      
-      /// Return the vector storing the default argument values.
-      const EngineFunctionDefaultArguments* getDefaultArguments() const { return mDefaultArgumentValues; }
-      
-      /// Reset all callout function pointers back to NULL.  This deactivates all callbacks.
-      static void resetAllCallouts();
+public:
+
+    DECLARE_CLASS( EngineFunctionInfo, EngineExport );
+    
+protected:
+
+    /// A combination of EngineFunctionFlags.
+    BitSet32 mFunctionFlags;
+    
+    /// The type of the function.
+    const EngineTypeInfo* mFunctionType;
+    
+    /// Default values for the function arguments.
+    const EngineFunctionDefaultArguments* mDefaultArgumentValues;
+    
+    /// Name of the DLL symbol denoting the address of the exported entity.
+    const char* mBindingName;
+    
+    /// Full function prototype string.  Useful for quick printing and most importantly,
+    /// this will be the only place containing information about the argument names.
+    const char* mPrototypeString;
+    
+    /// Address of either the function implementation or the variable taking the address
+    /// of a call-out.
+    void* mAddress;
+    
+    /// Next function in the global link chain of engine functions.
+    EngineFunctionInfo* mNextFunction;
+    
+    /// First function in the global link chain of engine functions.
+    static EngineFunctionInfo* smFirstFunction;
+    
+public:
+
+    ///
+    EngineFunctionInfo( const char* name,
+                        EngineExportScope* scope,
+                        const char* docString,
+                        const char* protoypeString,
+                        const char* bindingName,
+                        const EngineTypeInfo* functionType,
+                        const EngineFunctionDefaultArguments* defaultArgs,
+                        void* address,
+                        U32 flags );
+                        
+    /// Return the name of the function.
+    const char* getFunctionName() const
+    {
+        return getExportName();
+    }
+    
+    /// Return the function's full prototype string including the return type, function name,
+    /// and argument list.
+    const char* getPrototypeString() const
+    {
+        return mPrototypeString;
+    }
+    
+    /// Return the DLL export symbol name.
+    const char* getBindingName() const
+    {
+        return mBindingName;
+    }
+    
+    /// Test whether this is a callout function.
+    bool isCallout() const
+    {
+        return mFunctionFlags.test( EngineFunctionCallout );
+    }
+    
+    /// Test whether the function is variadic, i.e. takes a variable number of arguments.
+    bool isVariadic() const
+    {
+        return mFunctionType->isVariadic();
+    }
+    
+    /// Return the type of this function.
+    const EngineTypeInfo* getFunctionType() const
+    {
+        return mFunctionType;
+    }
+    
+    /// Return the return type of the function.
+    const EngineTypeInfo* getReturnType() const
+    {
+        return getFunctionType()->getArgumentTypeTable()->getReturnType();
+    }
+    
+    /// Return the number of arguments that this function takes.  If the function is variadic,
+    /// this is the number of fixed arguments.
+    U32 getNumArguments() const
+    {
+        return getFunctionType()->getArgumentTypeTable()->getNumArguments();
+    }
+    
+    ///
+    const EngineTypeInfo* getArgumentType( U32 index ) const
+    {
+        return ( *( getFunctionType()->getArgumentTypeTable() ) )[ index ];
+    }
+    
+    /// Return the vector storing the default argument values.
+    const EngineFunctionDefaultArguments* getDefaultArguments() const
+    {
+        return mDefaultArgumentValues;
+    }
+    
+    /// Reset all callout function pointers back to NULL.  This deactivates all callbacks.
+    static void resetAllCallouts();
 };
 
 
 ///
 ///
 /// Due to the given argument types and return type being directly used as is, it is not possible
-/// to use this macro with engine types that have more complex value passing semantics (like e.g. 
+/// to use this macro with engine types that have more complex value passing semantics (like e.g.
 /// String).  Use engineAPI in this case.
 ///
 /// @note The method of defining functions exposed by this macro is very low-level.  To more
@@ -956,8 +1171,8 @@ class EngineFunctionInfo : public EngineExport
       );                                                                                                 \
    } }                                                                                                   \
    TORQUE_API returnType bindingName args
-   
-   
+
+
 ///
 ///
 /// Not all control layers may be able to access data variables in a DLL so this macro exposes
@@ -980,6 +1195,6 @@ class EngineFunctionInfo : public EngineExport
          EngineFunctionCallout | EngineFunctionFlags( flags )                                            \
       );                                                                                                 \
    }
-   
+
 
 #endif // !_ENGINEFUNCTIONS_H_

@@ -52,64 +52,64 @@ class GFXTextureObject;
 /// tied to a window, or a set of surfaces or textures.
 class GFXTarget : public StrongRefBase, public GFXResource
 {
-   friend class GFXD3D9Device;
-   friend class GFX360Device;
-
+    friend class GFXD3D9Device;
+    friend class GFX360Device;
+    
 private:
-   S32 mChangeToken;
-   S32 mLastAppliedChange;
-
+    S32 mChangeToken;
+    S32 mLastAppliedChange;
+    
 protected:
 
-   /// Called whenever a change is made to this target.
-   inline void invalidateState()
-   {
-      mChangeToken++;
-   }
-
-   /// Called when the device has applied pending state.
-   inline void stateApplied()
-   {
-      mLastAppliedChange = mChangeToken;
-   }
+    /// Called whenever a change is made to this target.
+    inline void invalidateState()
+    {
+        mChangeToken++;
+    }
+    
+    /// Called when the device has applied pending state.
+    inline void stateApplied()
+    {
+        mLastAppliedChange = mChangeToken;
+    }
 public:
 
-   /// Constructor to initialize the state tracking logic.
-   GFXTarget() : mChangeToken( 0 ),
-                 mLastAppliedChange( 0 )
-   {
-   }
-   virtual ~GFXTarget() {}
-
-   /// Called to check if we have pending state for the device to apply.
-   inline const bool isPendingState() const
-   {
-      return (mChangeToken != mLastAppliedChange);
-   }
-
-   /// Returns the size in pixels of the render target.
-   virtual const Point2I getSize()=0;
-
-   /// Returns the texture format of the render target.
-   virtual GFXFormat getFormat()=0;
-
-   // GFXResourceInterface
-   /// The resource should put a description of itself (number of vertices, size/width of texture, etc.) in buffer
-   virtual const String describeSelf() const;
-
-   /// This is called to set the render target.
-   virtual void activate() { }
-
-   /// This is called when the target is not being used anymore.
-   virtual void deactivate() { }
-
-   /// This tells the target that the contents of this target should be restored
-   /// when activate() is next called.
-   virtual void preserve() { }
-
-   /// Copy this surface to the passed GFXTextureObject.   
-   /// @param tex The GFXTextureObject to copy to.
-   virtual void resolveTo( GFXTextureObject *tex ) { }
+    /// Constructor to initialize the state tracking logic.
+    GFXTarget() : mChangeToken( 0 ),
+        mLastAppliedChange( 0 )
+    {
+    }
+    virtual ~GFXTarget() {}
+    
+    /// Called to check if we have pending state for the device to apply.
+    inline const bool isPendingState() const
+    {
+        return ( mChangeToken != mLastAppliedChange );
+    }
+    
+    /// Returns the size in pixels of the render target.
+    virtual const Point2I getSize() = 0;
+    
+    /// Returns the texture format of the render target.
+    virtual GFXFormat getFormat() = 0;
+    
+    // GFXResourceInterface
+    /// The resource should put a description of itself (number of vertices, size/width of texture, etc.) in buffer
+    virtual const String describeSelf() const;
+    
+    /// This is called to set the render target.
+    virtual void activate() { }
+    
+    /// This is called when the target is not being used anymore.
+    virtual void deactivate() { }
+    
+    /// This tells the target that the contents of this target should be restored
+    /// when activate() is next called.
+    virtual void preserve() { }
+    
+    /// Copy this surface to the passed GFXTextureObject.
+    /// @param tex The GFXTextureObject to copy to.
+    virtual void resolveTo( GFXTextureObject* tex ) { }
 };
 
 /// A render target associated with an OS window.
@@ -123,23 +123,26 @@ public:
 class GFXWindowTarget : public GFXTarget
 {
 protected:
-   PlatformWindow *mWindow;
+    PlatformWindow* mWindow;
 public:
-   GFXWindowTarget() : mWindow(NULL){};
-   GFXWindowTarget( PlatformWindow *windowObject )
-   {
-      mWindow = windowObject;
-   }
-   virtual ~GFXWindowTarget() {}
-
-   /// Returns a pointer to the window this target is bound to.
-   inline PlatformWindow *getWindow() { return mWindow; };
-
-   /// Present latest buffer, if buffer swapping is in effect.
-   virtual bool present()=0;
-
-   /// Notify the target that the video mode on the window has changed.
-   virtual void resetMode()=0;
+    GFXWindowTarget() : mWindow( NULL ) {};
+    GFXWindowTarget( PlatformWindow* windowObject )
+    {
+        mWindow = windowObject;
+    }
+    virtual ~GFXWindowTarget() {}
+    
+    /// Returns a pointer to the window this target is bound to.
+    inline PlatformWindow* getWindow()
+    {
+        return mWindow;
+    };
+    
+    /// Present latest buffer, if buffer swapping is in effect.
+    virtual bool present() = 0;
+    
+    /// Notify the target that the video mode on the window has changed.
+    virtual void resetMode() = 0;
 };
 
 /// A render target associated with one or more textures.
@@ -148,7 +151,7 @@ public:
 /// some cases it is necessary to allocate helper resources to enable RTT
 /// operations.
 ///
-/// @note A GFXTextureTarget will retain references to textures that are 
+/// @note A GFXTextureTarget will retain references to textures that are
 /// attached to it, so be sure to clear them out when you're done!
 ///
 /// @note Different APIs have different restrictions on what they can support
@@ -160,44 +163,44 @@ public:
 class GFXTextureTarget : public GFXTarget
 {
 public:
-   enum RenderSlot
-   {
-      DepthStencil,
-      Color0, Color1, Color2, Color3, Color4,
-      MaxRenderSlotId,
-   };
-
-   static GFXTextureObject *sDefaultDepthStencil;
-
-   virtual ~GFXTextureTarget() {}
-
-   /// Attach a surface to a given slot as part of this render target.
-   ///
-   /// @param slot What slot is used for multiple render target (MRT) effects.
-   ///             Most of the time you'll use Color0.
-   /// @param tex A texture and miplevel to bind for rendering, or else NULL/0
-   ///            to clear a slot.
-   /// @param mipLevel What level of this texture are we rendering to?
-   /// @param zOffset  If this is a depth texture, what z level are we 
-   ///                 rendering to?
-   virtual void attachTexture(RenderSlot slot, GFXTextureObject *tex, U32 mipLevel=0, U32 zOffset = 0) = 0;
-
-   /// Support binding to cubemaps.
-   ///
-   /// @param slot What slot is used for multiple render target (MRT) effects.
-   ///             Most of the time you'll use Color0.
-   /// @param tex  What cubemap will we be rendering to?
-   /// @param face A face identifier.
-   /// @param mipLevel What level of this texture are we rendering to?
-   virtual void attachTexture(RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel=0) = 0;
-
-   /// Resolve the current render target data to the associated textures. This method
-   /// will get called automatically when a rendertarget is changed, before new geometry
-   /// is drawn to a different rendertarget. This method can also be called to 
-   /// gather render target data without switching targets.
-   /// 
-   /// By default, this method will resolve all color targets.
-   virtual void resolve()=0;
+    enum RenderSlot
+    {
+        DepthStencil,
+        Color0, Color1, Color2, Color3, Color4,
+        MaxRenderSlotId,
+    };
+    
+    static GFXTextureObject* sDefaultDepthStencil;
+    
+    virtual ~GFXTextureTarget() {}
+    
+    /// Attach a surface to a given slot as part of this render target.
+    ///
+    /// @param slot What slot is used for multiple render target (MRT) effects.
+    ///             Most of the time you'll use Color0.
+    /// @param tex A texture and miplevel to bind for rendering, or else NULL/0
+    ///            to clear a slot.
+    /// @param mipLevel What level of this texture are we rendering to?
+    /// @param zOffset  If this is a depth texture, what z level are we
+    ///                 rendering to?
+    virtual void attachTexture( RenderSlot slot, GFXTextureObject* tex, U32 mipLevel = 0, U32 zOffset = 0 ) = 0;
+    
+    /// Support binding to cubemaps.
+    ///
+    /// @param slot What slot is used for multiple render target (MRT) effects.
+    ///             Most of the time you'll use Color0.
+    /// @param tex  What cubemap will we be rendering to?
+    /// @param face A face identifier.
+    /// @param mipLevel What level of this texture are we rendering to?
+    virtual void attachTexture( RenderSlot slot, GFXCubemap* tex, U32 face, U32 mipLevel = 0 ) = 0;
+    
+    /// Resolve the current render target data to the associated textures. This method
+    /// will get called automatically when a rendertarget is changed, before new geometry
+    /// is drawn to a different rendertarget. This method can also be called to
+    /// gather render target data without switching targets.
+    ///
+    /// By default, this method will resolve all color targets.
+    virtual void resolve() = 0;
 };
 
 typedef StrongRefPtr<GFXTarget> GFXTargetRef;

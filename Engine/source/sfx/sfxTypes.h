@@ -24,7 +24,7 @@
 #define _SFXTYPES_H_
 
 #ifndef _CONSOLETYPES_H_
-   #include "console/consoleTypes.h"
+#include "console/consoleTypes.h"
 #endif
 
 
@@ -107,32 +107,32 @@ bool sfxReadAndResolve( BitStream* stream, SFXSource** source, String& errorStri
 
 inline bool sfxReadAndResolve( BitStream* stream, SFXDescription** description, String& errorString )
 {
-   sfxRead( stream, description );
-   return sfxResolve( description, errorString );
+    sfxRead( stream, description );
+    return sfxResolve( description, errorString );
 }
 
 inline bool sfxReadAndResolve( BitStream* stream, SFXTrack** track, String& errorString )
 {
-   sfxRead( stream, track );
-   return sfxResolve( track, errorString );
+    sfxRead( stream, track );
+    return sfxResolve( track, errorString );
 }
 
 inline bool sfxReadAndResolve( BitStream* stream, SFXEnvironment** environment, String& errorString )
 {
-   sfxRead( stream, environment );
-   return sfxResolve( environment, errorString );
+    sfxRead( stream, environment );
+    return sfxResolve( environment, errorString );
 }
 
 inline bool sfxReadAndResolve( BitStream* stream, SFXState** state, String& errorString )
 {
-   sfxRead( stream, state );
-   return sfxResolve( state, errorString );
+    sfxRead( stream, state );
+    return sfxResolve( state, errorString );
 }
 
 inline bool sfxReadAndResolve( BitStream* stream, SFXAmbience** ambience, String& errorString )
 {
-   sfxRead( stream, ambience );
-   return sfxResolve( ambience, errorString );
+    sfxRead( stream, ambience );
+    return sfxResolve( ambience, errorString );
 }
 
 /// @}

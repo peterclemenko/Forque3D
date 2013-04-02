@@ -60,17 +60,17 @@ typedef U32 SimObjectId;
 /// Sim::initRoot() and following.
 enum SimObjectsConstants
 {
-   DataBlockObjectIdFirst = 3,
-   DataBlockObjectIdBitSize = 10,
-   DataBlockObjectIdLast = DataBlockObjectIdFirst + (1 << DataBlockObjectIdBitSize) - 1,
-
-   MessageObjectIdFirst = DataBlockObjectIdLast + 1,
-   MessageObjectIdBitSize = 6,
-   MessageObjectIdLast = MessageObjectIdFirst + (1 << MessageObjectIdBitSize) - 1,
-
-   DynamicObjectIdFirst = MessageObjectIdLast + 1,
-   InvalidEventId = 0,
-   RootGroupId = 0xFFFFFFFF,
+    DataBlockObjectIdFirst = 3,
+    DataBlockObjectIdBitSize = 10,
+    DataBlockObjectIdLast = DataBlockObjectIdFirst + ( 1 << DataBlockObjectIdBitSize ) - 1,
+    
+    MessageObjectIdFirst = DataBlockObjectIdLast + 1,
+    MessageObjectIdBitSize = 6,
+    MessageObjectIdLast = MessageObjectIdFirst + ( 1 << MessageObjectIdBitSize ) - 1,
+    
+    DynamicObjectIdFirst = MessageObjectIdLast + 1,
+    InvalidEventId = 0,
+    RootGroupId = 0xFFFFFFFF,
 };
 
 //---------------------------------------------------------------------------
@@ -89,109 +89,109 @@ enum SimObjectsConstants
 
 namespace Sim
 {
-   DeclareNamedSet(ActiveActionMapSet)
-   DeclareNamedSet(GhostAlwaysSet)
-   DeclareNamedSet(WayPointSet)
-   DeclareNamedSet(fxReplicatorSet)
-   DeclareNamedSet(fxFoliageSet)
-   DeclareNamedSet(BehaviorSet)
-   DeclareNamedSet(MaterialSet)
-   DeclareNamedSet(SFXSourceSet);
-   DeclareNamedSet(SFXDescriptionSet);
-   DeclareNamedSet(SFXTrackSet);
-   DeclareNamedSet(SFXEnvironmentSet);
-   DeclareNamedSet(SFXStateSet);
-   DeclareNamedSet(SFXAmbienceSet);
-   DeclareNamedSet(TerrainMaterialSet);
-   DeclareNamedSet(DataBlockSet);
-   DeclareNamedGroup(ActionMapGroup)
-   DeclareNamedGroup(ClientGroup)
-   DeclareNamedGroup(GuiGroup)
-   DeclareNamedGroup(GuiDataGroup)
-   DeclareNamedGroup(TCPGroup)
-   DeclareNamedGroup(ClientConnectionGroup)
-   DeclareNamedGroup(SFXParameterGroup);
+DeclareNamedSet( ActiveActionMapSet )
+DeclareNamedSet( GhostAlwaysSet )
+DeclareNamedSet( WayPointSet )
+DeclareNamedSet( fxReplicatorSet )
+DeclareNamedSet( fxFoliageSet )
+DeclareNamedSet( BehaviorSet )
+DeclareNamedSet( MaterialSet )
+DeclareNamedSet( SFXSourceSet );
+DeclareNamedSet( SFXDescriptionSet );
+DeclareNamedSet( SFXTrackSet );
+DeclareNamedSet( SFXEnvironmentSet );
+DeclareNamedSet( SFXStateSet );
+DeclareNamedSet( SFXAmbienceSet );
+DeclareNamedSet( TerrainMaterialSet );
+DeclareNamedSet( DataBlockSet );
+DeclareNamedGroup( ActionMapGroup )
+DeclareNamedGroup( ClientGroup )
+DeclareNamedGroup( GuiGroup )
+DeclareNamedGroup( GuiDataGroup )
+DeclareNamedGroup( TCPGroup )
+DeclareNamedGroup( ClientConnectionGroup )
+DeclareNamedGroup( SFXParameterGroup );
 
-   DeclareNamedSet(sgMissionLightingFilterSet);
-   
-   void init();
-   void shutdown();
-   
-   bool isShuttingDown();
+DeclareNamedSet( sgMissionLightingFilterSet );
 
-   SimDataBlockGroup *getDataBlockGroup();
-   SimGroup* getRootGroup();
+void init();
+void shutdown();
 
-   SimObject* findObject(SimObjectId);
-   SimObject* findObject(const char* name);
-   SimObject* findObject(const char* fileName, S32 declarationLine);
-   template<class T> inline bool findObject(SimObjectId iD,T*&t)
-   {
-      t = dynamic_cast<T*>(findObject(iD));
-      return t != NULL;
-   }
-   template<class T> inline bool findObject(const char *objectName,T*&t)
-   {
-      t = dynamic_cast<T*>(findObject(objectName));
-      return t != NULL;
-   }
+bool isShuttingDown();
 
-   SimObject *spawnObject(String spawnClass,
-                          String spawnDataBlock = String::EmptyString,
-                          String spawnName = String::EmptyString,
-                          String spawnProperties = String::EmptyString,
-                          String spawnScript = String::EmptyString);
+SimDataBlockGroup* getDataBlockGroup();
+SimGroup* getRootGroup();
 
-   void advanceToTime(SimTime time);
-   void advanceTime(SimTime delta);
-   SimTime getCurrentTime();
-   SimTime getTargetTime();
+SimObject* findObject( SimObjectId );
+SimObject* findObject( const char* name );
+SimObject* findObject( const char* fileName, S32 declarationLine );
+template<class T> inline bool findObject( SimObjectId iD, T*& t )
+{
+    t = dynamic_cast<T*>( findObject( iD ) );
+    return t != NULL;
+}
+template<class T> inline bool findObject( const char* objectName, T*& t )
+{
+    t = dynamic_cast<T*>( findObject( objectName ) );
+    return t != NULL;
+}
 
-   /// a target time of 0 on an event means current event
-   U32 postEvent(SimObject*, SimEvent*, U32 targetTime);
+SimObject* spawnObject( String spawnClass,
+                        String spawnDataBlock = String::EmptyString,
+                        String spawnName = String::EmptyString,
+                        String spawnProperties = String::EmptyString,
+                        String spawnScript = String::EmptyString );
+                        
+void advanceToTime( SimTime time );
+void advanceTime( SimTime delta );
+SimTime getCurrentTime();
+SimTime getTargetTime();
 
-   inline U32 postEvent(SimObjectId iD,SimEvent*evt, U32 targetTime)
-   {
-      return postEvent(findObject(iD), evt, targetTime);
-   }
-   inline U32 postEvent(const char *objectName,SimEvent*evt, U32 targetTime)
-   {
-      return postEvent(findObject(objectName), evt, targetTime);
-   }
-   inline U32 postCurrentEvent(SimObject*obj, SimEvent*evt)
-   {
-      return postEvent(obj,evt,getCurrentTime());
-   }
-   inline U32 postCurrentEvent(SimObjectId obj,SimEvent*evt)
-   {
-      return postEvent(obj,evt,getCurrentTime());
-   }
-   inline U32 postCurrentEvent(const char *obj,SimEvent*evt)
-   {
-      return postEvent(obj,evt,getCurrentTime());
-   }
+/// a target time of 0 on an event means current event
+U32 postEvent( SimObject*, SimEvent*, U32 targetTime );
 
-   void cancelEvent(U32 eventId);
-   void cancelPendingEvents(SimObject *obj);
-   bool isEventPending(U32 eventId);
-   U32  getEventTimeLeft(U32 eventId);
-   U32  getTimeSinceStart(U32 eventId);
-   U32  getScheduleDuration(U32 eventId);
+inline U32 postEvent( SimObjectId iD, SimEvent* evt, U32 targetTime )
+{
+    return postEvent( findObject( iD ), evt, targetTime );
+}
+inline U32 postEvent( const char* objectName, SimEvent* evt, U32 targetTime )
+{
+    return postEvent( findObject( objectName ), evt, targetTime );
+}
+inline U32 postCurrentEvent( SimObject* obj, SimEvent* evt )
+{
+    return postEvent( obj, evt, getCurrentTime() );
+}
+inline U32 postCurrentEvent( SimObjectId obj, SimEvent* evt )
+{
+    return postEvent( obj, evt, getCurrentTime() );
+}
+inline U32 postCurrentEvent( const char* obj, SimEvent* evt )
+{
+    return postEvent( obj, evt, getCurrentTime() );
+}
 
-   /// Appends numbers to inName until an unused SimObject name is created
-   String getUniqueName( const char *inName );
-   /// Appends numbers to inName until an internal name not taken in the inSet is found.
-   String getUniqueInternalName( const char *inName, SimSet *inSet, bool searchChildren );
-   
-   /// Return true if the given name string makes for a valid object name.
-   /// Empty strings and NULL are also treated as valid names (anonymous objects).
-   bool isValidObjectName( const char* name );
+void cancelEvent( U32 eventId );
+void cancelPendingEvents( SimObject* obj );
+bool isEventPending( U32 eventId );
+U32  getEventTimeLeft( U32 eventId );
+U32  getTimeSinceStart( U32 eventId );
+U32  getScheduleDuration( U32 eventId );
 
-   bool saveObject(SimObject *obj, Stream *stream);
-   SimObject *loadObjectStream(Stream *stream);
+/// Appends numbers to inName until an unused SimObject name is created
+String getUniqueName( const char* inName );
+/// Appends numbers to inName until an internal name not taken in the inSet is found.
+String getUniqueInternalName( const char* inName, SimSet* inSet, bool searchChildren );
 
-   bool saveObject(SimObject *obj, const char *filename);
-   SimObject *loadObjectStream(const char *filename);
+/// Return true if the given name string makes for a valid object name.
+/// Empty strings and NULL are also treated as valid names (anonymous objects).
+bool isValidObjectName( const char* name );
+
+bool saveObject( SimObject* obj, Stream* stream );
+SimObject* loadObjectStream( Stream* stream );
+
+bool saveObject( SimObject* obj, const char* filename );
+SimObject* loadObjectStream( const char* filename );
 }
 
 #endif // _SIM_H_

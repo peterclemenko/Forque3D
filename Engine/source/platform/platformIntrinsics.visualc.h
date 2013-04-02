@@ -40,19 +40,19 @@
 // not all platforms (damn you OSX) can do that.
 //
 inline void dFetchAndAdd( volatile U32& ref, U32 val )
-{  
-   _InterlockedExchangeAdd( ( volatile long* ) &ref, val );
+{
+    _InterlockedExchangeAdd( ( volatile long* ) &ref, val );
 }
 inline void dFetchAndAdd( volatile S32& ref, S32 val )
 {
-   _InterlockedExchangeAdd( ( volatile long* ) &ref, val );
+    _InterlockedExchangeAdd( ( volatile long* ) &ref, val );
 }
 
 #if defined(TORQUE_OS_XENON)
 // Not available on x86
 inline void dFetchAndAdd( volatile U64& ref, U64 val )
 {
-   _InterlockedExchangeAdd64( ( volatile __int64* ) &ref, val );
+    _InterlockedExchangeAdd64( ( volatile __int64* ) &ref, val );
 }
 #endif
 
@@ -60,17 +60,17 @@ inline void dFetchAndAdd( volatile U64& ref, U64 val )
 
 inline bool dCompareAndSwap( volatile U32& ref, U32 oldVal, U32 newVal )
 {
-   return ( _InterlockedCompareExchange( ( volatile long* ) &ref, newVal, oldVal ) == oldVal );
+    return ( _InterlockedCompareExchange( ( volatile long* ) &ref, newVal, oldVal ) == oldVal );
 }
 inline bool dCompareAndSwap( volatile U64& ref, U64 oldVal, U64 newVal )
 {
-   return ( _InterlockedCompareExchange64( ( volatile __int64* ) &ref, newVal, oldVal ) == oldVal );
+    return ( _InterlockedCompareExchange64( ( volatile __int64* ) &ref, newVal, oldVal ) == oldVal );
 }
 
 /// Performs an atomic read operation.
-inline U32 dAtomicRead( volatile U32 &ref )
+inline U32 dAtomicRead( volatile U32& ref )
 {
-   return _InterlockedExchangeAdd( ( volatile long* )&ref, 0 );
+    return _InterlockedExchangeAdd( ( volatile long* )&ref, 0 );
 }
 
 #endif // _TORQUE_PLATFORM_PLATFORMINTRINSICS_VISUALC_H_

@@ -36,7 +36,7 @@
 
 template< typename Base >
 SceneAmbientSoundObject< Base >::SceneAmbientSoundObject()
-   : mSoundAmbience( NULL )
+    : mSoundAmbience( NULL )
 {
 }
 
@@ -45,13 +45,13 @@ SceneAmbientSoundObject< Base >::SceneAmbientSoundObject()
 template< typename Base >
 void SceneAmbientSoundObject< Base >::initPersistFields()
 {
-   Parent::addGroup( "Sound" );
-      Parent::addProtectedField( "soundAmbience", TypeSFXAmbienceName, Offset( mSoundAmbience, SceneAmbientSoundObject ),
-         &_setSoundAmbience, &defaultProtectedGetFn,
-         "Ambient sound environment for the space." );
-   Parent::endGroup( "Sound" );
-
-   Parent::initPersistFields();
+    Parent::addGroup( "Sound" );
+    Parent::addProtectedField( "soundAmbience", TypeSFXAmbienceName, Offset( mSoundAmbience, SceneAmbientSoundObject ),
+                               &_setSoundAmbience, &defaultProtectedGetFn,
+                               "Ambient sound environment for the space." );
+    Parent::endGroup( "Sound" );
+    
+    Parent::initPersistFields();
 }
 
 //-----------------------------------------------------------------------------
@@ -59,12 +59,12 @@ void SceneAmbientSoundObject< Base >::initPersistFields()
 template< typename Base >
 U32 SceneAmbientSoundObject< Base >::packUpdate( NetConnection* connection, U32 mask, BitStream* stream )
 {
-   U32 retMask = Parent::packUpdate( connection, mask, stream );
-
-   if( stream->writeFlag( mask & SoundMask ) )
-      sfxWrite( stream, mSoundAmbience );
-
-   return retMask;
+    U32 retMask = Parent::packUpdate( connection, mask, stream );
+    
+    if( stream->writeFlag( mask & SoundMask ) )
+        sfxWrite( stream, mSoundAmbience );
+        
+    return retMask;
 }
 
 //-----------------------------------------------------------------------------
@@ -72,18 +72,18 @@ U32 SceneAmbientSoundObject< Base >::packUpdate( NetConnection* connection, U32 
 template< typename Base >
 void SceneAmbientSoundObject< Base >::unpackUpdate( NetConnection* connection, BitStream* stream )
 {
-   Parent::unpackUpdate( connection, stream );
-
-   if( stream->readFlag() ) // SoundMask
-   {
-      SFXAmbience* ambience;
-
-      String errorStr;
-      if( !sfxReadAndResolve( stream, &ambience, errorStr ) )
-         Con::errorf( "SceneAmbientSoundObject::unpackUpdate - bad packet: %s", errorStr.c_str() );
-      else
-         setSoundAmbience( ambience );
-   }
+    Parent::unpackUpdate( connection, stream );
+    
+    if( stream->readFlag() ) // SoundMask
+    {
+        SFXAmbience* ambience;
+        
+        String errorStr;
+        if( !sfxReadAndResolve( stream, &ambience, errorStr ) )
+            Con::errorf( "SceneAmbientSoundObject::unpackUpdate - bad packet: %s", errorStr.c_str() );
+        else
+            setSoundAmbience( ambience );
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -91,15 +91,15 @@ void SceneAmbientSoundObject< Base >::unpackUpdate( NetConnection* connection, B
 template< typename Base >
 void SceneAmbientSoundObject< Base >::setSoundAmbience( SFXAmbience* ambience )
 {
-   if( mSoundAmbience == ambience )
-      return;
-
-   mSoundAmbience = ambience;
-
-   if( this->isServerObject() )
-      this->setMaskBits( SoundMask );
-   else if( this->isProperlyAdded() && gSFX3DWorld )
-      gSFX3DWorld->notifyChanged( this );
+    if( mSoundAmbience == ambience )
+        return;
+        
+    mSoundAmbience = ambience;
+    
+    if( this->isServerObject() )
+        this->setMaskBits( SoundMask );
+    else if( this->isProperlyAdded() && gSFX3DWorld )
+        gSFX3DWorld->notifyChanged( this );
 }
 
 //-----------------------------------------------------------------------------
@@ -107,8 +107,8 @@ void SceneAmbientSoundObject< Base >::setSoundAmbience( SFXAmbience* ambience )
 template< typename Base >
 bool SceneAmbientSoundObject< Base >::_setSoundAmbience( void* object, const char* index, const char* data )
 {
-   SceneAmbientSoundObject* p = reinterpret_cast< SceneAmbientSoundObject* >( object );
-   SFXAmbience* ambience = EngineUnmarshallData< SFXAmbience* >()( data );
-   p->setSoundAmbience( ambience );
-   return false;
+    SceneAmbientSoundObject* p = reinterpret_cast< SceneAmbientSoundObject* >( object );
+    SFXAmbience* ambience = EngineUnmarshallData< SFXAmbience* >()( data );
+    p->setSoundAmbience( ambience );
+    return false;
 }

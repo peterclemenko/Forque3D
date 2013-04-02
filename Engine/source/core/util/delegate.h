@@ -39,23 +39,23 @@ template<class T>
 class DelegateRemapper : public DelegateMemento
 {
 public:
-   DelegateRemapper() : mOffset(0) {}
-
-   void set(T * t, const DelegateMemento & memento)
-   {
-      SetMementoFrom(memento);
-      if (m_pthis)
-         mOffset = ((int)m_pthis) - ((int)t);
-   }
-
-   void rethis(T * t)
-   {
-      if (m_pthis)
-         m_pthis = (fastdelegate::detail::GenericClass *)(mOffset + (int)t);
-   }
-
+    DelegateRemapper() : mOffset( 0 ) {}
+    
+    void set( T* t, const DelegateMemento& memento )
+    {
+        SetMementoFrom( memento );
+        if( m_pthis )
+            mOffset = ( ( int )m_pthis ) - ( ( int )t );
+    }
+    
+    void rethis( T* t )
+    {
+        if( m_pthis )
+            m_pthis = ( fastdelegate::detail::GenericClass* )( mOffset + ( int )t );
+    }
+    
 protected:
-   int mOffset;
+    int mOffset;
 };
 
 #endif // _UTIL_DELEGATE_H_

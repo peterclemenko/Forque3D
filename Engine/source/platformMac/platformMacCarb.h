@@ -36,56 +36,56 @@
 class MacCarbPlatState
 {
 public:
-   GDHandle          hDisplay;
-   CGDirectDisplayID cgDisplay;
-   
-   bool              captureDisplay;
-   bool              fadeWindows;
-
-   WindowPtr         appWindow;   
-   char              appWindowTitle[256];
-   WindowGroupRef    torqueWindowGroup;
-
-   bool              quit;
-   
-   AGLContext        ctx;
-   bool              ctxNeedsUpdate;
-
-   S32               desktopBitsPixel;
-   S32               desktopWidth;
-   S32               desktopHeight;
-   U32               currentTime;
-   bool              isFullScreen;
-   
-   U32               osVersion;
-   
-   TSMDocumentID     tsmDoc;
-   bool              tsmActive;
-   
-   U32               firstThreadId;
-   
-   void*             alertSemaphore;
-   S32               alertHit;
-   DialogRef         alertDlg;
-   EventQueueRef     mainEventQueue;
-   
-   MRandomLCG        platRandom;
-   
-   bool              mouseLocked;
-   bool              backgrounded;
-   
-   U32               sleepTicks;
-
-   Point2I           windowSize;
-   
-   U32               appReturn;
-   
-   U32               argc;
-   char**            argv;
-   
-   U32               lastTimeTick;
-   
-   MacCarbPlatState();
+    GDHandle          hDisplay;
+    CGDirectDisplayID cgDisplay;
+    
+    bool              captureDisplay;
+    bool              fadeWindows;
+    
+    WindowPtr         appWindow;
+    char              appWindowTitle[256];
+    WindowGroupRef    torqueWindowGroup;
+    
+    bool              quit;
+    
+    AGLContext        ctx;
+    bool              ctxNeedsUpdate;
+    
+    S32               desktopBitsPixel;
+    S32               desktopWidth;
+    S32               desktopHeight;
+    U32               currentTime;
+    bool              isFullScreen;
+    
+    U32               osVersion;
+    
+    TSMDocumentID     tsmDoc;
+    bool              tsmActive;
+    
+    U32               firstThreadId;
+    
+    void*             alertSemaphore;
+    S32               alertHit;
+    DialogRef         alertDlg;
+    EventQueueRef     mainEventQueue;
+    
+    MRandomLCG        platRandom;
+    
+    bool              mouseLocked;
+    bool              backgrounded;
+    
+    U32               sleepTicks;
+    
+    Point2I           windowSize;
+    
+    U32               appReturn;
+    
+    U32               argc;
+    char**            argv;
+    
+    U32               lastTimeTick;
+    
+    MacCarbPlatState();
 };
 
 /// Global singleton that encapsulates a lot of mac platform state & globals.
@@ -96,7 +96,7 @@ extern MacCarbPlatState platState;
 /// to require their own header file.
 /// @{
 /// Fills gGLState with info about this gl renderer's capabilities.
-void getGLCapabilities(void);
+void getGLCapabilities( void );
 
 /// Creates a new mac window, of a particular size, centered on the screen.
 /// If a fullScreen window is requested, then the window is created without
@@ -117,7 +117,7 @@ void MacCarbFadeInWindow( WindowPtr window );
 void MacCarbFadeAndReleaseWindow( WindowPtr window );
 
 /// Translates a Mac keycode to a Torque keycode
-U8 TranslateOSKeyCode(U8 vcode);
+U8 TranslateOSKeyCode( U8 vcode );
 /// @}
 
 /// @name Misc Mac Plat constants
@@ -146,29 +146,29 @@ const U32 kHICommandTorque = 'TORQ';
 // Platform Menu Data
 //-----------------------------------------------------------------------------
 class PlatformPopupMenuData
-   {
-   public:
-      // We assign each new menu item an arbitrary integer tag.
-      static S32 getTag()
-      {
-         static S32 lastTag = 'TORQ';
-         return ++lastTag;
-      }
-      
-      MenuRef mMenu;
-      S32 tag;
-      PlatformPopupMenuData()
-      {
-         mMenu = NULL;
-         tag = getTag();
-      }
-      
-      ~PlatformPopupMenuData()
-      {
-         if(mMenu)
-            CFRelease(mMenu);
-         mMenu = NULL;
-   }
+{
+public:
+    // We assign each new menu item an arbitrary integer tag.
+    static S32 getTag()
+    {
+        static S32 lastTag = 'TORQ';
+        return ++lastTag;
+    }
+    
+    MenuRef mMenu;
+    S32 tag;
+    PlatformPopupMenuData()
+    {
+        mMenu = NULL;
+        tag = getTag();
+    }
+    
+    ~PlatformPopupMenuData()
+    {
+        if( mMenu )
+            CFRelease( mMenu );
+        mMenu = NULL;
+    }
 };
 
 #endif //_PLATFORMMACCARB_H_

@@ -31,7 +31,7 @@
 #ifdef TORQUE_ENABLE_GFXDEBUGEVENTS
 
 
-/// You shouldn't use this class directly... use the 
+/// You shouldn't use this class directly... use the
 /// following macros:
 ///
 /// GFXDEBUGEVENT_START / GFXDEBUGEVENT_END
@@ -40,15 +40,15 @@
 class GFXDebugEventScope
 {
 public:
-   GFXDebugEventScope( const char* name, const ColorI &color ) 
-   {
-      GFX->enterDebugEvent( color, name );
-   }
-
-   ~GFXDebugEventScope() 
-   {
-      GFX->leaveDebugEvent();
-   }
+    GFXDebugEventScope( const char* name, const ColorI& color )
+    {
+        GFX->enterDebugEvent( color, name );
+    }
+    
+    ~GFXDebugEventScope()
+    {
+        GFX->leaveDebugEvent();
+    }
 };
 
 #define GFXDEBUGEVENT_START( name, color ) GFX->enterDebugEvent( color, #name )
@@ -59,7 +59,7 @@ public:
 
 
 ///
-/// Will add start/end GFX debug events around the 
+/// Will add start/end GFX debug events around the
 /// current scope.
 ///
 /// @param name   The unquoted name for the event.
@@ -70,13 +70,13 @@ public:
 
 #else // !TORQUE_ENABLE_GFXDEBUGEVENTS
 
-   /// These are disabled in shipping builds or maybe you
-   /// forgot to include "platform/platform.h" first?
-   #define GFXDEBUGEVENT_START(n,c)
-   #define GFXDEBUGEVENT_END()
-   #define GFXDEBUGEVENT_MARKER(n,c)
-   #define GFXDEBUGEVENT_SCOPE(n,c)
-   #define GFXDEBUGEVENT_SCOPE_EX(n,c,d)
+/// These are disabled in shipping builds or maybe you
+/// forgot to include "platform/platform.h" first?
+#define GFXDEBUGEVENT_START(n,c)
+#define GFXDEBUGEVENT_END()
+#define GFXDEBUGEVENT_MARKER(n,c)
+#define GFXDEBUGEVENT_SCOPE(n,c)
+#define GFXDEBUGEVENT_SCOPE_EX(n,c,d)
 
 #endif
 

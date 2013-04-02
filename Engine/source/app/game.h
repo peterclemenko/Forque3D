@@ -29,9 +29,9 @@
 
 /// Processes the next frame, including gui, rendering, and tick interpolation.
 /// This function will only have an effect when executed on the client.
-bool clientProcess(U32 timeDelta);
+bool clientProcess( U32 timeDelta );
 
 /// Processes the next cycle on the server.  This function will only have an effect when executed on the server.
-bool serverProcess(U32 timeDelta);
+bool serverProcess( U32 timeDelta );
 
 #endif

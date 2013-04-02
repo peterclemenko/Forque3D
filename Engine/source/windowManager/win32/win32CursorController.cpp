@@ -31,22 +31,26 @@
 #include "platform/platformInput.h"
 #include <zmouse.h>
 
-static struct { U32 id; LPTSTR resourceID; } sgCursorShapeMap[]=
+static struct
 {
-   { PlatformCursorController::curArrow,       IDC_ARROW },
-   { PlatformCursorController::curWait,        IDC_WAIT },
-   { PlatformCursorController::curPlus,        IDC_CROSS },
-   { PlatformCursorController::curResizeVert,  IDC_SIZEWE },
-   { PlatformCursorController::curResizeHorz,  IDC_SIZENS },
-   { PlatformCursorController::curResizeAll,   IDC_SIZEALL },
-   { PlatformCursorController::curIBeam,       IDC_IBEAM },
-   { PlatformCursorController::curResizeNESW,  IDC_SIZENESW },
-   { PlatformCursorController::curResizeNWSE,  IDC_SIZENWSE },
-   { PlatformCursorController::curHand,        IDC_HAND },
-   { 0,                             0 },
+    U32 id;
+    LPTSTR resourceID;
+} sgCursorShapeMap[] =
+{
+    { PlatformCursorController::curArrow,       IDC_ARROW },
+    { PlatformCursorController::curWait,        IDC_WAIT },
+    { PlatformCursorController::curPlus,        IDC_CROSS },
+    { PlatformCursorController::curResizeVert,  IDC_SIZEWE },
+    { PlatformCursorController::curResizeHorz,  IDC_SIZENS },
+    { PlatformCursorController::curResizeAll,   IDC_SIZEALL },
+    { PlatformCursorController::curIBeam,       IDC_IBEAM },
+    { PlatformCursorController::curResizeNESW,  IDC_SIZENESW },
+    { PlatformCursorController::curResizeNWSE,  IDC_SIZENWSE },
+    { PlatformCursorController::curHand,        IDC_HAND },
+    { 0,                             0 },
 };
 
-//static const EnumTable::Enums curManagerShapesEnums[] = 
+//static const EnumTable::Enums curManagerShapesEnums[] =
 //{
 //   { Win32CursorController::curArrow, "Arrow" },
 //   { Win32CursorController::curWait, "Wait" },
@@ -59,107 +63,107 @@ static struct { U32 id; LPTSTR resourceID; } sgCursorShapeMap[]=
 //   { Win32CursorController::curResizeNWSE, "ResizeNWSE" },
 //};
 //
-//static const EnumTable gCurManagerShapesTable(8, &curManagerShapesEnums[0]); 
+//static const EnumTable gCurManagerShapesTable(8, &curManagerShapesEnums[0]);
 
 // CodeReview I've duplicated this 'cache' trick for system settings
 // because they're unlikely to change and calling into the OS for values
 // repeatedly is just silly to begin with.  [6/29/2007 justind]
 U32 Win32CursorController::getDoubleClickTime()
 {
-   static S32 sPlatWinDoubleClicktime = -1;
-   if( sPlatWinDoubleClicktime == -1 )
-      sPlatWinDoubleClicktime = GetDoubleClickTime();
-   return sPlatWinDoubleClicktime;
+    static S32 sPlatWinDoubleClicktime = -1;
+    if( sPlatWinDoubleClicktime == -1 )
+        sPlatWinDoubleClicktime = GetDoubleClickTime();
+    return sPlatWinDoubleClicktime;
 }
 S32 Win32CursorController::getDoubleClickWidth()
 {
-   static S32 sPlatWinDoubleClickwidth = -1;
-   if( sPlatWinDoubleClickwidth == -1 )
-      sPlatWinDoubleClickwidth = GetSystemMetrics(SM_CXDOUBLECLK);
-   return sPlatWinDoubleClickwidth;
+    static S32 sPlatWinDoubleClickwidth = -1;
+    if( sPlatWinDoubleClickwidth == -1 )
+        sPlatWinDoubleClickwidth = GetSystemMetrics( SM_CXDOUBLECLK );
+    return sPlatWinDoubleClickwidth;
 }
 S32 Win32CursorController::getDoubleClickHeight()
 {
-   static S32 sPlatWinDoubleClickheight = -1;
-   if( sPlatWinDoubleClickheight == -1 )
-      sPlatWinDoubleClickheight = GetSystemMetrics(SM_CYDOUBLECLK);
-   return sPlatWinDoubleClickheight;
+    static S32 sPlatWinDoubleClickheight = -1;
+    if( sPlatWinDoubleClickheight == -1 )
+        sPlatWinDoubleClickheight = GetSystemMetrics( SM_CYDOUBLECLK );
+    return sPlatWinDoubleClickheight;
 }
 
 void Win32CursorController::setCursorPosition( S32 x, S32 y )
 {
-   ::SetCursorPos(x, y);
+    ::SetCursorPos( x, y );
 }
 
-void Win32CursorController::getCursorPosition( Point2I &point )
+void Win32CursorController::getCursorPosition( Point2I& point )
 {
-   POINT rPoint;
-   ::GetCursorPos( &rPoint );
-
-   // Return 
-   point.x = rPoint.x;
-   point.y = rPoint.y;
+    POINT rPoint;
+    ::GetCursorPos( &rPoint );
+    
+    // Return
+    point.x = rPoint.x;
+    point.y = rPoint.y;
 }
 
 void Win32CursorController::setCursorVisible( bool visible )
 {
-   if( visible )
-      ShowCursor( true );
-   else
-      while( ShowCursor(false) > 0 );
+    if( visible )
+        ShowCursor( true );
+    else
+        while( ShowCursor( false ) > 0 );
 }
 
 bool Win32CursorController::isCursorVisible()
 {
-   CURSORINFO rCursorInfo;
-   rCursorInfo.cbSize = sizeof(CURSORINFO);
-   if( !GetCursorInfo( &rCursorInfo ) )
-   {
-      //DWORD error = GetLastError();
-      return false;
-   }
-
-   // rCursorInfo.flags values :
-   // 0 == Cursor is hidden
-   // CURSOR_SHOWING == cursor is visible
-   return (bool)(rCursorInfo.flags == CURSOR_SHOWING);
+    CURSORINFO rCursorInfo;
+    rCursorInfo.cbSize = sizeof( CURSORINFO );
+    if( !GetCursorInfo( &rCursorInfo ) )
+    {
+        //DWORD error = GetLastError();
+        return false;
+    }
+    
+    // rCursorInfo.flags values :
+    // 0 == Cursor is hidden
+    // CURSOR_SHOWING == cursor is visible
+    return ( bool )( rCursorInfo.flags == CURSOR_SHOWING );
 }
 
-void Win32CursorController::setCursorShape(U32 cursorID)
+void Win32CursorController::setCursorShape( U32 cursorID )
 {
-   LPTSTR resourceID = NULL;
-
-   for(S32 i = 0;sgCursorShapeMap[i].resourceID != NULL;++i)
-   {
-      if(cursorID == sgCursorShapeMap[i].id)
-      {
-         resourceID = sgCursorShapeMap[i].resourceID;
-         break;
-      }
-   }
-
-   if(resourceID == NULL)
-      return;
-
-   HCURSOR cur = LoadCursor(NULL, resourceID);
-   if(cur)
-      SetCursor(cur);
+    LPTSTR resourceID = NULL;
+    
+    for( S32 i = 0; sgCursorShapeMap[i].resourceID != NULL; ++i )
+    {
+        if( cursorID == sgCursorShapeMap[i].id )
+        {
+            resourceID = sgCursorShapeMap[i].resourceID;
+            break;
+        }
+    }
+    
+    if( resourceID == NULL )
+        return;
+        
+    HCURSOR cur = LoadCursor( NULL, resourceID );
+    if( cur )
+        SetCursor( cur );
 }
 
 static HCURSOR gCursorShape = NULL;
-void Win32CursorController::setCursorShape( const UTF8 *fileName, bool reload )
+void Win32CursorController::setCursorShape( const UTF8* fileName, bool reload )
 {
 #ifdef UNICODE
-   const UTF16 *lFileName = convertUTF8toUTF16( fileName );
+    const UTF16* lFileName = convertUTF8toUTF16( fileName );
 #else
-   const UTF8  *lFileName = fileName;
+    const UTF8*  lFileName = fileName;
 #endif
-
-   if ( !gCursorShape || reload )
-      gCursorShape = LoadCursorFromFile( lFileName );
-   
-   if ( gCursorShape )
-      SetCursor( gCursorShape );
+    
+    if( !gCursorShape || reload )
+        gCursorShape = LoadCursorFromFile( lFileName );
+        
+    if( gCursorShape )
+        SetCursor( gCursorShape );
 }
 
 // Console function to set the current cursor shape given the cursor shape

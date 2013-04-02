@@ -44,18 +44,22 @@
 class GuiPanel : public GuiContainer
 {
 private:
-   typedef GuiContainer Parent;
-
+    typedef GuiContainer Parent;
+    
 public:
-   // Constructor/Destructor/ConObject Declaration
-   GuiPanel();
-   virtual ~GuiPanel();
-
-   DECLARE_CONOBJECT(GuiPanel);
-
-   // GuiControl
-   void onRender(Point2I offset, const RectI &updateRect);
-   void setVisible(bool value) { Parent::setVisible(value); setUpdateLayout( updateParent ); }
+    // Constructor/Destructor/ConObject Declaration
+    GuiPanel();
+    virtual ~GuiPanel();
+    
+    DECLARE_CONOBJECT( GuiPanel );
+    
+    // GuiControl
+    void onRender( Point2I offset, const RectI& updateRect );
+    void setVisible( bool value )
+    {
+        Parent::setVisible( value );
+        setUpdateLayout( updateParent );
+    }
 };
 /// @}
 

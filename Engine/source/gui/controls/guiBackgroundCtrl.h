@@ -31,18 +31,18 @@
 class GuiBackgroundCtrl : public GuiControl
 {
 private:
-   typedef GuiControl Parent;
-
+    typedef GuiControl Parent;
+    
 public:
-   bool  mDraw;
-
-   //creation methods
-   DECLARE_CONOBJECT(GuiBackgroundCtrl);
-   DECLARE_CATEGORY( "Gui Containers" );
-   
-   GuiBackgroundCtrl();
-
-   void onRender(Point2I offset, const RectI &updateRect);
+    bool  mDraw;
+    
+    //creation methods
+    DECLARE_CONOBJECT( GuiBackgroundCtrl );
+    DECLARE_CATEGORY( "Gui Containers" );
+    
+    GuiBackgroundCtrl();
+    
+    void onRender( Point2I offset, const RectI& updateRect );
 };
 
 #endif

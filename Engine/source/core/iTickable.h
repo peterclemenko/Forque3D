@@ -91,81 +91,96 @@
 class ITickable
 {
 private:
-   static U32 smLastTick;  ///< Time of the last tick that occurred
-   static U32 smLastTime;  ///< Last time value at which advanceTime was called
-   static U32 smLastDelta; ///< Last delta value for advanceTime
-
-   static U32 smTickShift; ///< Shift value to control how often Ticks occur
-   static U32 smTickMs;    ///< Number of milliseconds per tick, 32 in this case
-   static F32 smTickSec;   ///< Fraction of a second per tick
-   static U32 smTickMask;
-
-   // This just makes life easy
-   typedef Vector<ITickable *>::iterator ProcessListIterator;
-   /// Returns a reference to the list of all ITickable objects.
-   static Vector<ITickable *>& getProcessList();   
-   
-   bool mProcessTick; ///< Set to true if this object wants tick processing
+    static U32 smLastTick;  ///< Time of the last tick that occurred
+    static U32 smLastTime;  ///< Last time value at which advanceTime was called
+    static U32 smLastDelta; ///< Last delta value for advanceTime
+    
+    static U32 smTickShift; ///< Shift value to control how often Ticks occur
+    static U32 smTickMs;    ///< Number of milliseconds per tick, 32 in this case
+    static F32 smTickSec;   ///< Fraction of a second per tick
+    static U32 smTickMask;
+    
+    // This just makes life easy
+    typedef Vector<ITickable*>::iterator ProcessListIterator;
+    /// Returns a reference to the list of all ITickable objects.
+    static Vector<ITickable*>& getProcessList();
+    
+    bool mProcessTick; ///< Set to true if this object wants tick processing
 protected:
-   /// This method is called every frame and lets the control interpolate between
-   /// ticks so you can smooth things as long as isProcessingTicks returns true
-   /// when it is called on the object
-   virtual void interpolateTick( F32 delta ) = 0;
-
-   /// This method is called once every 32ms if isProcessingTicks returns true
-   /// when called on the object
-   virtual void processTick() = 0;
-
-   /// This method is called once every frame regardless of the return value of
-   /// isProcessingTicks and informs the object of the passage of time.
-   /// @param timeDelta Time increment in seconds.
-   virtual void advanceTime( F32 timeDelta ) = 0;
-
+    /// This method is called every frame and lets the control interpolate between
+    /// ticks so you can smooth things as long as isProcessingTicks returns true
+    /// when it is called on the object
+    virtual void interpolateTick( F32 delta ) = 0;
+    
+    /// This method is called once every 32ms if isProcessingTicks returns true
+    /// when called on the object
+    virtual void processTick() = 0;
+    
+    /// This method is called once every frame regardless of the return value of
+    /// isProcessingTicks and informs the object of the passage of time.
+    /// @param timeDelta Time increment in seconds.
+    virtual void advanceTime( F32 timeDelta ) = 0;
+    
 public:
 
-   /// Constructor
-   /// This will add the object to the process list
-   ITickable();
-
-   /// Destructor
-   /// Remove this object from the process list
-   virtual ~ITickable();
-
-   /// Is this object wanting to receive tick notifications
-   /// @returns True if object wants tick notifications
-   bool isProcessingTicks() const { return mProcessTick; };
-
-   /// Sets this object as either tick processing or not
-   /// @param   tick     True if this object should process ticks
-   virtual void setProcessTicks( bool tick = true );
-
-   /// Initialise the ITickable system.
-   static void init( const U32 tickShift );
-
-   /// Gets the Tick bit-shift.
-   static U32 getTickShift() { return smTickShift; }
-   /// Gets the Tick (ms)
-   static U32 getTickMs() { return smTickMs; }
-   /// Gets the Tick (seconds)
-   static F32 getTickSec() { return smTickSec; }
-   /// Gets the Tick mask.
-   static U32 getTickMask() { return smTickMask; }
-
+    /// Constructor
+    /// This will add the object to the process list
+    ITickable();
+    
+    /// Destructor
+    /// Remove this object from the process list
+    virtual ~ITickable();
+    
+    /// Is this object wanting to receive tick notifications
+    /// @returns True if object wants tick notifications
+    bool isProcessingTicks() const
+    {
+        return mProcessTick;
+    };
+    
+    /// Sets this object as either tick processing or not
+    /// @param   tick     True if this object should process ticks
+    virtual void setProcessTicks( bool tick = true );
+    
+    /// Initialise the ITickable system.
+    static void init( const U32 tickShift );
+    
+    /// Gets the Tick bit-shift.
+    static U32 getTickShift()
+    {
+        return smTickShift;
+    }
+    /// Gets the Tick (ms)
+    static U32 getTickMs()
+    {
+        return smTickMs;
+    }
+    /// Gets the Tick (seconds)
+    static F32 getTickSec()
+    {
+        return smTickSec;
+    }
+    /// Gets the Tick mask.
+    static U32 getTickMask()
+    {
+        return smTickMask;
+    }
+    
 //------------------------------------------------------------------------------
 
-   /// This is called in clientProcess to advance the time for all ITickable
-   /// objects.
-   /// @param timeDelta Time increment in milliseconds.
-   /// @returns True if any ticks were sent
-   /// @see clientProcess
-   static bool advanceTime( U32 timeDelta );
+    /// This is called in clientProcess to advance the time for all ITickable
+    /// objects.
+    /// @param timeDelta Time increment in milliseconds.
+    /// @returns True if any ticks were sent
+    /// @see clientProcess
+    static bool advanceTime( U32 timeDelta );
 };
 
 //------------------------------------------------------------------------------
 
 inline void ITickable::setProcessTicks( bool tick /* = true  */ )
 {
-   mProcessTick = tick;
+    mProcessTick = tick;
 }
 
 #endif

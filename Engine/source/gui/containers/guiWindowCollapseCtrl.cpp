@@ -25,14 +25,14 @@
 IMPLEMENT_CONOBJECT( GuiWindowCollapseCtrl );
 
 ConsoleDocClass( GuiWindowCollapseCtrl,
-   "@deprecated Use GuiWindowCtrl with GuiWindowCtrl::canCollapse = true.\n\n"
-   "@internal"
-);
+                 "@deprecated Use GuiWindowCtrl with GuiWindowCtrl::canCollapse = true.\n\n"
+                 "@internal"
+               );
 
 
 //-----------------------------------------------------------------------------
 
 GuiWindowCollapseCtrl::GuiWindowCollapseCtrl()
 {
-   mCanCollapse = true;
+    mCanCollapse = true;
 }

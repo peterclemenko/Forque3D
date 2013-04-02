@@ -25,19 +25,19 @@
 
 String GFXOcclusionQuery::statusToString( OcclusionQueryStatus status )
 {
-   String outStr;
-   if ( status == GFXOcclusionQuery::Unset )
-      outStr = "Unset";
-   else if ( status == GFXOcclusionQuery::Waiting )
-      outStr = "Waiting";
-   else if ( status == GFXOcclusionQuery::Occluded )
-      outStr = "Occluded";
-   else if ( status == GFXOcclusionQuery::NotOccluded )
-      outStr = "Visible";
-   else if ( status == GFXOcclusionQuery::Error )
-      outStr = "Error";
-   else
-      outStr = "Unknown";
-
-   return outStr;
+    String outStr;
+    if( status == GFXOcclusionQuery::Unset )
+        outStr = "Unset";
+    else if( status == GFXOcclusionQuery::Waiting )
+        outStr = "Waiting";
+    else if( status == GFXOcclusionQuery::Occluded )
+        outStr = "Occluded";
+    else if( status == GFXOcclusionQuery::NotOccluded )
+        outStr = "Visible";
+    else if( status == GFXOcclusionQuery::Error )
+        outStr = "Error";
+    else
+        outStr = "Unknown";
+        
+    return outStr;
 }

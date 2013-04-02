@@ -33,37 +33,37 @@
 class GuiToolboxButtonCtrl : public GuiButtonCtrl
 {
 private:
-   typedef GuiButtonCtrl Parent;
-
+    typedef GuiButtonCtrl Parent;
+    
 protected:
-   StringTableEntry mNormalBitmapName;
-   StringTableEntry mLoweredBitmapName;
-   StringTableEntry mHoverBitmapName;
-
-   GFXTexHandle mTextureNormal;
-   GFXTexHandle mTextureLowered;
-   GFXTexHandle mTextureHover;
-
-   void renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect);
-   void renderStateRect( GFXTexHandle &texture, const RectI& rect );
-
-public:   
-   DECLARE_CONOBJECT(GuiToolboxButtonCtrl);
-   GuiToolboxButtonCtrl();
-
-   static void initPersistFields();
-
-   //Parent methods
-   bool onWake();
-   void onSleep();
-   void inspectPostApply();
-
-   void setNormalBitmap( StringTableEntry bitmapName );
-   void setLoweredBitmap( StringTableEntry bitmapName );
-   void setHoverBitmap( StringTableEntry bitmapName );
-   
-
-   void onRender(Point2I offset, const RectI &updateRect);
+    StringTableEntry mNormalBitmapName;
+    StringTableEntry mLoweredBitmapName;
+    StringTableEntry mHoverBitmapName;
+    
+    GFXTexHandle mTextureNormal;
+    GFXTexHandle mTextureLowered;
+    GFXTexHandle mTextureHover;
+    
+    void renderButton( GFXTexHandle& texture, Point2I& offset, const RectI& updateRect );
+    void renderStateRect( GFXTexHandle& texture, const RectI& rect );
+    
+public:
+    DECLARE_CONOBJECT( GuiToolboxButtonCtrl );
+    GuiToolboxButtonCtrl();
+    
+    static void initPersistFields();
+    
+    //Parent methods
+    bool onWake();
+    void onSleep();
+    void inspectPostApply();
+    
+    void setNormalBitmap( StringTableEntry bitmapName );
+    void setLoweredBitmap( StringTableEntry bitmapName );
+    void setHoverBitmap( StringTableEntry bitmapName );
+    
+    
+    void onRender( Point2I offset, const RectI& updateRect );
 };
 
 

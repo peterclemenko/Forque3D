@@ -31,8 +31,8 @@
 //-----------------------------------------------------------------------------
 
 SFXOneShotModifier::SFXOneShotModifier( SFXSource* source, F32 triggerPos, bool removeWhenDone )
-   : Parent( source, removeWhenDone ),
-     mTriggerPos( triggerPos )
+    : Parent( source, removeWhenDone ),
+      mTriggerPos( triggerPos )
 {
 }
 
@@ -40,13 +40,13 @@ SFXOneShotModifier::SFXOneShotModifier( SFXSource* source, F32 triggerPos, bool 
 
 bool SFXOneShotModifier::update()
 {
-   if( mSource->getElapsedPlayTimeCurrentCycle() >= mTriggerPos )
-   {
-      _onTrigger();
-      return mRemoveWhenDone;
-   }
-   else
-      return true;
+    if( mSource->getElapsedPlayTimeCurrentCycle() >= mTriggerPos )
+    {
+        _onTrigger();
+        return mRemoveWhenDone;
+    }
+    else
+        return true;
 }
 
 //=============================================================================
@@ -56,10 +56,10 @@ bool SFXOneShotModifier::update()
 //-----------------------------------------------------------------------------
 
 SFXRangeModifier::SFXRangeModifier( SFXSource* source, F32 startTime, F32 endTime, bool removeWhenDone )
-   : Parent( source, removeWhenDone ),
-     mStartTime( startTime ),
-     mEndTime( endTime ),
-     mIsActive( false )
+    : Parent( source, removeWhenDone ),
+      mStartTime( startTime ),
+      mEndTime( endTime ),
+      mIsActive( false )
 {
 }
 
@@ -67,34 +67,34 @@ SFXRangeModifier::SFXRangeModifier( SFXSource* source, F32 startTime, F32 endTim
 
 bool SFXRangeModifier::update()
 {
-   if( !isActive() )
-   {
-      SFXStatus status = mSource->getStatus();
-      if( ( status == SFXStatusPlaying || status == SFXStatusBlocked )
-          && mSource->getElapsedPlayTimeCurrentCycle() >= mStartTime )
-      {
-         mIsActive = true;
-         _onStart();
-      }
-   }
-   
-   if( isActive() )
-      _onUpdate();
-      
-   if( isActive() )
-   {
-      SFXStatus status = mSource->getStatus();
-      if( ( status == SFXStatusPlaying || status == SFXStatusBlocked )
-          && mSource->getElapsedPlayTimeCurrentCycle() > mEndTime )
-      {
-         _onEnd();
-         mIsActive = false;
-         
-         return mRemoveWhenDone;
-      }
-   }
-   
-   return true;
+    if( !isActive() )
+    {
+        SFXStatus status = mSource->getStatus();
+        if( ( status == SFXStatusPlaying || status == SFXStatusBlocked )
+                && mSource->getElapsedPlayTimeCurrentCycle() >= mStartTime )
+        {
+            mIsActive = true;
+            _onStart();
+        }
+    }
+    
+    if( isActive() )
+        _onUpdate();
+        
+    if( isActive() )
+    {
+        SFXStatus status = mSource->getStatus();
+        if( ( status == SFXStatusPlaying || status == SFXStatusBlocked )
+                && mSource->getElapsedPlayTimeCurrentCycle() > mEndTime )
+        {
+            _onEnd();
+            mIsActive = false;
+            
+            return mRemoveWhenDone;
+        }
+    }
+    
+    return true;
 }
 
 //=============================================================================
@@ -104,74 +104,75 @@ bool SFXRangeModifier::update()
 //-----------------------------------------------------------------------------
 
 SFXFadeModifier::SFXFadeModifier( SFXSource* source, F32 time, F32 endVolume, F32 startTime, EOnEnd onEndDo, bool removeWhenDone )
-   : Parent( source, startTime, startTime + time, removeWhenDone ),
-     mEndVolume( endVolume ),
-     mOnEnd( onEndDo )
+    : Parent( source, startTime, startTime + time, removeWhenDone ),
+      mEndVolume( endVolume ),
+      mOnEnd( onEndDo )
 {
-   
+
 }
 
 //-----------------------------------------------------------------------------
 
 SFXFadeModifier::~SFXFadeModifier()
 {
-   // If the fade is still ongoing, restore the source's volume.
-   // For fade-in, set to end volume.  For fade-out, set to start volume.
-   
-   if( isActive() )
-   {
-      if( mStartVolume > mEndVolume )
-         mSource->setVolume( mStartVolume );
-      else
-         mSource->setVolume( mEndVolume );
-   }
+    // If the fade is still ongoing, restore the source's volume.
+    // For fade-in, set to end volume.  For fade-out, set to start volume.
+    
+    if( isActive() )
+    {
+        if( mStartVolume > mEndVolume )
+            mSource->setVolume( mStartVolume );
+        else
+            mSource->setVolume( mEndVolume );
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SFXFadeModifier::_onStart()
 {
-   mStartVolume = mSource->getVolume();
-   mCurrentVolume = mStartVolume;
+    mStartVolume = mSource->getVolume();
+    mCurrentVolume = mStartVolume;
 }
 
 //-----------------------------------------------------------------------------
 
 void SFXFadeModifier::_onUpdate()
 {
-   F32 multiplier = ( mSource->getElapsedPlayTimeCurrentCycle() - mStartTime ) / ( mEndTime - mStartTime );
-
-   F32 newVolume;
-   if( mStartVolume > mEndVolume )
-      newVolume = mStartVolume - ( ( mStartVolume - mEndVolume ) * multiplier );
-   else
-      newVolume = mStartVolume + ( ( mEndVolume - mStartVolume ) * multiplier );
-      
-   if( newVolume != mCurrentVolume )
-   {
-      mCurrentVolume = newVolume;
-      mSource->setVolume( mCurrentVolume );
-   }
+    F32 multiplier = ( mSource->getElapsedPlayTimeCurrentCycle() - mStartTime ) / ( mEndTime - mStartTime );
+    
+    F32 newVolume;
+    if( mStartVolume > mEndVolume )
+        newVolume = mStartVolume - ( ( mStartVolume - mEndVolume ) * multiplier );
+    else
+        newVolume = mStartVolume + ( ( mEndVolume - mStartVolume ) * multiplier );
+        
+    if( newVolume != mCurrentVolume )
+    {
+        mCurrentVolume = newVolume;
+        mSource->setVolume( mCurrentVolume );
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SFXFadeModifier::_onEnd()
 {
-   mSource->setVolume( mEndVolume );
-   
-   switch( mOnEnd )
-   {
-      case ON_END_Pause:
-         mSource->pause( 0.f ); // Pause without fade.
-         break;
-         
-      case ON_END_Stop:
-         mSource->stop( 0.f ); // Stop without fade.
-         break;
-         
-      case ON_END_Nop: ;
-   }
+    mSource->setVolume( mEndVolume );
+    
+    switch( mOnEnd )
+    {
+        case ON_END_Pause:
+            mSource->pause( 0.f ); // Pause without fade.
+            break;
+            
+        case ON_END_Stop:
+            mSource->stop( 0.f ); // Stop without fade.
+            break;
+            
+        case ON_END_Nop:
+            ;
+    }
 }
 
 //=============================================================================
@@ -181,8 +182,8 @@ void SFXFadeModifier::_onEnd()
 //-----------------------------------------------------------------------------
 
 SFXMarkerModifier::SFXMarkerModifier( SFXSource* source, const String& name, F32 pos, bool removeWhenDone )
-   : Parent( source, pos, removeWhenDone ),
-     mMarkerName( name )
+    : Parent( source, pos, removeWhenDone ),
+      mMarkerName( name )
 {
 }
 
@@ -190,5 +191,5 @@ SFXMarkerModifier::SFXMarkerModifier( SFXSource* source, const String& name, F32
 
 void SFXMarkerModifier::_onTrigger()
 {
-   Con::executef( mSource, "onMarkerPassed", mMarkerName.c_str() );
+    Con::executef( mSource, "onMarkerPassed", mMarkerName.c_str() );
 }

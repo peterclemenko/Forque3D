@@ -37,41 +37,53 @@ class MatStateHint
 {
 public:
 
-   /// Constructor.
-   MatStateHint() {}
-
-   /// Constructor for building special hints.
-   MatStateHint( const String &state ) 
-	   : mState( state.intern() )
-   {
-   }
-
-   /// Initialize the state hint from a ProcessMaterial.  This
-   /// assumes that the ProcessedMaterial has properly initialized
-   /// its passes to describe the material uniquely.
-   void init( const ProcessedMaterial *mat );
-
-   /// Clears the hint.
-   void clear() { mState.clear(); }
-
-   /// Returns a 32bit hash key used for sorting by material state.
-   operator U32() const { return mState.getHashCaseSensitive(); }
-
-   /// Fast comparision of state for equality.
-   bool operator ==( const MatStateHint& hint ) const { return mState == hint.mState; }
-
-   /// Fast comparision of state for inequality.
-   bool operator !=( const MatStateHint& hint ) const { return mState != hint.mState; }
-
-   /// A default state hint.
-   static const MatStateHint Default;
-
+    /// Constructor.
+    MatStateHint() {}
+    
+    /// Constructor for building special hints.
+    MatStateHint( const String& state )
+        : mState( state.intern() )
+    {
+    }
+    
+    /// Initialize the state hint from a ProcessMaterial.  This
+    /// assumes that the ProcessedMaterial has properly initialized
+    /// its passes to describe the material uniquely.
+    void init( const ProcessedMaterial* mat );
+    
+    /// Clears the hint.
+    void clear()
+    {
+        mState.clear();
+    }
+    
+    /// Returns a 32bit hash key used for sorting by material state.
+    operator U32() const
+    {
+        return mState.getHashCaseSensitive();
+    }
+    
+    /// Fast comparision of state for equality.
+    bool operator ==( const MatStateHint& hint ) const
+    {
+        return mState == hint.mState;
+    }
+    
+    /// Fast comparision of state for inequality.
+    bool operator !=( const MatStateHint& hint ) const
+    {
+        return mState != hint.mState;
+    }
+    
+    /// A default state hint.
+    static const MatStateHint Default;
+    
 protected:
 
-   /// An interned string of the combined material shader and state info
-   /// for evert pass of the processed material.
-   String mState;
-   
+    /// An interned string of the combined material shader and state info
+    /// for evert pass of the processed material.
+    String mState;
+    
 };
 
 #endif // _MATSTATEHINT_H_

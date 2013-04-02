@@ -28,19 +28,19 @@ MaterialFeatureData::MaterialFeatureData()
 {
 }
 
-MaterialFeatureData::MaterialFeatureData( const MaterialFeatureData &data )
-   :  features( data.features ),
-      materialFeatures( data.materialFeatures )
+MaterialFeatureData::MaterialFeatureData( const MaterialFeatureData& data )
+    :  features( data.features ),
+       materialFeatures( data.materialFeatures )
 {
 }
 
-MaterialFeatureData::MaterialFeatureData( const FeatureSet &handle )
-   :  features( handle )
+MaterialFeatureData::MaterialFeatureData( const FeatureSet& handle )
+    :  features( handle )
 {
 }
 
 void MaterialFeatureData::clear()
 {
-   features.clear();
-   materialFeatures.clear();
+    features.clear();
+    materialFeatures.clear();
 }

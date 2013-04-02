@@ -40,51 +40,54 @@ class PhysicsWorld;
 /// A physics force controller used for gameplay effects.
 class PhysicsForce : public SceneObject
 {
-   typedef SceneObject Parent;
-
+    typedef SceneObject Parent;
+    
 public:
 
-   PhysicsForce();
-   virtual ~PhysicsForce();
-
-   DECLARE_CONOBJECT( PhysicsForce );
-
-   // SimObject
-   static void initPersistFields();
-   bool onAdd();
-   void onRemove();   
-   
-   // SceneObject
-   void onMount( SceneObject *obj, S32 node );
-   void onUnmount( SceneObject *obj, S32 node );
-
-   // ProcessObject
-   void processTick( const Move *move );
-
-   ///
-   void attach( const Point3F &start, const Point3F &direction, F32 maxDist );
-
-   ///
-   void detach( const Point3F &force = Point3F::Zero );
-
-   ///
-   bool isAttached() const { return mBody != NULL; }
-
+    PhysicsForce();
+    virtual ~PhysicsForce();
+    
+    DECLARE_CONOBJECT( PhysicsForce );
+    
+    // SimObject
+    static void initPersistFields();
+    bool onAdd();
+    void onRemove();
+    
+    // SceneObject
+    void onMount( SceneObject* obj, S32 node );
+    void onUnmount( SceneObject* obj, S32 node );
+    
+    // ProcessObject
+    void processTick( const Move* move );
+    
+    ///
+    void attach( const Point3F& start, const Point3F& direction, F32 maxDist );
+    
+    ///
+    void detach( const Point3F& force = Point3F::Zero );
+    
+    ///
+    bool isAttached() const
+    {
+        return mBody != NULL;
+    }
+    
 protected:
 
-   void _preTick();
-
-   ///
-   PhysicsWorld *mWorld;
-
-   F32 mForce;
-
-   ///
-   bool mPhysicsTick;
-
-   ///
-   WeakRefPtr<PhysicsBody> mBody;
-
+    void _preTick();
+    
+    ///
+    PhysicsWorld* mWorld;
+    
+    F32 mForce;
+    
+    ///
+    bool mPhysicsTick;
+    
+    ///
+    WeakRefPtr<PhysicsBody> mBody;
+    
 };
 
 

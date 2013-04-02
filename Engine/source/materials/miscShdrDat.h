@@ -37,21 +37,21 @@
 //-----------------------------------------------------------------------
 enum RegisterType
 {
-   RT_POSITION = 0,
-   RT_NORMAL,
-   RT_BINORMAL,
-   RT_TANGENT,
-   RT_COLOR,
-   RT_TEXCOORD,
-   RT_VPOS,
+    RT_POSITION = 0,
+    RT_NORMAL,
+    RT_BINORMAL,
+    RT_TANGENT,
+    RT_COLOR,
+    RT_TEXCOORD,
+    RT_VPOS,
 };
 
 enum Components
 {
-   C_VERT_STRUCT = 0,
-   C_CONNECTOR,
-   C_VERT_MAIN,
-   C_PIX_MAIN,
+    C_VERT_STRUCT = 0,
+    C_CONNECTOR,
+    C_VERT_MAIN,
+    C_PIX_MAIN,
 };
 
 #endif // _MISCSHDRDAT_H_

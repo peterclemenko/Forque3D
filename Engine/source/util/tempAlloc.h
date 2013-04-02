@@ -31,29 +31,29 @@
 template< typename T >
 struct TempAlloc
 {
-   T* ptr;
-   U32 size;
-
-   TempAlloc()
-      : size( 0 ), ptr( 0 ) {}
-   TempAlloc( U32 size )
-      : size( size )
-   {
-      ptr = ( T* ) dMalloc( size * sizeof( T ) );
-   }
-   ~TempAlloc()
-   {
-      if( ptr )
-         dFree( ptr );
-   }
-   operator T*()
-   {
-      return ptr;
-   }
-
+    T* ptr;
+    U32 size;
+    
+    TempAlloc()
+        : size( 0 ), ptr( 0 ) {}
+    TempAlloc( U32 size )
+        : size( size )
+    {
+        ptr = ( T* ) dMalloc( size * sizeof( T ) );
+    }
+    ~TempAlloc()
+    {
+        if( ptr )
+            dFree( ptr );
+    }
+    operator T* ()
+    {
+        return ptr;
+    }
+    
 private:
-   // Not safe.
-   TempAlloc( const TempAlloc& ) {}
+    // Not safe.
+    TempAlloc( const TempAlloc& ) {}
 };
 
 #endif // _TEMPALLOC_H_

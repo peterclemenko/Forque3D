@@ -34,31 +34,31 @@ class TSDecalMesh
 {
 public:
 
-   /// The mesh that we are decaling
-   TSMesh * targetMesh;
-
-   /// @name Topology
-   /// @{
-   Vector<TSDrawPrimitive> primitives;
-   Vector<U16> indices;
-   /// @}
-
-   /// @name Render Data
-   /// indexed by decal frame...
-   /// @{
-   Vector<S32> startPrimitive;
-   Vector<Point4F> texgenS;
-   Vector<Point4F> texgenT;
-   /// @}
-
-   /// We only allow 1 material per decal...
-   S32 materialIndex;
-
-   /// DEPRECATED
-   // void render(S32 frame, S32 decalFrame, TSMaterialList *);
-
-   void disassemble();
-   void assemble(bool skip);
+    /// The mesh that we are decaling
+    TSMesh* targetMesh;
+    
+    /// @name Topology
+    /// @{
+    Vector<TSDrawPrimitive> primitives;
+    Vector<U16> indices;
+    /// @}
+    
+    /// @name Render Data
+    /// indexed by decal frame...
+    /// @{
+    Vector<S32> startPrimitive;
+    Vector<Point4F> texgenS;
+    Vector<Point4F> texgenT;
+    /// @}
+    
+    /// We only allow 1 material per decal...
+    S32 materialIndex;
+    
+    /// DEPRECATED
+    // void render(S32 frame, S32 decalFrame, TSMaterialList *);
+    
+    void disassemble();
+    void assemble( bool skip );
 };
 
 

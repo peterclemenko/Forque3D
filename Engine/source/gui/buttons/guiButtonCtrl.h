@@ -29,14 +29,14 @@
 
 class GuiButtonCtrl : public GuiButtonBaseCtrl
 {
-   typedef GuiButtonBaseCtrl Parent;
+    typedef GuiButtonBaseCtrl Parent;
 protected:
-   bool mHasTheme;
+    bool mHasTheme;
 public:
-   DECLARE_CONOBJECT(GuiButtonCtrl);
-   GuiButtonCtrl();
-   bool onWake();
-   void onRender(Point2I offset, const RectI &updateRect);
+    DECLARE_CONOBJECT( GuiButtonCtrl );
+    GuiButtonCtrl();
+    bool onWake();
+    void onRender( Point2I offset, const RectI& updateRect );
 };
 
 #endif //_GUI_BUTTON_CTRL_H

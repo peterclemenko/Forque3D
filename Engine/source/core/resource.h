@@ -60,18 +60,21 @@ class ResourceManager;
 class ResourceHolderBase
 {
 public:
-   static FreeListChunker<ResourceHolderBase> smHolderFactory;
-
-   virtual ~ResourceHolderBase() {}
-   
-   // Return void pointer to resource data.
-   void *getResource() const { return mRes; }
-
+    static FreeListChunker<ResourceHolderBase> smHolderFactory;
+    
+    virtual ~ResourceHolderBase() {}
+    
+    // Return void pointer to resource data.
+    void* getResource() const
+    {
+        return mRes;
+    }
+    
 protected:
-   // Construct a resource holder pointing at 'p'.
-   ResourceHolderBase(void *p) : mRes(p) {}
-
-   void *mRes;
+    // Construct a resource holder pointing at 'p'.
+    ResourceHolderBase( void* p ) : mRes( p ) {}
+    
+    void* mRes;
 };
 
 // All resources are derived from this type.  The base type
@@ -83,107 +86,122 @@ protected:
 // derived resource.
 class ResourceBase
 {
-   friend class ResourceManager;
- 
+    friend class ResourceManager;
+    
 protected:
-   class Header;
-
+    class Header;
+    
 public:
-   typedef U32 Signature;
-
+    typedef U32 Signature;
+    
 public:
-   ResourceBase(Header *header) { mResourceHeader = (header ? header : &smBlank); }
-   virtual ~ResourceBase() {}
-
-   const Torque::Path &getPath() const
-   {
-      AssertFatal(mResourceHeader != NULL,"ResourceBase::getPath called on invalid resource");
-      return mResourceHeader->getPath();
-   }
-
-   U32   getChecksum() const
-   {
-      AssertFatal(mResourceHeader != NULL,"ResourceBase::getChecksum called on invalid resource");
-      return mResourceHeader->getChecksum();
-   }
-
+    ResourceBase( Header* header )
+    {
+        mResourceHeader = ( header ? header : &smBlank );
+    }
+    virtual ~ResourceBase() {}
+    
+    const Torque::Path& getPath() const
+    {
+        AssertFatal( mResourceHeader != NULL, "ResourceBase::getPath called on invalid resource" );
+        return mResourceHeader->getPath();
+    }
+    
+    U32   getChecksum() const
+    {
+        AssertFatal( mResourceHeader != NULL, "ResourceBase::getChecksum called on invalid resource" );
+        return mResourceHeader->getChecksum();
+    }
+    
 protected:
 
-   typedef void ( *NotifyUnloadFn )( const Torque::Path& path, void* resource );
-
-   class Header : public StrongRefBase
-   {
-   public:
-      Header()
-      : mSignature(0),
-         mResource(NULL),
-         mNotifyUnload( NULL )
-      {
-      }
-
-      const Torque::Path   &getPath() const { return mPath; }
-
-      Signature   getSignature() const { return mSignature; }
-      void *getResource() const { return (mResource ? mResource->getResource() : NULL); }
-      U32   getChecksum() const;
-
-      virtual void destroySelf();
-
-   private:
-      
-      friend class ResourceBase;
-      friend class ResourceManager;
-
-      Signature            mSignature;
-      ResourceHolderBase*  mResource;
-      Torque::Path         mPath;
-      NotifyUnloadFn       mNotifyUnload;
-   };
-
+    typedef void ( *NotifyUnloadFn )( const Torque::Path& path, void* resource );
+    
+    class Header : public StrongRefBase
+    {
+    public:
+        Header()
+            : mSignature( 0 ),
+              mResource( NULL ),
+              mNotifyUnload( NULL )
+        {
+        }
+        
+        const Torque::Path&   getPath() const
+        {
+            return mPath;
+        }
+        
+        Signature   getSignature() const
+        {
+            return mSignature;
+        }
+        void* getResource() const
+        {
+            return ( mResource ? mResource->getResource() : NULL );
+        }
+        U32   getChecksum() const;
+        
+        virtual void destroySelf();
+        
+    private:
+    
+        friend class ResourceBase;
+        friend class ResourceManager;
+        
+        Signature            mSignature;
+        ResourceHolderBase*  mResource;
+        Torque::Path         mPath;
+        NotifyUnloadFn       mNotifyUnload;
+    };
+    
 protected:
-   static Header  smBlank;
-   ResourceBase() : mResourceHeader(&smBlank) {}
-
-   StrongRefPtr<Header> mResourceHeader;
-
-   void assign(const ResourceBase &inResource, void* resource = NULL);
-
-   // The following functions are virtual, but cannot be pure-virtual
-   // because we need to be able to instantiate this class.
-
-   // To be defined by derived class.  Creates a resource
-   // holder of the desired type.  Resource template handles
-   // this, so one should never need to override.
-   virtual ResourceHolderBase *createHolder(void *)
-   {
-      AssertFatal(0,"ResourceBase::createHolder: should not be called");
-      return NULL;
-   }
-
-   // Create a Resource of desired type using passed path.  Derived
-   // resource class must define this.
-   virtual void *create(const Torque::Path &path)
-   {
-      AssertFatal(0,"ResourceBase::create: should not be called");
-      return NULL;
-   }
-
-   // Return signature for desired type.
-   virtual Signature getSignature() const
-   {
-      return mResourceHeader->getSignature();
-   }
-
-   virtual Signal<bool(const Torque::Path &, void**)>   &getStaticLoadSignal()
-   {
-      AssertFatal(0,"ResourceBase::getStaticLoadSignal: should not be called");
-      static Signal<bool(const Torque::Path &, void**)>   sLoadSignal;
-
-      return sLoadSignal;
-   }
-   
-   virtual void _triggerPostLoadSignal() {}
-   virtual NotifyUnloadFn _getNotifyUnloadFn() { return ( NotifyUnloadFn ) NULL; }
+    static Header  smBlank;
+    ResourceBase() : mResourceHeader( &smBlank ) {}
+    
+    StrongRefPtr<Header> mResourceHeader;
+    
+    void assign( const ResourceBase& inResource, void* resource = NULL );
+    
+    // The following functions are virtual, but cannot be pure-virtual
+    // because we need to be able to instantiate this class.
+    
+    // To be defined by derived class.  Creates a resource
+    // holder of the desired type.  Resource template handles
+    // this, so one should never need to override.
+    virtual ResourceHolderBase* createHolder( void* )
+    {
+        AssertFatal( 0, "ResourceBase::createHolder: should not be called" );
+        return NULL;
+    }
+    
+    // Create a Resource of desired type using passed path.  Derived
+    // resource class must define this.
+    virtual void* create( const Torque::Path& path )
+    {
+        AssertFatal( 0, "ResourceBase::create: should not be called" );
+        return NULL;
+    }
+    
+    // Return signature for desired type.
+    virtual Signature getSignature() const
+    {
+        return mResourceHeader->getSignature();
+    }
+    
+    virtual Signal<bool( const Torque::Path&, void** )>&   getStaticLoadSignal()
+    {
+        AssertFatal( 0, "ResourceBase::getStaticLoadSignal: should not be called" );
+        static Signal<bool( const Torque::Path&, void** )>   sLoadSignal;
+        
+        return sLoadSignal;
+    }
+    
+    virtual void _triggerPostLoadSignal() {}
+    virtual NotifyUnloadFn _getNotifyUnloadFn()
+    {
+        return ( NotifyUnloadFn ) NULL;
+    }
 };
 
 // This is a utility class used by resource manager.  Classes derived
@@ -192,8 +210,11 @@ protected:
 template<class T> class ResourceHolder : public ResourceHolderBase
 {
 public:
-   ResourceHolder(T *t) : ResourceHolderBase(t) {}
-   virtual ~ResourceHolder() { delete ((T*)mRes); }
+    ResourceHolder( T* t ) : ResourceHolderBase( t ) {}
+    virtual ~ResourceHolder()
+    {
+        delete( ( T* )mRes );
+    }
 };
 
 // Resource template.  When dealing with resources, this is the
@@ -208,78 +229,126 @@ public:
 template<class T> class Resource : public ResourceBase
 {
 public:
-   Resource() {}
-   Resource(const ResourceBase &base) { assign(base); }
-
-   void operator=(const ResourceBase & base) { assign(base); }
-   T* operator->()              { return getResource(); }
-   T& operator*()               { return *getResource(); }
-   operator T*()                { return getResource(); }
-   const T* operator->() const  { return getResource(); }
-   const T& operator*() const   { return *getResource(); }
-   operator const T*() const    { return getResource(); }
-
-   void setResource(const ResourceBase & base, void* resource) { assign(base, resource); }
-
-   static Signature  signature();
-
-   /// Registering with this signal will give an opportunity to handle resource
-   /// creation before calling the create() function.  This may be used to handle
-   /// file extensions differently and allow a more plugin-like approach to
-   /// adding resources.  Using this mechanism, one could, for example, override
-   /// the default methods for loading DTS without touching the main source.
-   static Signal<bool(const Torque::Path &, void**)>  &getLoadSignal()
-   {
-      static Signal<bool(const Torque::Path &, void**)>   sLoadSignal;
-      return sLoadSignal;
-   }
-   
-   /// Register with this signal to get notified when resources of this type
-   /// have been loaded.
-   static Signal< void( Resource< T >& ) >& getPostLoadSignal()
-   {
-      static Signal< void( Resource< T >& ) > sPostLoadSignal;
-      return sPostLoadSignal;
-   }
-   
-   /// Register with this signal to get notified when resources of this type
-   /// are about to get unloaded.
-   static Signal< void( const Torque::Path&, T* ) >& getUnloadSignal()
-   {
-      static Signal< void( const Torque::Path&, T* ) > sUnloadSignal;
-      return sUnloadSignal;
-   }
-
+    Resource() {}
+    Resource( const ResourceBase& base )
+    {
+        assign( base );
+    }
+    
+    void operator=( const ResourceBase& base )
+    {
+        assign( base );
+    }
+    T* operator->()
+    {
+        return getResource();
+    }
+    T& operator*()
+    {
+        return *getResource();
+    }
+    operator T* ()
+    {
+        return getResource();
+    }
+    const T* operator->() const
+    {
+        return getResource();
+    }
+    const T& operator*() const
+    {
+        return *getResource();
+    }
+    operator const T* () const
+    {
+        return getResource();
+    }
+    
+    void setResource( const ResourceBase& base, void* resource )
+    {
+        assign( base, resource );
+    }
+    
+    static Signature  signature();
+    
+    /// Registering with this signal will give an opportunity to handle resource
+    /// creation before calling the create() function.  This may be used to handle
+    /// file extensions differently and allow a more plugin-like approach to
+    /// adding resources.  Using this mechanism, one could, for example, override
+    /// the default methods for loading DTS without touching the main source.
+    static Signal<bool( const Torque::Path&, void** )>&  getLoadSignal()
+    {
+        static Signal<bool( const Torque::Path&, void** )>   sLoadSignal;
+        return sLoadSignal;
+    }
+    
+    /// Register with this signal to get notified when resources of this type
+    /// have been loaded.
+    static Signal< void( Resource< T >& ) >& getPostLoadSignal()
+    {
+        static Signal< void( Resource< T >& ) > sPostLoadSignal;
+        return sPostLoadSignal;
+    }
+    
+    /// Register with this signal to get notified when resources of this type
+    /// are about to get unloaded.
+    static Signal< void( const Torque::Path&, T* ) >& getUnloadSignal()
+    {
+        static Signal< void( const Torque::Path&, T* ) > sUnloadSignal;
+        return sUnloadSignal;
+    }
+    
 private:
-   T        *getResource() { return (T*)mResourceHeader->getResource(); }
-   const T  *getResource() const { return (T*)mResourceHeader->getResource(); }
-
-   Signature   getSignature() const { return Resource<T>::signature(); }
-
-   ResourceHolderBase   *createHolder(void *);
-
-   Signal<bool(const Torque::Path &, void**)>   &getStaticLoadSignal() { return getLoadSignal(); }
-   
-   static void _notifyUnload( const Torque::Path& path, void* resource ) { getUnloadSignal().trigger( path, ( T* ) resource ); }
-   
-   virtual void _triggerPostLoadSignal() { getPostLoadSignal().trigger( *this ); }
-   virtual NotifyUnloadFn _getNotifyUnloadFn() { return ( NotifyUnloadFn ) &_notifyUnload; }
-
-   // These are to be define by instantiated resources
-   // No generic version is provided...however, since
-   // base resources are instantiated by resource manager,
-   // these are not pure virtuals if undefined (but will assert)...
-   void *create(const Torque::Path &path);
+    T*        getResource()
+    {
+        return ( T* )mResourceHeader->getResource();
+    }
+    const T*  getResource() const
+    {
+        return ( T* )mResourceHeader->getResource();
+    }
+    
+    Signature   getSignature() const
+    {
+        return Resource<T>::signature();
+    }
+    
+    ResourceHolderBase*   createHolder( void* );
+    
+    Signal<bool( const Torque::Path&, void** )>&   getStaticLoadSignal()
+    {
+        return getLoadSignal();
+    }
+    
+    static void _notifyUnload( const Torque::Path& path, void* resource )
+    {
+        getUnloadSignal().trigger( path, ( T* ) resource );
+    }
+    
+    virtual void _triggerPostLoadSignal()
+    {
+        getPostLoadSignal().trigger( *this );
+    }
+    virtual NotifyUnloadFn _getNotifyUnloadFn()
+    {
+        return ( NotifyUnloadFn ) &_notifyUnload;
+    }
+    
+    // These are to be define by instantiated resources
+    // No generic version is provided...however, since
+    // base resources are instantiated by resource manager,
+    // these are not pure virtuals if undefined (but will assert)...
+    void* create( const Torque::Path& path );
 };
 
 
-template<class T> inline ResourceHolderBase *Resource<T>::createHolder(void *ptr)
+template<class T> inline ResourceHolderBase* Resource<T>::createHolder( void* ptr )
 {
-   ResourceHolder<T> *resHolder = (ResourceHolder<T>*)(ResourceHolderBase::smHolderFactory.alloc());
-
-   resHolder = constructInPlace(resHolder,(T*)ptr);
-
-   return resHolder;
+    ResourceHolder<T>* resHolder = ( ResourceHolder<T>* )( ResourceHolderBase::smHolderFactory.alloc() );
+    
+    resHolder = constructInPlace( resHolder, ( T* )ptr );
+    
+    return resHolder;
 }
 
 //-----------------------------------------------------------------------------
@@ -292,32 +361,32 @@ template <class T>
 class ResourceRegisterLoadSignal
 {
 public:
-   ResourceRegisterLoadSignal( Delegate<bool(const Torque::Path &, void **)> func )
-   {
-      Resource<T>::getLoadSignal().notify( func );
-   }
+    ResourceRegisterLoadSignal( Delegate<bool( const Torque::Path&, void** )> func )
+    {
+        Resource<T>::getLoadSignal().notify( func );
+    }
 };
 
 template< class T >
 class ResourceRegisterPostLoadSignal
 {
-   public:
-   
-      ResourceRegisterPostLoadSignal( Delegate< void( Resource< T >& ) > func )
-      {
-         Resource< T >::getPostLoadSignal().notify( func );
-      }
+public:
+
+    ResourceRegisterPostLoadSignal( Delegate< void( Resource< T >& ) > func )
+    {
+        Resource< T >::getPostLoadSignal().notify( func );
+    }
 };
 
 template< class T >
 class ResourceRegisterUnloadSignal
 {
-   public:
-   
-      ResourceRegisterUnloadSignal( Delegate< void( const Torque::Path&, T* ) > func )
-      {
-         Resource< T >::getUnloadSignal().notify( func );
-      }
+public:
+
+    ResourceRegisterUnloadSignal( Delegate< void( const Torque::Path&, T* ) > func )
+    {
+        Resource< T >::getUnloadSignal().notify( func );
+    }
 };
 
 #endif // __RESOURCE_H__

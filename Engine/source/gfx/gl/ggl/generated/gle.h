@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 typedef int ptrdiff_t;
-typedef void (*GLFunction)();
+typedef void ( *GLFunction )();
 
 #ifdef GL_VERSION_1_2
 #define GL_UNSIGNED_BYTE_3_3_2 0x8032

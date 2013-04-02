@@ -36,8 +36,8 @@ CameraFXManager gCamFXMgr;
 //**************************************************************************
 CameraFX::CameraFX()
 {
-   mElapsedTime = 0.0;
-   mDuration = 1.0;
+    mElapsedTime = 0.0;
+    mDuration = 1.0;
 }
 
 //--------------------------------------------------------------------------
@@ -45,7 +45,7 @@ CameraFX::CameraFX()
 //--------------------------------------------------------------------------
 void CameraFX::update( F32 dt )
 {
-   mElapsedTime += dt;
+    mElapsedTime += dt;
 }
 
 
@@ -57,22 +57,22 @@ void CameraFX::update( F32 dt )
 //**************************************************************************
 CameraShake::CameraShake()
 {
-   mFreq.zero();
-   mAmp.zero();
-   mStartAmp.zero();
-   mTimeOffset.zero();
-   mCamFXTrans.identity();
-   mFalloff = 10.0;
-   remoteControlled = false;
-   isAdded = false;
+    mFreq.zero();
+    mAmp.zero();
+    mStartAmp.zero();
+    mTimeOffset.zero();
+    mCamFXTrans.identity();
+    mFalloff = 10.0;
+    remoteControlled = false;
+    isAdded = false;
 }
 
 bool CameraShake::isExpired()
 {
-   if ( remoteControlled )
-      return false;
-
-   return Parent::isExpired();
+    if( remoteControlled )
+        return false;
+        
+    return Parent::isExpired();
 }
 
 //--------------------------------------------------------------------------
@@ -80,26 +80,26 @@ bool CameraShake::isExpired()
 //--------------------------------------------------------------------------
 void CameraShake::update( F32 dt )
 {
-   Parent::update( dt );
-
-   if ( !remoteControlled )
-      fadeAmplitude();
-   else
-      mAmp = mStartAmp;
-
-   VectorF camOffset;
-   camOffset.x = mAmp.x * sin( M_2PI * (mTimeOffset.x + mElapsedTime) * mFreq.x );
-   camOffset.y = mAmp.y * sin( M_2PI * (mTimeOffset.y + mElapsedTime) * mFreq.y );
-   camOffset.z = mAmp.z * sin( M_2PI * (mTimeOffset.z + mElapsedTime) * mFreq.z );
-
-   VectorF rotAngles;
-   rotAngles.x = camOffset.x * 10.0 * M_PI/180.0;
-   rotAngles.y = camOffset.y * 10.0 * M_PI/180.0;
-   rotAngles.z = camOffset.z * 10.0 * M_PI/180.0;
-   MatrixF rotMatrix( EulerF( rotAngles.x, rotAngles.y, rotAngles.z ) );
-
-   mCamFXTrans = rotMatrix;
-   mCamFXTrans.setPosition( camOffset );
+    Parent::update( dt );
+    
+    if( !remoteControlled )
+        fadeAmplitude();
+    else
+        mAmp = mStartAmp;
+        
+    VectorF camOffset;
+    camOffset.x = mAmp.x * sin( M_2PI * ( mTimeOffset.x + mElapsedTime ) * mFreq.x );
+    camOffset.y = mAmp.y * sin( M_2PI * ( mTimeOffset.y + mElapsedTime ) * mFreq.y );
+    camOffset.z = mAmp.z * sin( M_2PI * ( mTimeOffset.z + mElapsedTime ) * mFreq.z );
+    
+    VectorF rotAngles;
+    rotAngles.x = camOffset.x * 10.0 * M_PI / 180.0;
+    rotAngles.y = camOffset.y * 10.0 * M_PI / 180.0;
+    rotAngles.z = camOffset.z * 10.0 * M_PI / 180.0;
+    MatrixF rotMatrix( EulerF( rotAngles.x, rotAngles.y, rotAngles.z ) );
+    
+    mCamFXTrans = rotMatrix;
+    mCamFXTrans.setPosition( camOffset );
 }
 
 //--------------------------------------------------------------------------
@@ -107,13 +107,13 @@ void CameraShake::update( F32 dt )
 //--------------------------------------------------------------------------
 void CameraShake::fadeAmplitude()
 {
-   F32 percentDone = (mElapsedTime / mDuration);
-   if( percentDone > 1.0 ) percentDone = 1.0;
-
-   F32 time = 1 + percentDone * mFalloff;
-   time = 1 / (time * time);
-
-   mAmp = mStartAmp * time;
+    F32 percentDone = ( mElapsedTime / mDuration );
+    if( percentDone > 1.0 ) percentDone = 1.0;
+    
+    F32 time = 1 + percentDone * mFalloff;
+    time = 1 / ( time * time );
+    
+    mAmp = mStartAmp * time;
 }
 
 //--------------------------------------------------------------------------
@@ -121,9 +121,9 @@ void CameraShake::fadeAmplitude()
 //--------------------------------------------------------------------------
 void CameraShake::init()
 {
-   mTimeOffset.x = 0.0;
-   mTimeOffset.y = gRandGen.randF();
-   mTimeOffset.z = gRandGen.randF();
+    mTimeOffset.x = 0.0;
+    mTimeOffset.y = gRandGen.randF();
+    mTimeOffset.z = gRandGen.randF();
 }
 
 //**************************************************************************
@@ -131,7 +131,7 @@ void CameraShake::init()
 //**************************************************************************
 CameraFXManager::CameraFXManager()
 {
-   mCamFXTrans.identity();
+    mCamFXTrans.identity();
 }
 
 //--------------------------------------------------------------------------
@@ -139,30 +139,30 @@ CameraFXManager::CameraFXManager()
 //--------------------------------------------------------------------------
 CameraFXManager::~CameraFXManager()
 {
-   clear();
+    clear();
 }
 
 //--------------------------------------------------------------------------
 // Add new effect to currently running list
 //--------------------------------------------------------------------------
-void CameraFXManager::addFX( CameraFX *newFX )
+void CameraFXManager::addFX( CameraFX* newFX )
 {
-   mFXList.pushFront( newFX );
+    mFXList.pushFront( newFX );
 }
 
-void CameraFXManager::removeFX( CameraFX *fx )
+void CameraFXManager::removeFX( CameraFX* fx )
 {
-   CamFXList::Iterator itr = mFXList.begin();
-   for ( ; itr != mFXList.end(); itr++ )
-   {
-      if ( *itr == fx )
-      {
-         mFXList.erase( itr );
-         return;
-      }
-   }
-   
-   return;
+    CamFXList::Iterator itr = mFXList.begin();
+    for( ; itr != mFXList.end(); itr++ )
+    {
+        if( *itr == fx )
+        {
+            mFXList.erase( itr );
+            return;
+        }
+    }
+    
+    return;
 }
 
 //--------------------------------------------------------------------------
@@ -170,12 +170,12 @@ void CameraFXManager::removeFX( CameraFX *fx )
 //--------------------------------------------------------------------------
 void CameraFXManager::clear()
 {
-   for(CamFXList::Iterator i = mFXList.begin(); i != mFXList.end(); ++i)
-   {
-      delete *i;
-   }
-
-   mFXList.clear();
+    for( CamFXList::Iterator i = mFXList.begin(); i != mFXList.end(); ++i )
+    {
+        delete *i;
+    }
+    
+    mFXList.clear();
 }
 
 //--------------------------------------------------------------------------
@@ -183,26 +183,26 @@ void CameraFXManager::clear()
 //--------------------------------------------------------------------------
 void CameraFXManager::update( F32 dt )
 {
-   PROFILE_SCOPE( CameraFXManager_update );
-
-   mCamFXTrans.identity();
-
-   CamFXList::Iterator cur;
-   for(CamFXList::Iterator i = mFXList.begin(); i != mFXList.end(); /*Trickiness*/)
-   {
-      // Store previous iterator and increment while iterator is still valid.
-      cur = i;
-      ++i;
-      CameraFX * curFX = *cur;
-      curFX->update( dt );
-      MatrixF fxTrans = curFX->getTrans();
-
-      mCamFXTrans.mul( fxTrans );
-
-      if( curFX->isExpired() )
-      {
-         delete curFX;
-         mFXList.erase( cur );
-      }
-   }
+    PROFILE_SCOPE( CameraFXManager_update );
+    
+    mCamFXTrans.identity();
+    
+    CamFXList::Iterator cur;
+    for( CamFXList::Iterator i = mFXList.begin(); i != mFXList.end(); /*Trickiness*/ )
+    {
+        // Store previous iterator and increment while iterator is still valid.
+        cur = i;
+        ++i;
+        CameraFX* curFX = *cur;
+        curFX->update( dt );
+        MatrixF fxTrans = curFX->getTrans();
+        
+        mCamFXTrans.mul( fxTrans );
+        
+        if( curFX->isExpired() )
+        {
+            delete curFX;
+            mFXList.erase( cur );
+        }
+    }
 }

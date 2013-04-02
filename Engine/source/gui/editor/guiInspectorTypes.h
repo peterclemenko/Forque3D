@@ -49,17 +49,17 @@ class GuiPopUpMenuCtrl;
 class GuiInspectorTypeMenuBase : public GuiInspectorField
 {
 private:
-   typedef GuiInspectorField Parent;
+    typedef GuiInspectorField Parent;
 public:
 
-   DECLARE_CONOBJECT(GuiInspectorTypeMenuBase);
-
-   //-----------------------------------------------------------------------------
-   // Override able methods for custom edit fields
-   //-----------------------------------------------------------------------------
-   virtual GuiControl* constructEditControl();
-   virtual void        setValue( StringTableEntry newValue );
-   virtual void        _populateMenu( GuiPopUpMenuCtrl *menu );
+    DECLARE_CONOBJECT( GuiInspectorTypeMenuBase );
+    
+    //-----------------------------------------------------------------------------
+    // Override able methods for custom edit fields
+    //-----------------------------------------------------------------------------
+    virtual GuiControl* constructEditControl();
+    virtual void        setValue( StringTableEntry newValue );
+    virtual void        _populateMenu( GuiPopUpMenuCtrl* menu );
 };
 
 //-----------------------------------------------------------------------------
@@ -68,12 +68,12 @@ public:
 class GuiInspectorTypeEnum : public GuiInspectorTypeMenuBase
 {
 private:
-   typedef GuiInspectorTypeMenuBase Parent;
+    typedef GuiInspectorTypeMenuBase Parent;
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeEnum);
-   static void consoleInit();
-
-   virtual void _populateMenu( GuiPopUpMenuCtrl *menu );
+    DECLARE_CONOBJECT( GuiInspectorTypeEnum );
+    static void consoleInit();
+    
+    virtual void _populateMenu( GuiPopUpMenuCtrl* menu );
 };
 
 //-----------------------------------------------------------------------------
@@ -82,12 +82,12 @@ public:
 class GuiInspectorTypeCubemapName : public GuiInspectorTypeMenuBase
 {
 private:
-   typedef GuiInspectorTypeMenuBase Parent;
+    typedef GuiInspectorTypeMenuBase Parent;
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeCubemapName);
-   static void consoleInit();
-
-   virtual void _populateMenu( GuiPopUpMenuCtrl *menu );
+    DECLARE_CONOBJECT( GuiInspectorTypeCubemapName );
+    static void consoleInit();
+    
+    virtual void _populateMenu( GuiPopUpMenuCtrl* menu );
 };
 
 //--------------------------------------------------------------------------------
@@ -97,35 +97,35 @@ class GuiBitmapButtonCtrl;
 
 class GuiInspectorTypeMaterialName : public GuiInspectorField
 {
-   typedef GuiInspectorField Parent;
-
+    typedef GuiInspectorField Parent;
+    
 public:
 
-   GuiInspectorTypeMaterialName();
-
-   DECLARE_CONOBJECT(GuiInspectorTypeMaterialName);
-   static void consoleInit();
-
-   GuiBitmapButtonCtrl *mBrowseButton;
-   RectI mBrowseRect;
-
-   GuiControl* construct(const char* command);
-
-   //-----------------------------------------------------------------------------
-   // Override able methods for custom edit fields
-   //-----------------------------------------------------------------------------
-   virtual GuiControl*        constructEditControl();
-   virtual bool               updateRects();
+    GuiInspectorTypeMaterialName();
+    
+    DECLARE_CONOBJECT( GuiInspectorTypeMaterialName );
+    static void consoleInit();
+    
+    GuiBitmapButtonCtrl* mBrowseButton;
+    RectI mBrowseRect;
+    
+    GuiControl* construct( const char* command );
+    
+    //-----------------------------------------------------------------------------
+    // Override able methods for custom edit fields
+    //-----------------------------------------------------------------------------
+    virtual GuiControl*        constructEditControl();
+    virtual bool               updateRects();
 };
 
 class GuiInspectorTypeRegularMaterialName : public GuiInspectorTypeMaterialName
 {
-   typedef GuiInspectorTypeMaterialName Parent;
+    typedef GuiInspectorTypeMaterialName Parent;
 public:
-   GuiInspectorTypeRegularMaterialName() {}
-   DECLARE_CONOBJECT(GuiInspectorTypeRegularMaterialName);
-   static void consoleInit();
-   virtual void _populateMenu( GuiPopUpMenuCtrl *menu );
+    GuiInspectorTypeRegularMaterialName() {}
+    DECLARE_CONOBJECT( GuiInspectorTypeRegularMaterialName );
+    static void consoleInit();
+    virtual void _populateMenu( GuiPopUpMenuCtrl* menu );
 };
 
 //--------------------------------------------------------------------------------
@@ -133,19 +133,19 @@ public:
 //--------------------------------------------------------------------------------
 class GuiInspectorTypeTerrainMaterialIndex : public GuiInspectorTypeMaterialName
 {
-   typedef GuiInspectorTypeMaterialName Parent;
-
+    typedef GuiInspectorTypeMaterialName Parent;
+    
 public:
 
-   GuiInspectorTypeTerrainMaterialIndex() {}
-
-   DECLARE_CONOBJECT(GuiInspectorTypeTerrainMaterialIndex);
-   static void consoleInit();
-
-   //-----------------------------------------------------------------------------
-   // Override able methods for custom edit fields
-   //-----------------------------------------------------------------------------
-   virtual GuiControl*        constructEditControl();
+    GuiInspectorTypeTerrainMaterialIndex() {}
+    
+    DECLARE_CONOBJECT( GuiInspectorTypeTerrainMaterialIndex );
+    static void consoleInit();
+    
+    //-----------------------------------------------------------------------------
+    // Override able methods for custom edit fields
+    //-----------------------------------------------------------------------------
+    virtual GuiControl*        constructEditControl();
 };
 
 //--------------------------------------------------------------------------------
@@ -153,19 +153,19 @@ public:
 //--------------------------------------------------------------------------------
 class GuiInspectorTypeTerrainMaterialName : public GuiInspectorTypeMaterialName
 {
-   typedef GuiInspectorTypeMaterialName Parent;
-
+    typedef GuiInspectorTypeMaterialName Parent;
+    
 public:
 
-   GuiInspectorTypeTerrainMaterialName() {}
-
-   DECLARE_CONOBJECT(GuiInspectorTypeTerrainMaterialName);
-   static void consoleInit();
-	GuiControl* construct(const char* command);
-   //-----------------------------------------------------------------------------
-   // Override able methods for custom edit fields
-   //-----------------------------------------------------------------------------
-   virtual GuiControl*        constructEditControl();
+    GuiInspectorTypeTerrainMaterialName() {}
+    
+    DECLARE_CONOBJECT( GuiInspectorTypeTerrainMaterialName );
+    static void consoleInit();
+    GuiControl* construct( const char* command );
+    //-----------------------------------------------------------------------------
+    // Override able methods for custom edit fields
+    //-----------------------------------------------------------------------------
+    virtual GuiControl*        constructEditControl();
 };
 
 //-----------------------------------------------------------------------------
@@ -174,12 +174,12 @@ public:
 class GuiInspectorTypeGuiProfile : public GuiInspectorTypeMenuBase
 {
 private:
-   typedef GuiInspectorTypeMenuBase Parent;
+    typedef GuiInspectorTypeMenuBase Parent;
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeGuiProfile);
-   static void consoleInit();
-
-   virtual void _populateMenu( GuiPopUpMenuCtrl *menu );
+    DECLARE_CONOBJECT( GuiInspectorTypeGuiProfile );
+    static void consoleInit();
+    
+    virtual void _populateMenu( GuiPopUpMenuCtrl* menu );
 };
 
 //-----------------------------------------------------------------------------
@@ -188,17 +188,17 @@ public:
 class GuiInspectorTypeCheckBox : public GuiInspectorField
 {
 private:
-   typedef GuiInspectorField Parent;
+    typedef GuiInspectorField Parent;
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeCheckBox);
-   static void consoleInit();
-
-   //-----------------------------------------------------------------------------
-   // Override able methods for custom edit fields
-   //-----------------------------------------------------------------------------
-   virtual GuiControl* constructEditControl();
-   virtual void setValue( StringTableEntry newValue );
-   virtual const char* getValue();
+    DECLARE_CONOBJECT( GuiInspectorTypeCheckBox );
+    static void consoleInit();
+    
+    //-----------------------------------------------------------------------------
+    // Override able methods for custom edit fields
+    //-----------------------------------------------------------------------------
+    virtual GuiControl* constructEditControl();
+    virtual void setValue( StringTableEntry newValue );
+    virtual const char* getValue();
 };
 
 //-----------------------------------------------------------------------------
@@ -207,19 +207,19 @@ public:
 class GuiInspectorTypeCommand : public GuiInspectorField
 {
 private:
-   typedef GuiInspectorField Parent;
-   StringTableEntry mTextEditorCommand;
-   void _setCommand( GuiButtonCtrl *ctrl, StringTableEntry command );
+    typedef GuiInspectorField Parent;
+    StringTableEntry mTextEditorCommand;
+    void _setCommand( GuiButtonCtrl* ctrl, StringTableEntry command );
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeCommand);
-   GuiInspectorTypeCommand();
-   static void consoleInit();
-
-   //-----------------------------------------------------------------------------
-   // Override able methods for custom edit fields
-   //-----------------------------------------------------------------------------
-   virtual GuiControl*        constructEditControl();
-   virtual void               setValue( StringTableEntry data );
+    DECLARE_CONOBJECT( GuiInspectorTypeCommand );
+    GuiInspectorTypeCommand();
+    static void consoleInit();
+    
+    //-----------------------------------------------------------------------------
+    // Override able methods for custom edit fields
+    //-----------------------------------------------------------------------------
+    virtual GuiControl*        constructEditControl();
+    virtual void               setValue( StringTableEntry data );
 };
 
 //-----------------------------------------------------------------------------
@@ -228,21 +228,21 @@ public:
 class GuiInspectorTypeFileName : public GuiInspectorField
 {
 private:
-   typedef GuiInspectorField Parent;
+    typedef GuiInspectorField Parent;
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeFileName);
-   static void consoleInit();
-
-   SimObjectPtr<GuiButtonCtrl>   mBrowseButton;
-   RectI mBrowseRect;
-
-   //-----------------------------------------------------------------------------
-   // Override able methods for custom edit fields
-   //-----------------------------------------------------------------------------
-   virtual GuiControl*        constructEditControl();
-   virtual bool               resize(const Point2I &newPosition, const Point2I &newExtent);
-   virtual bool               updateRects();
-   virtual void               updateValue();
+    DECLARE_CONOBJECT( GuiInspectorTypeFileName );
+    static void consoleInit();
+    
+    SimObjectPtr<GuiButtonCtrl>   mBrowseButton;
+    RectI mBrowseRect;
+    
+    //-----------------------------------------------------------------------------
+    // Override able methods for custom edit fields
+    //-----------------------------------------------------------------------------
+    virtual GuiControl*        constructEditControl();
+    virtual bool               resize( const Point2I& newPosition, const Point2I& newExtent );
+    virtual bool               updateRects();
+    virtual void               updateValue();
 };
 
 
@@ -251,14 +251,14 @@ public:
 //-----------------------------------------------------------------------------
 class GuiInspectorTypeImageFileName : public GuiInspectorTypeFileName
 {
-   typedef GuiInspectorTypeFileName Parent;
+    typedef GuiInspectorTypeFileName Parent;
 public:
 
-   DECLARE_CONOBJECT(GuiInspectorTypeImageFileName);
-   static void consoleInit();
-
-   virtual GuiControl* constructEditControl();
-   bool renderTooltip( const Point2I &hoverPos, const Point2I &cursorPos, const char *tipText = NULL );
+    DECLARE_CONOBJECT( GuiInspectorTypeImageFileName );
+    static void consoleInit();
+    
+    virtual GuiControl* constructEditControl();
+    bool renderTooltip( const Point2I& hoverPos, const Point2I& cursorPos, const char* tipText = NULL );
 };
 
 //-----------------------------------------------------------------------------
@@ -266,21 +266,21 @@ public:
 //-----------------------------------------------------------------------------
 class GuiInspectorTypeRectUV : public GuiInspectorField
 {
-   typedef GuiInspectorField Parent;
+    typedef GuiInspectorField Parent;
 public:
-   GuiBitmapButtonCtrl *mBrowseButton;
-   RectI                mBrowseRect;
-
+    GuiBitmapButtonCtrl* mBrowseButton;
+    RectI                mBrowseRect;
+    
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeRectUV);
-   GuiInspectorTypeRectUV();
-   static void consoleInit();
-
-   //-----------------------------------------------------------------------------
-   // Override able methods for custom edit fields
-   //-----------------------------------------------------------------------------
-   virtual GuiControl*        constructEditControl();
-   virtual bool               updateRects();
+    DECLARE_CONOBJECT( GuiInspectorTypeRectUV );
+    GuiInspectorTypeRectUV();
+    static void consoleInit();
+    
+    //-----------------------------------------------------------------------------
+    // Override able methods for custom edit fields
+    //-----------------------------------------------------------------------------
+    virtual GuiControl*        constructEditControl();
+    virtual bool               updateRects();
 };
 
 //-----------------------------------------------------------------------------
@@ -289,29 +289,29 @@ public:
 
 class GuiInspectorTypeEaseF : public GuiInspectorField
 {
-   public:
-   
-      typedef GuiInspectorField Parent;
-      
-   protected:
-   
-      SimObjectPtr<GuiButtonCtrl> mBrowseButton;
-      RectI mBrowseRect;
-   
-   public:
-   
-      GuiInspectorTypeEaseF();
-      
-      DECLARE_CONOBJECT( GuiInspectorTypeEaseF );
-      
-      static void consoleInit();
+public:
 
-      //-----------------------------------------------------------------------------
-      // Override able methods for custom edit fields
-      //-----------------------------------------------------------------------------
-      virtual GuiControl*        constructEditControl();
-      virtual bool               resize(const Point2I &newPosition, const Point2I &newExtent);
-      virtual bool               updateRects();
+    typedef GuiInspectorField Parent;
+    
+protected:
+
+    SimObjectPtr<GuiButtonCtrl> mBrowseButton;
+    RectI mBrowseRect;
+    
+public:
+
+    GuiInspectorTypeEaseF();
+    
+    DECLARE_CONOBJECT( GuiInspectorTypeEaseF );
+    
+    static void consoleInit();
+    
+    //-----------------------------------------------------------------------------
+    // Override able methods for custom edit fields
+    //-----------------------------------------------------------------------------
+    virtual GuiControl*        constructEditControl();
+    virtual bool               resize( const Point2I& newPosition, const Point2I& newExtent );
+    virtual bool               updateRects();
 };
 
 //-----------------------------------------------------------------------------
@@ -319,13 +319,13 @@ class GuiInspectorTypeEaseF : public GuiInspectorField
 //-----------------------------------------------------------------------------
 class GuiInspectorTypePrefabFilename : public GuiInspectorTypeFileName
 {
-   typedef GuiInspectorTypeFileName Parent;
+    typedef GuiInspectorTypeFileName Parent;
 public:
 
-   DECLARE_CONOBJECT(GuiInspectorTypePrefabFilename);
-   static void consoleInit();
-
-   virtual GuiControl* constructEditControl();
+    DECLARE_CONOBJECT( GuiInspectorTypePrefabFilename );
+    static void consoleInit();
+    
+    virtual GuiControl* constructEditControl();
 };
 
 //-----------------------------------------------------------------------------
@@ -333,16 +333,16 @@ public:
 //-----------------------------------------------------------------------------
 class GuiInspectorTypeShapeFilename : public GuiInspectorTypeFileName
 {
-   typedef GuiInspectorTypeFileName Parent;
+    typedef GuiInspectorTypeFileName Parent;
 public:
 
-   GuiBitmapButtonCtrl  *mShapeEdButton;
-
-   DECLARE_CONOBJECT(GuiInspectorTypeShapeFilename);
-   static void consoleInit();
-
-   virtual GuiControl* constructEditControl();
-   virtual bool updateRects();
+    GuiBitmapButtonCtrl*  mShapeEdButton;
+    
+    DECLARE_CONOBJECT( GuiInspectorTypeShapeFilename );
+    static void consoleInit();
+    
+    virtual GuiControl* constructEditControl();
+    virtual bool updateRects();
 };
 
 //-----------------------------------------------------------------------------
@@ -353,31 +353,34 @@ class GuiSwatchButtonCtrl;
 
 class GuiInspectorTypeColor : public GuiInspectorField
 {
-   typedef GuiInspectorField Parent;
-   
+    typedef GuiInspectorField Parent;
+    
 protected:
 
-   /// Return the name of a function that will be used to convert the
-   /// floating-point color of the swatch button to the form used by the
-   /// data field.
-   virtual const char* _getColorConversionFunction() const { return NULL; }
-
+    /// Return the name of a function that will be used to convert the
+    /// floating-point color of the swatch button to the form used by the
+    /// data field.
+    virtual const char* _getColorConversionFunction() const
+    {
+        return NULL;
+    }
+    
 public:
 
-   GuiInspectorTypeColor();
-
-   DECLARE_CONOBJECT(GuiInspectorTypeColor);
-
-   StringTableEntry  mColorFunction;
-   GuiSwatchButtonCtrl *mBrowseButton;
-   RectI mBrowseRect;
-
-   //-----------------------------------------------------------------------------
-   // Override able methods for custom edit fields
-   //-----------------------------------------------------------------------------
-   virtual GuiControl*        constructEditControl();
-   virtual bool               resize(const Point2I &newPosition, const Point2I &newExtent);
-   virtual bool               updateRects();
+    GuiInspectorTypeColor();
+    
+    DECLARE_CONOBJECT( GuiInspectorTypeColor );
+    
+    StringTableEntry  mColorFunction;
+    GuiSwatchButtonCtrl* mBrowseButton;
+    RectI mBrowseRect;
+    
+    //-----------------------------------------------------------------------------
+    // Override able methods for custom edit fields
+    //-----------------------------------------------------------------------------
+    virtual GuiControl*        constructEditControl();
+    virtual bool               resize( const Point2I& newPosition, const Point2I& newExtent );
+    virtual bool               updateRects();
 };
 
 //-----------------------------------------------------------------------------
@@ -385,20 +388,23 @@ public:
 //-----------------------------------------------------------------------------
 class GuiInspectorTypeColorI : public GuiInspectorTypeColor
 {
-   typedef GuiInspectorTypeColor Parent;
-   
+    typedef GuiInspectorTypeColor Parent;
+    
 protected:
 
-   virtual const char* _getColorConversionFunction() const { return "ColorFloatToInt"; }
-
+    virtual const char* _getColorConversionFunction() const
+    {
+        return "ColorFloatToInt";
+    }
+    
 public:
 
-   GuiInspectorTypeColorI();
-
-   DECLARE_CONOBJECT(GuiInspectorTypeColorI);
-
-   static void consoleInit();
-   void setValue( StringTableEntry newValue );
+    GuiInspectorTypeColorI();
+    
+    DECLARE_CONOBJECT( GuiInspectorTypeColorI );
+    
+    static void consoleInit();
+    void setValue( StringTableEntry newValue );
 };
 
 //-----------------------------------------------------------------------------
@@ -406,16 +412,16 @@ public:
 //-----------------------------------------------------------------------------
 class GuiInspectorTypeColorF : public GuiInspectorTypeColor
 {
-   typedef GuiInspectorTypeColor Parent;
-
+    typedef GuiInspectorTypeColor Parent;
+    
 public:
 
-   GuiInspectorTypeColorF();
-
-   DECLARE_CONOBJECT(GuiInspectorTypeColorF);
-
-   static void consoleInit();
-   void setValue( StringTableEntry newValue );
+    GuiInspectorTypeColorF();
+    
+    DECLARE_CONOBJECT( GuiInspectorTypeColorF );
+    
+    static void consoleInit();
+    void setValue( StringTableEntry newValue );
 };
 
 /* NOTE: Evidently this isn't used anywhere (or implemented) so i commented it out
@@ -445,13 +451,13 @@ public:
 class GuiInspectorTypeS32 : public GuiInspectorField
 {
 private:
-   typedef GuiInspectorField Parent;
+    typedef GuiInspectorField Parent;
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeS32);
-   static void consoleInit();
-
-   virtual GuiControl*  constructEditControl();
-   virtual void setValue( StringTableEntry newValue );
+    DECLARE_CONOBJECT( GuiInspectorTypeS32 );
+    static void consoleInit();
+    
+    virtual GuiControl*  constructEditControl();
+    virtual void setValue( StringTableEntry newValue );
 };
 
 
@@ -463,57 +469,57 @@ class GuiDynamicCtrlArrayControl;
 
 class GuiInspectorTypeBitMask32 : public GuiInspectorField
 {
-   typedef GuiInspectorField Parent;
-
+    typedef GuiInspectorField Parent;
+    
 public:
 
-   GuiInspectorTypeBitMask32();
-   virtual ~GuiInspectorTypeBitMask32() {}
-
-   DECLARE_CONOBJECT( GuiInspectorTypeBitMask32 );
-
-   // ConsoleObject
-   bool onAdd();
-   static void consoleInit();
-
-   // GuiInspectorField
-   virtual void childResized( GuiControl *child );
-   virtual bool resize( const Point2I &newPosition, const Point2I &newExtent );
-   virtual bool updateRects();
-   virtual void updateData();
-   virtual StringTableEntry getValue();
-   virtual void setValue( StringTableEntry value );
-
+    GuiInspectorTypeBitMask32();
+    virtual ~GuiInspectorTypeBitMask32() {}
+    
+    DECLARE_CONOBJECT( GuiInspectorTypeBitMask32 );
+    
+    // ConsoleObject
+    bool onAdd();
+    static void consoleInit();
+    
+    // GuiInspectorField
+    virtual void childResized( GuiControl* child );
+    virtual bool resize( const Point2I& newPosition, const Point2I& newExtent );
+    virtual bool updateRects();
+    virtual void updateData();
+    virtual StringTableEntry getValue();
+    virtual void setValue( StringTableEntry value );
+    
 protected:
 
-   GuiInspectorTypeBitMask32Helper *mHelper;
-   GuiRolloutCtrl *mRollout;
-   GuiDynamicCtrlArrayControl *mArrayCtrl;
-   Vector<GuiInspectorField*> mChildren;
+    GuiInspectorTypeBitMask32Helper* mHelper;
+    GuiRolloutCtrl* mRollout;
+    GuiDynamicCtrlArrayControl* mArrayCtrl;
+    Vector<GuiInspectorField*> mChildren;
 };
 
 class GuiInspectorTypeBitMask32Helper : public GuiInspectorField
 {
-   typedef GuiInspectorField Parent;
-
+    typedef GuiInspectorField Parent;
+    
 public:
 
-   GuiInspectorTypeBitMask32Helper();
-
-   DECLARE_CONOBJECT( GuiInspectorTypeBitMask32Helper );
-
-   GuiBitmapButtonCtrl *mButton;
-   GuiRolloutCtrl *mParentRollout;
-   GuiInspectorTypeBitMask32 *mParentField;
-   RectI mButtonRect;
-
-   //-----------------------------------------------------------------------------
-   // Override able methods for custom edit fields
-   //-----------------------------------------------------------------------------
-   virtual GuiControl*        constructEditControl();
-   virtual bool               resize( const Point2I &newPosition, const Point2I &newExtent );
-   virtual bool               updateRects();
-   virtual void               setValue( StringTableEntry value );
+    GuiInspectorTypeBitMask32Helper();
+    
+    DECLARE_CONOBJECT( GuiInspectorTypeBitMask32Helper );
+    
+    GuiBitmapButtonCtrl* mButton;
+    GuiRolloutCtrl* mParentRollout;
+    GuiInspectorTypeBitMask32* mParentField;
+    RectI mButtonRect;
+    
+    //-----------------------------------------------------------------------------
+    // Override able methods for custom edit fields
+    //-----------------------------------------------------------------------------
+    virtual GuiControl*        constructEditControl();
+    virtual bool               resize( const Point2I& newPosition, const Point2I& newExtent );
+    virtual bool               updateRects();
+    virtual void               setValue( StringTableEntry value );
 };
 
 
@@ -523,12 +529,12 @@ public:
 class GuiInspectorTypeName : public GuiInspectorField
 {
 private:
-   typedef GuiInspectorField Parent;
+    typedef GuiInspectorField Parent;
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeName);
-   static void consoleInit();
-
-   virtual bool verifyData( StringTableEntry data );
+    DECLARE_CONOBJECT( GuiInspectorTypeName );
+    static void consoleInit();
+    
+    virtual bool verifyData( StringTableEntry data );
 };
 
 
@@ -538,12 +544,12 @@ public:
 class GuiInspectorTypeSFXParameterName : public GuiInspectorTypeMenuBase
 {
 private:
-   typedef GuiInspectorTypeMenuBase Parent;
+    typedef GuiInspectorTypeMenuBase Parent;
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeSFXParameterName);
-   static void consoleInit();
-
-   virtual void _populateMenu( GuiPopUpMenuCtrl *menu );
+    DECLARE_CONOBJECT( GuiInspectorTypeSFXParameterName );
+    static void consoleInit();
+    
+    virtual void _populateMenu( GuiPopUpMenuCtrl* menu );
 };
 
 
@@ -553,12 +559,12 @@ public:
 class GuiInspectorTypeSFXStateName : public GuiInspectorTypeMenuBase
 {
 private:
-   typedef GuiInspectorTypeMenuBase Parent;
+    typedef GuiInspectorTypeMenuBase Parent;
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeSFXStateName);
-   static void consoleInit();
-
-   virtual void _populateMenu( GuiPopUpMenuCtrl *menu );
+    DECLARE_CONOBJECT( GuiInspectorTypeSFXStateName );
+    static void consoleInit();
+    
+    virtual void _populateMenu( GuiPopUpMenuCtrl* menu );
 };
 
 
@@ -568,12 +574,12 @@ public:
 class GuiInspectorTypeSFXSourceName : public GuiInspectorTypeMenuBase
 {
 private:
-   typedef GuiInspectorTypeMenuBase Parent;
+    typedef GuiInspectorTypeMenuBase Parent;
 public:
-   DECLARE_CONOBJECT(GuiInspectorTypeSFXSourceName);
-   static void consoleInit();
-
-   virtual void _populateMenu( GuiPopUpMenuCtrl *menu );
+    DECLARE_CONOBJECT( GuiInspectorTypeSFXSourceName );
+    static void consoleInit();
+    
+    virtual void _populateMenu( GuiPopUpMenuCtrl* menu );
 };
 
 

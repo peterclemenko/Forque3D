@@ -36,225 +36,249 @@
 
 // Trim leading and trailing whitespace from the first word in the string
 // Note that the string is modified.
-static char* TrimFirstWord(char* str)
+static char* TrimFirstWord( char* str )
 {
-   char* value = str;
-
-   // Trim leading whitespace
-   while ( value && *value && dIsspace( *value ) )
-      value++;
-
-   // Trim trailing whitespace
-   if ( value && *value )
-   {
-      char* end = value + 1;
-      while ( *end && !dIsspace( *end ) )
-         end++;
-      *end = '\0';
-   }
-
-   return value;
+    char* value = str;
+    
+    // Trim leading whitespace
+    while( value && *value && dIsspace( *value ) )
+        value++;
+        
+    // Trim trailing whitespace
+    if( value && *value )
+    {
+        char* end = value + 1;
+        while( *end && !dIsspace( *end ) )
+            end++;
+        *end = '\0';
+    }
+    
+    return value;
 }
 
-ColladaAppNode::ColladaAppNode(const domNode* node, ColladaAppNode* parent)
-      : p_domNode(node), appParent(parent), nodeExt(new ColladaExtension_node(node)),
-      lastTransformTime(TSShapeLoader::DefaultTime-1), defaultTransformValid(false),
-      invertMeshes(false)
+ColladaAppNode::ColladaAppNode( const domNode* node, ColladaAppNode* parent )
+    : p_domNode( node ), appParent( parent ), nodeExt( new ColladaExtension_node( node ) ),
+      lastTransformTime( TSShapeLoader::DefaultTime - 1 ), defaultTransformValid( false ),
+      invertMeshes( false )
 {
-   mName = dStrdup(_GetNameOrId(node));
-   mParentName = dStrdup(parent ? parent->getName() : "ROOT");
-
-   // Extract user properties from the <node> extension as whitespace separated
-   // "name=value" pairs
-   char* properties = dStrdup(nodeExt->user_properties);
-   char* pos = properties;
-   char* end = properties + dStrlen( properties );
-   while ( pos < end )
-   {
-      // Find the '=' character to separate the name and value pair
-      char* split = dStrchr( pos, '=' );
-      if ( !split )
-         break;
-
-      // Get the name (whitespace trimmed string up to the '=')
-      // and value (whitespace trimmed string after the '=')
-      *split = '\0';
-      char* name = TrimFirstWord( pos );
-      char* value = TrimFirstWord( split + 1 );
-
-      mProps.insert(StringTable->insert(name), dAtof(value));
-
-      pos = value + dStrlen( value ) + 1;
-   }
-
-   dFree( properties );
-
-   // Create vector of transform elements
-   for (int iChild = 0; iChild < node->getContents().getCount(); iChild++) {
-      switch (node->getContents()[iChild]->getElementType()) {
-         case COLLADA_TYPE::TRANSLATE:
-         case COLLADA_TYPE::ROTATE:
-         case COLLADA_TYPE::SCALE:
-         case COLLADA_TYPE::SKEW:
-         case COLLADA_TYPE::MATRIX:
-         case COLLADA_TYPE::LOOKAT:
-            nodeTransforms.increment();
-            nodeTransforms.last().element = node->getContents()[iChild];
+    mName = dStrdup( _GetNameOrId( node ) );
+    mParentName = dStrdup( parent ? parent->getName() : "ROOT" );
+    
+    // Extract user properties from the <node> extension as whitespace separated
+    // "name=value" pairs
+    char* properties = dStrdup( nodeExt->user_properties );
+    char* pos = properties;
+    char* end = properties + dStrlen( properties );
+    while( pos < end )
+    {
+        // Find the '=' character to separate the name and value pair
+        char* split = dStrchr( pos, '=' );
+        if( !split )
             break;
-      }
-   }
+            
+        // Get the name (whitespace trimmed string up to the '=')
+        // and value (whitespace trimmed string after the '=')
+        *split = '\0';
+        char* name = TrimFirstWord( pos );
+        char* value = TrimFirstWord( split + 1 );
+        
+        mProps.insert( StringTable->insert( name ), dAtof( value ) );
+        
+        pos = value + dStrlen( value ) + 1;
+    }
+    
+    dFree( properties );
+    
+    // Create vector of transform elements
+    for( int iChild = 0; iChild < node->getContents().getCount(); iChild++ )
+    {
+        switch( node->getContents()[iChild]->getElementType() )
+        {
+            case COLLADA_TYPE::TRANSLATE:
+            case COLLADA_TYPE::ROTATE:
+            case COLLADA_TYPE::SCALE:
+            case COLLADA_TYPE::SKEW:
+            case COLLADA_TYPE::MATRIX:
+            case COLLADA_TYPE::LOOKAT:
+                nodeTransforms.increment();
+                nodeTransforms.last().element = node->getContents()[iChild];
+                break;
+        }
+    }
 }
 
 // Get all child nodes
 void ColladaAppNode::buildChildList()
 {
-   // Process children: collect <node> and <instance_node> elements
-   for (int iChild = 0; iChild < p_domNode->getContents().getCount(); iChild++) {
-
-      daeElement* child = p_domNode->getContents()[iChild];
-      switch (child->getElementType()) {
-
-         case COLLADA_TYPE::NODE:
-         {
-            domNode* node = daeSafeCast<domNode>(child);
-            mChildNodes.push_back(new ColladaAppNode(node, this));
-            break;
-         }
-
-         case COLLADA_TYPE::INSTANCE_NODE:
-         {
-            domInstance_node* instanceNode = daeSafeCast<domInstance_node>(child);
-            domNode* node = daeSafeCast<domNode>(instanceNode->getUrl().getElement());
-            if (node)
-               mChildNodes.push_back(new ColladaAppNode(node, this));
-            else
-               Con::warnf("Failed to resolve instance_node with url=%s", instanceNode->getUrl().originalStr().c_str());
-            break;
-         }
-      }
-   }
+    // Process children: collect <node> and <instance_node> elements
+    for( int iChild = 0; iChild < p_domNode->getContents().getCount(); iChild++ )
+    {
+    
+        daeElement* child = p_domNode->getContents()[iChild];
+        switch( child->getElementType() )
+        {
+        
+            case COLLADA_TYPE::NODE:
+            {
+                domNode* node = daeSafeCast<domNode>( child );
+                mChildNodes.push_back( new ColladaAppNode( node, this ) );
+                break;
+            }
+            
+            case COLLADA_TYPE::INSTANCE_NODE:
+            {
+                domInstance_node* instanceNode = daeSafeCast<domInstance_node>( child );
+                domNode* node = daeSafeCast<domNode>( instanceNode->getUrl().getElement() );
+                if( node )
+                    mChildNodes.push_back( new ColladaAppNode( node, this ) );
+                else
+                    Con::warnf( "Failed to resolve instance_node with url=%s", instanceNode->getUrl().originalStr().c_str() );
+                break;
+            }
+        }
+    }
 }
 
 // Get all geometry attached to this node
 void ColladaAppNode::buildMeshList()
 {
-   // Process children: collect <instance_geometry> and <instance_controller> elements
-   for (int iChild = 0; iChild < p_domNode->getContents().getCount(); iChild++) {
-
-      daeElement* child = p_domNode->getContents()[iChild];
-      switch (child->getElementType()) {
-
-         case COLLADA_TYPE::INSTANCE_GEOMETRY:
-         {
-            // Only <geometry>.<mesh> instances are supported
-            domInstance_geometry* instanceGeom = daeSafeCast<domInstance_geometry>(child);
-            if (instanceGeom) {
-               domGeometry* geometry = daeSafeCast<domGeometry>(instanceGeom->getUrl().getElement());
-               if (geometry && geometry->getMesh())
-                  mMeshes.push_back(new ColladaAppMesh(instanceGeom, this));
+    // Process children: collect <instance_geometry> and <instance_controller> elements
+    for( int iChild = 0; iChild < p_domNode->getContents().getCount(); iChild++ )
+    {
+    
+        daeElement* child = p_domNode->getContents()[iChild];
+        switch( child->getElementType() )
+        {
+        
+            case COLLADA_TYPE::INSTANCE_GEOMETRY:
+            {
+                // Only <geometry>.<mesh> instances are supported
+                domInstance_geometry* instanceGeom = daeSafeCast<domInstance_geometry>( child );
+                if( instanceGeom )
+                {
+                    domGeometry* geometry = daeSafeCast<domGeometry>( instanceGeom->getUrl().getElement() );
+                    if( geometry && geometry->getMesh() )
+                        mMeshes.push_back( new ColladaAppMesh( instanceGeom, this ) );
+                }
+                break;
             }
-            break;
-         }
-
-         case COLLADA_TYPE::INSTANCE_CONTROLLER:
-            mMeshes.push_back(new ColladaAppMesh(daeSafeCast<domInstance_controller>(child), this));
-            break;
-      }
-   }
+            
+            case COLLADA_TYPE::INSTANCE_CONTROLLER:
+                mMeshes.push_back( new ColladaAppMesh( daeSafeCast<domInstance_controller>( child ), this ) );
+                break;
+        }
+    }
 }
 
-bool ColladaAppNode::animatesTransform(const AppSequence* appSeq)
+bool ColladaAppNode::animatesTransform( const AppSequence* appSeq )
 {
-   // Check if any of this node's transform elements are animated during the
-   // sequence interval
-   for (int iTxfm = 0; iTxfm < nodeTransforms.size(); iTxfm++) {
-      if (nodeTransforms[iTxfm].isAnimated(appSeq->getStart(), appSeq->getEnd()))
-         return true;
-   }
-   return false;
+    // Check if any of this node's transform elements are animated during the
+    // sequence interval
+    for( int iTxfm = 0; iTxfm < nodeTransforms.size(); iTxfm++ )
+    {
+        if( nodeTransforms[iTxfm].isAnimated( appSeq->getStart(), appSeq->getEnd() ) )
+            return true;
+    }
+    return false;
 }
 
 /// Get the world transform of the node at the specified time
-MatrixF ColladaAppNode::getNodeTransform(F32 time)
+MatrixF ColladaAppNode::getNodeTransform( F32 time )
 {
-   // Avoid re-computing the default transform if possible
-   if (defaultTransformValid && time == TSShapeLoader::DefaultTime)
-   {
-      return defaultNodeTransform;
-   }
-   else
-   {
-      MatrixF nodeTransform = getTransform(time);
-
-      // Check for inverted node coordinate spaces => can happen when modelers
-      // use the 'mirror' tool in their 3d app. Shows up as negative <scale>
-      // transforms in the collada model.
-      if (m_matF_determinant(nodeTransform) < 0.0f)
-      {
-         // Mark this node as inverted so we can mirror mesh geometry, then
-         // de-invert the transform matrix
-         invertMeshes = true;
-         nodeTransform.scale(Point3F(1, 1, -1));
-      }
-
-      // Cache the default transform
-      if (time == TSShapeLoader::DefaultTime)
-      {
-         defaultTransformValid = true;
-         defaultNodeTransform = nodeTransform;
-      }
-
-      return nodeTransform;
-   }
+    // Avoid re-computing the default transform if possible
+    if( defaultTransformValid && time == TSShapeLoader::DefaultTime )
+    {
+        return defaultNodeTransform;
+    }
+    else
+    {
+        MatrixF nodeTransform = getTransform( time );
+        
+        // Check for inverted node coordinate spaces => can happen when modelers
+        // use the 'mirror' tool in their 3d app. Shows up as negative <scale>
+        // transforms in the collada model.
+        if( m_matF_determinant( nodeTransform ) < 0.0f )
+        {
+            // Mark this node as inverted so we can mirror mesh geometry, then
+            // de-invert the transform matrix
+            invertMeshes = true;
+            nodeTransform.scale( Point3F( 1, 1, -1 ) );
+        }
+        
+        // Cache the default transform
+        if( time == TSShapeLoader::DefaultTime )
+        {
+            defaultTransformValid = true;
+            defaultNodeTransform = nodeTransform;
+        }
+        
+        return nodeTransform;
+    }
 }
 
-MatrixF ColladaAppNode::getTransform(F32 time)
+MatrixF ColladaAppNode::getTransform( F32 time )
 {
-   // Check if we can use the last computed transform
-   if (time == lastTransformTime)
-      return lastTransform;
-
-   if (appParent) {
-      // Get parent node's transform
-      lastTransform = appParent->getTransform(time);
-   }
-   else {
-      // no parent (ie. root level) => scale by global shape <unit>
-      lastTransform.identity();
-      lastTransform.scale(ColladaUtils::getOptions().unit);
-      if (!isBounds())
-         ColladaUtils::convertTransform(lastTransform);     // don't convert bounds node transform (or upAxis won't work!)
-   }
-
-   // Multiply by local node transform elements
-   for (int iTxfm = 0; iTxfm < nodeTransforms.size(); iTxfm++) {
-
-      MatrixF mat(true);
-
-      // Convert the transform element to a MatrixF
-      switch (nodeTransforms[iTxfm].element->getElementType()) {
-         case COLLADA_TYPE::TRANSLATE: mat = vecToMatrixF<domTranslate>(nodeTransforms[iTxfm].getValue(time));  break;
-         case COLLADA_TYPE::SCALE:     mat = vecToMatrixF<domScale>(nodeTransforms[iTxfm].getValue(time));      break;
-         case COLLADA_TYPE::ROTATE:    mat = vecToMatrixF<domRotate>(nodeTransforms[iTxfm].getValue(time));     break;
-         case COLLADA_TYPE::MATRIX:    mat = vecToMatrixF<domMatrix>(nodeTransforms[iTxfm].getValue(time));     break;
-         case COLLADA_TYPE::SKEW:      mat = vecToMatrixF<domSkew>(nodeTransforms[iTxfm].getValue(time));       break;
-         case COLLADA_TYPE::LOOKAT:    mat = vecToMatrixF<domLookat>(nodeTransforms[iTxfm].getValue(time));     break;
-      }
-
-      // Remove node scaling (but keep reflections) if desired
-      if (ColladaUtils::getOptions().ignoreNodeScale)
-      {
-         Point3F invScale = mat.getScale();
-         invScale.x = invScale.x ? (1.0f / invScale.x) : 0;
-         invScale.y = invScale.y ? (1.0f / invScale.y) : 0;
-         invScale.z = invScale.z ? (1.0f / invScale.z) : 0;
-         mat.scale(invScale);
-      }
-
-      // Post multiply the animated transform
-      lastTransform.mul(mat);
-   }
-
-   lastTransformTime = time;
-   return lastTransform;
+    // Check if we can use the last computed transform
+    if( time == lastTransformTime )
+        return lastTransform;
+        
+    if( appParent )
+    {
+        // Get parent node's transform
+        lastTransform = appParent->getTransform( time );
+    }
+    else
+    {
+        // no parent (ie. root level) => scale by global shape <unit>
+        lastTransform.identity();
+        lastTransform.scale( ColladaUtils::getOptions().unit );
+        if( !isBounds() )
+            ColladaUtils::convertTransform( lastTransform );   // don't convert bounds node transform (or upAxis won't work!)
+    }
+    
+    // Multiply by local node transform elements
+    for( int iTxfm = 0; iTxfm < nodeTransforms.size(); iTxfm++ )
+    {
+    
+        MatrixF mat( true );
+        
+        // Convert the transform element to a MatrixF
+        switch( nodeTransforms[iTxfm].element->getElementType() )
+        {
+            case COLLADA_TYPE::TRANSLATE:
+                mat = vecToMatrixF<domTranslate>( nodeTransforms[iTxfm].getValue( time ) );
+                break;
+            case COLLADA_TYPE::SCALE:
+                mat = vecToMatrixF<domScale>( nodeTransforms[iTxfm].getValue( time ) );
+                break;
+            case COLLADA_TYPE::ROTATE:
+                mat = vecToMatrixF<domRotate>( nodeTransforms[iTxfm].getValue( time ) );
+                break;
+            case COLLADA_TYPE::MATRIX:
+                mat = vecToMatrixF<domMatrix>( nodeTransforms[iTxfm].getValue( time ) );
+                break;
+            case COLLADA_TYPE::SKEW:
+                mat = vecToMatrixF<domSkew>( nodeTransforms[iTxfm].getValue( time ) );
+                break;
+            case COLLADA_TYPE::LOOKAT:
+                mat = vecToMatrixF<domLookat>( nodeTransforms[iTxfm].getValue( time ) );
+                break;
+        }
+        
+        // Remove node scaling (but keep reflections) if desired
+        if( ColladaUtils::getOptions().ignoreNodeScale )
+        {
+            Point3F invScale = mat.getScale();
+            invScale.x = invScale.x ? ( 1.0f / invScale.x ) : 0;
+            invScale.y = invScale.y ? ( 1.0f / invScale.y ) : 0;
+            invScale.z = invScale.z ? ( 1.0f / invScale.z ) : 0;
+            mat.scale( invScale );
+        }
+        
+        // Post multiply the animated transform
+        lastTransform.mul( mat );
+    }
+    
+    lastTransformTime = time;
+    return lastTransform;
 }

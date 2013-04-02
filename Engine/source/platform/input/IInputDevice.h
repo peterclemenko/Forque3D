@@ -28,32 +28,32 @@
 class IInputDevice
 {
 protected:
-   /// Device name
-   char mName[30];
-
-   /// Device type
-   U32 mDeviceType;
-
-   /// Is the device enabled
-   bool mEnabled;
-
+    /// Device name
+    char mName[30];
+    
+    /// Device type
+    U32 mDeviceType;
+    
+    /// Is the device enabled
+    bool mEnabled;
+    
 public:
-   inline const char* getDeviceName() const
-   {
-      return mName;
-   }
-
-   inline U32 getDeviceType() const
-   {
-      return mDeviceType;
-   }
-
-   inline bool isEnabled()
-   {
-      return mEnabled;
-   }
-
-   virtual bool process() = 0;
+    inline const char* getDeviceName() const
+    {
+        return mName;
+    }
+    
+    inline U32 getDeviceType() const
+    {
+        return mDeviceType;
+    }
+    
+    inline bool isEnabled()
+    {
+        return mEnabled;
+    }
+    
+    virtual bool process() = 0;
 };
 
 #endif

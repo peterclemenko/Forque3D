@@ -30,8 +30,8 @@ typedef unsigned int dsize_t;
 
 struct FileTime
 {
-   U32 v1;
-   U32 v2;
+    U32 v1;
+    U32 v2;
 };
 
 #define TORQUE_OS_STRING "Lint"

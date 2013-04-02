@@ -27,8 +27,8 @@
 
 namespace ConvertRGB
 {
-   ColorF toXYZ( const ColorF &rgbColor );
-   ColorF fromXYZ( const ColorF &xyzColor );
+ColorF toXYZ( const ColorF& rgbColor );
+ColorF fromXYZ( const ColorF& xyzColor );
 };
 
 #endif

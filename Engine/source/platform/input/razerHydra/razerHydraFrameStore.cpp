@@ -26,21 +26,21 @@
 
 MODULE_BEGIN( RazerHydraFrameStore )
 
-   MODULE_INIT_AFTER( RazerHydraDevice )
-   MODULE_INIT_AFTER( Sim )
-   MODULE_SHUTDOWN_BEFORE( Sim )
-   MODULE_SHUTDOWN_BEFORE( RazerHydraDevice )
+MODULE_INIT_AFTER( RazerHydraDevice )
+MODULE_INIT_AFTER( Sim )
+MODULE_SHUTDOWN_BEFORE( Sim )
+MODULE_SHUTDOWN_BEFORE( RazerHydraDevice )
 
-   MODULE_INIT
-   {
-      RazerHydraFrameStore::staticInit();
-      ManagedSingleton< RazerHydraFrameStore >::createSingleton();
-   }
-   
-   MODULE_SHUTDOWN
-   {
-      ManagedSingleton< RazerHydraFrameStore >::deleteSingleton();
-   }
+MODULE_INIT
+{
+    RazerHydraFrameStore::staticInit();
+    ManagedSingleton< RazerHydraFrameStore >::createSingleton();
+}
+
+MODULE_SHUTDOWN
+{
+    ManagedSingleton< RazerHydraFrameStore >::deleteSingleton();
+}
 
 MODULE_END;
 
@@ -50,55 +50,55 @@ SimGroup* RazerHydraFrameStore::smFrameGroup = NULL;
 
 RazerHydraFrameStore::RazerHydraFrameStore()
 {
-   // Set up the SimGroup to store our frames
-   smFrameGroup = new SimGroup();
-   smFrameGroup->registerObject("RazerHydraFrameGroup");
-   smFrameGroup->setNameChangeAllowed(false);
-   Sim::getRootGroup()->addObject(smFrameGroup);
+    // Set up the SimGroup to store our frames
+    smFrameGroup = new SimGroup();
+    smFrameGroup->registerObject( "RazerHydraFrameGroup" );
+    smFrameGroup->setNameChangeAllowed( false );
+    Sim::getRootGroup()->addObject( smFrameGroup );
 }
 
 RazerHydraFrameStore::~RazerHydraFrameStore()
 {
-   if(smFrameGroup)
-   {
-      smFrameGroup->deleteObject();
-      smFrameGroup = NULL;
-   }
+    if( smFrameGroup )
+    {
+        smFrameGroup->deleteObject();
+        smFrameGroup = NULL;
+    }
 }
 
 void RazerHydraFrameStore::staticInit()
 {
-   Con::addVariable("RazerHydra::MaximumFramesStored", TypeS32, &smMaximumFramesStored, 
-      "@brief The maximum number of frames to keep when $RazerHydra::GenerateWholeFrameEvents is true.\n\n"
-	   "@ingroup Game");
+    Con::addVariable( "RazerHydra::MaximumFramesStored", TypeS32, &smMaximumFramesStored,
+                      "@brief The maximum number of frames to keep when $RazerHydra::GenerateWholeFrameEvents is true.\n\n"
+                      "@ingroup Game" );
 }
 
-S32 RazerHydraFrameStore::generateNewFrame(const sixenseAllControllerData& frame, const F32& maxAxisRadius)
+S32 RazerHydraFrameStore::generateNewFrame( const sixenseAllControllerData& frame, const F32& maxAxisRadius )
 {
-   // Make sure our group has been created
-   if(!smFrameGroup)
-      return 0;
-
-   // Either create a new frame object or pull one off the end
-   S32 frameID = 0;
-   if(smFrameGroup->size() >= smMaximumFramesStored)
-   {
-      // Make the last frame the first and update
-      RazerHydraFrame* frameObj = static_cast<RazerHydraFrame*>(smFrameGroup->last());
-      smFrameGroup->bringObjectToFront(frameObj);
-      frameObj->copyFromFrame(frame, maxAxisRadius);
-      frameID = frameObj->getId();
-   }
-   else
-   {
-      // Create a new frame and add it to the front of the list
-      RazerHydraFrame* frameObj = new RazerHydraFrame();
-      frameObj->registerObject();
-      smFrameGroup->addObject(frameObj);
-      smFrameGroup->bringObjectToFront(frameObj);
-      frameObj->copyFromFrame(frame, maxAxisRadius);
-      frameID = frameObj->getId();
-   }
-
-   return frameID;
+    // Make sure our group has been created
+    if( !smFrameGroup )
+        return 0;
+        
+    // Either create a new frame object or pull one off the end
+    S32 frameID = 0;
+    if( smFrameGroup->size() >= smMaximumFramesStored )
+    {
+        // Make the last frame the first and update
+        RazerHydraFrame* frameObj = static_cast<RazerHydraFrame*>( smFrameGroup->last() );
+        smFrameGroup->bringObjectToFront( frameObj );
+        frameObj->copyFromFrame( frame, maxAxisRadius );
+        frameID = frameObj->getId();
+    }
+    else
+    {
+        // Create a new frame and add it to the front of the list
+        RazerHydraFrame* frameObj = new RazerHydraFrame();
+        frameObj->registerObject();
+        smFrameGroup->addObject( frameObj );
+        smFrameGroup->bringObjectToFront( frameObj );
+        frameObj->copyFromFrame( frame, maxAxisRadius );
+        frameID = frameObj->getId();
+    }
+    
+    return frameID;
 }

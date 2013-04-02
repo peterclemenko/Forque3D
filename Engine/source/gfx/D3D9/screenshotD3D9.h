@@ -31,8 +31,8 @@ class ScreenShotD3D : public ScreenShot
 {
 protected:
 
-   GBitmap* _captureBackBuffer();
-
+    GBitmap* _captureBackBuffer();
+    
 };
 
 

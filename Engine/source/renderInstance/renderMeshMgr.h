@@ -31,24 +31,24 @@
 //**************************************************************************
 class RenderMeshMgr : public RenderBinManager
 {
-   typedef RenderBinManager Parent;
+    typedef RenderBinManager Parent;
 public:
-   RenderMeshMgr();
-   RenderMeshMgr(RenderInstType riType, F32 renderOrder, F32 processAddOrder);   
-
-   // RenderBinManager interface
-   virtual void init();
-   virtual void render(SceneRenderState * state);
-   virtual void addElement( RenderInst *inst );
-
-   // ConsoleObject interface
-   static void initPersistFields();
-   DECLARE_CONOBJECT(RenderMeshMgr);
+    RenderMeshMgr();
+    RenderMeshMgr( RenderInstType riType, F32 renderOrder, F32 processAddOrder );
+    
+    // RenderBinManager interface
+    virtual void init();
+    virtual void render( SceneRenderState* state );
+    virtual void addElement( RenderInst* inst );
+    
+    // ConsoleObject interface
+    static void initPersistFields();
+    DECLARE_CONOBJECT( RenderMeshMgr );
 protected:
-   GFXStateBlockRef mNormalSB;
-   GFXStateBlockRef mReflectSB;
-
-   void construct();
+    GFXStateBlockRef mNormalSB;
+    GFXStateBlockRef mReflectSB;
+    
+    void construct();
 };
 
 #endif // _RENDERMESHMGR_H_

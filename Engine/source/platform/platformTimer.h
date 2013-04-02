@@ -33,19 +33,19 @@
 class PlatformTimer
 {
 protected:
-   PlatformTimer();
+    PlatformTimer();
 public:
-   virtual ~PlatformTimer();
-   
-   /// Get the number of MS that have elapsed since creation or the last
-   /// reset call.
-   virtual const S32 getElapsedMs()=0;
-   
-   /// Reset elapsed ms back to zero.
-   virtual void reset()=0;
-   
-   /// Create a new PlatformTimer.
-   static PlatformTimer *create();
+    virtual ~PlatformTimer();
+    
+    /// Get the number of MS that have elapsed since creation or the last
+    /// reset call.
+    virtual const S32 getElapsedMs() = 0;
+    
+    /// Reset elapsed ms back to zero.
+    virtual void reset() = 0;
+    
+    /// Create a new PlatformTimer.
+    static PlatformTimer* create();
 };
 
 /// Utility class to fire journalled time-delta events at regular intervals.
@@ -62,50 +62,56 @@ public:
 /// update rate.
 class TimeManager
 {
-   PlatformTimer *mTimer;
-   S32 mForegroundThreshold, mBackgroundThreshold;
-   bool mBackground;
-   
-   void _updateTime();
-
+    PlatformTimer* mTimer;
+    S32 mForegroundThreshold, mBackgroundThreshold;
+    bool mBackground;
+    
+    void _updateTime();
+    
 public:
 
-   TimeManagerEvent timeEvent;
-   
-   TimeManager();   
-   ~TimeManager();
-   
-   void setForegroundThreshold(const S32 msInterval);
-   const S32 getForegroundThreshold() const;
-   
-   void setBackgroundThreshold(const S32 msInterval);
-   const S32 getBackgroundThreshold() const;
-
-   void setBackground(const bool isBackground) { mBackground = isBackground; };
-   const bool getBackground() const { return mBackground; };
-
+    TimeManagerEvent timeEvent;
+    
+    TimeManager();
+    ~TimeManager();
+    
+    void setForegroundThreshold( const S32 msInterval );
+    const S32 getForegroundThreshold() const;
+    
+    void setBackgroundThreshold( const S32 msInterval );
+    const S32 getBackgroundThreshold() const;
+    
+    void setBackground( const bool isBackground )
+    {
+        mBackground = isBackground;
+    };
+    const bool getBackground() const
+    {
+        return mBackground;
+    };
+    
 };
 
 class DefaultPlatformTimer : public PlatformTimer
 {
-   S32 mLastTime, mNextTime;
-   
+    S32 mLastTime, mNextTime;
+    
 public:
-   DefaultPlatformTimer()
-   {
-      mLastTime = mNextTime = Platform::getRealMilliseconds();
-   }
-   
-   const S32 getElapsedMs()
-   {
-      mNextTime = Platform::getRealMilliseconds();
-      return (mNextTime - mLastTime);
-   }
-   
-   void reset()
-   {
-      mLastTime = mNextTime;
-   }
+    DefaultPlatformTimer()
+    {
+        mLastTime = mNextTime = Platform::getRealMilliseconds();
+    }
+    
+    const S32 getElapsedMs()
+    {
+        mNextTime = Platform::getRealMilliseconds();
+        return ( mNextTime - mLastTime );
+    }
+    
+    void reset()
+    {
+        mLastTime = mNextTime;
+    }
 };
 
 #endif

@@ -35,20 +35,20 @@ class GuiInspectorVariableGroup : public GuiInspectorGroup
 {
 public:
 
-   typedef GuiInspectorGroup Parent;
-
-   String mSearchString;
-
-   GuiInspectorVariableGroup();
-   virtual ~GuiInspectorVariableGroup();
-
-   DECLARE_CONOBJECT(GuiInspectorVariableGroup);
-   DECLARE_CATEGORY( "Gui Editor" );
-
-   virtual GuiInspectorField* constructField( S32 fieldType );
-
-   virtual bool inspectGroup();
-
+    typedef GuiInspectorGroup Parent;
+    
+    String mSearchString;
+    
+    GuiInspectorVariableGroup();
+    virtual ~GuiInspectorVariableGroup();
+    
+    DECLARE_CONOBJECT( GuiInspectorVariableGroup );
+    DECLARE_CATEGORY( "Gui Editor" );
+    
+    virtual GuiInspectorField* constructField( S32 fieldType );
+    
+    virtual bool inspectGroup();
+    
 protected:
 };
 

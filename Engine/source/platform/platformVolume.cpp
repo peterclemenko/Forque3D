@@ -41,53 +41,53 @@ namespace FS
 
 bool  MountDefaults()
 {
-   String  path = getAssetDir();
-
-   bool  mounted = Mount( "game", createNativeFS( path ));
-
-   if ( !mounted )
-      return false;
-
+    String  path = getAssetDir();
+    
+    bool  mounted = Mount( "game", createNativeFS( path ) );
+    
+    if( !mounted )
+        return false;
+        
 #ifndef TORQUE_DISABLE_VIRTUAL_MOUNT_SYSTEM
-   // Note that the VirtualMountSystem must be enabled in volume.cpp for zip support to work.
-   return MountZips("game");
+    // Note that the VirtualMountSystem must be enabled in volume.cpp for zip support to work.
+    return MountZips( "game" );
 #else
-   return true;
+    return true;
 #endif
 }
 
-bool MountZips(const String &root)
+bool MountZips( const String& root )
 {
-   Path basePath;
-   basePath.setRoot(root);
-   Vector<String> outList;
-
-   S32 num = FindByPattern(basePath, "*.zip", true, outList);
-   if(num == 0)
-      return true; // not an error
-
-   S32 mounted = 0;
-   for(S32 i = 0;i < outList.size();++i)
-   {
-      String &zipfile = outList[i];
+    Path basePath;
+    basePath.setRoot( root );
+    Vector<String> outList;
+    
+    S32 num = FindByPattern( basePath, "*.zip", true, outList );
+    if( num == 0 )
+        return true; // not an error
+        
+    S32 mounted = 0;
+    for( S32 i = 0; i < outList.size(); ++i )
+    {
+        String& zipfile = outList[i];
 #ifdef TORQUE_ZIP_DISK_LAYOUT
-      mounted += (S32)Mount(root, new ZipFileSystem(zipfile, false));
-#else 
-      mounted += (S32)Mount(root, new ZipFileSystem(zipfile, true));
+        mounted += ( S32 )Mount( root, new ZipFileSystem( zipfile, false ) );
+#else
+        mounted += ( S32 )Mount( root, new ZipFileSystem( zipfile, true ) );
 #endif
-   }
-
-   return mounted == outList.size();
+    }
+    
+    return mounted == outList.size();
 }
 
 //-----------------------------------------------------------------------------
 
-bool  Touch( const Path &path )
+bool  Touch( const Path& path )
 {
 #if defined(TORQUE_OS_WIN32) || defined(TORQUE_OS_XBOX) || defined(TORQUE_OS_XENON)
-   return( utime( path.getFullPath(), 0 ) != -1 );
+    return( utime( path.getFullPath(), 0 ) != -1 );
 #else
-   return( utimes( path.getFullPath(), NULL) == 0 ); // utimes returns 0 on success.
+    return( utimes( path.getFullPath(), NULL ) == 0 ); // utimes returns 0 on success.
 #endif
 }
 

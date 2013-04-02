@@ -40,131 +40,152 @@ class SceneRenderState;
 
 /// This delegate is used in derived RenderBinManager classes
 /// to allow material instances to be overriden.
-typedef Delegate<BaseMatInstance*(BaseMatInstance*)> MaterialOverrideDelegate;
+typedef Delegate<BaseMatInstance*( BaseMatInstance* )> MaterialOverrideDelegate;
 
 
 /// The RenderBinManager manages and renders lists of MainSortElem, which
 /// is a light wrapper around RenderInst.
 class RenderBinManager : public SimObject
 {
-   typedef SimObject Parent;
-
-   friend class RenderPassManager;
-
+    typedef SimObject Parent;
+    
+    friend class RenderPassManager;
+    
 public:
 
-   RenderBinManager( const RenderInstType& ritype = RenderInstType::Invalid,
-                     F32 renderOrder = 1.0f, 
-                     F32 processAddOrder  = 1.0f );
-   virtual ~RenderBinManager() {}
-   
-   // SimObject
-   void onRemove();
-
-   virtual void addElement( RenderInst *inst );
-   virtual void sort();
-   virtual void render( SceneRenderState *state ) {}
-   virtual void clear();
-
-   // Manager info
-   F32 getProcessAddOrder() const { return mProcessAddOrder; }
-   void setProcessAddOrder(F32 processAddOrder) { mProcessAddOrder = processAddOrder; }
-   F32 getRenderOrder() const { return mRenderOrder; } 
-   void setRenderOrder(F32 renderOrder) { mRenderOrder = renderOrder; }
-
-   /// Returns the primary render instance type.
-   const RenderInstType& getRenderInstType() { return mRenderInstType; }
-
-   /// Returns the render pass this bin is registered to.
-   RenderPassManager* getRenderPass() const { return mRenderPass; }
-
-   /// QSort callback function
-   static S32 FN_CDECL cmpKeyFunc(const void* p1, const void* p2);
-
-   DECLARE_CONOBJECT(RenderBinManager);
-   static void initPersistFields();
-
-   MaterialOverrideDelegate& getMatOverrideDelegate() { return mMatOverrideDelegate; }
-
+    RenderBinManager( const RenderInstType& ritype = RenderInstType::Invalid,
+                      F32 renderOrder = 1.0f,
+                      F32 processAddOrder  = 1.0f );
+    virtual ~RenderBinManager() {}
+    
+    // SimObject
+    void onRemove();
+    
+    virtual void addElement( RenderInst* inst );
+    virtual void sort();
+    virtual void render( SceneRenderState* state ) {}
+    virtual void clear();
+    
+    // Manager info
+    F32 getProcessAddOrder() const
+    {
+        return mProcessAddOrder;
+    }
+    void setProcessAddOrder( F32 processAddOrder )
+    {
+        mProcessAddOrder = processAddOrder;
+    }
+    F32 getRenderOrder() const
+    {
+        return mRenderOrder;
+    }
+    void setRenderOrder( F32 renderOrder )
+    {
+        mRenderOrder = renderOrder;
+    }
+    
+    /// Returns the primary render instance type.
+    const RenderInstType& getRenderInstType()
+    {
+        return mRenderInstType;
+    }
+    
+    /// Returns the render pass this bin is registered to.
+    RenderPassManager* getRenderPass() const
+    {
+        return mRenderPass;
+    }
+    
+    /// QSort callback function
+    static S32 FN_CDECL cmpKeyFunc( const void* p1, const void* p2 );
+    
+    DECLARE_CONOBJECT( RenderBinManager );
+    static void initPersistFields();
+    
+    MaterialOverrideDelegate& getMatOverrideDelegate()
+    {
+        return mMatOverrideDelegate;
+    }
+    
 protected:
 
-   struct MainSortElem
-   {
-      RenderInst *inst;
-      U32 key;
-      U32 key2;
-   };
-
-   void setRenderPass( RenderPassManager *rpm );
-
-   /// Called from derived bins to add additional
-   /// render instance types to be notified about.
-   void notifyType( const RenderInstType &type );
-
-   Vector< MainSortElem > mElementList; // List of our instances
-   F32 mProcessAddOrder;   // Where in the list do we process RenderInstance additions?
-   F32 mRenderOrder;       // Where in the list do we render?
-
-   /// The primary render instance type this bin supports.
-   RenderInstType mRenderInstType;
-
-   /// The list of additional render instance types 
-   /// this bin wants to process.
-   Vector<RenderInstType> mOtherTypes;
-
-   /// The render pass manager this bin is registered with.
-   RenderPassManager *mRenderPass;
-
-   MaterialOverrideDelegate mMatOverrideDelegate;
-
-   virtual void setupSGData(MeshRenderInst *ri, SceneData &data );
-   virtual void internalAddElement(RenderInst* inst);
-
-   /// A inlined helper method for testing if the next 
-   /// MeshRenderInst requires a new batch/pass.
-   inline bool newPassNeeded( MeshRenderInst *ri, MeshRenderInst* nextRI ) const;
-
-   /// Inlined utility function which gets the material from the 
-   /// RenderInst if available, otherwise, return NULL.
-   inline BaseMatInstance* getMaterial( RenderInst *inst ) const;
-
+    struct MainSortElem
+    {
+        RenderInst* inst;
+        U32 key;
+        U32 key2;
+    };
+    
+    void setRenderPass( RenderPassManager* rpm );
+    
+    /// Called from derived bins to add additional
+    /// render instance types to be notified about.
+    void notifyType( const RenderInstType& type );
+    
+    Vector< MainSortElem > mElementList; // List of our instances
+    F32 mProcessAddOrder;   // Where in the list do we process RenderInstance additions?
+    F32 mRenderOrder;       // Where in the list do we render?
+    
+    /// The primary render instance type this bin supports.
+    RenderInstType mRenderInstType;
+    
+    /// The list of additional render instance types
+    /// this bin wants to process.
+    Vector<RenderInstType> mOtherTypes;
+    
+    /// The render pass manager this bin is registered with.
+    RenderPassManager* mRenderPass;
+    
+    MaterialOverrideDelegate mMatOverrideDelegate;
+    
+    virtual void setupSGData( MeshRenderInst* ri, SceneData& data );
+    virtual void internalAddElement( RenderInst* inst );
+    
+    /// A inlined helper method for testing if the next
+    /// MeshRenderInst requires a new batch/pass.
+    inline bool newPassNeeded( MeshRenderInst* ri, MeshRenderInst* nextRI ) const;
+    
+    /// Inlined utility function which gets the material from the
+    /// RenderInst if available, otherwise, return NULL.
+    inline BaseMatInstance* getMaterial( RenderInst* inst ) const;
+    
 };
 
 
-inline bool RenderBinManager::newPassNeeded( MeshRenderInst *ri, MeshRenderInst* nextRI ) const
+inline bool RenderBinManager::newPassNeeded( MeshRenderInst* ri, MeshRenderInst* nextRI ) const
 {
-   if ( ri == nextRI )
-      return false;
-
-   // We can depend completely on the state hint to check
-   // for changes in the material as it uniquely identifies it.
-   if ( ri->matInst->getStateHint() != nextRI->matInst->getStateHint() )
-      return true;
-
-   if (  ri->vertBuff != nextRI->vertBuff ||
-         ri->primBuff != nextRI->primBuff ||
-         ri->prim != nextRI->prim ||
-         ri->primBuffIndex != nextRI->primBuffIndex ||
-
-         // NOTE: Keep an eye on this... should we find a more
-         // optimal test for light set changes?
-         //
-         dMemcmp( ri->lights, nextRI->lights, sizeof( ri->lights ) ) != 0 )
-
-      return true;
-
-   return false;
+    if( ri == nextRI )
+        return false;
+        
+    // We can depend completely on the state hint to check
+    // for changes in the material as it uniquely identifies it.
+    if( ri->matInst->getStateHint() != nextRI->matInst->getStateHint() )
+        return true;
+        
+    if( ri->vertBuff != nextRI->vertBuff ||
+            ri->primBuff != nextRI->primBuff ||
+            ri->prim != nextRI->prim ||
+            ri->primBuffIndex != nextRI->primBuffIndex ||
+            
+            // NOTE: Keep an eye on this... should we find a more
+            // optimal test for light set changes?
+            //
+            dMemcmp( ri->lights, nextRI->lights, sizeof( ri->lights ) ) != 0 )
+            
+        return true;
+        
+    return false;
 }
 
-inline BaseMatInstance* RenderBinManager::getMaterial( RenderInst *inst ) const
+inline BaseMatInstance* RenderBinManager::getMaterial( RenderInst* inst ) const
 {
-   if (  inst->type == RenderPassManager::RIT_Mesh || 
-         inst->type == RenderPassManager::RIT_Interior ||
-         inst->type == RenderPassManager::RIT_Decal ||
-         inst->type == RenderPassManager::RIT_Translucent )
-      return static_cast<MeshRenderInst*>(inst)->matInst;
-
-   return NULL;      
+    if( inst->type == RenderPassManager::RIT_Mesh ||
+            inst->type == RenderPassManager::RIT_Interior ||
+            inst->type == RenderPassManager::RIT_Decal ||
+            inst->type == RenderPassManager::RIT_Translucent )
+        return static_cast<MeshRenderInst*>( inst )->matInst;
+        
+    return NULL;
 }
 
 #endif // _RENDERBINMANAGER_H_

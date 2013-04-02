@@ -50,9 +50,9 @@
 /// Result of an overlap test.
 enum OverlapTestResult
 {
-   GeometryInside = 1,          ///< Completely inside test volume/space.
-   GeometryIntersecting = 0,    ///< Partly inside and partly outside test volume/space.
-   GeometryOutside = -1         ///< No overlap with test volume/space.
+    GeometryInside = 1,          ///< Completely inside test volume/space.
+    GeometryIntersecting = 0,    ///< Partly inside and partly outside test volume/space.
+    GeometryOutside = -1         ///< No overlap with test volume/space.
 };
 
 #endif

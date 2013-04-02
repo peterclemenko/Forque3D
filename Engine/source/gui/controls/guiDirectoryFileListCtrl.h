@@ -34,46 +34,49 @@
 class GuiDirectoryFileListCtrl : public GuiListBoxCtrl
 {
 private:
-   typedef GuiListBoxCtrl Parent;
+    typedef GuiListBoxCtrl Parent;
 protected:
-   StringTableEntry mFilePath;
-   StringTableEntry mFilter;
-
-   void openDirectory();
-   
-   static bool _setFilePath( void *object, const char *index, const char *data )
-   {
-      GuiDirectoryFileListCtrl* ctrl = ( GuiDirectoryFileListCtrl* ) object;
-      ctrl->setCurrentPath( data, ctrl->mFilter );
-      return false;
-   }
-   static bool _setFilter( void *object, const char *index, const char *data )
-   {
-      GuiDirectoryFileListCtrl* ctrl = ( GuiDirectoryFileListCtrl* ) object;
-      ctrl->setCurrentFilter( data );
-      return false;
-   }
-   
+    StringTableEntry mFilePath;
+    StringTableEntry mFilter;
+    
+    void openDirectory();
+    
+    static bool _setFilePath( void* object, const char* index, const char* data )
+    {
+        GuiDirectoryFileListCtrl* ctrl = ( GuiDirectoryFileListCtrl* ) object;
+        ctrl->setCurrentPath( data, ctrl->mFilter );
+        return false;
+    }
+    static bool _setFilter( void* object, const char* index, const char* data )
+    {
+        GuiDirectoryFileListCtrl* ctrl = ( GuiDirectoryFileListCtrl* ) object;
+        ctrl->setCurrentFilter( data );
+        return false;
+    }
+    
 public:
-   GuiDirectoryFileListCtrl();
-   
-   DECLARE_CONOBJECT(GuiDirectoryFileListCtrl);
-   DECLARE_DESCRIPTION( "A control that displays a list of files from within a single\n"
-                        "directory in the game file system." );
-   
-   static void initPersistFields();
-   
-   void update() { openDirectory(); }
-
-   /// Set the current path to grab files from
-   bool setCurrentPath( const char* path, const char* filter );
-   void setCurrentFilter( const char* filter );
-
-   /// Get the currently selected file's name
-   StringTableEntry getSelectedFileName();
-
-   virtual void onMouseDown(const GuiEvent &event);
-   virtual bool onWake();
+    GuiDirectoryFileListCtrl();
+    
+    DECLARE_CONOBJECT( GuiDirectoryFileListCtrl );
+    DECLARE_DESCRIPTION( "A control that displays a list of files from within a single\n"
+                         "directory in the game file system." );
+                         
+    static void initPersistFields();
+    
+    void update()
+    {
+        openDirectory();
+    }
+    
+    /// Set the current path to grab files from
+    bool setCurrentPath( const char* path, const char* filter );
+    void setCurrentFilter( const char* filter );
+    
+    /// Get the currently selected file's name
+    StringTableEntry getSelectedFileName();
+    
+    virtual void onMouseDown( const GuiEvent& event );
+    virtual bool onWake();
 };
 
 #endif

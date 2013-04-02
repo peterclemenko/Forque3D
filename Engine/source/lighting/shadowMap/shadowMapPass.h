@@ -46,75 +46,84 @@ class RenderTerrainMgr;
 class PlatformTimer;
 class ShadowRenderPassManager;
 
-/// ShadowMapPass, this is plugged into the SceneManager to generate 
+/// ShadowMapPass, this is plugged into the SceneManager to generate
 /// ShadowMaps for the scene.
 class ShadowMapPass
 {
 public:
 
-   ShadowMapPass() {}   // Only called by ConsoleSystem
-   ShadowMapPass(LightManager* LightManager, ShadowMapManager* ShadowManager);
-   virtual ~ShadowMapPass();
-
-   //
-   // SceneRenderPass interface
-   //
-
-   /// Called to render a scene.
-   void render(   SceneManager *sceneGraph, 
-                  const SceneRenderState *diffuseState, 
-                  U32 objectMask );
-
-   /// Return the type of pass this is
-   virtual const String& getPassType() const { return PassTypeName; };
-
-   /// Return our sort value. (Go first in order to have shadow maps available for RIT_Objects)
-   virtual F32 getSortValue() const { return 0.0f; }
-
-   virtual bool geometryOnly() const { return true; }
-
-   static const String PassTypeName;
-
-
-   /// Used to for debugging performance by disabling
-   /// shadow updates and rendering.
-   static bool smDisableShadows;
-
-   static bool smDisableShadowsEditor;
-   static bool smDisableShadowsPref;
-
+    ShadowMapPass() {}   // Only called by ConsoleSystem
+    ShadowMapPass( LightManager* LightManager, ShadowMapManager* ShadowManager );
+    virtual ~ShadowMapPass();
+    
+    //
+    // SceneRenderPass interface
+    //
+    
+    /// Called to render a scene.
+    void render( SceneManager* sceneGraph,
+                 const SceneRenderState* diffuseState,
+                 U32 objectMask );
+                 
+    /// Return the type of pass this is
+    virtual const String& getPassType() const
+    {
+        return PassTypeName;
+    };
+    
+    /// Return our sort value. (Go first in order to have shadow maps available for RIT_Objects)
+    virtual F32 getSortValue() const
+    {
+        return 0.0f;
+    }
+    
+    virtual bool geometryOnly() const
+    {
+        return true;
+    }
+    
+    static const String PassTypeName;
+    
+    
+    /// Used to for debugging performance by disabling
+    /// shadow updates and rendering.
+    static bool smDisableShadows;
+    
+    static bool smDisableShadowsEditor;
+    static bool smDisableShadowsPref;
+    
 private:
 
-   static U32 smActiveShadowMaps;
-   static U32 smUpdatedShadowMaps;
-   static U32 smNearShadowMaps;
-   static U32 smShadowMapsDrawCalls;
-   static U32 smShadowMapPolyCount;
-   static U32 smRenderTargetChanges;
-   static U32 smShadowPoolTexturesCount;
-   static F32 smShadowPoolMemory;
-
-   /// The milliseconds alotted for shadow map updates
-   /// on a per frame basis.
-   static U32 smRenderBudgetMs;
-
-   PlatformTimer *mTimer;
-
-   LightInfoList mLights;
-   U32 mActiveLights;
-   SimObjectPtr<ShadowRenderPassManager> mShadowRPM;
-   LightManager* mLightManager;
-   ShadowMapManager* mShadowManager;
+    static U32 smActiveShadowMaps;
+    static U32 smUpdatedShadowMaps;
+    static U32 smNearShadowMaps;
+    static U32 smShadowMapsDrawCalls;
+    static U32 smShadowMapPolyCount;
+    static U32 smRenderTargetChanges;
+    static U32 smShadowPoolTexturesCount;
+    static F32 smShadowPoolMemory;
+    
+    /// The milliseconds alotted for shadow map updates
+    /// on a per frame basis.
+    static U32 smRenderBudgetMs;
+    
+    PlatformTimer* mTimer;
+    
+    LightInfoList mLights;
+    U32 mActiveLights;
+    SimObjectPtr<ShadowRenderPassManager> mShadowRPM;
+    LightManager* mLightManager;
+    ShadowMapManager* mShadowManager;
 };
 
 class ShadowRenderPassManager : public RenderPassManager
 {
-   typedef RenderPassManager Parent;
+    typedef RenderPassManager Parent;
 public:
-   ShadowRenderPassManager() : Parent() {}
-
-   /// Add a RenderInstance to the list
-   virtual void addInst( RenderInst *inst );
+    ShadowRenderPassManager() : Parent() {}
+    
+    /// Add a RenderInstance to the list
+    virtual void addInst( RenderInst* inst );
 };
 
 #endif // _SHADOWMAPPASS_H_

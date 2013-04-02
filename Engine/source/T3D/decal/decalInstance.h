@@ -41,53 +41,53 @@ class SceneRenderState;
 /// the DecalManager.
 class DecalInstance
 {
-   public:
+public:
 
-      DecalData *mDataBlock;
-
-      Point3F mPosition;
-      Point3F mNormal;
-      Point3F mTangent;
-      F32 mRotAroundNormal;   
-      F32 mSize;
-
-      U32 mCreateTime;
-      F32 mVisibility;
-
-      F32 mLastAlpha;
-
-      U32 mTextureRectIdx;      
-
-      DecalVertex *mVerts;
-      U16 *mIndices;
-
-      U32 mVertCount;
-      U32 mIndxCount;
-
-      U8 mFlags;
-
-      U8 mRenderPriority;
-
-      S32 mId;
-
-      GFXTexHandle *mCustomTex;
-
-      void getWorldMatrix( MatrixF *outMat, bool flip = false );
-      
-      Box3F getWorldBox() const
-      {
-         return Box3F( mPosition - Point3F( mSize / 2.f ), mPosition + Point3F( mSize / 2.f ) );
-      }
-
-      U8 getRenderPriority() const
-      {
-         return mRenderPriority == 0 ? mDataBlock->renderPriority : mRenderPriority;
-      }
-
-      /// Calculates the size of this decal onscreen in pixels, used for LOD.
-      F32 calcPixelSize( U32 viewportHeight, const Point3F &cameraPos, F32 worldToScreenScaleY ) const;
-   		
-	   DecalInstance() : mId(-1) {}   
+    DecalData* mDataBlock;
+    
+    Point3F mPosition;
+    Point3F mNormal;
+    Point3F mTangent;
+    F32 mRotAroundNormal;
+    F32 mSize;
+    
+    U32 mCreateTime;
+    F32 mVisibility;
+    
+    F32 mLastAlpha;
+    
+    U32 mTextureRectIdx;
+    
+    DecalVertex* mVerts;
+    U16* mIndices;
+    
+    U32 mVertCount;
+    U32 mIndxCount;
+    
+    U8 mFlags;
+    
+    U8 mRenderPriority;
+    
+    S32 mId;
+    
+    GFXTexHandle* mCustomTex;
+    
+    void getWorldMatrix( MatrixF* outMat, bool flip = false );
+    
+    Box3F getWorldBox() const
+    {
+        return Box3F( mPosition - Point3F( mSize / 2.f ), mPosition + Point3F( mSize / 2.f ) );
+    }
+    
+    U8 getRenderPriority() const
+    {
+        return mRenderPriority == 0 ? mDataBlock->renderPriority : mRenderPriority;
+    }
+    
+    /// Calculates the size of this decal onscreen in pixels, used for LOD.
+    F32 calcPixelSize( U32 viewportHeight, const Point3F& cameraPos, F32 worldToScreenScaleY ) const;
+    
+    DecalInstance() : mId( -1 ) {}
 };
 
 #endif // _DECALINSTANCE_H_

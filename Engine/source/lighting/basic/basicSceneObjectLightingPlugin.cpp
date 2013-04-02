@@ -39,192 +39,192 @@
 
 MODULE_BEGIN( BasicSceneObjectLightingPlugin )
 
-   MODULE_INIT
-   {
-      BasicSceneObjectPluginFactory::createSingleton();
-   }
-   
-   MODULE_SHUTDOWN
-   {
-      BasicSceneObjectPluginFactory::deleteSingleton();
-   }
-   
+MODULE_INIT
+{
+    BasicSceneObjectPluginFactory::createSingleton();
+}
+
+MODULE_SHUTDOWN
+{
+    BasicSceneObjectPluginFactory::deleteSingleton();
+}
+
 MODULE_END;
 
 
 static const U32 shadowObjectTypeMask = PlayerObjectType | CorpseObjectType | ItemObjectType | VehicleObjectType;
 Vector<BasicSceneObjectLightingPlugin*> BasicSceneObjectLightingPlugin::smPluginInstances( __FILE__, __LINE__ );
 
-BasicSceneObjectLightingPlugin::BasicSceneObjectLightingPlugin(SceneObject* parent)
-   : mParentObject( parent )
+BasicSceneObjectLightingPlugin::BasicSceneObjectLightingPlugin( SceneObject* parent )
+    : mParentObject( parent )
 {
-   mShadow = NULL;
-
-   // Stick us on the list.
-   smPluginInstances.push_back( this );
+    mShadow = NULL;
+    
+    // Stick us on the list.
+    smPluginInstances.push_back( this );
 }
 
 BasicSceneObjectLightingPlugin::~BasicSceneObjectLightingPlugin()
 {
-   SAFE_DELETE( mShadow );
-   
-   // Delete us from the list.
-   smPluginInstances.remove( this );
+    SAFE_DELETE( mShadow );
+    
+    // Delete us from the list.
+    smPluginInstances.remove( this );
 }
 
 void BasicSceneObjectLightingPlugin::reset()
 {
-   SAFE_DELETE( mShadow );
+    SAFE_DELETE( mShadow );
 }
 
 void BasicSceneObjectLightingPlugin::cleanupPluginInstances()
 {
-   for (U32 i = 0; i < smPluginInstances.size(); i++)
-   {
-      BasicSceneObjectLightingPlugin *plug = smPluginInstances[i];
-      smPluginInstances.remove( plug );
-      delete plug;
-      i--;
-   }
-   
-   smPluginInstances.clear();
+    for( U32 i = 0; i < smPluginInstances.size(); i++ )
+    {
+        BasicSceneObjectLightingPlugin* plug = smPluginInstances[i];
+        smPluginInstances.remove( plug );
+        delete plug;
+        i--;
+    }
+    
+    smPluginInstances.clear();
 }
 
 void BasicSceneObjectLightingPlugin::resetAll()
 {
-   for( U32 i = 0, num = smPluginInstances.size(); i < num; ++ i )
-      smPluginInstances[ i ]->reset();
+    for( U32 i = 0, num = smPluginInstances.size(); i < num; ++ i )
+        smPluginInstances[ i ]->reset();
 }
 
 const F32 BasicSceneObjectLightingPlugin::getScore() const
-{ 
-   return mShadow ? mShadow->getScore() : 0.0f; 
+{
+    return mShadow ? mShadow->getScore() : 0.0f;
 }
 
-void BasicSceneObjectLightingPlugin::updateShadow( SceneRenderState *state )
+void BasicSceneObjectLightingPlugin::updateShadow( SceneRenderState* state )
 {
-   if ( !mShadow )
-      mShadow = new ProjectedShadow( mParentObject );
-
-   mShadow->update( state );
+    if( !mShadow )
+        mShadow = new ProjectedShadow( mParentObject );
+        
+    mShadow->update( state );
 }
 
-void BasicSceneObjectLightingPlugin::renderShadow( SceneRenderState *state )
+void BasicSceneObjectLightingPlugin::renderShadow( SceneRenderState* state )
 {
-   // hack until new scenegraph in place
-   GFXTransformSaver ts;
-   
-   TSRenderState rstate;
-   rstate.setSceneState(state);
-
-   F32 camDist = (state->getCameraPosition() - mParentObject->getRenderPosition()).len();
-   
-   // Make sure the shadow wants to be rendered
-   if( mShadow->shouldRender( state ) )
-   {
-      // Render! (and note the time)      
-      mShadow->render( camDist, rstate );
-   }
+    // hack until new scenegraph in place
+    GFXTransformSaver ts;
+    
+    TSRenderState rstate;
+    rstate.setSceneState( state );
+    
+    F32 camDist = ( state->getCameraPosition() - mParentObject->getRenderPosition() ).len();
+    
+    // Make sure the shadow wants to be rendered
+    if( mShadow->shouldRender( state ) )
+    {
+        // Render! (and note the time)
+        mShadow->render( camDist, rstate );
+    }
 }
 
 BasicSceneObjectPluginFactory::BasicSceneObjectPluginFactory()
- : mEnabled( false )
+    : mEnabled( false )
 {
-   LightManager::smActivateSignal.notify( this, &BasicSceneObjectPluginFactory::_onLMActivate );
-
-   ShadowMapManager::smShadowDeactivateSignal.notify( this, &BasicSceneObjectPluginFactory::_setEnabled );
+    LightManager::smActivateSignal.notify( this, &BasicSceneObjectPluginFactory::_onLMActivate );
+    
+    ShadowMapManager::smShadowDeactivateSignal.notify( this, &BasicSceneObjectPluginFactory::_setEnabled );
 }
 
 BasicSceneObjectPluginFactory::~BasicSceneObjectPluginFactory()
 {
-   LightManager::smActivateSignal.remove( this, &BasicSceneObjectPluginFactory::_onLMActivate );
-
-   ShadowMapManager::smShadowDeactivateSignal.remove( this, &BasicSceneObjectPluginFactory::_setEnabled );
+    LightManager::smActivateSignal.remove( this, &BasicSceneObjectPluginFactory::_onLMActivate );
+    
+    ShadowMapManager::smShadowDeactivateSignal.remove( this, &BasicSceneObjectPluginFactory::_setEnabled );
 }
 
-void BasicSceneObjectPluginFactory::_onLMActivate( const char *lm, bool enable )
+void BasicSceneObjectPluginFactory::_onLMActivate( const char* lm, bool enable )
 {
-   _setEnabled();
+    _setEnabled();
 }
 
 void BasicSceneObjectPluginFactory::_setEnabled()
 {
-   bool enable = false;
-
-   // Enabled if using basic lighting.
-   LightManager *lm = LightManager::getActiveLM();
-   if ( lm && dStricmp( lm->getName(), "Basic Lighting" ) == 0 )   
-      enable = true;
-   
-   // Disabled if all shadows are explictly disabled.
-   if ( ShadowMapPass::smDisableShadows )
-      enable = false;
-
-   // Already at the desired state.
-   if ( enable == mEnabled )
-      return;
-   
-   if ( enable )
-   {
-      SceneObject::smSceneObjectAdd.notify(this, &BasicSceneObjectPluginFactory::addLightPlugin);
-      SceneObject::smSceneObjectRemove.notify(this, &BasicSceneObjectPluginFactory::removeLightPlugin);
-      
-      if( gDecalManager )
-         gDecalManager->getClearDataSignal().notify( this, &BasicSceneObjectPluginFactory::_onDecalManagerClear );
-         
-      addToExistingObjects();
-   } 
-   else 
-   {
-      SceneObject::smSceneObjectAdd.remove(this, &BasicSceneObjectPluginFactory::addLightPlugin);
-      SceneObject::smSceneObjectRemove.remove(this, &BasicSceneObjectPluginFactory::removeLightPlugin);
-      
-      if( gDecalManager )
-         gDecalManager->getClearDataSignal().remove( this, &BasicSceneObjectPluginFactory::_onDecalManagerClear );
-         
-      BasicSceneObjectLightingPlugin::cleanupPluginInstances();
-   }
-
-   mEnabled = enable;
+    bool enable = false;
+    
+    // Enabled if using basic lighting.
+    LightManager* lm = LightManager::getActiveLM();
+    if( lm && dStricmp( lm->getName(), "Basic Lighting" ) == 0 )
+        enable = true;
+        
+    // Disabled if all shadows are explictly disabled.
+    if( ShadowMapPass::smDisableShadows )
+        enable = false;
+        
+    // Already at the desired state.
+    if( enable == mEnabled )
+        return;
+        
+    if( enable )
+    {
+        SceneObject::smSceneObjectAdd.notify( this, &BasicSceneObjectPluginFactory::addLightPlugin );
+        SceneObject::smSceneObjectRemove.notify( this, &BasicSceneObjectPluginFactory::removeLightPlugin );
+        
+        if( gDecalManager )
+            gDecalManager->getClearDataSignal().notify( this, &BasicSceneObjectPluginFactory::_onDecalManagerClear );
+            
+        addToExistingObjects();
+    }
+    else
+    {
+        SceneObject::smSceneObjectAdd.remove( this, &BasicSceneObjectPluginFactory::addLightPlugin );
+        SceneObject::smSceneObjectRemove.remove( this, &BasicSceneObjectPluginFactory::removeLightPlugin );
+        
+        if( gDecalManager )
+            gDecalManager->getClearDataSignal().remove( this, &BasicSceneObjectPluginFactory::_onDecalManagerClear );
+            
+        BasicSceneObjectLightingPlugin::cleanupPluginInstances();
+    }
+    
+    mEnabled = enable;
 }
 
 void BasicSceneObjectPluginFactory::_onDecalManagerClear()
 {
-   BasicSceneObjectLightingPlugin::resetAll();
+    BasicSceneObjectLightingPlugin::resetAll();
 }
 
-void BasicSceneObjectPluginFactory::removeLightPlugin( SceneObject *obj )
+void BasicSceneObjectPluginFactory::removeLightPlugin( SceneObject* obj )
 {
-   // Grab the plugin instance.
-   SceneObjectLightingPlugin *lightPlugin = obj->getLightingPlugin();
-
-   // Delete it, which will also remove it
-   // from the static list of plugin instances.
-   if ( lightPlugin )
-   {
-      delete lightPlugin;
-      obj->setLightingPlugin( NULL );
-   }
+    // Grab the plugin instance.
+    SceneObjectLightingPlugin* lightPlugin = obj->getLightingPlugin();
+    
+    // Delete it, which will also remove it
+    // from the static list of plugin instances.
+    if( lightPlugin )
+    {
+        delete lightPlugin;
+        obj->setLightingPlugin( NULL );
+    }
 }
 
-void BasicSceneObjectPluginFactory::addLightPlugin(SceneObject* obj)
+void BasicSceneObjectPluginFactory::addLightPlugin( SceneObject* obj )
 {
-   bool serverObj = obj->isServerObject();
-   bool isShadowType = (obj->getTypeMask() & shadowObjectTypeMask);
-
-   if ( !isShadowType || serverObj )
-      return;
-
-   obj->setLightingPlugin(new BasicSceneObjectLightingPlugin(obj));
+    bool serverObj = obj->isServerObject();
+    bool isShadowType = ( obj->getTypeMask() & shadowObjectTypeMask );
+    
+    if( !isShadowType || serverObj )
+        return;
+        
+    obj->setLightingPlugin( new BasicSceneObjectLightingPlugin( obj ) );
 }
 
 // Some objects may not get cleaned up during mission load/free, so add our
 // plugin to existing scene objects
 void BasicSceneObjectPluginFactory::addToExistingObjects()
 {
-   SimpleQueryList sql;  
-   gClientContainer.findObjects( shadowObjectTypeMask, SimpleQueryList::insertionCallback, &sql);
-   for (SceneObject** i = sql.mList.begin(); i != sql.mList.end(); i++)
-      addLightPlugin(*i);
+    SimpleQueryList sql;
+    gClientContainer.findObjects( shadowObjectTypeMask, SimpleQueryList::insertionCallback, &sql );
+    for( SceneObject** i = sql.mList.begin(); i != sql.mList.end(); i++ )
+        addLightPlugin( *i );
 }
-                                                                                                         
+

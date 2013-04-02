@@ -32,39 +32,39 @@ struct PlatformMutexData;
 class Mutex
 {
 protected:
-   PlatformMutexData *mData;
-
+    PlatformMutexData* mData;
+    
 public:
-   Mutex();
-   virtual ~Mutex();
-
-   virtual bool lock(bool block = true);
-   virtual void unlock();
-
-   // Old API so that we don't have to change a load of code
-   static void *createMutex()
-   {
-      Mutex *mutex = new Mutex;
-      return (void *)mutex;
-   }
-
-   static void destroyMutex(void *mutex)
-   {
-      Mutex *realMutex = reinterpret_cast<Mutex *>(mutex);
-      delete realMutex;
-   }
-
-   static bool lockMutex(void *mutex, bool block = true)
-   {
-      Mutex *realMutex = reinterpret_cast<Mutex *>(mutex);
-      return realMutex->lock(block);
-   }
-
-   static void unlockMutex(void *mutex)
-   {
-      Mutex *realMutex = reinterpret_cast<Mutex *>(mutex);
-      realMutex->unlock();
-   }
+    Mutex();
+    virtual ~Mutex();
+    
+    virtual bool lock( bool block = true );
+    virtual void unlock();
+    
+    // Old API so that we don't have to change a load of code
+    static void* createMutex()
+    {
+        Mutex* mutex = new Mutex;
+        return ( void* )mutex;
+    }
+    
+    static void destroyMutex( void* mutex )
+    {
+        Mutex* realMutex = reinterpret_cast<Mutex*>( mutex );
+        delete realMutex;
+    }
+    
+    static bool lockMutex( void* mutex, bool block = true )
+    {
+        Mutex* realMutex = reinterpret_cast<Mutex*>( mutex );
+        return realMutex->lock( block );
+    }
+    
+    static void unlockMutex( void* mutex )
+    {
+        Mutex* realMutex = reinterpret_cast<Mutex*>( mutex );
+        realMutex->unlock();
+    }
 };
 
 /// Helper for simplifying mutex locking code.
@@ -86,44 +86,44 @@ public:
 class MutexHandle
 {
 private:
-   void *mMutexPtr;
-
+    void* mMutexPtr;
+    
 public:
-   MutexHandle()
-      : mMutexPtr(NULL)
-   {
-   }
-
-   ~MutexHandle()
-   {
-      if(mMutexPtr)
-         unlock();
-   }
-
-   bool lock(void *mutex, bool blocking=false)
-   {
-      AssertFatal(!mMutexPtr, "MutexHandle::lock - shouldn't be locking things twice!");
-
-      bool ret = Mutex::lockMutex(mutex, blocking);
-
-      if(ret)
-      {
-         // We succeeded, do book-keeping.
-         mMutexPtr = mutex;
-      }
-
-      return ret;
-   }
-
-   void unlock()
-   {
-      if(mMutexPtr)
-      {
-         Mutex::unlockMutex(mMutexPtr);
-         mMutexPtr = NULL;
-      }
-   }
-
+    MutexHandle()
+        : mMutexPtr( NULL )
+    {
+    }
+    
+    ~MutexHandle()
+    {
+        if( mMutexPtr )
+            unlock();
+    }
+    
+    bool lock( void* mutex, bool blocking = false )
+    {
+        AssertFatal( !mMutexPtr, "MutexHandle::lock - shouldn't be locking things twice!" );
+        
+        bool ret = Mutex::lockMutex( mutex, blocking );
+        
+        if( ret )
+        {
+            // We succeeded, do book-keeping.
+            mMutexPtr = mutex;
+        }
+        
+        return ret;
+    }
+    
+    void unlock()
+    {
+        if( mMutexPtr )
+        {
+            Mutex::unlockMutex( mMutexPtr );
+            mMutexPtr = NULL;
+        }
+    }
+    
 };
 
 #endif // _PLATFORM_THREADS_MUTEX_H_

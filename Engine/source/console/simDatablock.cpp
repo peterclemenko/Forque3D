@@ -30,18 +30,18 @@
 #include "T3D/gameBase/gameConnection.h"
 
 
-IMPLEMENT_CO_DATABLOCK_V1(SimDataBlock);
+IMPLEMENT_CO_DATABLOCK_V1( SimDataBlock );
 SimObjectId SimDataBlock::sNextObjectId = DataBlockObjectIdFirst;
 S32 SimDataBlock::sNextModifiedKey = 0;
 
 ConsoleDocClass( SimDataBlock,
-   "@brief \n"
-   "@ingroup \n"
-   
-   "@section Datablock_Networking Datablocks and Networking\n"
-   
-   "@section Datablock_ClientSide Client-Side Datablocks\n"
-);
+                 "@brief \n"
+                 "@ingroup \n"
+
+                 "@section Datablock_Networking Datablocks and Networking\n"
+
+                 "@section Datablock_ClientSide Client-Side Datablocks\n"
+               );
 
 
 
@@ -49,93 +49,93 @@ ConsoleDocClass( SimDataBlock,
 
 SimDataBlock::SimDataBlock()
 {
-   setModDynamicFields(true);
-   setModStaticFields(true);
+    setModDynamicFields( true );
+    setModStaticFields( true );
 }
 
 //-----------------------------------------------------------------------------
 
 bool SimDataBlock::onAdd()
 {
-   Parent::onAdd();
-
-   // This initialization is done here, and not in the constructor,
-   // because some jokers like to construct and destruct objects
-   // (without adding them to the manager) to check what class
-   // they are.
-   modifiedKey = ++sNextModifiedKey;
-   AssertFatal(sNextObjectId <= DataBlockObjectIdLast,
-      "Exceeded maximum number of data blocks");
-
-   // add DataBlock to the DataBlockGroup unless it is client side ONLY DataBlock
-   if ( !isClientOnly() )
-      if (SimGroup* grp = Sim::getDataBlockGroup())
-         grp->addObject(this);
-         
-   Sim::getDataBlockSet()->addObject( this );
-
-   return true;
+    Parent::onAdd();
+    
+    // This initialization is done here, and not in the constructor,
+    // because some jokers like to construct and destruct objects
+    // (without adding them to the manager) to check what class
+    // they are.
+    modifiedKey = ++sNextModifiedKey;
+    AssertFatal( sNextObjectId <= DataBlockObjectIdLast,
+                 "Exceeded maximum number of data blocks" );
+                 
+    // add DataBlock to the DataBlockGroup unless it is client side ONLY DataBlock
+    if( !isClientOnly() )
+        if( SimGroup* grp = Sim::getDataBlockGroup() )
+            grp->addObject( this );
+            
+    Sim::getDataBlockSet()->addObject( this );
+    
+    return true;
 }
 
 //-----------------------------------------------------------------------------
 
 void SimDataBlock::assignId()
 {
-   // We don't want the id assigned by the manager, but it may have
-   // already been assigned a correct data block id.
-   if ( isClientOnly() )
-      setId(sNextObjectId++);
+    // We don't want the id assigned by the manager, but it may have
+    // already been assigned a correct data block id.
+    if( isClientOnly() )
+        setId( sNextObjectId++ );
 }
 
 //-----------------------------------------------------------------------------
 
-void SimDataBlock::onStaticModified(const char* slotName, const char* newValue)
+void SimDataBlock::onStaticModified( const char* slotName, const char* newValue )
 {
-   modifiedKey = sNextModifiedKey++;
+    modifiedKey = sNextModifiedKey++;
 }
 
 //-----------------------------------------------------------------------------
 
-void SimDataBlock::packData(BitStream*)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void SimDataBlock::unpackData(BitStream*)
+void SimDataBlock::packData( BitStream* )
 {
 }
 
 //-----------------------------------------------------------------------------
 
-bool SimDataBlock::preload(bool, String&)
+void SimDataBlock::unpackData( BitStream* )
 {
-   return true;
 }
 
 //-----------------------------------------------------------------------------
 
-void SimDataBlock::write(Stream &stream, U32 tabStop, U32 flags)
+bool SimDataBlock::preload( bool, String& )
 {
-   // Only output selected objects if they want that.
-   if((flags & SelectedOnly) && !isSelected())
-      return;
+    return true;
+}
 
-   stream.writeTabs(tabStop);
-   char buffer[1024];
+//-----------------------------------------------------------------------------
 
-   // Client side datablocks are created with 'new' while
-   // regular server datablocks use the 'datablock' keyword.
-   if ( isClientOnly() )
-      dSprintf(buffer, sizeof(buffer), "new %s(%s) {\r\n", getClassName(), getName() ? getName() : "");
-   else
-      dSprintf(buffer, sizeof(buffer), "datablock %s(%s) {\r\n", getClassName(), getName() ? getName() : "");
-
-   stream.write(dStrlen(buffer), buffer);
-   writeFields(stream, tabStop + 1);
-
-   stream.writeTabs(tabStop);
-   stream.write(4, "};\r\n");
+void SimDataBlock::write( Stream& stream, U32 tabStop, U32 flags )
+{
+    // Only output selected objects if they want that.
+    if( ( flags & SelectedOnly ) && !isSelected() )
+        return;
+        
+    stream.writeTabs( tabStop );
+    char buffer[1024];
+    
+    // Client side datablocks are created with 'new' while
+    // regular server datablocks use the 'datablock' keyword.
+    if( isClientOnly() )
+        dSprintf( buffer, sizeof( buffer ), "new %s(%s) {\r\n", getClassName(), getName() ? getName() : "" );
+    else
+        dSprintf( buffer, sizeof( buffer ), "datablock %s(%s) {\r\n", getClassName(), getName() ? getName() : "" );
+        
+    stream.write( dStrlen( buffer ), buffer );
+    writeFields( stream, tabStop + 1 );
+    
+    stream.writeTabs( tabStop );
+    stream.write( 4, "};\r\n" );
 }
 
 //=============================================================================
@@ -145,68 +145,68 @@ void SimDataBlock::write(Stream &stream, U32 tabStop, U32 flags)
 
 //-----------------------------------------------------------------------------
 
-DefineConsoleMethod( SimDataBlock, reloadOnLocalClient, void, (),,
-   "Reload the datablock.  This can only be used with a local client configuration." )
+DefineConsoleMethod( SimDataBlock, reloadOnLocalClient, void, (), ,
+                     "Reload the datablock.  This can only be used with a local client configuration." )
 {
-   // Make sure we're running a local client.
-
-   GameConnection* localClient = GameConnection::getLocalClientConnection();
-   if( !localClient )
-      return;
-
-   // Do an in-place pack/unpack/preload.
-
-   if( !object->preload( true, NetConnection::getErrorBuffer() ) )
-   {
-      Con::errorf( NetConnection::getErrorBuffer() );
-      return;
-   }
-
-   U8 buffer[ 16384 ];
-   BitStream stream( buffer, 16384 );
-
-   object->packData( &stream );
-   stream.setPosition(0);
-   object->unpackData( &stream );
-
-   if( !object->preload( false, NetConnection::getErrorBuffer() ) )
-   {
-      Con::errorf( NetConnection::getErrorBuffer() );
-      return;
-   }
-
-   // Trigger a post-apply so that change notifications respond.
-   object->inspectPostApply();
+    // Make sure we're running a local client.
+    
+    GameConnection* localClient = GameConnection::getLocalClientConnection();
+    if( !localClient )
+        return;
+        
+    // Do an in-place pack/unpack/preload.
+    
+    if( !object->preload( true, NetConnection::getErrorBuffer() ) )
+    {
+        Con::errorf( NetConnection::getErrorBuffer() );
+        return;
+    }
+    
+    U8 buffer[ 16384 ];
+    BitStream stream( buffer, 16384 );
+    
+    object->packData( &stream );
+    stream.setPosition( 0 );
+    object->unpackData( &stream );
+    
+    if( !object->preload( false, NetConnection::getErrorBuffer() ) )
+    {
+        Con::errorf( NetConnection::getErrorBuffer() );
+        return;
+    }
+    
+    // Trigger a post-apply so that change notifications respond.
+    object->inspectPostApply();
 }
 
 //-----------------------------------------------------------------------------
 
-DefineConsoleFunction( preloadClientDataBlocks, void, (),,
-   "Preload all datablocks in client mode.\n\n"
-   "(Server parameter is set to false).  This will take some time to complete.")
+DefineConsoleFunction( preloadClientDataBlocks, void, (), ,
+                       "Preload all datablocks in client mode.\n\n"
+                       "(Server parameter is set to false).  This will take some time to complete." )
 {
-   // we go from last to first because we cut 'n pasted the loop from deleteDataBlocks
-   SimGroup *grp = Sim::getDataBlockGroup();
-   String errorStr;
-   for(S32 i = grp->size() - 1; i >= 0; i--)
-   {
-      AssertFatal(dynamic_cast<SimDataBlock*>((*grp)[i]), "Doh! non-datablock in datablock group!");
-      SimDataBlock *obj = (SimDataBlock*)(*grp)[i];
-      if (!obj->preload(false, errorStr))
-         Con::errorf("Failed to preload client datablock, %s: %s", obj->getName(), errorStr.c_str());
-   }
+    // we go from last to first because we cut 'n pasted the loop from deleteDataBlocks
+    SimGroup* grp = Sim::getDataBlockGroup();
+    String errorStr;
+    for( S32 i = grp->size() - 1; i >= 0; i-- )
+    {
+        AssertFatal( dynamic_cast<SimDataBlock*>( ( *grp )[i] ), "Doh! non-datablock in datablock group!" );
+        SimDataBlock* obj = ( SimDataBlock* )( *grp )[i];
+        if( !obj->preload( false, errorStr ) )
+            Con::errorf( "Failed to preload client datablock, %s: %s", obj->getName(), errorStr.c_str() );
+    }
 }
 
 //-----------------------------------------------------------------------------
 
-DefineConsoleFunction( deleteDataBlocks, void, (),,
-   "Delete all the datablocks we've downloaded.\n\n"
-   "This is usually done in preparation of downloading a new set of datablocks, "
-   "such as occurs on a mission change, but it's also good post-mission cleanup." )
+DefineConsoleFunction( deleteDataBlocks, void, (), ,
+                       "Delete all the datablocks we've downloaded.\n\n"
+                       "This is usually done in preparation of downloading a new set of datablocks, "
+                       "such as occurs on a mission change, but it's also good post-mission cleanup." )
 {
-   // delete from last to first:
-   SimGroup *grp = Sim::getDataBlockGroup();
-   grp->deleteAllObjects();
-   SimDataBlock::sNextObjectId = DataBlockObjectIdFirst;
-   SimDataBlock::sNextModifiedKey = 0;
+    // delete from last to first:
+    SimGroup* grp = Sim::getDataBlockGroup();
+    grp->deleteAllObjects();
+    SimDataBlock::sNextObjectId = DataBlockObjectIdFirst;
+    SimDataBlock::sNextModifiedKey = 0;
 }

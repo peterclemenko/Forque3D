@@ -36,21 +36,21 @@
 class GuiConsoleEditCtrl : public GuiTextEditCtrl
 {
 private:
-   typedef GuiTextEditCtrl Parent;
-
+    typedef GuiTextEditCtrl Parent;
+    
 protected:
-   bool mUseSiblingScroller;
-   GuiScrollCtrl* mSiblingScroller;
-
+    bool mUseSiblingScroller;
+    GuiScrollCtrl* mSiblingScroller;
+    
 public:
-   GuiConsoleEditCtrl();
-   
-   DECLARE_CONOBJECT(GuiConsoleEditCtrl);
-   DECLARE_CATEGORY( "Gui Editor" );
-
-   static void initPersistFields();
-
-   bool onKeyDown(const GuiEvent &event);
+    GuiConsoleEditCtrl();
+    
+    DECLARE_CONOBJECT( GuiConsoleEditCtrl );
+    DECLARE_CATEGORY( "Gui Editor" );
+    
+    static void initPersistFields();
+    
+    bool onKeyDown( const GuiEvent& event );
 };
 
 #endif //_GUI_TEXTEDIT_CTRL_H

@@ -28,48 +28,48 @@
 
 
 IMPLEMENT_STRUCT( Vector< bool >,
-   BoolVector,,
-   "" )
+                  BoolVector, ,
+                  "" )
 END_IMPLEMENT_STRUCT;
 
 
 IMPLEMENT_STRUCT( Vector< S32 >,
-   IntVector,,
-   "" )
+                  IntVector, ,
+                  "" )
 END_IMPLEMENT_STRUCT;
 
 
 IMPLEMENT_STRUCT( Vector< F32 >,
-   FloatVector,,
-   "" )
+                  FloatVector, ,
+                  "" )
 END_IMPLEMENT_STRUCT;
 
 
 IMPLEMENT_STRUCT( Torque::UUID,
-   UUID,,
-   "" )
+                  UUID, ,
+                  "" )
 END_IMPLEMENT_STRUCT;
 
 
 IMPLEMENT_STRUCT( ColorI,
-   ColorI,,
-   "RGBA color quadruple in 8bit integer precision per channel." )
-   
-   FIELD( red, red, 1, "Red channel value." )
-   FIELD( green, green, 1, "Green channel value." )
-   FIELD( blue, blue, 1, "Blue channel value." )
-   FIELD( alpha, alpha, 1, "Alpha channel value." )
-   
+                  ColorI, ,
+                  "RGBA color quadruple in 8bit integer precision per channel." )
+
+FIELD( red, red, 1, "Red channel value." )
+FIELD( green, green, 1, "Green channel value." )
+FIELD( blue, blue, 1, "Blue channel value." )
+FIELD( alpha, alpha, 1, "Alpha channel value." )
+
 END_IMPLEMENT_STRUCT;
 
 
 IMPLEMENT_STRUCT( ColorF,
-   ColorF,,
-   "RGBA color quadruple in 32bit floating-point precision per channel." )
+                  ColorF, ,
+                  "RGBA color quadruple in 32bit floating-point precision per channel." )
 
-   FIELD( red, red, 1, "Red channel value." )
-   FIELD( green, green, 1, "Green channel value." )
-   FIELD( blue, blue, 1, "Blue channel value." )
-   FIELD( alpha, alpha, 1, "Alpha channel value." )
+FIELD( red, red, 1, "Red channel value." )
+FIELD( green, green, 1, "Green channel value." )
+FIELD( blue, blue, 1, "Blue channel value." )
+FIELD( alpha, alpha, 1, "Alpha channel value." )
 
 END_IMPLEMENT_STRUCT;

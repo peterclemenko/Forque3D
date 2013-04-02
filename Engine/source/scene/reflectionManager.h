@@ -47,26 +47,26 @@ class BaseMatInstance;
 
 enum ReflectMode
 {
-   ReflectNever = 0,
-   ReflectDynamic,
-   ReflectAlways        
+    ReflectNever = 0,
+    ReflectDynamic,
+    ReflectAlways
 };
 
-typedef Delegate<bool(bool)> ReflectDelegate;     
+typedef Delegate<bool( bool )> ReflectDelegate;
 class SceneObject;
 
 struct Reflector
 {
-   SceneObject *object;
-   ReflectDelegate updateFn;
-   F32 priority;
-   U32 maxRateMs;
-   F32 maxDist;
-   U32 lastUpdateMs;
-   F32 score;
-   bool updated;
-   bool tried;
-   bool hasTexture;
+    SceneObject* object;
+    ReflectDelegate updateFn;
+    F32 priority;
+    U32 maxRateMs;
+    F32 maxDist;
+    U32 lastUpdateMs;
+    F32 score;
+    bool updated;
+    bool tried;
+    bool hasTexture;
 };
 
 typedef Vector<Reflector> ReflectorVec;
@@ -78,73 +78,85 @@ class ReflectionManager
 {
 public:
 
-   ReflectionManager();
-   virtual ~ReflectionManager();     
-
-   static void initConsole();
-
-   /// Called to change the reflection texture format.
-   void setReflectFormat( GFXFormat format ) { mReflectFormat = format; }
-
-   /// Returns the current reflection format.
-   GFXFormat getReflectFormat() const { return mReflectFormat; }
-
-   /// Doll out callbacks to registered objects based on 
-   /// scoring and elapsed time.  This should be called 
-   /// once for each viewport that renders.
-   void update(   F32 timeSlice, 
-                  const Point2I &resolution, 
-                  const CameraQuery &query );
-
-   void registerReflector( ReflectorBase *reflector );
-   void unregisterReflector( ReflectorBase *reflector );
-
-   GFXTexHandle allocRenderTarget( const Point2I &size );  
-
-   GFXTextureObject* getRefractTex( bool forceUpdate = false );
-
-   BaseMatInstance* getReflectionMaterial( BaseMatInstance *inMat ) const;
-
-   const U32& getLastUpdateMs() const { return mLastUpdateMs; }
-
+    ReflectionManager();
+    virtual ~ReflectionManager();
+    
+    static void initConsole();
+    
+    /// Called to change the reflection texture format.
+    void setReflectFormat( GFXFormat format )
+    {
+        mReflectFormat = format;
+    }
+    
+    /// Returns the current reflection format.
+    GFXFormat getReflectFormat() const
+    {
+        return mReflectFormat;
+    }
+    
+    /// Doll out callbacks to registered objects based on
+    /// scoring and elapsed time.  This should be called
+    /// once for each viewport that renders.
+    void update( F32 timeSlice,
+                 const Point2I& resolution,
+                 const CameraQuery& query );
+                 
+    void registerReflector( ReflectorBase* reflector );
+    void unregisterReflector( ReflectorBase* reflector );
+    
+    GFXTexHandle allocRenderTarget( const Point2I& size );
+    
+    GFXTextureObject* getRefractTex( bool forceUpdate = false );
+    
+    BaseMatInstance* getReflectionMaterial( BaseMatInstance* inMat ) const;
+    
+    const U32& getLastUpdateMs() const
+    {
+        return mLastUpdateMs;
+    }
+    
 protected:
 
-   bool _handleDeviceEvent( GFXDevice::GFXDeviceEventType evt );
-
+    bool _handleDeviceEvent( GFXDevice::GFXDeviceEventType evt );
+    
 protected:
-   
-   /// ReflectionManager tries not to spend more than this amount of time
-   /// updating reflections per frame.
-   static U32 smFrameReflectionMS;
 
-   /// RefractTex has dimensions equal to the active render target scaled in
-   /// both x and y by this float.
-   static F32 smRefractTexScale;
-
-   /// A timer used for tracking update time.
-   PlatformTimer *mTimer;
-
-   /// All registered reflections which we handle updating.
-   ReflectorList mReflectors;
-
-   /// Refraction texture copied from the backbuffer once per frame that
-   /// gets used by all WaterObjects.
-   GFXTexHandle mRefractTex;
-
-   /// The texture format to use for reflection and
-   /// refraction texture sources.
-   GFXFormat mReflectFormat;
-
-   /// Set when the refraction texture is dirty
-   /// and requires an update.
-   bool mUpdateRefract;
-
-   /// Platform time in milliseconds of the last update.
-   U32 mLastUpdateMs;
-   
+    /// ReflectionManager tries not to spend more than this amount of time
+    /// updating reflections per frame.
+    static U32 smFrameReflectionMS;
+    
+    /// RefractTex has dimensions equal to the active render target scaled in
+    /// both x and y by this float.
+    static F32 smRefractTexScale;
+    
+    /// A timer used for tracking update time.
+    PlatformTimer* mTimer;
+    
+    /// All registered reflections which we handle updating.
+    ReflectorList mReflectors;
+    
+    /// Refraction texture copied from the backbuffer once per frame that
+    /// gets used by all WaterObjects.
+    GFXTexHandle mRefractTex;
+    
+    /// The texture format to use for reflection and
+    /// refraction texture sources.
+    GFXFormat mReflectFormat;
+    
+    /// Set when the refraction texture is dirty
+    /// and requires an update.
+    bool mUpdateRefract;
+    
+    /// Platform time in milliseconds of the last update.
+    U32 mLastUpdateMs;
+    
 public:
-   // For ManagedSingleton.
-   static const char* getSingletonName() { return "ReflectionManager"; }   
+    // For ManagedSingleton.
+    static const char* getSingletonName()
+    {
+        return "ReflectionManager";
+    }
 };
 
 

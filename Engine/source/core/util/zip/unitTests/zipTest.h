@@ -90,14 +90,14 @@ namespace Zip
 // Helper Functions
 //-----------------------------------------------------------------------------
 
-inline StringTableEntry makeTestPath(const char *path)
+inline StringTableEntry makeTestPath( const char* path )
 {
-   char buffer[1024], dir[1024];
-  
-   Platform::makeFullPathName(ZIPTEST_WORKING_DIR, dir, sizeof(dir), Platform::getMainDotCsDir());
-   Platform::makeFullPathName(path, buffer, sizeof(buffer), dir);
-
-   return StringTable->insert(buffer, true);
+    char buffer[1024], dir[1024];
+    
+    Platform::makeFullPathName( ZIPTEST_WORKING_DIR, dir, sizeof( dir ), Platform::getMainDotCsDir() );
+    Platform::makeFullPathName( path, buffer, sizeof( buffer ), dir );
+    
+    return StringTable->insert( buffer, true );
 }
 
 //-----------------------------------------------------------------------------

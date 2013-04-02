@@ -30,9 +30,10 @@
 /// Some events must be processed immediately, and others can or should be
 /// processed later. This enum allows us to distinguish between the two
 /// types.
-enum DispatchType {
-   DelayedDispatch,
-   ImmediateDispatch,
+enum DispatchType
+{
+    DelayedDispatch,
+    ImmediateDispatch,
 };
 
 /// Dispatch the event into the journaling system.
@@ -41,7 +42,7 @@ enum DispatchType {
 /// with journaling, events should normally use the DelayedDispatch type.
 ///
 /// Delayed events are pushed onto a queue for later processing by DispatchNext().
-void Dispatch(DispatchType,HWND hWnd,UINT message,WPARAM wparam,WPARAM lparam);
+void Dispatch( DispatchType, HWND hWnd, UINT message, WPARAM wparam, WPARAM lparam );
 
 /// Remove messages from the event queue, matching a msg value range or hWnd
 ///
@@ -52,16 +53,16 @@ void Dispatch(DispatchType,HWND hWnd,UINT message,WPARAM wparam,WPARAM lparam);
 /// @li Both Begin and End are specified as message values, ex WM_MOUSEMOVE
 /// @li Specifying an identical set of begin/end will remove all messages matching that message value (WM_MOUSEMOVE)
 /// @li If you specify a range it will remove from that beginning value through the end value
-/// 
+///
 /// @note : The range is useful because on windows messages declared such that you can filter a block of
-///  messages just by specifying the beginning value and end.  
+///  messages just by specifying the beginning value and end.
 ///  ex. WM_MOUSEFIRST,WM_MOUSELAST range will match all mouse messages.
 
-/// 
+///
 /// @param hWnd The HWND to filter by, this cannot be combined with a msg range filter currently
 /// @param msgBegin The beginning msg value to filter from
 /// @param msgEnd The ending msg value to filter to
-void RemoveMessages(HWND hWnd,UINT msgBegin,UINT msgEnd );
+void RemoveMessages( HWND hWnd, UINT msgBegin, UINT msgEnd );
 
 /// Dispatch the next event in the delayed dispatch queue.
 /// This function should be called outside of any journaled calls.
@@ -69,6 +70,6 @@ void RemoveMessages(HWND hWnd,UINT msgBegin,UINT msgEnd );
 bool DispatchNext();
 
 /// Remove events related to the window from the dispatch queue.
-void DispatchRemove(HWND hWnd);
+void DispatchRemove( HWND hWnd );
 
 #endif

@@ -43,43 +43,43 @@
 /// A script interface for creating static or dynamic cubemaps.
 class CubemapData : public SimObject
 {
-   typedef SimObject Parent;   
+    typedef SimObject Parent;
+    
+public:
 
-public:   
-
-   GFXCubemapHandle  mCubemap;
-
-   CubemapData();
-   ~CubemapData();
-
-   bool onAdd();
-   static void initPersistFields();
-
-   DECLARE_CONOBJECT(CubemapData);
-
-   // Force creation of cubemap
-   void createMap();   
-
-   // Update a dynamic cubemap @ pos
-   void updateDynamic(SceneManager* sm, const Point3F& pos);
-	void updateFaces();
-   
-   // Dynamic cube map support
-   bool mDynamic;
-   U32 mDynamicSize;   
-   F32 mDynamicNearDist;
-   F32 mDynamicFarDist;
-   U32 mDynamicObjectTypeMask;
-
+    GFXCubemapHandle  mCubemap;
+    
+    CubemapData();
+    ~CubemapData();
+    
+    bool onAdd();
+    static void initPersistFields();
+    
+    DECLARE_CONOBJECT( CubemapData );
+    
+    // Force creation of cubemap
+    void createMap();
+    
+    // Update a dynamic cubemap @ pos
+    void updateDynamic( SceneManager* sm, const Point3F& pos );
+    void updateFaces();
+    
+    // Dynamic cube map support
+    bool mDynamic;
+    U32 mDynamicSize;
+    F32 mDynamicNearDist;
+    F32 mDynamicFarDist;
+    U32 mDynamicObjectTypeMask;
+    
 protected:
 
-   FileName mCubeFaceFile[6];
-   GFXTexHandle mCubeFace[6];
-
-   GFXTexHandle mDepthBuff;
-   GFXTextureTargetRef mRenderTarget;
+    FileName mCubeFaceFile[6];
+    GFXTexHandle mCubeFace[6];
+    
+    GFXTexHandle mDepthBuff;
+    GFXTextureTargetRef mRenderTarget;
 #ifdef INIT_HACK
-   bool mInit;
+    bool mInit;
 #endif
 };
 

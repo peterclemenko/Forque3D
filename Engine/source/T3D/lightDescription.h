@@ -41,23 +41,23 @@
 
 struct LightState
 {
-   LightInfo *lightInfo;
-   F32 fullBrightness;   
-
-   LightAnimState animState;   
-   LightFlareState flareState;      
-
-   void clear() 
-   {
-      lightInfo = NULL;
-      fullBrightness = 1.0f;
-      flareState.clear();     
-   }
-
-   void setLightInfo( LightInfo *li )
-   {
-      flareState.lightInfo = lightInfo = li;
-   }
+    LightInfo* lightInfo;
+    F32 fullBrightness;
+    
+    LightAnimState animState;
+    LightFlareState flareState;
+    
+    void clear()
+    {
+        lightInfo = NULL;
+        fullBrightness = 1.0f;
+        flareState.clear();
+    }
+    
+    void setLightInfo( LightInfo* li )
+    {
+        flareState.lightInfo = lightInfo = li;
+    }
 };
 
 /// LightDescription is a helper datablock used by classes (such as shapebase)
@@ -72,44 +72,44 @@ class ISceneLight;
 
 class LightDescription : public SimDataBlock
 {
-   typedef SimDataBlock Parent;
-
+    typedef SimDataBlock Parent;
+    
 public:
 
-   LightDescription();
-   virtual ~LightDescription();
-
-   DECLARE_CONOBJECT( LightDescription );
-
-   static void initPersistFields();
-   virtual void inspectPostApply();
-   
-   bool onAdd();
-
-   // SimDataBlock
-   virtual bool preload( bool server, String &errorStr );
-   virtual void packData( BitStream *stream );
-   virtual void unpackData( BitStream *stream );
-   
-   //void animateLight( LightState *state );
-   void submitLight( LightState *state, const MatrixF &xfm, LightManager *lm, SimObject *object );
-   void prepRender( SceneRenderState *sceneState, LightState *lightState, const MatrixF &xfm );
-
-   bool _preload( bool server, String &errorStr );
-   
-   ColorF color;
-   F32 brightness;
-   F32 range;
-   bool castShadows;
-
-   LightAnimData *animationData;   
-   S32 animationDataId;
-   F32 animationPeriod;
-   F32 animationPhase;
-
-   LightFlareData *flareData;
-   S32 flareDataId;
-   F32 flareScale;
+    LightDescription();
+    virtual ~LightDescription();
+    
+    DECLARE_CONOBJECT( LightDescription );
+    
+    static void initPersistFields();
+    virtual void inspectPostApply();
+    
+    bool onAdd();
+    
+    // SimDataBlock
+    virtual bool preload( bool server, String& errorStr );
+    virtual void packData( BitStream* stream );
+    virtual void unpackData( BitStream* stream );
+    
+    //void animateLight( LightState *state );
+    void submitLight( LightState* state, const MatrixF& xfm, LightManager* lm, SimObject* object );
+    void prepRender( SceneRenderState* sceneState, LightState* lightState, const MatrixF& xfm );
+    
+    bool _preload( bool server, String& errorStr );
+    
+    ColorF color;
+    F32 brightness;
+    F32 range;
+    bool castShadows;
+    
+    LightAnimData* animationData;
+    S32 animationDataId;
+    F32 animationPeriod;
+    F32 animationPhase;
+    
+    LightFlareData* flareData;
+    S32 flareDataId;
+    F32 flareScale;
 };
 
 #endif // _LIGHTDESCRIPTION_H_

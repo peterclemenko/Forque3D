@@ -29,12 +29,12 @@
 
 class DualParaboloidLightShadowMap : public ParaboloidLightShadowMap
 {
-   typedef ParaboloidLightShadowMap Parent;
-
+    typedef ParaboloidLightShadowMap Parent;
+    
 public:
-   DualParaboloidLightShadowMap( LightInfo *light );
-
-   virtual void _render( RenderPassManager* renderPass, const SceneRenderState *diffuseState );
+    DualParaboloidLightShadowMap( LightInfo* light );
+    
+    virtual void _render( RenderPassManager* renderPass, const SceneRenderState* diffuseState );
 };
 
 #endif // _DUALPARABOLOIDLIGHTSHADOWMAP_H_

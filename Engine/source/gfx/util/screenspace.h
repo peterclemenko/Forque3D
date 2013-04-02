@@ -29,7 +29,7 @@
 
 namespace ScreenSpace
 {
-void RenderTargetParameters(const Point3I &targetSize, const RectI &targetViewport, Point4F &rtParams);
+void RenderTargetParameters( const Point3I& targetSize, const RectI& targetViewport, Point4F& rtParams );
 };
 
 #endif

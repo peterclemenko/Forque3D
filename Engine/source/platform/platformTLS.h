@@ -32,23 +32,23 @@ struct PlatformThreadStorage;
 /// Platform independent per-thread storage class.
 class ThreadStorage
 {
-   enum
-   {
-      PlatformThreadStorageStorageSize = 32,
-   };
-
-   PlatformThreadStorage *mThreadStorage;
-   U8 mStorage[PlatformThreadStorageStorageSize];
+    enum
+    {
+        PlatformThreadStorageStorageSize = 32,
+    };
+    
+    PlatformThreadStorage* mThreadStorage;
+    U8 mStorage[PlatformThreadStorageStorageSize];
 public:
-   /// ThreadStorage constructor.
-   ThreadStorage();
-   /// ThreadStorage destructor.
-   ~ThreadStorage();
-
-   /// returns the per-thread stored void pointer for this ThreadStorage.  The default value is NULL.
-   void *get();
-   /// sets the per-thread stored void pointer for this ThreadStorage object.
-   void set(void *data);
+    /// ThreadStorage constructor.
+    ThreadStorage();
+    /// ThreadStorage destructor.
+    ~ThreadStorage();
+    
+    /// returns the per-thread stored void pointer for this ThreadStorage.  The default value is NULL.
+    void* get();
+    /// sets the per-thread stored void pointer for this ThreadStorage object.
+    void set( void* data );
 };
 
 

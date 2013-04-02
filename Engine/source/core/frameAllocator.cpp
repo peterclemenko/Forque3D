@@ -30,8 +30,8 @@ U32   FrameAllocator::smHighWaterMark = 0;
 #ifdef TORQUE_DEBUG
 U32   FrameAllocator::smMaxFrameAllocation = 0;
 
-ConsoleFunction(getMaxFrameAllocation, S32, 1,1, "getMaxFrameAllocation();")
+ConsoleFunction( getMaxFrameAllocation, S32, 1, 1, "getMaxFrameAllocation();" )
 {
-   return FrameAllocator::getMaxFrameAllocation();
+    return FrameAllocator::getMaxFrameAllocation();
 }
 #endif

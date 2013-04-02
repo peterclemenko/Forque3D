@@ -34,20 +34,20 @@
 #include "math/mPoint3.h"
 #include "math/mBox.h"
 
-bool triBoxOverlap(const Point3F &boxcenter, const Point3F &boxhalfsize, const Point3F triverts[3]);
+bool triBoxOverlap( const Point3F& boxcenter, const Point3F& boxhalfsize, const Point3F triverts[3] );
 
 /// Massage stuff into right format for triBoxOverlap test. This is really
 /// just a helper function - use the other version if you want to be fast!
-inline bool triBoxOverlap(Box3F box, Point3F a, Point3F b, Point3F c)
+inline bool triBoxOverlap( Box3F box, Point3F a, Point3F b, Point3F c )
 {
-   Point3F halfSize(box.len_x() / 2.f, box.len_y() / 2.f, box.len_z() / 2.f);
-
-   Point3F center;
-   box.getCenter(&center);
-
-   Point3F verts[3] = {a,b,c};
-
-   return triBoxOverlap(center, halfSize, verts);
+    Point3F halfSize( box.len_x() / 2.f, box.len_y() / 2.f, box.len_z() / 2.f );
+    
+    Point3F center;
+    box.getCenter( &center );
+    
+    Point3F verts[3] = {a, b, c};
+    
+    return triBoxOverlap( center, halfSize, verts );
 }
 
 #endif

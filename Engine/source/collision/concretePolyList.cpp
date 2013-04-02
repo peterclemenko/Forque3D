@@ -34,12 +34,12 @@
 
 ConcretePolyList::ConcretePolyList()
 {
-   VECTOR_SET_ASSOCIATION(mPolyList);
-   VECTOR_SET_ASSOCIATION(mVertexList);
-   VECTOR_SET_ASSOCIATION(mIndexList);
-   VECTOR_SET_ASSOCIATION(mPolyPlaneList);
-
-   mIndexList.reserve(100);
+    VECTOR_SET_ASSOCIATION( mPolyList );
+    VECTOR_SET_ASSOCIATION( mVertexList );
+    VECTOR_SET_ASSOCIATION( mIndexList );
+    VECTOR_SET_ASSOCIATION( mPolyPlaneList );
+    
+    mIndexList.reserve( 100 );
 }
 
 ConcretePolyList::~ConcretePolyList()
@@ -51,81 +51,81 @@ ConcretePolyList::~ConcretePolyList()
 //----------------------------------------------------------------------------
 void ConcretePolyList::clear()
 {
-   // Only clears internal data
-   mPolyList.clear();
-   mVertexList.clear();
-   mIndexList.clear();
-   mPolyPlaneList.clear();
+    // Only clears internal data
+    mPolyList.clear();
+    mVertexList.clear();
+    mIndexList.clear();
+    mPolyPlaneList.clear();
 }
 
 //----------------------------------------------------------------------------
 
-U32 ConcretePolyList::addPoint(const Point3F& p)
+U32 ConcretePolyList::addPoint( const Point3F& p )
 {
-   mVertexList.increment();
-   Point3F& v = mVertexList.last();
-   v.x = p.x * mScale.x;
-   v.y = p.y * mScale.y;
-   v.z = p.z * mScale.z;
-   mMatrix.mulP(v);
-
-   return mVertexList.size() - 1;
+    mVertexList.increment();
+    Point3F& v = mVertexList.last();
+    v.x = p.x * mScale.x;
+    v.y = p.y * mScale.y;
+    v.z = p.z * mScale.z;
+    mMatrix.mulP( v );
+    
+    return mVertexList.size() - 1;
 }
 
 
-U32 ConcretePolyList::addPlane(const PlaneF& plane)
+U32 ConcretePolyList::addPlane( const PlaneF& plane )
 {
-   mPolyPlaneList.increment();
-   mPlaneTransformer.transform(plane, mPolyPlaneList.last());
-
-   return mPolyPlaneList.size() - 1;
-}
-
-
-//----------------------------------------------------------------------------
-
-void ConcretePolyList::begin(BaseMatInstance* material,U32 surfaceKey)
-{
-   mPolyList.increment();
-   Poly& poly = mPolyList.last();
-   poly.object = mCurrObject;
-   poly.material = material;
-   poly.vertexStart = mIndexList.size();
-   poly.surfaceKey = surfaceKey;
+    mPolyPlaneList.increment();
+    mPlaneTransformer.transform( plane, mPolyPlaneList.last() );
+    
+    return mPolyPlaneList.size() - 1;
 }
 
 
 //----------------------------------------------------------------------------
 
-void ConcretePolyList::plane(U32 v1,U32 v2,U32 v3)
+void ConcretePolyList::begin( BaseMatInstance* material, U32 surfaceKey )
 {
-   mPolyList.last().plane.set(mVertexList[v1],
-      mVertexList[v2],mVertexList[v3]);
-}
-
-void ConcretePolyList::plane(const PlaneF& p)
-{
-   mPlaneTransformer.transform(p, mPolyList.last().plane); 
-}
-
-void ConcretePolyList::plane(const U32 index)
-{
-   AssertFatal(index < mPolyPlaneList.size(), "Out of bounds index!");
-   mPolyList.last().plane = mPolyPlaneList[index];
-}
-
-const PlaneF& ConcretePolyList::getIndexedPlane(const U32 index)
-{
-   AssertFatal(index < mPolyPlaneList.size(), "Out of bounds index!");
-   return mPolyPlaneList[index];
+    mPolyList.increment();
+    Poly& poly = mPolyList.last();
+    poly.object = mCurrObject;
+    poly.material = material;
+    poly.vertexStart = mIndexList.size();
+    poly.surfaceKey = surfaceKey;
 }
 
 
 //----------------------------------------------------------------------------
 
-void ConcretePolyList::vertex(U32 vi)
+void ConcretePolyList::plane( U32 v1, U32 v2, U32 v3 )
 {
-   mIndexList.push_back(vi);
+    mPolyList.last().plane.set( mVertexList[v1],
+                                mVertexList[v2], mVertexList[v3] );
+}
+
+void ConcretePolyList::plane( const PlaneF& p )
+{
+    mPlaneTransformer.transform( p, mPolyList.last().plane );
+}
+
+void ConcretePolyList::plane( const U32 index )
+{
+    AssertFatal( index < mPolyPlaneList.size(), "Out of bounds index!" );
+    mPolyList.last().plane = mPolyPlaneList[index];
+}
+
+const PlaneF& ConcretePolyList::getIndexedPlane( const U32 index )
+{
+    AssertFatal( index < mPolyPlaneList.size(), "Out of bounds index!" );
+    return mPolyPlaneList[index];
+}
+
+
+//----------------------------------------------------------------------------
+
+void ConcretePolyList::vertex( U32 vi )
+{
+    mIndexList.push_back( vi );
 }
 
 
@@ -133,91 +133,91 @@ void ConcretePolyList::vertex(U32 vi)
 
 bool ConcretePolyList::isEmpty() const
 {
-   return mPolyList.empty();
+    return mPolyList.empty();
 }
 
 void ConcretePolyList::end()
 {
-   Poly& poly = mPolyList.last();
-   poly.vertexCount = mIndexList.size() - poly.vertexStart;
+    Poly& poly = mPolyList.last();
+    poly.vertexCount = mIndexList.size() - poly.vertexStart;
 }
 
 void ConcretePolyList::render()
 {
-   GFXStateBlockDesc solidZDisable;
-   solidZDisable.setCullMode( GFXCullNone );
-   solidZDisable.setZReadWrite( false, false );
-   GFXStateBlockRef sb = GFX->createStateBlock( solidZDisable );
-   GFX->setStateBlock( sb );
-
-   PrimBuild::color3i( 255, 0, 255 );
-
-   Poly *p;
-   Point3F *pnt;
-
-   for ( p = mPolyList.begin(); p < mPolyList.end(); p++ )
-   {
-      PrimBuild::begin( GFXLineStrip, p->vertexCount + 1 );      
-
-      for ( U32 i = 0; i < p->vertexCount; i++ )
-      {
-         pnt = &mVertexList[mIndexList[p->vertexStart + i]];
-         PrimBuild::vertex3fv( pnt );
-      }
-
-      pnt = &mVertexList[mIndexList[p->vertexStart]];
-      PrimBuild::vertex3fv( pnt );
-
-      PrimBuild::end();
-   }   
+    GFXStateBlockDesc solidZDisable;
+    solidZDisable.setCullMode( GFXCullNone );
+    solidZDisable.setZReadWrite( false, false );
+    GFXStateBlockRef sb = GFX->createStateBlock( solidZDisable );
+    GFX->setStateBlock( sb );
+    
+    PrimBuild::color3i( 255, 0, 255 );
+    
+    Poly* p;
+    Point3F* pnt;
+    
+    for( p = mPolyList.begin(); p < mPolyList.end(); p++ )
+    {
+        PrimBuild::begin( GFXLineStrip, p->vertexCount + 1 );
+        
+        for( U32 i = 0; i < p->vertexCount; i++ )
+        {
+            pnt = &mVertexList[mIndexList[p->vertexStart + i]];
+            PrimBuild::vertex3fv( pnt );
+        }
+        
+        pnt = &mVertexList[mIndexList[p->vertexStart]];
+        PrimBuild::vertex3fv( pnt );
+        
+        PrimBuild::end();
+    }
 }
 
 void ConcretePolyList::triangulate()
 {
-   PROFILE_SCOPE( ConcretePolyList_Triangulate );
-
-   // Build into a new polylist and index list.
-   //
-   // TODO: There are potential performance issues
-   // here as we're not reserving enough space for
-   // new generated triangles.
-   //
-   // We need to either over estimate and shrink or 
-   // better yet fix vector to internally grow in 
-   // large chunks.
-   //
-   PolyList polyList;
-   polyList.reserve( mPolyList.size() );
-   IndexList indexList;
-   indexList.reserve( mIndexList.size() );
-   
-   U32 j, numTriangles;
-
-   //
-   PolyList::const_iterator polyIter = mPolyList.begin();
-   for ( ; polyIter != mPolyList.end(); polyIter++ )
-   {
-      const Poly &poly = *polyIter;
-
-      // How many triangles in this poly?
-      numTriangles = poly.vertexCount - 2;        
-
-      // Build out the triangles.
-      for ( j = 0; j < numTriangles; j++ )
-      {
-         polyList.increment();
-         
-         Poly &triangle = polyList.last();
-         triangle = poly;
-         triangle.vertexCount = 3;
-         triangle.vertexStart = indexList.size();
-
-         indexList.push_back( mIndexList[ poly.vertexStart ] );
-         indexList.push_back( mIndexList[ poly.vertexStart + 1 + j ] );
-         indexList.push_back( mIndexList[ poly.vertexStart + 2 + j ] );
-      }
-   } 
-
-   mPolyList = polyList;
-   mIndexList = indexList;
+    PROFILE_SCOPE( ConcretePolyList_Triangulate );
+    
+    // Build into a new polylist and index list.
+    //
+    // TODO: There are potential performance issues
+    // here as we're not reserving enough space for
+    // new generated triangles.
+    //
+    // We need to either over estimate and shrink or
+    // better yet fix vector to internally grow in
+    // large chunks.
+    //
+    PolyList polyList;
+    polyList.reserve( mPolyList.size() );
+    IndexList indexList;
+    indexList.reserve( mIndexList.size() );
+    
+    U32 j, numTriangles;
+    
+    //
+    PolyList::const_iterator polyIter = mPolyList.begin();
+    for( ; polyIter != mPolyList.end(); polyIter++ )
+    {
+        const Poly& poly = *polyIter;
+        
+        // How many triangles in this poly?
+        numTriangles = poly.vertexCount - 2;
+        
+        // Build out the triangles.
+        for( j = 0; j < numTriangles; j++ )
+        {
+            polyList.increment();
+            
+            Poly& triangle = polyList.last();
+            triangle = poly;
+            triangle.vertexCount = 3;
+            triangle.vertexStart = indexList.size();
+            
+            indexList.push_back( mIndexList[ poly.vertexStart ] );
+            indexList.push_back( mIndexList[ poly.vertexStart + 1 + j ] );
+            indexList.push_back( mIndexList[ poly.vertexStart + 2 + j ] );
+        }
+    }
+    
+    mPolyList = polyList;
+    mIndexList = indexList;
 }

@@ -25,11 +25,12 @@
 
 namespace RazerHydraConstants
 {
-   enum Constants {
-      DefaultHydraBase     = 0,
-      HydraActiveCheckFreq = 1000,
-      MaxControllers       = 2,
-   };
+enum Constants
+{
+    DefaultHydraBase     = 0,
+    HydraActiveCheckFreq = 1000,
+    MaxControllers       = 2,
+};
 }
 
 #endif   // _RAZERHYDRACONSTANTS_H_

@@ -74,70 +74,133 @@ bool  gOpenGLNoDrawArraysAlpha           = false;
 
 namespace Audio
 {
-bool OpenALDLLInit() { return false; }
+bool OpenALDLLInit()
+{
+    return false;
+}
 void OpenALDLLShutdown() {}
 }
 #endif
 
 // Platform Stubs
 
-bool Platform::excludeOtherInstances(const char*) { return true; }
+bool Platform::excludeOtherInstances( const char* )
+{
+    return true;
+}
 
 // clipboard
-const char* Platform::getClipboard() { return ""; }
-bool Platform::setClipboard(const char *text) { return false; }
+const char* Platform::getClipboard()
+{
+    return "";
+}
+bool Platform::setClipboard( const char* text )
+{
+    return false;
+}
 
 // fs
-void Platform::openFolder(const char *path) { }
-void Platform::openFile(const char *path) { }
+void Platform::openFolder( const char* path ) { }
+void Platform::openFile( const char* path ) { }
 
 // window
-bool Platform::displaySplashWindow() { return false; }
+bool Platform::displaySplashWindow()
+{
+    return false;
+}
 
 // font
-PlatformFont *createPlatformFont(const char *name, U32 size, U32 charset) { return NULL; }
-bool x86UNIXFont::create(const char *name, U32 size, U32 charset) { return false; }
+PlatformFont* createPlatformFont( const char* name, U32 size, U32 charset )
+{
+    return NULL;
+}
+bool x86UNIXFont::create( const char* name, U32 size, U32 charset )
+{
+    return false;
+}
 
 // web
-bool Platform::openWebBrowser(const char *) { return false; }
+bool Platform::openWebBrowser( const char* )
+{
+    return false;
+}
 
 // messagebox
-void Platform::AlertOK(const char *, const char *) {}
-bool Platform::AlertOKCancel(const char *, const char *) { return false; }
-S32  Platform::messageBox(char const*, char const*, MBButtons, MBIcons) { return 0; }
-bool Platform::AlertRetry(char const*, char const*) { return false ; }
+void Platform::AlertOK( const char*, const char* ) {}
+bool Platform::AlertOKCancel( const char*, const char* )
+{
+    return false;
+}
+S32  Platform::messageBox( char const*, char const*, MBButtons, MBIcons )
+{
+    return 0;
+}
+bool Platform::AlertRetry( char const*, char const* )
+{
+    return false ;
+}
 
 // file dialog
-IMPLEMENT_CONOBJECT(FileDialog);
+IMPLEMENT_CONOBJECT( FileDialog );
 FileDialog::FileDialog() {}
 FileDialog::~FileDialog() {}
-bool FileDialog::Execute() { return false; }
-void FileDialog::initPersistFields() { Parent::initPersistFields(); }
+bool FileDialog::Execute()
+{
+    return false;
+}
+void FileDialog::initPersistFields()
+{
+    Parent::initPersistFields();
+}
 
 class FileDialogOpaqueData {};
 
 FileDialogData::FileDialogData() {}
 FileDialogData::~FileDialogData() {}
 
-IMPLEMENT_CONOBJECT(OpenFileDialog);
+IMPLEMENT_CONOBJECT( OpenFileDialog );
 OpenFileDialog::OpenFileDialog() {}
 OpenFileDialog::~OpenFileDialog() {}
-void OpenFileDialog::initPersistFields() { Parent::initPersistFields(); }
+void OpenFileDialog::initPersistFields()
+{
+    Parent::initPersistFields();
+}
 
 // Input stubs
 void Input::init() {}
 void Input::destroy() {}
-bool Input::enable() { return false; }
+bool Input::enable()
+{
+    return false;
+}
 void Input::disable() {}
 void Input::activate() {}
 void Input::deactivate() {}
-U16 Input::getAscii( U16 keyCode, KEY_STATE keyState ) { return 0; }
-U16 Input::getKeyCode( U16 asciiCode ) { return 0; }
-bool Input::isEnabled() { return false; }
-bool Input::isActive() { return false; }
+U16 Input::getAscii( U16 keyCode, KEY_STATE keyState )
+{
+    return 0;
+}
+U16 Input::getKeyCode( U16 asciiCode )
+{
+    return 0;
+}
+bool Input::isEnabled()
+{
+    return false;
+}
+bool Input::isActive()
+{
+    return false;
+}
 void Input::process() {}
-InputManager* Input::getManager() { return NULL; }
+InputManager* Input::getManager()
+{
+    return NULL;
+}
 InputEvent Input::smInputEvent;
 U8 Input::smModifierKeys;
 
-bool OpenGLInit() { return false; }
+bool OpenGLInit()
+{
+    return false;
+}

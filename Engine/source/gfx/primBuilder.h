@@ -46,40 +46,61 @@
 ///
 namespace PrimBuild
 {
-   extern const ColorI _colWhite;
+extern const ColorI _colWhite;
 
-   void beginToBuffer( GFXPrimitiveType type, U32 maxVerts );
-   GFXVertexBuffer *endToBuffer( U32 &outNumPrims );
+void beginToBuffer( GFXPrimitiveType type, U32 maxVerts );
+GFXVertexBuffer* endToBuffer( U32& outNumPrims );
 
-   void begin( GFXPrimitiveType type, U32 maxVerts );
-   void end( bool useGenericShaders = true );
+void begin( GFXPrimitiveType type, U32 maxVerts );
+void end( bool useGenericShaders = true );
 
-   void vertex2f( F32 x, F32 y );
-   void vertex3f( F32 x, F32 y, F32 z );
+void vertex2f( F32 x, F32 y );
+void vertex3f( F32 x, F32 y, F32 z );
 
-   void vertex2fv( const F32 *data );
-   inline void vertex2fv( const Point2F &pnt ) { vertex2fv( (F32 *) &pnt ); };
-   inline void vertex2fv( const Point2F *pnt ) { vertex2fv( (F32 *) pnt ); };
+void vertex2fv( const F32* data );
+inline void vertex2fv( const Point2F& pnt )
+{
+    vertex2fv( ( F32* ) &pnt );
+};
+inline void vertex2fv( const Point2F* pnt )
+{
+    vertex2fv( ( F32* ) pnt );
+};
 
-   void vertex3fv( const F32 *data );
-   inline void vertex3fv( const Point3F &pnt ) { vertex3fv( (F32 *) &pnt ); };
-   inline void vertex3fv( const Point3F *pnt ) { vertex3fv( (F32 *) pnt ); };
+void vertex3fv( const F32* data );
+inline void vertex3fv( const Point3F& pnt )
+{
+    vertex3fv( ( F32* ) &pnt );
+};
+inline void vertex3fv( const Point3F* pnt )
+{
+    vertex3fv( ( F32* ) pnt );
+};
 
-   inline void vertex2i( S32 x, S32 y ) { vertex2f((F32)x, (F32)y); }
-   inline void vertex3i( S32 x, S32 y, S32 z ) { vertex3f((F32)x, (F32)y, (F32)z); }
+inline void vertex2i( S32 x, S32 y )
+{
+    vertex2f( ( F32 )x, ( F32 )y );
+}
+inline void vertex3i( S32 x, S32 y, S32 z )
+{
+    vertex3f( ( F32 )x, ( F32 )y, ( F32 )z );
+}
 
-   void color( const ColorI & );
-   void color( const ColorF & );
-   void color3i( U8 red, U8 green, U8 blue );
-   void color4i( U8 red, U8 green, U8 blue, U8 alpha );
-   void color3f( F32 red, F32 green, F32 blue );
-   void color4f( F32 red, F32 green, F32 blue, F32 alpha );
+void color( const ColorI& );
+void color( const ColorF& );
+void color3i( U8 red, U8 green, U8 blue );
+void color4i( U8 red, U8 green, U8 blue, U8 alpha );
+void color3f( F32 red, F32 green, F32 blue );
+void color4f( F32 red, F32 green, F32 blue, F32 alpha );
 
-   inline void colorWhite() { color( _colWhite ); }
+inline void colorWhite()
+{
+    color( _colWhite );
+}
 
-   void texCoord2f( F32 x, F32 y );
+void texCoord2f( F32 x, F32 y );
 
-   void shutdown();
+void shutdown();
 }
 
 #endif

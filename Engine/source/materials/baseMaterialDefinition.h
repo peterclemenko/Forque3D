@@ -30,13 +30,13 @@ class BaseMatInstance;
 
 class BaseMaterialDefinition : public SimObject
 {
-   typedef SimObject Parent;
+    typedef SimObject Parent;
 public:
-   virtual BaseMatInstance* createMatInstance() = 0;
-   virtual bool isTranslucent() const = 0;
-   virtual bool isDoubleSided() const = 0;
-   virtual bool isLightmapped() const = 0;
-   virtual bool castsShadows() const = 0;
+    virtual BaseMatInstance* createMatInstance() = 0;
+    virtual bool isTranslucent() const = 0;
+    virtual bool isDoubleSided() const = 0;
+    virtual bool isLightmapped() const = 0;
+    virtual bool castsShadows() const = 0;
 };
 
 #endif // _BASEMATERIALDEFINITION_H_

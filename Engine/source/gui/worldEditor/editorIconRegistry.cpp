@@ -30,10 +30,10 @@
 EditorIconRegistry gEditorIcons;
 
 ConsoleDoc(
-   "@class EditorIconRegistry\n"
-   "@brief This class is used to find the correct icon file path for different SimObject class types.\n\n"
-   "It is typically used by the editors, not intended for actual game development\n\n"
-   "@internal"
+    "@class EditorIconRegistry\n"
+    "@brief This class is used to find the correct icon file path for different SimObject class types.\n\n"
+    "It is typically used by the editors, not intended for actual game development\n\n"
+    "@internal"
 );
 
 EditorIconRegistry::EditorIconRegistry()
@@ -42,184 +42,184 @@ EditorIconRegistry::EditorIconRegistry()
 
 EditorIconRegistry::~EditorIconRegistry()
 {
-   clear();
+    clear();
 }
 
-void EditorIconRegistry::loadFromPath( const String &path, bool overwrite )
+void EditorIconRegistry::loadFromPath( const String& path, bool overwrite )
 {
-   AbstractClassRep *classRep = AbstractClassRep::getClassList();
-   while ( classRep )
-   {
-      String iconFile = String::ToString( "%s%s", path.c_str(), classRep->getClassName() );
-      add( classRep->getClassName(), iconFile.c_str(), overwrite );
-      classRep = classRep->getNextClass();
-   }
-
-   String defaultIconFile = path + "default";
-
-   mDefaultIcon.set( defaultIconFile,
-                     &GFXDefaultPersistentProfile, 
-                     avar("%s() - mIcons[] (line %d)", 
-                     __FUNCTION__, __LINE__) );
+    AbstractClassRep* classRep = AbstractClassRep::getClassList();
+    while( classRep )
+    {
+        String iconFile = String::ToString( "%s%s", path.c_str(), classRep->getClassName() );
+        add( classRep->getClassName(), iconFile.c_str(), overwrite );
+        classRep = classRep->getNextClass();
+    }
+    
+    String defaultIconFile = path + "default";
+    
+    mDefaultIcon.set( defaultIconFile,
+                      &GFXDefaultPersistentProfile,
+                      avar( "%s() - mIcons[] (line %d)",
+                            __FUNCTION__, __LINE__ ) );
 }
 
-void EditorIconRegistry::add( const String &className, const String &imageFile, bool overwrite )
+void EditorIconRegistry::add( const String& className, const String& imageFile, bool overwrite )
 {
-   // First see if we can load the image.
-   GFXTexHandle icon(   imageFile, &GFXDefaultPersistentProfile, 
-                        avar("%s() - mIcons[] (line %d)", __FUNCTION__, __LINE__) );
-   if ( icon.isNull() )
-      return;
-
-   // Look it up in the map.
-   StringNoCase key( className );
-   IconMap::Iterator iter = mIcons.find( key );
-   if ( iter != mIcons.end() )
-   {
-      if ( !overwrite )
-         return;
-
-      iter->value = icon;
-   }
-   else
-      mIcons.insertUnique( key, icon );
+    // First see if we can load the image.
+    GFXTexHandle icon( imageFile, &GFXDefaultPersistentProfile,
+                       avar( "%s() - mIcons[] (line %d)", __FUNCTION__, __LINE__ ) );
+    if( icon.isNull() )
+        return;
+        
+    // Look it up in the map.
+    StringNoCase key( className );
+    IconMap::Iterator iter = mIcons.find( key );
+    if( iter != mIcons.end() )
+    {
+        if( !overwrite )
+            return;
+            
+        iter->value = icon;
+    }
+    else
+        mIcons.insertUnique( key, icon );
 }
 
-GFXTexHandle EditorIconRegistry::findIcon( AbstractClassRep *classRep )
+GFXTexHandle EditorIconRegistry::findIcon( AbstractClassRep* classRep )
 {
-   while ( classRep )
-   {
-      StringNoCase key( classRep->getClassName() );
-      IconMap::Iterator icon = mIcons.find( key );
-
-      if ( icon != mIcons.end() && icon->value.isValid() )
-         return icon->value;
-
-      classRep = classRep->getParentClass();
-   }
-
-   return mDefaultIcon;
+    while( classRep )
+    {
+        StringNoCase key( classRep->getClassName() );
+        IconMap::Iterator icon = mIcons.find( key );
+        
+        if( icon != mIcons.end() && icon->value.isValid() )
+            return icon->value;
+            
+        classRep = classRep->getParentClass();
+    }
+    
+    return mDefaultIcon;
 }
 
-GFXTexHandle EditorIconRegistry::findIcon( const SimObject *object )
+GFXTexHandle EditorIconRegistry::findIcon( const SimObject* object )
 {
-	if( object == NULL )
-		return mDefaultIcon;
-
-   AbstractClassRep *classRep = object->getClassRep();
-
-   return findIcon( classRep );
-}   
-
-GFXTexHandle EditorIconRegistry::findIcon( const char *className )
-{   
-   // On the chance we have this className already in the map,
-   // check there first because its a lot faster...
-   
-   StringNoCase key( className );
-   IconMap::Iterator icon = mIcons.find( key );
-
-   if ( icon != mIcons.end() && icon->value.isValid() )
-      return icon->value;
-
-   // Well, we could still have an icon for a parent class,
-   // so find the AbstractClassRep for the className.
-   //
-   // Unfortunately the only way to do this is looping through
-   // the AbstractClassRep linked list.
-
-   bool found = false;
-   AbstractClassRep* pClassRep = AbstractClassRep::getClassList();
-   
-   while ( pClassRep )
-   {
-      if ( key.equal( pClassRep->getClassName(), String::NoCase ) )
-      {
-         found = true;
-         break;
-      }
-      pClassRep = pClassRep->getNextClass();
-   }
-
-   if ( !found )
-   {
-      Con::errorf( "EditorIconRegistry::findIcon, passed className %s was not an AbstractClassRep!", key.c_str() );
-      return mDefaultIcon;
-   }
-   
-   // Now do a find by AbstractClassRep recursively up the class tree...
-   return findIcon( pClassRep );
+    if( object == NULL )
+        return mDefaultIcon;
+        
+    AbstractClassRep* classRep = object->getClassRep();
+    
+    return findIcon( classRep );
 }
 
-bool EditorIconRegistry::hasIconNoRecurse( const SimObject *object )
+GFXTexHandle EditorIconRegistry::findIcon( const char* className )
 {
-   AbstractClassRep *classRep = object->getClassRep();
-      
-   StringNoCase key( classRep->getClassName() );
+    // On the chance we have this className already in the map,
+    // check there first because its a lot faster...
+    
+    StringNoCase key( className );
+    IconMap::Iterator icon = mIcons.find( key );
+    
+    if( icon != mIcons.end() && icon->value.isValid() )
+        return icon->value;
+        
+    // Well, we could still have an icon for a parent class,
+    // so find the AbstractClassRep for the className.
+    //
+    // Unfortunately the only way to do this is looping through
+    // the AbstractClassRep linked list.
+    
+    bool found = false;
+    AbstractClassRep* pClassRep = AbstractClassRep::getClassList();
+    
+    while( pClassRep )
+    {
+        if( key.equal( pClassRep->getClassName(), String::NoCase ) )
+        {
+            found = true;
+            break;
+        }
+        pClassRep = pClassRep->getNextClass();
+    }
+    
+    if( !found )
+    {
+        Con::errorf( "EditorIconRegistry::findIcon, passed className %s was not an AbstractClassRep!", key.c_str() );
+        return mDefaultIcon;
+    }
+    
+    // Now do a find by AbstractClassRep recursively up the class tree...
+    return findIcon( pClassRep );
+}
 
-   IconMap::Iterator icon = mIcons.find( key );
-
-   return icon != mIcons.end();
+bool EditorIconRegistry::hasIconNoRecurse( const SimObject* object )
+{
+    AbstractClassRep* classRep = object->getClassRep();
+    
+    StringNoCase key( classRep->getClassName() );
+    
+    IconMap::Iterator icon = mIcons.find( key );
+    
+    return icon != mIcons.end();
 }
 
 void EditorIconRegistry::clear()
 {
-   mIcons.clear();
-   mDefaultIcon.free();
+    mIcons.clear();
+    mDefaultIcon.free();
 }
 
 ConsoleStaticMethod( EditorIconRegistry, add, void, 3, 4, "( String className, String imageFile [, bool overwrite = true] )"
-					"@internal")
+                     "@internal" )
 {
-   bool overwrite = true;
-   if ( argc > 3 )
-      overwrite = dAtob( argv[3] );
-
-   gEditorIcons.add( argv[1], argv[2], overwrite );
+    bool overwrite = true;
+    if( argc > 3 )
+        overwrite = dAtob( argv[3] );
+        
+    gEditorIcons.add( argv[1], argv[2], overwrite );
 }
 
 ConsoleStaticMethod( EditorIconRegistry, loadFromPath, void, 2, 3, "( String imagePath [, bool overwrite = true] )"
-					"@internal")
+                     "@internal" )
 {
-   bool overwrite = true;
-   if ( argc > 2 )
-      overwrite = dAtob( argv[2] );
-
-   gEditorIcons.loadFromPath( argv[1], overwrite );
+    bool overwrite = true;
+    if( argc > 2 )
+        overwrite = dAtob( argv[2] );
+        
+    gEditorIcons.loadFromPath( argv[1], overwrite );
 }
 
-ConsoleStaticMethod( EditorIconRegistry, clear, void, 1, 1, "" 
-					"@internal")
+ConsoleStaticMethod( EditorIconRegistry, clear, void, 1, 1, ""
+                     "@internal" )
 {
-   gEditorIcons.clear();
+    gEditorIcons.clear();
 }
 
 ConsoleStaticMethod( EditorIconRegistry, findIconByClassName, const char*, 2, 2, "( String className )\n"
-   "Returns the file path to the icon file if found." 
-   "@internal")
+                     "Returns the file path to the icon file if found."
+                     "@internal" )
 {
-   GFXTexHandle icon = gEditorIcons.findIcon( argv[1] );
-   if ( icon.isNull() )
-      return NULL;
-
-   return icon->mPath;
+    GFXTexHandle icon = gEditorIcons.findIcon( argv[1] );
+    if( icon.isNull() )
+        return NULL;
+        
+    return icon->mPath;
 }
 
 ConsoleStaticMethod( EditorIconRegistry, findIconBySimObject, const char*, 2, 2, "( SimObject )\n"
-   "Returns the file path to the icon file if found." 
-   "@internal")
+                     "Returns the file path to the icon file if found."
+                     "@internal" )
 {
-   SimObject *obj = NULL;
-   if ( !Sim::findObject( argv[1], obj ) )
-   {
-      Con::warnf( "EditorIconRegistry::findIcon, parameter %d was not a SimObject!", argv[1] );
-      return NULL;
-   }
-
-   GFXTexHandle icon = gEditorIcons.findIcon( obj );
-   if ( icon.isNull() )
-      return NULL;
-
-   return icon->mPath;
+    SimObject* obj = NULL;
+    if( !Sim::findObject( argv[1], obj ) )
+    {
+        Con::warnf( "EditorIconRegistry::findIcon, parameter %d was not a SimObject!", argv[1] );
+        return NULL;
+    }
+    
+    GFXTexHandle icon = gEditorIcons.findIcon( obj );
+    if( icon.isNull() )
+        return NULL;
+        
+    return icon->mPath;
 }
 

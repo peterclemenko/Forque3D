@@ -37,39 +37,42 @@ class ProcessedMaterial;
 //-----------------------------------------------------------------------------
 // MaterialFeatureData, this is basically a series of flags which a material can
 // ask for.  Shader processed materials will use the shadergen system to accomplish this,
-// FF processed materials will do the best they can.  
+// FF processed materials will do the best they can.
 //-----------------------------------------------------------------------------
 struct MaterialFeatureData
 {
 public:
 
-   // General feature data for a pass or for other purposes.
-   FeatureSet features;
-
-   // This is to give hints to shader creation code.  It contains
-   //    all the features that are in a material stage instead of just
-   //    the current pass.
-   FeatureSet materialFeatures;
-
+    // General feature data for a pass or for other purposes.
+    FeatureSet features;
+    
+    // This is to give hints to shader creation code.  It contains
+    //    all the features that are in a material stage instead of just
+    //    the current pass.
+    FeatureSet materialFeatures;
+    
 public:
 
-   MaterialFeatureData();
-
-   MaterialFeatureData( const MaterialFeatureData &data );
-
-   MaterialFeatureData( const FeatureSet &handle );
-
-   void clear();
-
-   const FeatureSet& codify() const { return features; }
-
+    MaterialFeatureData();
+    
+    MaterialFeatureData( const MaterialFeatureData& data );
+    
+    MaterialFeatureData( const FeatureSet& handle );
+    
+    void clear();
+    
+    const FeatureSet& codify() const
+    {
+        return features;
+    }
+    
 };
 
 
 ///
-typedef Delegate< void( ProcessedMaterial *mat,
-                        U32 stageNum,
-                        MaterialFeatureData &fd, 
-                        const FeatureSet &features) > MatFeaturesDelegate;
+typedef Delegate < void( ProcessedMaterial* mat,
+                         U32 stageNum,
+                         MaterialFeatureData& fd,
+                         const FeatureSet& features ) > MatFeaturesDelegate;
 
 #endif // _MATERIALFEATUREDATA_H_

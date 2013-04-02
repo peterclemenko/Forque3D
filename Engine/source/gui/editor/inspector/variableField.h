@@ -33,28 +33,31 @@ class GuiInspector;
 
 class GuiInspectorVariableField : public GuiInspectorField
 {
-   friend class GuiInspectorField;
-
+    friend class GuiInspectorField;
+    
 public:
 
-   typedef GuiInspectorField Parent;
-
-   GuiInspectorVariableField();
-   virtual ~GuiInspectorVariableField();
-
-   DECLARE_CONOBJECT( GuiInspectorVariableField );
-   DECLARE_CATEGORY( "Gui Editor" );
-
-   virtual bool onAdd();
-
-
-   virtual void setValue( const char* newValue );
-   virtual const char* getValue() { return NULL; }
-   virtual void updateValue();
-   virtual void setData( const char* data, bool callbacks = true );
-   virtual const char* getData( U32 inspectObjectIndex = 0 );
-   virtual void updateData() {};
-
+    typedef GuiInspectorField Parent;
+    
+    GuiInspectorVariableField();
+    virtual ~GuiInspectorVariableField();
+    
+    DECLARE_CONOBJECT( GuiInspectorVariableField );
+    DECLARE_CATEGORY( "Gui Editor" );
+    
+    virtual bool onAdd();
+    
+    
+    virtual void setValue( const char* newValue );
+    virtual const char* getValue()
+    {
+        return NULL;
+    }
+    virtual void updateValue();
+    virtual void setData( const char* data, bool callbacks = true );
+    virtual const char* getData( U32 inspectObjectIndex = 0 );
+    virtual void updateData() {};
+    
 protected:
 
 };

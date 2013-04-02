@@ -30,7 +30,7 @@
 //----------------------------------------------------------------------------
 ShaderConnector::ShaderConnector()
 {
-   mCurTexElem = 0;
+    mCurTexElem = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -38,6 +38,6 @@ ShaderConnector::ShaderConnector()
 //----------------------------------------------------------------------------
 ShaderConnector::~ShaderConnector()
 {
-   // Elements freed by LangElement::freeElements()
+    // Elements freed by LangElement::freeElements()
 }
 

@@ -25,27 +25,27 @@
 
 
 TSRenderState::TSRenderState()
-   :  mState( NULL ),
-      mCubemap( NULL ),
-      mFadeOverride( 1.0f ),
-      mNoRenderTranslucent( false ),
-      mNoRenderNonTranslucent( false ),
-      mMaterialHint( NULL ),
-      mCuller( NULL ),
-      mLightQuery( NULL ),
-      mUseOriginSort( false )
+    :  mState( NULL ),
+       mCubemap( NULL ),
+       mFadeOverride( 1.0f ),
+       mNoRenderTranslucent( false ),
+       mNoRenderNonTranslucent( false ),
+       mMaterialHint( NULL ),
+       mCuller( NULL ),
+       mLightQuery( NULL ),
+       mUseOriginSort( false )
 {
 }
 
-TSRenderState::TSRenderState( const TSRenderState &state )
-   :  mState( state.mState ),
-      mCubemap( state.mCubemap ),
-      mFadeOverride( state.mFadeOverride ),
-      mNoRenderTranslucent( state.mNoRenderTranslucent ),
-      mNoRenderNonTranslucent( state.mNoRenderNonTranslucent ),
-      mMaterialHint( state.mMaterialHint ),
-      mCuller( state.mCuller ),
-      mLightQuery( state.mLightQuery ),
-      mUseOriginSort( state.mUseOriginSort )
+TSRenderState::TSRenderState( const TSRenderState& state )
+    :  mState( state.mState ),
+       mCubemap( state.mCubemap ),
+       mFadeOverride( state.mFadeOverride ),
+       mNoRenderTranslucent( state.mNoRenderTranslucent ),
+       mNoRenderNonTranslucent( state.mNoRenderNonTranslucent ),
+       mMaterialHint( state.mMaterialHint ),
+       mCuller( state.mCuller ),
+       mLightQuery( state.mLightQuery ),
+       mUseOriginSort( state.mUseOriginSort )
 {
 }

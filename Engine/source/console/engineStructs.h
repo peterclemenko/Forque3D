@@ -24,7 +24,7 @@
 #define _ENGINESTRUCTS_H_
 
 #ifndef _ENGINETYPES_H_
-   #include "console/engineTypes.h"
+#include "console/engineTypes.h"
 #endif
 
 
@@ -33,8 +33,9 @@
 
 
 template< typename T > class Vector;
-namespace Torque {
-   class UUID;
+namespace Torque
+{
+class UUID;
 }
 
 class ColorI;

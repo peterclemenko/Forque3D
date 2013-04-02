@@ -26,66 +26,67 @@
 #include "core/util/preprocessorHelpers.h"
 #include "gfx/gl/gfxGLEnumTranslate.h"
 
-static inline GLenum minificationFilter(U32 minFilter, U32 mipFilter, U32 mipLevels)
+static inline GLenum minificationFilter( U32 minFilter, U32 mipFilter, U32 mipLevels )
 {
-   if(mipLevels == 1)
-      return GFXGLTextureFilter[minFilter];
-
-   // the compiler should interpret this as array lookups
-   switch( minFilter ) 
-   {
-      case GFXTextureFilterLinear:
-         switch( mipFilter ) 
-         {
-         case GFXTextureFilterLinear:
-            return GL_LINEAR_MIPMAP_LINEAR;
-         case GFXTextureFilterPoint:
-            return GL_LINEAR_MIPMAP_NEAREST;
-         default: 
-            return GL_LINEAR;
-         }
-      default:
-         switch( mipFilter ) {
-      case GFXTextureFilterLinear:
-         return GL_NEAREST_MIPMAP_LINEAR;
-      case GFXTextureFilterPoint:
-         return GL_NEAREST_MIPMAP_NEAREST;
-      default:
-         return GL_NEAREST;
-         }
-   }
+    if( mipLevels == 1 )
+        return GFXGLTextureFilter[minFilter];
+        
+    // the compiler should interpret this as array lookups
+    switch( minFilter )
+    {
+        case GFXTextureFilterLinear:
+            switch( mipFilter )
+            {
+                case GFXTextureFilterLinear:
+                    return GL_LINEAR_MIPMAP_LINEAR;
+                case GFXTextureFilterPoint:
+                    return GL_LINEAR_MIPMAP_NEAREST;
+                default:
+                    return GL_LINEAR;
+            }
+        default:
+            switch( mipFilter )
+            {
+                case GFXTextureFilterLinear:
+                    return GL_NEAREST_MIPMAP_LINEAR;
+                case GFXTextureFilterPoint:
+                    return GL_NEAREST_MIPMAP_NEAREST;
+                default:
+                    return GL_NEAREST;
+            }
+    }
 }
 
 /// Simple class which preserves a given GL integer.
-/// This class determines the integer to preserve on construction and restores 
+/// This class determines the integer to preserve on construction and restores
 /// it on destruction.
 class GFXGLPreserveInteger
 {
 public:
-   typedef void(*BindFn)(GLenum, GLuint);
-
-   /// Preserve the integer.
-   /// @param binding The binding which should be set on destruction.
-   /// @param getBinding The parameter to be passed to glGetIntegerv to determine
-   /// the integer to be preserved.
-   /// @param binder The gl function to call to restore the integer.
-   GFXGLPreserveInteger(GLenum binding, GLint getBinding, BindFn binder) :
-      mBinding(binding), mPreserved(0), mBinder(binder)
-   {
-      AssertFatal(mBinder, "GFXGLPreserveInteger - Need a valid binder function");
-      glGetIntegerv(getBinding, &mPreserved);
-   }
-   
-   /// Restores the integer.
-   ~GFXGLPreserveInteger()
-   {
-      mBinder(mBinding, mPreserved);
-   }
-
+    typedef void( *BindFn )( GLenum, GLuint );
+    
+    /// Preserve the integer.
+    /// @param binding The binding which should be set on destruction.
+    /// @param getBinding The parameter to be passed to glGetIntegerv to determine
+    /// the integer to be preserved.
+    /// @param binder The gl function to call to restore the integer.
+    GFXGLPreserveInteger( GLenum binding, GLint getBinding, BindFn binder ) :
+        mBinding( binding ), mPreserved( 0 ), mBinder( binder )
+    {
+        AssertFatal( mBinder, "GFXGLPreserveInteger - Need a valid binder function" );
+        glGetIntegerv( getBinding, &mPreserved );
+    }
+    
+    /// Restores the integer.
+    ~GFXGLPreserveInteger()
+    {
+        mBinder( mBinding, mPreserved );
+    }
+    
 private:
-   GLenum mBinding;
-   GLint mPreserved;
-   BindFn mBinder;
+    GLenum mBinding;
+    GLint mPreserved;
+    BindFn mBinder;
 };
 
 /// Helper macro to preserve the current VBO binding.

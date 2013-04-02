@@ -29,103 +29,122 @@
 // TorqueThreadStatic Base Class
 class _TorqueThreadStatic
 {
-   friend class _TorqueThreadStaticReg;
-
+    friend class _TorqueThreadStaticReg;
+    
 private:
 
 #ifdef TORQUE_ENABLE_THREAD_STATIC_METRICS
-   U32 mHitCount;
+    U32 mHitCount;
 #endif
-
+    
 protected:
-   static U32 mListIndex;
-   virtual _TorqueThreadStatic *_createInstance() const = 0;
-
+    static U32 mListIndex;
+    virtual _TorqueThreadStatic* _createInstance() const = 0;
+    
 public:
-   _TorqueThreadStatic()
+    _TorqueThreadStatic()
 #ifdef TORQUE_ENABLE_THREAD_STATIC_METRICS
-    :  mHitCount( 0 ) 
+        :  mHitCount( 0 )
 #endif
-   { };
-
-   static const U32 getListIndex(){ return mListIndex; }
-
-   virtual void *getMemInstPtr() = 0;
-   virtual const dsize_t getMemInstSize() const = 0;
-
+    { };
+    
+    static const U32 getListIndex()
+    {
+        return mListIndex;
+    }
+    
+    virtual void* getMemInstPtr() = 0;
+    virtual const dsize_t getMemInstSize() const = 0;
+    
 #ifdef TORQUE_ENABLE_THREAD_STATIC_METRICS
-   _TorqueThreadStatic *_chainHit() { mHitCount++; return this; }
-   const U32 &trackHit() { return ++mHitCount; }
-   const U32 &getHitCount() const { return mHitCount; }
+    _TorqueThreadStatic* _chainHit()
+    {
+        mHitCount++;
+        return this;
+    }
+    const U32& trackHit()
+    {
+        return ++mHitCount;
+    }
+    const U32& getHitCount() const
+    {
+        return mHitCount;
+    }
 #endif
 };
 // Typedef
-typedef VectorPtr<_TorqueThreadStatic *> TorqueThreadStaticList;
-typedef TorqueThreadStaticList * TorqueThreadStaticListHandle;
+typedef VectorPtr<_TorqueThreadStatic*> TorqueThreadStaticList;
+typedef TorqueThreadStaticList* TorqueThreadStaticListHandle;
 
 //-----------------------------------------------------------------------------
 // Auto-registration class and manager of the instances
 class _TorqueThreadStaticReg
 {
-   // This will manage all of the thread static registrations
-   static _TorqueThreadStaticReg *smFirst;
-   _TorqueThreadStaticReg *mNext;
-
-   // This is a vector of vectors which will store instances of thread static
-   // variables. mThreadStaticInsances[0] will be the list of the initial values
-   // of the statics, and then indexing for instanced versions will start at 1
-   // 
-   // Note that the list of instances in mThreadStaticInstances[0] does not, and
-   // must not get 'delete' called on it, because all members of the list are
-   // pointers to statically allocated memory. All other lists will be contain
-   // pointers to dynamically allocated memory, and will need to be freed upon
-   // termination.
-   //
-   // So this was originally a static data member, however that caused problems because
-   // I was relying on static initialization order to make sure the vector got initialized
-   // *before* any static instance of this class was created via macro. By wrapping the
-   // static in a function, I can be assured that the static memory will get initialized
-   // before it is modified.
-   static Vector<TorqueThreadStaticList> &getThreadStaticListVector();
-
+    // This will manage all of the thread static registrations
+    static _TorqueThreadStaticReg* smFirst;
+    _TorqueThreadStaticReg* mNext;
+    
+    // This is a vector of vectors which will store instances of thread static
+    // variables. mThreadStaticInsances[0] will be the list of the initial values
+    // of the statics, and then indexing for instanced versions will start at 1
+    //
+    // Note that the list of instances in mThreadStaticInstances[0] does not, and
+    // must not get 'delete' called on it, because all members of the list are
+    // pointers to statically allocated memory. All other lists will be contain
+    // pointers to dynamically allocated memory, and will need to be freed upon
+    // termination.
+    //
+    // So this was originally a static data member, however that caused problems because
+    // I was relying on static initialization order to make sure the vector got initialized
+    // *before* any static instance of this class was created via macro. By wrapping the
+    // static in a function, I can be assured that the static memory will get initialized
+    // before it is modified.
+    static Vector<TorqueThreadStaticList>& getThreadStaticListVector();
+    
 public:
-   /// Constructor
-   _TorqueThreadStaticReg( _TorqueThreadStatic *ttsInitial )
-   {
-      // Link this entry into the list
-      mNext = smFirst;
-      smFirst = this;
-
-      // Create list 0 (initial values) if it doesn't exist
-      if( getThreadStaticListVector().empty() )
-         getThreadStaticListVector().increment();
-
-      // Set the index of the thread static for lookup
-      ttsInitial->mListIndex = getThreadStaticListVector()[0].size();
-
-      // Add the static to the initial value list
-      getThreadStaticListVector()[0].push_back( ttsInitial );
-   }
-
-   virtual ~_TorqueThreadStaticReg();
-
-   // Accessors
-   static const TorqueThreadStaticList &getStaticList( const U32 idx = 0 ) 
-   { 
-      AssertFatal( getThreadStaticListVector().size() > idx, "Out of range static list" ); 
-      
-      return getThreadStaticListVector()[idx]; 
-   }
-
-   static void destroyInstances();
-   static void destroyInstance( TorqueThreadStaticList *instanceList );
-
-   static const _TorqueThreadStaticReg *getFirst() { return smFirst; }
-
-   const _TorqueThreadStaticReg *getNext() const { return mNext; }
-
-   /// Spawn another copy of the ThreadStatics and pass back the id
-   static TorqueThreadStaticListHandle spawnThreadStaticsInstance();
+    /// Constructor
+    _TorqueThreadStaticReg( _TorqueThreadStatic* ttsInitial )
+    {
+        // Link this entry into the list
+        mNext = smFirst;
+        smFirst = this;
+        
+        // Create list 0 (initial values) if it doesn't exist
+        if( getThreadStaticListVector().empty() )
+            getThreadStaticListVector().increment();
+            
+        // Set the index of the thread static for lookup
+        ttsInitial->mListIndex = getThreadStaticListVector()[0].size();
+        
+        // Add the static to the initial value list
+        getThreadStaticListVector()[0].push_back( ttsInitial );
+    }
+    
+    virtual ~_TorqueThreadStaticReg();
+    
+    // Accessors
+    static const TorqueThreadStaticList& getStaticList( const U32 idx = 0 )
+    {
+        AssertFatal( getThreadStaticListVector().size() > idx, "Out of range static list" );
+        
+        return getThreadStaticListVector()[idx];
+    }
+    
+    static void destroyInstances();
+    static void destroyInstance( TorqueThreadStaticList* instanceList );
+    
+    static const _TorqueThreadStaticReg* getFirst()
+    {
+        return smFirst;
+    }
+    
+    const _TorqueThreadStaticReg* getNext() const
+    {
+        return mNext;
+    }
+    
+    /// Spawn another copy of the ThreadStatics and pass back the id
+    static TorqueThreadStaticListHandle spawnThreadStaticsInstance();
 };
 
 //-----------------------------------------------------------------------------
@@ -133,27 +152,49 @@ public:
 template<class T>
 class TorqueThreadStatic : public _TorqueThreadStatic
 {
-   // The reg object will want access to mInstance
-   friend class _TorqueThreadStaticReg;
-
+    // The reg object will want access to mInstance
+    friend class _TorqueThreadStaticReg;
+    
 private:
-   T mInstance;
-
+    T mInstance;
+    
 public:
-   TorqueThreadStatic( T instanceVal ) : mInstance( instanceVal ) {}
-   virtual void *getMemInstPtr() { return &mInstance; }
-
-   // I am not sure these are needed, and I don't want to create confusing-to-debug code
+    TorqueThreadStatic( T instanceVal ) : mInstance( instanceVal ) {}
+    virtual void* getMemInstPtr()
+    {
+        return &mInstance;
+    }
+    
+    // I am not sure these are needed, and I don't want to create confusing-to-debug code
 #if 0
-   // Operator overloads
-   operator T*() { return &mInstance; }
-   operator T*() const { return &mInstance; }
-   operator const T*() const { return &mInstance; }
-
-   bool operator ==( const T &l ) const { return mInstance == l; }
-   bool operator !=( const T &l ) const { return mInstance != l; }
-
-   T &operator =( const T &l ) { mInstance = l; return mInstance; }
+    // Operator overloads
+    operator T* ()
+    {
+        return &mInstance;
+    }
+    operator T* () const
+    {
+        return &mInstance;
+    }
+    operator const T* () const
+    {
+        return &mInstance;
+    }
+    
+    bool operator ==( const T& l ) const
+    {
+        return mInstance == l;
+    }
+    bool operator !=( const T& l ) const
+    {
+        return mInstance != l;
+    }
+    
+    T& operator =( const T& l )
+    {
+        mInstance = l;
+        return mInstance;
+    }
 #endif // if0
 };
 

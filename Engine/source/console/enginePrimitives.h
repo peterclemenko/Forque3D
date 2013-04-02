@@ -24,7 +24,7 @@
 #define _ENGINEPRIMITIVES_H_
 
 #ifndef _ENGINETYPES_H_
-   #include "console/engineTypes.h"
+#include "console/engineTypes.h"
 #endif
 
 
@@ -56,18 +56,18 @@ _DECLARE_TYPE( String );
 template<>
 struct EngineTypeTraits< String > : public _EnginePrimitiveTypeTraits< String >
 {
-   typedef const UTF16* ArgumentValueType;
-   typedef const UTF16* ReturnValueType;
-
-   //FIXME: this needs to be sorted out; for now, we store default value literals in ASCII
-   typedef const char* DefaultArgumentValueStoreType;
-   
-   static const UTF16* ReturnValue( const String& str )
-   {
-      static String sTemp;      
-      sTemp = str;
-      return sTemp.utf16();
-   }
+    typedef const UTF16* ArgumentValueType;
+    typedef const UTF16* ReturnValueType;
+    
+    //FIXME: this needs to be sorted out; for now, we store default value literals in ASCII
+    typedef const char* DefaultArgumentValueStoreType;
+    
+    static const UTF16* ReturnValue( const String& str )
+    {
+        static String sTemp;
+        sTemp = str;
+        return sTemp.utf16();
+    }
 };
 
 
@@ -75,7 +75,13 @@ struct EngineTypeTraits< String > : public _EnginePrimitiveTypeTraits< String >
 // instead.  Make sure this works with the template machinery by redirecting the type
 // back to String.
 template<> struct EngineTypeTraits< const UTF16* > : public EngineTypeTraits< String > {};
-template<> inline const EngineTypeInfo* TYPE< const UTF16* >() { return TYPE< String >(); }
-inline const EngineTypeInfo* TYPE( const UTF16*& ) { return TYPE< String >(); }
+template<> inline const EngineTypeInfo* TYPE< const UTF16* >()
+{
+    return TYPE< String >();
+}
+inline const EngineTypeInfo* TYPE( const UTF16*& )
+{
+    return TYPE< String >();
+}
 
 #endif // !_ENGINEPRIMITIVES_H_

@@ -39,31 +39,31 @@
 /// Sim system.
 class SceneRootZone : public SceneSimpleZone
 {
-   public:
+public:
 
-      typedef SceneSimpleZone Parent;
+    typedef SceneSimpleZone Parent;
+    
+protected:
 
-   protected:
+    // SceneObject.
+    virtual bool onSceneAdd();
+    virtual void onSceneRemove();
+    
+public:
 
-      // SceneObject.
-      virtual bool onSceneAdd();
-      virtual void onSceneRemove();
-
-   public:
-
-      SceneRootZone();
-
-      // SimObject.
-      virtual bool onAdd();
-      virtual void onRemove();
-      virtual String describeSelf() const;
-
-      // SceneObject.
-      virtual bool containsPoint( const Point3F &point ) const;
-
-      // SceneZoneSpace.
-      virtual U32 getPointZone( const Point3F &p ) const;
-      virtual bool getOverlappingZones( const Box3F& aabb, U32* outZones, U32& outNumZones );
+    SceneRootZone();
+    
+    // SimObject.
+    virtual bool onAdd();
+    virtual void onRemove();
+    virtual String describeSelf() const;
+    
+    // SceneObject.
+    virtual bool containsPoint( const Point3F& point ) const;
+    
+    // SceneZoneSpace.
+    virtual U32 getPointZone( const Point3F& p ) const;
+    virtual bool getOverlappingZones( const Box3F& aabb, U32* outZones, U32& outNumZones );
 };
 
 #endif //_SCENEROOTZONE_H_

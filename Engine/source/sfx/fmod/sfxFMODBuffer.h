@@ -32,32 +32,32 @@
 
 class SFXFMODBuffer : public SFXInternal::SFXWrapAroundBuffer
 {
-      typedef SFXInternal::SFXWrapAroundBuffer Parent;
+    typedef SFXInternal::SFXWrapAroundBuffer Parent;
+    
+    friend class SFXFMODDevice;
+    friend class SFXFMODVoice;
+    
+protected:
 
-      friend class SFXFMODDevice;
-      friend class SFXFMODVoice;
+    FMOD_SOUND* mSound;
+    FMOD_MODE mMode;
+    
+    SFXFMODBuffer( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
+    SFXFMODBuffer( const String& filename, SFXDescription* description );
+    
+    // SFXWrapAroundBuffer.
+    virtual bool _copyData( U32 offset, const U8* data, U32 length );
+    virtual void _flush();
+    
+    virtual ~SFXFMODBuffer();
+    
+public:
 
-   protected:
-
-      FMOD_SOUND *mSound;	   
-      FMOD_MODE mMode;
-
-      SFXFMODBuffer( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
-      SFXFMODBuffer( const String& filename, SFXDescription* description );
-
-      // SFXWrapAroundBuffer.
-      virtual bool _copyData( U32 offset, const U8* data, U32 length );
-      virtual void _flush();
-
-      virtual ~SFXFMODBuffer();
-
-   public:
-
-      ///
-      static SFXFMODBuffer* create( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
-      static SFXFMODBuffer* create( const String& filename, SFXDescription* description );
-
-      virtual U32 getMemoryUsed() const;
+    ///
+    static SFXFMODBuffer* create( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
+    static SFXFMODBuffer* create( const String& filename, SFXDescription* description );
+    
+    virtual U32 getMemoryUsed() const;
 };
 
 #endif // _SFXFMODBUFFER_H_

@@ -33,109 +33,109 @@
 NamedTexTarget::TargetMap NamedTexTarget::smTargets;
 
 
-bool NamedTexTarget::registerWithName( const String &name )
+bool NamedTexTarget::registerWithName( const String& name )
 {
-   if ( mIsRegistered )
-   {
-      // If we're already registered with
-      // this name then do nothing.
-      if ( mName == name )
-         return true;
-
-      // Else unregister ourselves first.
-      unregister();
-   }
-
-   // Make sure the target name isn't empty or already taken.
-   if ( name.isEmpty() || smTargets.contains( name ) )
-      return false;
-
-   mName = name;
-   mIsRegistered = true;
-   smTargets.insert( mName, this );
-   return true;
+    if( mIsRegistered )
+    {
+        // If we're already registered with
+        // this name then do nothing.
+        if( mName == name )
+            return true;
+            
+        // Else unregister ourselves first.
+        unregister();
+    }
+    
+    // Make sure the target name isn't empty or already taken.
+    if( name.isEmpty() || smTargets.contains( name ) )
+        return false;
+        
+    mName = name;
+    mIsRegistered = true;
+    smTargets.insert( mName, this );
+    return true;
 }
 
 void NamedTexTarget::unregister()
 {
-   if ( !mIsRegistered )
-      return;
-
-   TargetMap::Iterator iter = smTargets.find( mName );
-
-   AssertFatal( iter != smTargets.end() &&
-                iter->value == this,
-      "NamedTexTarget::unregister - Bad registration!" );
-
-   mIsRegistered = false;
-   mName = String::EmptyString;
-   smTargets.erase( iter );
+    if( !mIsRegistered )
+        return;
+        
+    TargetMap::Iterator iter = smTargets.find( mName );
+    
+    AssertFatal( iter != smTargets.end() &&
+                 iter->value == this,
+                 "NamedTexTarget::unregister - Bad registration!" );
+                 
+    mIsRegistered = false;
+    mName = String::EmptyString;
+    smTargets.erase( iter );
 }
 
-NamedTexTarget* NamedTexTarget::find( const String &name )
+NamedTexTarget* NamedTexTarget::find( const String& name )
 {
-   PROFILE_SCOPE( NamedTexTarget_find );
-
-   TargetMap::Iterator iter = smTargets.find( name );
-   if ( iter != smTargets.end() )
-      return iter->value;
-   else
-      return NULL;
+    PROFILE_SCOPE( NamedTexTarget_find );
+    
+    TargetMap::Iterator iter = smTargets.find( name );
+    if( iter != smTargets.end() )
+        return iter->value;
+    else
+        return NULL;
 }
 
 NamedTexTarget::NamedTexTarget()
-   :  mViewport( RectI::One ),
-      mIsRegistered( false ),
-      mConditioner( NULL )
-{   
+    :  mViewport( RectI::One ),
+       mIsRegistered( false ),
+       mConditioner( NULL )
+{
 }
 
 NamedTexTarget::~NamedTexTarget()
 {
-   unregister();
+    unregister();
 }
 
-void NamedTexTarget::setTexture( U32 index, GFXTextureObject *tex )
+void NamedTexTarget::setTexture( U32 index, GFXTextureObject* tex )
 {
-   AssertFatal( index < 4, "NamedTexTarget::setTexture - Got invalid index!" );
-   mTex[index] = tex;
+    AssertFatal( index < 4, "NamedTexTarget::setTexture - Got invalid index!" );
+    mTex[index] = tex;
 }
 
 void NamedTexTarget::release()
 {
-   mTex[0] = NULL;
-   mTex[1] = NULL;
-   mTex[2] = NULL;
-   mTex[3] = NULL;
+    mTex[0] = NULL;
+    mTex[1] = NULL;
+    mTex[2] = NULL;
+    mTex[3] = NULL;
 }
 
-void NamedTexTarget::getShaderMacros( Vector<GFXShaderMacro> *outMacros )
+void NamedTexTarget::getShaderMacros( Vector<GFXShaderMacro>* outMacros )
 {
-   ConditionerFeature *cond = getConditioner();
-   if ( !cond )
-      return;
-
-   // TODO: No check for duplicates is 
-   // going on here which might be a problem?
-
-   String targetName = String::ToLower( mName );
-
-   // Add both the condition and uncondition macros.
-   const String &condMethod = cond->getShaderMethodName( ConditionerFeature::ConditionMethod );
-   if ( condMethod.isNotEmpty() )
-   {
-      GFXShaderMacro macro;
-      macro.name = targetName + "Condition";
-      macro.value = condMethod;
-      outMacros->push_back( macro );
-   }
-
-   const String &uncondMethod = cond->getShaderMethodName( ConditionerFeature::UnconditionMethod );
-   if ( uncondMethod.isNotEmpty() )
-   {   
-      GFXShaderMacro macro;
-      macro.name = targetName + "Uncondition";
-      macro.value = uncondMethod;
-      outMacros->push_back( macro );
-   }
+    ConditionerFeature* cond = getConditioner();
+    if( !cond )
+        return;
+        
+    // TODO: No check for duplicates is
+    // going on here which might be a problem?
+    
+    String targetName = String::ToLower( mName );
+    
+    // Add both the condition and uncondition macros.
+    const String& condMethod = cond->getShaderMethodName( ConditionerFeature::ConditionMethod );
+    if( condMethod.isNotEmpty() )
+    {
+        GFXShaderMacro macro;
+        macro.name = targetName + "Condition";
+        macro.value = condMethod;
+        outMacros->push_back( macro );
+    }
+    
+    const String& uncondMethod = cond->getShaderMethodName( ConditionerFeature::UnconditionMethod );
+    if( uncondMethod.isNotEmpty() )
+    {
+        GFXShaderMacro macro;
+        macro.name = targetName + "Uncondition";
+        macro.value = uncondMethod;
+        outMacros->push_back( macro );
+    }
 }

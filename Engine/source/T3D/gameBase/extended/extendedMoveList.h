@@ -12,44 +12,44 @@
 
 class ExtendedMoveList : public MoveList
 {
-   typedef MoveList Parent;
-
+    typedef MoveList Parent;
+    
 public:
 
-   ExtendedMoveList();
-
-   void clientWriteMovePacket(BitStream *);
-   void clientReadMovePacket(BitStream *);
-
-   void serverWriteMovePacket(BitStream *);
-   void serverReadMovePacket(BitStream *);
-
-   void advanceMove();
-   void onAdvanceObjects() {}
-   U32 getMoves(Move** movePtr,U32* numMoves);
-   U32 getExtMoves( ExtendedMove** movePtr, U32 *numMoves );
-
-   void collectMove();
-   void pushMove( const Move &mv );
-   void pushExtMove( const ExtendedMove &mv );
-   void clearMoves( U32 count );
-
-   virtual void reset();
-
-   bool isBacklogged();
-
-   bool areMovesPending();
-
-   void ackMoves( U32 count );
-
+    ExtendedMoveList();
+    
+    void clientWriteMovePacket( BitStream* );
+    void clientReadMovePacket( BitStream* );
+    
+    void serverWriteMovePacket( BitStream* );
+    void serverReadMovePacket( BitStream* );
+    
+    void advanceMove();
+    void onAdvanceObjects() {}
+    U32 getMoves( Move** movePtr, U32* numMoves );
+    U32 getExtMoves( ExtendedMove** movePtr, U32* numMoves );
+    
+    void collectMove();
+    void pushMove( const Move& mv );
+    void pushExtMove( const ExtendedMove& mv );
+    void clearMoves( U32 count );
+    
+    virtual void reset();
+    
+    bool isBacklogged();
+    
+    bool areMovesPending();
+    
+    void ackMoves( U32 count );
+    
 protected:
 
-   U32 mMoveCredit;
-
-   Vector<ExtendedMove> mExtMoveVec;
-
+    U32 mMoveCredit;
+    
+    Vector<ExtendedMove> mExtMoveVec;
+    
 protected:
-   bool getNextExtMove( ExtendedMove &curMove );
+    bool getNextExtMove( ExtendedMove& curMove );
 };
 
 #endif   // _EXTENDEDMOVELIST_H_

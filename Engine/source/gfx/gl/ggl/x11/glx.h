@@ -43,7 +43,7 @@
 #define GFX_GLX_H
 
 #ifndef GFX_GGL_H
-   #include "../ggl.h"
+#include "../ggl.h"
 #endif
 
 #include <X11/Xlib.h>
@@ -84,7 +84,7 @@ namespace GL
 
 typedef XID GLXDrawable;
 typedef XID GLXPixmap;
-typedef struct __GLXcontextRec *GLXContext;
+typedef struct __GLXcontextRec* GLXContext;
 
 #include "../generated/glxe.h"
 
@@ -103,35 +103,37 @@ typedef struct __GLXcontextRec *GLXContext;
 //-----------------------------------------------------------------------------
 // Extensions use indirection in order to support multiple contexts
 
-struct GLXExtensionPtrs: public GLExtensionPtrs {
-   // Include all GLX extentions in global function table
-   #define GL_GROUP_BEGIN(name)
-   #define GL_FUNCTION(name, type, args) type (XGL_DLL *_##name) args;
-   #define GL_GROUP_END()
-   #include "../generated/glxefn.h"
-   #undef GL_GROUP_BEGIN
-   #undef GL_FUNCTION
-   #undef GL_GROUP_END
+struct GLXExtensionPtrs: public GLExtensionPtrs
+{
+    // Include all GLX extentions in global function table
+#define GL_GROUP_BEGIN(name)
+#define GL_FUNCTION(name, type, args) type (XGL_DLL *_##name) args;
+#define GL_GROUP_END()
+#include "../generated/glxefn.h"
+#undef GL_GROUP_BEGIN
+#undef GL_FUNCTION
+#undef GL_GROUP_END
 };
 
-struct GLXExtensionFlags {
-   // Define extension "has" variables
-   #define GL_GROUP_BEGIN(name) bool has_##name;
-   #define GL_FUNCTION(name, type, args)
-   #define GL_GROUP_END()
-   #include "../generated/glxefn.h"
-   #undef GL_GROUP_BEGIN
-   #undef GL_FUNCTION
-   #undef GL_GROUP_END
+struct GLXExtensionFlags
+{
+    // Define extension "has" variables
+#define GL_GROUP_BEGIN(name) bool has_##name;
+#define GL_FUNCTION(name, type, args)
+#define GL_GROUP_END()
+#include "../generated/glxefn.h"
+#undef GL_GROUP_BEGIN
+#undef GL_FUNCTION
+#undef GL_GROUP_END
 };
 
 #endif // Doxygen
 
 //-----------------------------------------------------------------------------
 
-GLDisplay gglCreateDisplay(::Display*,int screen);
-GLSurface gglCreateSurface(GLDisplay,Window,GLFormat);
-XVisualInfo* gglGetFormatVisual(GLDisplay dp,GLFormat format);
+GLDisplay gglCreateDisplay( ::Display*, int screen );
+GLSurface gglCreateSurface( GLDisplay, Window, GLFormat );
+XVisualInfo* gglGetFormatVisual( GLDisplay dp, GLFormat format );
 
 #undef XGL_FUNCPTR
 #define XGL_FUNCPTR(name) (((GLXExtensionPtrs*)GL::_GGLptr)->_##name)

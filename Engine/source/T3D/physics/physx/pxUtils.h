@@ -27,11 +27,12 @@
 class NxActor;
 
 
-namespace PxUtils {
+namespace PxUtils
+{
 
-   /// Debug render an actor, loops through all shapes
-   /// and translates primitive types into drawUtil calls.
-   void drawActor( NxActor *inActor );
+/// Debug render an actor, loops through all shapes
+/// and translates primitive types into drawUtil calls.
+void drawActor( NxActor* inActor );
 
 } // namespace PxUtils
 

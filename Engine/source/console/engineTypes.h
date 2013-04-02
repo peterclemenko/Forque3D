@@ -24,10 +24,10 @@
 #define _ENGINETYPES_H_
 
 #ifndef _TYPETRAITS_H_
-   #include "platform/typetraits.h"
+#include "platform/typetraits.h"
 #endif
 #ifndef _BITSET_H_
-   #include "core/bitSet.h"
+#include "core/bitSet.h"
 #endif
 
 
@@ -115,32 +115,35 @@ template< typename T > class EngineFunctionTypeInfo;
 template< typename T >
 struct _EngineTypeTraits
 {
-   // Default type traits corresponding to the semantics of class types.
-   
-   typedef T Type;
-   typedef T* ValueType;
-   typedef typename Type::SuperType SuperType;
-   
-   typedef T* ArgumentValueType;
-   typedef T* ReturnValueType;
-   typedef T* DefaultArgumentValueStoreType;
-   
-   typedef ReturnValueType ReturnValue;
-   static ValueType ArgumentToValue( ArgumentValueType val ) { return val; }
-
-   static const EngineTypeInfo* const TYPEINFO;
+    // Default type traits corresponding to the semantics of class types.
+    
+    typedef T Type;
+    typedef T* ValueType;
+    typedef typename Type::SuperType SuperType;
+    
+    typedef T* ArgumentValueType;
+    typedef T* ReturnValueType;
+    typedef T* DefaultArgumentValueStoreType;
+    
+    typedef ReturnValueType ReturnValue;
+    static ValueType ArgumentToValue( ArgumentValueType val )
+    {
+        return val;
+    }
+    
+    static const EngineTypeInfo* const TYPEINFO;
 };
 template< typename T > const EngineTypeInfo* const _EngineTypeTraits< T >::TYPEINFO = &T::_smTypeInfo;
 
 template<>
 struct _EngineTypeTraits< void >
 {
-   typedef void Type;
-   typedef void ValueType;
-   typedef void ReturnValueType;   
-   typedef ReturnValueType ReturnValue;
-   
-   static const EngineTypeInfo* const TYPEINFO;
+    typedef void Type;
+    typedef void ValueType;
+    typedef void ReturnValueType;
+    typedef ReturnValueType ReturnValue;
+    
+    static const EngineTypeInfo* const TYPEINFO;
 };
 
 
@@ -165,14 +168,17 @@ struct EngineTypeTraits< const T > : public EngineTypeTraits< T > {};
 
 /// Return the type info for the given engine type.
 template< typename T >
-inline const EngineTypeInfo* TYPE() { return EngineTypeTraits< T >::TYPEINFO; }
+inline const EngineTypeInfo* TYPE()
+{
+    return EngineTypeTraits< T >::TYPEINFO;
+}
 
 
 /// Return the type info for the @b static type of the given variable.
 template< typename T >
 inline const EngineTypeInfo* TYPE( const T& )
 {
-   return TYPE< T >();
+    return TYPE< T >();
 }
 
 
@@ -181,73 +187,85 @@ inline const EngineTypeInfo* TYPE( const T& )
 template< typename T >
 struct _EnginePrimitiveTypeTraits
 {
-   typedef T Type;
-   typedef T ValueType;
-   typedef void SuperType;
-   
-   typedef ValueType ArgumentValueType;
-   typedef ValueType ReturnValueType;
-   typedef ValueType DefaultArgumentValueStoreType;
-   
-   typedef ReturnValueType ReturnValue;   
-   static ValueType ArgumentToValue( ArgumentValueType val ) { return val; }
-
-   static const EngineTypeInfo* const TYPEINFO;
+    typedef T Type;
+    typedef T ValueType;
+    typedef void SuperType;
+    
+    typedef ValueType ArgumentValueType;
+    typedef ValueType ReturnValueType;
+    typedef ValueType DefaultArgumentValueStoreType;
+    
+    typedef ReturnValueType ReturnValue;
+    static ValueType ArgumentToValue( ArgumentValueType val )
+    {
+        return val;
+    }
+    
+    static const EngineTypeInfo* const TYPEINFO;
 };
 template< typename T > const EngineTypeInfo* const _EnginePrimitiveTypeTraits< T >::TYPEINFO = TYPE< T >();
 
 template< typename T >
 struct _EngineEnumTypeTraits
 {
-   typedef T Type;
-   typedef T ValueType;
-   typedef void SuperType;
-
-   typedef ValueType ArgumentValueType;
-   typedef ValueType ReturnValueType;
-   typedef ValueType DefaultArgumentValueStoreType;
-   
-   typedef ReturnValueType ReturnValue;
-   static ValueType ArgumentToValue( ArgumentValueType val ) { return val; }
-
-   static const EngineTypeInfo* const TYPEINFO;
+    typedef T Type;
+    typedef T ValueType;
+    typedef void SuperType;
+    
+    typedef ValueType ArgumentValueType;
+    typedef ValueType ReturnValueType;
+    typedef ValueType DefaultArgumentValueStoreType;
+    
+    typedef ReturnValueType ReturnValue;
+    static ValueType ArgumentToValue( ArgumentValueType val )
+    {
+        return val;
+    }
+    
+    static const EngineTypeInfo* const TYPEINFO;
 };
 template< typename T > const EngineTypeInfo* const _EngineEnumTypeTraits< T >::TYPEINFO = TYPE< T >();
 
 template< typename T >
 struct _EngineBitfieldTypeTraits
 {
-   typedef T Type;
-   typedef T ValueType;
-   typedef void SuperType;
-
-   typedef ValueType ArgumentValueType;
-   typedef ValueType ReturnValueType;
-   typedef ValueType DefaultArgumentValueStoreType;
-   
-   typedef ReturnValueType ReturnValue;
-   static ValueType ArgumentToValue( ArgumentValueType val ) { return val; }
-
-   static const EngineTypeInfo* const TYPEINFO;
+    typedef T Type;
+    typedef T ValueType;
+    typedef void SuperType;
+    
+    typedef ValueType ArgumentValueType;
+    typedef ValueType ReturnValueType;
+    typedef ValueType DefaultArgumentValueStoreType;
+    
+    typedef ReturnValueType ReturnValue;
+    static ValueType ArgumentToValue( ArgumentValueType val )
+    {
+        return val;
+    }
+    
+    static const EngineTypeInfo* const TYPEINFO;
 };
 template< typename T > const EngineTypeInfo* const _EngineBitfieldTypeTraits< T >::TYPEINFO = TYPE< T >();
 
 template< typename T >
 struct _EngineStructTypeTraits
 {
-   typedef T Type;
-   typedef const T& ValueType;
-   typedef void SuperType;
-   
-   // Structs get passed in as pointers and passed out as full copies.
-   typedef T* ArgumentValueType;
-   typedef T ReturnValueType;
-   typedef T DefaultArgumentValueStoreType;
-
-   typedef ReturnValueType ReturnValue;
-   static ValueType ArgumentToValue( ArgumentValueType val ) { return *val; }
-
-   static const EngineTypeInfo* const TYPEINFO;
+    typedef T Type;
+    typedef const T& ValueType;
+    typedef void SuperType;
+    
+    // Structs get passed in as pointers and passed out as full copies.
+    typedef T* ArgumentValueType;
+    typedef T ReturnValueType;
+    typedef T DefaultArgumentValueStoreType;
+    
+    typedef ReturnValueType ReturnValue;
+    static ValueType ArgumentToValue( ArgumentValueType val )
+    {
+        return *val;
+    }
+    
+    static const EngineTypeInfo* const TYPEINFO;
 };
 template< typename T > const EngineTypeInfo* const _EngineStructTypeTraits< T >::TYPEINFO = TYPE< T >();
 
@@ -257,20 +275,20 @@ template< typename T > struct _EngineArgumentTypeTable {};
 template< typename T >
 struct _EngineFunctionTypeTraits
 {
-      typedef T Type;
-      typedef T* ValueType;
-
-      typedef T* ArgumentValueType;
-      typedef T* ReturnValueType;
-      typedef T* DefaultArgumentValueStoreType;
-      
-      static const bool IS_VARIADIC = _EngineArgumentTypeTable< T >::VARIADIC;
-      static const U32 NUM_ARGUMENTS  = _EngineArgumentTypeTable< T >::NUM_ARGUMENTS;
-
-      static const EngineTypeInfo* const TYPEINFO;
-   
-   private:
-      static const EngineFunctionTypeInfo< T > smTYPEINFO;
+    typedef T Type;
+    typedef T* ValueType;
+    
+    typedef T* ArgumentValueType;
+    typedef T* ReturnValueType;
+    typedef T* DefaultArgumentValueStoreType;
+    
+    static const bool IS_VARIADIC = _EngineArgumentTypeTable< T >::VARIADIC;
+    static const U32 NUM_ARGUMENTS  = _EngineArgumentTypeTable< T >::NUM_ARGUMENTS;
+    
+    static const EngineTypeInfo* const TYPEINFO;
+    
+private:
+    static const EngineFunctionTypeInfo< T > smTYPEINFO;
 };
 template< typename T > const EngineTypeInfo* const _EngineFunctionTypeTraits< T >::TYPEINFO = &smTYPEINFO;
 
@@ -345,57 +363,58 @@ struct _EngineTypeTraits< R( A, B, C, D, E, F, G, H, I, J, K, L, ... ) > : publi
 //    Helpers.
 //--------------------------------------------------------------------------
 
-namespace _Private {
-   template< typename T >
-   struct _InstantiableConcreteClass
-   {
-      static bool _construct( void* ptr )
-      {
-         T* p = reinterpret_cast< T* >( ptr );
-         constructInPlace( p );
-         return true;
-      }
-   
-      static void _destruct( void* ptr )
-      {
-         T* p = reinterpret_cast< T* >( ptr );
-         destructInPlace( p );
-      }
-   };
-   template< typename T >
-   struct _NonInstantiableConcreteClass
-   {
-      static bool _construct( void* ptr )
-      {
-         AssertFatal( false, "EngineClassTypeInfo - constructInstance called on non-instantiable class" );
-         return false;
-      }
-   
-      static void _destruct( void* ptr )
-      {
-         AssertFatal( false, "EngineClassTypeInfo - destructInstance called on non-instantiable class" );
-      }
-   };
-   template< typename T >
-   struct _ConcreteClassBase : public IfTrueType< typename T::__IsInstantiableType, _InstantiableConcreteClass< T >, _NonInstantiableConcreteClass< T > >
-   {
-      typedef ::FalseType IsAbstractType;
-   };
-   template< typename T >
-   struct _AbstractClassBase
-   {
-      typedef ::TrueType IsAbstractType;
-      static bool _construct( void* ptr )
-      {
-         AssertFatal( false, "EngineClassTypeInfo - constructInstance called on abstract class" );
-         return false;
-      }
-   
-      static void _destruct( void* ptr )
-      {
-         AssertFatal( false, "EngineClassTypeInfo - destructInstance called on abstract class" );
-      }
-   };
+namespace _Private
+{
+template< typename T >
+struct _InstantiableConcreteClass
+{
+    static bool _construct( void* ptr )
+    {
+        T* p = reinterpret_cast< T* >( ptr );
+        constructInPlace( p );
+        return true;
+    }
+    
+    static void _destruct( void* ptr )
+    {
+        T* p = reinterpret_cast< T* >( ptr );
+        destructInPlace( p );
+    }
+};
+template< typename T >
+struct _NonInstantiableConcreteClass
+{
+    static bool _construct( void* ptr )
+    {
+        AssertFatal( false, "EngineClassTypeInfo - constructInstance called on non-instantiable class" );
+        return false;
+    }
+    
+    static void _destruct( void* ptr )
+    {
+        AssertFatal( false, "EngineClassTypeInfo - destructInstance called on non-instantiable class" );
+    }
+};
+template< typename T >
+struct _ConcreteClassBase : public IfTrueType< typename T::__IsInstantiableType, _InstantiableConcreteClass< T >, _NonInstantiableConcreteClass< T > >
+{
+    typedef ::FalseType IsAbstractType;
+};
+template< typename T >
+struct _AbstractClassBase
+{
+    typedef ::TrueType IsAbstractType;
+    static bool _construct( void* ptr )
+    {
+        AssertFatal( false, "EngineClassTypeInfo - constructInstance called on abstract class" );
+        return false;
+    }
+    
+    static void _destruct( void* ptr )
+    {
+        AssertFatal( false, "EngineClassTypeInfo - destructInstance called on abstract class" );
+    }
+};
 }
 
 //--------------------------------------------------------------------------
@@ -409,7 +428,7 @@ namespace _Private {
       static EngineExportScope __engineExportScopeInst;                                      \
       static EngineExportScope& __engineExportScope() { return __engineExportScopeInst; }    \
    };
-   
+
 ///
 #define IMPLEMENT_SCOPE( name, exportName, scope, doc )                                      \
    EngineExportScope name::__engineExportScopeInst( #exportName, &_SCOPE< scope >()(), doc );
@@ -432,12 +451,12 @@ namespace _Private {
    _DECLARE_TYPE( type )                                                                     \
    template<>                                                                                \
    struct EngineTypeTraits< type > : public _EnginePrimitiveTypeTraits< type > {};
-   
+
 #define _DECLARE_ENUM( type )                                                                \
    _DECLARE_TYPE( type )                                                                     \
    template<>                                                                                \
    struct _EngineTypeTraits< type > : public _EngineEnumTypeTraits< type > {};
-   
+
 #define _DECLARE_BITFIELD( type )                                                            \
    _DECLARE_TYPE( type )                                                                     \
    template<>                                                                                \
@@ -462,7 +481,7 @@ namespace _Private {
       static EngineSimpleTypeInfo< type > gsTypeInfo( #exportName, &_SCOPE< scope >()(), EngineTypeKindPrimitive, doc );               \
    } }                                                                                                                                 \
    _IMPLEMENT_TYPE( type, exportName )
-   
+
 #define _IMPLEMENT_ENUM( type, exportName, scope, doc )                                                                                \
    namespace { namespace _ ## exportName {                                                                                             \
       typedef type EnumType;                                                                                                           \
@@ -474,7 +493,7 @@ namespace _Private {
       static const char* const _sDoc = doc;                                                                                            \
       static EngineExportScope& _sScope = _SCOPE< scope >()();                                                                         \
       static EngineEnumTable::Value _sEnums[] = {
-   
+
 #define _END_IMPLEMENT_ENUM                                                                                                            \
       };                                                                                                                               \
       static EngineEnumTable _sEnumTable( sizeof( _sEnums ) / sizeof( _sEnums[ 0 ] ), _sEnums );                                       \
@@ -492,13 +511,13 @@ namespace _Private {
       static const char* const _sDoc = doc;                                                                                            \
       static EngineExportScope& _sScope = _SCOPE< scope >()();                                                                         \
       static EngineEnumTable::Value _sEnums[] = {
-   
+
 #define _END_IMPLEMENT_BITFIELD                                                                                                        \
       };                                                                                                                               \
       static EngineEnumTable _sEnumTable( sizeof( _sEnums ) / sizeof( _sEnums[ 0 ] ), _sEnums );                                       \
       EngineSimpleTypeInfo< BitfieldType > gsTypeInfo( _sBitfieldName, &_sScope, EngineTypeKindBitfield, _sDoc, &_sEnumTable );        \
    } }
-   
+
 #define _IMPLEMENT_STRUCT( type, exportName, scope, doc )                                                                              \
    namespace { namespace _ ## exportName {                                                                                             \
       extern EngineStructTypeInfo< type > gsTypeInfo;                                                                                  \
@@ -531,7 +550,7 @@ namespace _Private {
 ///
 #define DECLARE_ENUM( type ) \
    _DECLARE_ENUM( type )
-   
+
 ///
 #define DECLARE_BITFIELD( type ) \
    _DECLARE_BITFIELD( type )
@@ -539,7 +558,7 @@ namespace _Private {
 ///
 #define IMPLEMENT_ENUM( type, exportName, scope, doc ) \
    _IMPLEMENT_ENUM( type, exportName, scope, doc )
-   
+
 ///
 #define IMPLEMENT_BITFIELD( type, exportName, scope, doc ) \
    _IMPLEMENT_BITFIELD( type, exportName, scope, doc )
@@ -547,7 +566,7 @@ namespace _Private {
 ///
 #define END_IMPLEMENT_ENUM \
    _END_IMPLEMENT_ENUM
-   
+
 ///
 #define END_IMPLEMENT_BITFIELD \
    _END_IMPLEMENT_BITFIELD
@@ -572,22 +591,22 @@ namespace _Private {
 ///
 #define FIELD_AS( type, fieldName, exportName, numElements, doc ) \
    { #exportName, doc, numElements, TYPE( *( ( type* ) &( ( ThisType* ) 16 )->fieldName ) ), FIELDOFFSET( fieldName ) }, // Artificial offset to avoid compiler warnings.
-   
+
 ///
 #define FIELDOFFSET( fieldName ) \
    U32( ( ( const char* ) &( ( ( ThisType* ) 16 )->fieldName ) ) - 16 ) // Artificial offset to avoid compiler warnings.
-   
+
 ///
 #define CLASSDOC( className, doc ) \
    template<> const char* EngineClassTypeInfo< className, className::_ClassBase >::smDocString = doc;
-   
+
 
 /// @}
 
 
 struct _GLOBALSCOPE
 {
-   static EngineExportScope& __engineExportScope();
+    static EngineExportScope& __engineExportScope();
 };
 
 // Helper to retrieve a scope instance through a C++ type.  The setup here is a little
@@ -596,7 +615,10 @@ struct _GLOBALSCOPE
 template< typename T = _GLOBALSCOPE >
 struct _SCOPE
 {
-   EngineExportScope& operator()() const { return T::__engineExportScope(); }
+    EngineExportScope& operator()() const
+    {
+        return T::__engineExportScope();
+    }
 };
 
 #endif // !_ENGINETYPES_H_

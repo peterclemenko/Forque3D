@@ -32,40 +32,43 @@
 
 class PSSMLightShadowMap : public LightShadowMap
 {
-   typedef LightShadowMap Parent;
+    typedef LightShadowMap Parent;
 public:
-   PSSMLightShadowMap( LightInfo *light );
-
-   // LightShadowMap
-   virtual ShadowType getShadowType() const { return ShadowType_PSSM; }
-   virtual void _render( RenderPassManager* renderPass, const SceneRenderState *diffuseState );
-   virtual void setShaderParameters(GFXShaderConstBuffer* params, LightingShaderConstants* lsc);
-
-   /// Used to scale TSShapeInstance::smDetailAdjust to have
-   /// objects lod quicker when in the PSSM shadow.
-   /// @see TSShapeInstance::smDetailAdjust
-   static F32 smDetailAdjustScale;
-
-   /// Like TSShapeInstance::smSmallestVisiblePixelSize this is used
-   /// to define the smallest LOD to render.
-   /// @see TSShapeInstance::smSmallestVisiblePixelSize
-   static F32 smSmallestVisiblePixelSize;
-
+    PSSMLightShadowMap( LightInfo* light );
+    
+    // LightShadowMap
+    virtual ShadowType getShadowType() const
+    {
+        return ShadowType_PSSM;
+    }
+    virtual void _render( RenderPassManager* renderPass, const SceneRenderState* diffuseState );
+    virtual void setShaderParameters( GFXShaderConstBuffer* params, LightingShaderConstants* lsc );
+    
+    /// Used to scale TSShapeInstance::smDetailAdjust to have
+    /// objects lod quicker when in the PSSM shadow.
+    /// @see TSShapeInstance::smDetailAdjust
+    static F32 smDetailAdjustScale;
+    
+    /// Like TSShapeInstance::smSmallestVisiblePixelSize this is used
+    /// to define the smallest LOD to render.
+    /// @see TSShapeInstance::smSmallestVisiblePixelSize
+    static F32 smSmallestVisiblePixelSize;
+    
 protected:
 
-   void _setNumSplits( U32 numSplits, U32 texSize );
-   void _calcSplitPos(const Frustum& currFrustum);
-   Box3F _calcClipSpaceAABB(const Frustum& f, const MatrixF& transform, F32 farDist);
-   void _roundProjection(const MatrixF& lightMat, const MatrixF& cropMatrix, Point3F &offset, U32 splitNum);
-
-   static const int MAX_SPLITS = 4;
-   U32 mNumSplits;
-   F32 mSplitDist[MAX_SPLITS+1];   // +1 because we store a cap
-   RectI mViewports[MAX_SPLITS];
-   Point3F mScaleProj[MAX_SPLITS];
-   Point3F mOffsetProj[MAX_SPLITS];
-   Point4F mFarPlaneScalePSSM;
-   F32 mLogWeight;
+    void _setNumSplits( U32 numSplits, U32 texSize );
+    void _calcSplitPos( const Frustum& currFrustum );
+    Box3F _calcClipSpaceAABB( const Frustum& f, const MatrixF& transform, F32 farDist );
+    void _roundProjection( const MatrixF& lightMat, const MatrixF& cropMatrix, Point3F& offset, U32 splitNum );
+    
+    static const int MAX_SPLITS = 4;
+    U32 mNumSplits;
+    F32 mSplitDist[MAX_SPLITS + 1]; // +1 because we store a cap
+    RectI mViewports[MAX_SPLITS];
+    Point3F mScaleProj[MAX_SPLITS];
+    Point3F mOffsetProj[MAX_SPLITS];
+    Point4F mFarPlaneScalePSSM;
+    F32 mLogWeight;
 };
 
 #endif

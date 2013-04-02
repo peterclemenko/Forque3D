@@ -32,26 +32,29 @@
 
 class GuiMissionAreaEditorCtrl : public EditTSCtrl
 {
-   typedef EditTSCtrl Parent;
-
+    typedef EditTSCtrl Parent;
+    
 protected:
-   SimObjectPtr<MissionArea>  mSelMissionArea;
-
+    SimObjectPtr<MissionArea>  mSelMissionArea;
+    
 public:
-   GuiMissionAreaEditorCtrl();
-   virtual ~GuiMissionAreaEditorCtrl();
-   
-   DECLARE_CONOBJECT(GuiMissionAreaEditorCtrl);
-
-   // SimObject
-   bool onAdd();
-   static void initPersistFields();
-
-   // EditTSCtrl      
-   void get3DCursor( GuiCursor *&cursor, bool &visible, const Gui3DMouseEvent &event_ );
-
-   void setSelectedMissionArea( MissionArea *missionArea );
-   MissionArea* getSelectedMissionArea() { return mSelMissionArea; };
+    GuiMissionAreaEditorCtrl();
+    virtual ~GuiMissionAreaEditorCtrl();
+    
+    DECLARE_CONOBJECT( GuiMissionAreaEditorCtrl );
+    
+    // SimObject
+    bool onAdd();
+    static void initPersistFields();
+    
+    // EditTSCtrl
+    void get3DCursor( GuiCursor*& cursor, bool& visible, const Gui3DMouseEvent& event_ );
+    
+    void setSelectedMissionArea( MissionArea* missionArea );
+    MissionArea* getSelectedMissionArea()
+    {
+        return mSelMissionArea;
+    };
 };
 
 #endif // _GUIMISSIONAREAEDITORCTRL_H_

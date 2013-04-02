@@ -34,27 +34,30 @@
 /// clicked.
 class GuiBubbleTextCtrl : public GuiTextCtrl
 {
-   private:
-   
-      typedef GuiTextCtrl Parent;
+private:
 
-  protected:
-      bool mInAction;
-      GuiControl *mDlg;
-      GuiControl *mPopup;
-      GuiMLTextCtrl *mMLText;
+    typedef GuiTextCtrl Parent;
+    
+protected:
+    bool mInAction;
+    GuiControl* mDlg;
+    GuiControl* mPopup;
+    GuiMLTextCtrl* mMLText;
+    
+    void popBubble();
+    
+public:
 
-      void popBubble();
-
-  public:
-  
-      DECLARE_CONOBJECT(GuiBubbleTextCtrl);
-      DECLARE_DESCRIPTION( "A single-line text control that displays its text in a multi-line\n"
-         "popup when clicked." );
-
-      GuiBubbleTextCtrl() { mInAction = false; }
-
-      virtual void onMouseDown(const GuiEvent &event);
+    DECLARE_CONOBJECT( GuiBubbleTextCtrl );
+    DECLARE_DESCRIPTION( "A single-line text control that displays its text in a multi-line\n"
+                         "popup when clicked." );
+                         
+    GuiBubbleTextCtrl()
+    {
+        mInAction = false;
+    }
+    
+    virtual void onMouseDown( const GuiEvent& event );
 };
 
 #endif /* _GUI_BUBBLE_TEXT_CONTROL_H_ */

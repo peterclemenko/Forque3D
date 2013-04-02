@@ -38,23 +38,23 @@
 /// @see SplinePatch
 class QuadPatch : public SplinePatch
 {
-   typedef SplinePatch Parent;
-
+    typedef SplinePatch Parent;
+    
 private:
-   Point3F a, b, c;
-
-   void calcABC( const Point3F *points );
-
+    Point3F a, b, c;
+    
+    void calcABC( const Point3F* points );
+    
 public:
 
-   QuadPatch();
-
-   virtual void   calc( F32 t, Point3F &result );
-   virtual void   calc( Point3F *points, F32 t, Point3F &result );
-   virtual void   setControlPoint( Point3F &point, int index );
-   virtual void   submitControlPoints( SplCtrlPts &points );
-
-
+    QuadPatch();
+    
+    virtual void   calc( F32 t, Point3F& result );
+    virtual void   calc( Point3F* points, F32 t, Point3F& result );
+    virtual void   setControlPoint( Point3F& point, int index );
+    virtual void   submitControlPoints( SplCtrlPts& points );
+    
+    
 };
 
 

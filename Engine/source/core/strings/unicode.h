@@ -30,7 +30,7 @@
 
 /// Unicode conversion utility functions
 ///
-/// Some definitions first: 
+/// Some definitions first:
 /// - <b>Code Point</b>: a single character of Unicode text. Used to disabmiguate from C char type.
 /// - <b>UTF-32</b>: a Unicode encoding format where one code point is always 32 bits wide.
 ///   This format can in theory contain any Unicode code point that will ever be needed, now or in the future. 4billion+ code points should be enough, right?
@@ -52,7 +52,7 @@
 /// Any code points above 0xFFFF, the top of the BMP, are replaced with the
 ///  standard unicode replacement character: 0xFFFD.
 /// Any UTF16 surrogates are read correctly, but replaced.
-/// UTF-8 code points up to 6 code units wide will be read, but 5+ is illegal, 
+/// UTF-8 code points up to 6 code units wide will be read, but 5+ is illegal,
 ///  and 4+ is above the BMP, and will be replaced.
 ///  This means that UTF-8 output is clamped to 3 code units ( bytes ) per code point.
 
@@ -62,9 +62,9 @@
 ///   calling delete[] on these buffers.
 /// - Because they allocate memory, do not use these functions in a tight loop.
 /// - These are useful when you need a new long term copy of a string.
-UTF16* convertUTF8toUTF16( const UTF8 *unistring);
+UTF16* convertUTF8toUTF16( const UTF8* unistring );
 
-UTF8*  convertUTF16toUTF8( const UTF16 *unistring);
+UTF8*  convertUTF16toUTF8( const UTF16* unistring );
 
 //-----------------------------------------------------------------------------
 /// Functions that convert buffers of unicode code points, into a provided buffer.
@@ -79,9 +79,9 @@ UTF8*  convertUTF16toUTF8( const UTF16 *unistring);
 /// - Output is null terminated. Be sure to provide 1 extra byte, U16 or U32 for
 ///   the null terminator, or you will see truncated output.
 /// - If the provided buffer is too small, the output will be truncated.
-U32 convertUTF8toUTF16(const UTF8 *unistring, UTF16 *outbuffer, U32 len);
+U32 convertUTF8toUTF16( const UTF8* unistring, UTF16* outbuffer, U32 len );
 
-U32 convertUTF16toUTF8( const UTF16 *unistring, UTF8  *outbuffer, U32 len);
+U32 convertUTF16toUTF8( const UTF16* unistring, UTF8*  outbuffer, U32 len );
 
 //-----------------------------------------------------------------------------
 /// Functions that converts one unicode codepoint at a time
@@ -91,10 +91,10 @@ U32 convertUTF16toUTF8( const UTF16 *unistring, UTF8  *outbuffer, U32 len);
 ///   in *codepoint, and set *unitsWalked to the \# of code units *codepoint took up.
 ///   The next Unicode code point should start at *(codepoint + *unitsWalked).
 /// - oneUTF32toUTF8()  requires a 3 byte buffer, and returns the \# of bytes used.
-UTF32  oneUTF8toUTF32( const UTF8 *codepoint,  U32 *unitsWalked = NULL);
-UTF32  oneUTF16toUTF32(const UTF16 *codepoint, U32 *unitsWalked = NULL);
-UTF16  oneUTF32toUTF16(const UTF32 codepoint);
-U32    oneUTF32toUTF8( const UTF32 codepoint, UTF8 *threeByteCodeunitBuf);
+UTF32  oneUTF8toUTF32( const UTF8* codepoint,  U32* unitsWalked = NULL );
+UTF32  oneUTF16toUTF32( const UTF16* codepoint, U32* unitsWalked = NULL );
+UTF16  oneUTF32toUTF16( const UTF32 codepoint );
+U32    oneUTF32toUTF8( const UTF32 codepoint, UTF8* threeByteCodeunitBuf );
 
 //-----------------------------------------------------------------------------
 /// Functions that calculate the length of unicode strings.
@@ -102,30 +102,30 @@ U32    oneUTF32toUTF8( const UTF32 codepoint, UTF8 *threeByteCodeunitBuf);
 ///   converting it to another format, a dStrlen for UTF8 is not provided here.
 /// - If *unistring does not point to a null terminated string of the correct type,
 ///   the behavior is undefined.
-U32 dStrlen(const UTF16 *unistring);
-U32 dStrlen(const UTF32 *unistring);
+U32 dStrlen( const UTF16* unistring );
+U32 dStrlen( const UTF32* unistring );
 
 //-----------------------------------------------------------------------------
 /// Comparing unicode strings
-U32 dStrncmp(const UTF16* unistring1, const UTF16* unistring2, U32 len);
+U32 dStrncmp( const UTF16* unistring1, const UTF16* unistring2, U32 len );
 
 //-----------------------------------------------------------------------------
 /// Scanning for characters in unicode strings
-UTF16* dStrrchr(UTF16* unistring, U32 c);
-const UTF16* dStrrchr(const UTF16* unistring, U32 c);
+UTF16* dStrrchr( UTF16* unistring, U32 c );
+const UTF16* dStrrchr( const UTF16* unistring, U32 c );
 
-UTF16* dStrchr(UTF16* unistring, U32 c);
-const UTF16* dStrchr(const UTF16* unistring, U32 c);
+UTF16* dStrchr( UTF16* unistring, U32 c );
+const UTF16* dStrchr( const UTF16* unistring, U32 c );
 //-----------------------------------------------------------------------------
 /// Functions that scan for characters in a utf8 string.
-/// - this is useful for getting a character-wise offset into a UTF8 string, 
+/// - this is useful for getting a character-wise offset into a UTF8 string,
 ///   as opposed to a byte-wise offset into a UTF8 string: foo[i]
-const UTF8* getNthCodepoint(const UTF8 *unistring, const U32 n);
+const UTF8* getNthCodepoint( const UTF8* unistring, const U32 n );
 
 //------------------------------------------------------------------------------
 /// Functions to read and validate UTF BOMs (Byte Order Marker)
 /// For reference: http://en.wikipedia.org/wiki/Byte_Order_Mark
-bool chompUTF8BOM( const char *inString, char **outStringPtr );
+bool chompUTF8BOM( const char* inString, char** outStringPtr );
 bool isValidUTF8BOM( U8 bom[4] );
 
 #endif // _UNICODE_H_

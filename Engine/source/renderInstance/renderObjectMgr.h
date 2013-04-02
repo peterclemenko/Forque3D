@@ -31,21 +31,21 @@
 //**************************************************************************
 class RenderObjectMgr : public RenderBinManager
 {
-   typedef RenderBinManager Parent;
+    typedef RenderBinManager Parent;
 public:
-   RenderObjectMgr();
-   RenderObjectMgr(RenderInstType riType, F32 renderOrder, F32 processAddOrder);
-
-   virtual void setOverrideMaterial(BaseMatInstance* overrideMat); 
-
-   // RenderBinMgr
-   virtual void render(SceneRenderState * state);
-
-   // ConsoleObject
-   static void initPersistFields();
-   DECLARE_CONOBJECT(RenderObjectMgr);
+    RenderObjectMgr();
+    RenderObjectMgr( RenderInstType riType, F32 renderOrder, F32 processAddOrder );
+    
+    virtual void setOverrideMaterial( BaseMatInstance* overrideMat );
+    
+    // RenderBinMgr
+    virtual void render( SceneRenderState* state );
+    
+    // ConsoleObject
+    static void initPersistFields();
+    DECLARE_CONOBJECT( RenderObjectMgr );
 protected:
-   BaseMatInstance* mOverrideMat;
+    BaseMatInstance* mOverrideMat;
 };
 
 #endif // _RENDEROBJECTMGR_H_

@@ -32,7 +32,7 @@
 
 //-----------------------------------------------------------------------------
 /// @brief Forward messages from one queue to another
-/// 
+///
 /// MessageForwarder is a script class that can be used to forward messages
 /// from one queue to another.
 ///
@@ -53,20 +53,20 @@
 //-----------------------------------------------------------------------------
 class MessageForwarder : public ScriptMsgListener
 {
-   typedef ScriptMsgListener Parent;
-
+    typedef ScriptMsgListener Parent;
+    
 protected:
-   StringTableEntry mToQueue;
-
+    StringTableEntry mToQueue;
+    
 public:
-   MessageForwarder();
-   virtual ~MessageForwarder();
-   DECLARE_CONOBJECT(MessageForwarder);
-
-   static void initPersistFields();
-
-   virtual bool onMessageReceived(StringTableEntry queue, const char *event, const char *data);
-   virtual bool onMessageObjectReceived(StringTableEntry queue, Message *msg);
+    MessageForwarder();
+    virtual ~MessageForwarder();
+    DECLARE_CONOBJECT( MessageForwarder );
+    
+    static void initPersistFields();
+    
+    virtual bool onMessageReceived( StringTableEntry queue, const char* event, const char* data );
+    virtual bool onMessageObjectReceived( StringTableEntry queue, Message* msg );
 };
 
 // @}

@@ -31,37 +31,37 @@
 const MatInstanceHookType InstancingMaterialHook::Type( "Instancing" );
 
 InstancingMaterialHook::InstancingMaterialHook() :
-   mMatInst( NULL )
+    mMatInst( NULL )
 {
 }
 
 InstancingMaterialHook::~InstancingMaterialHook()
 {
-   SAFE_DELETE( mMatInst );
+    SAFE_DELETE( mMatInst );
 }
 
-BaseMatInstance* InstancingMaterialHook::getInstancingMat( BaseMatInstance *matInst )
+BaseMatInstance* InstancingMaterialHook::getInstancingMat( BaseMatInstance* matInst )
 {
-   PROFILE_SCOPE( InstancingMaterialHook_GetInstancingMat );
-
-   if ( matInst == NULL )
-      return NULL;
-
-   InstancingMaterialHook *hook = matInst->getHook<InstancingMaterialHook>();
-   if ( hook == NULL )
-   {
-      hook = new InstancingMaterialHook();
-      matInst->addHook( hook );
-
-      BaseMatInstance *instMat = matInst->getMaterial()->createMatInstance();
-      FeatureSet features( matInst->getRequestedFeatures() );
-      features.addFeature( MFT_UseInstancing ); 
-
-      if ( !instMat->init( features, matInst->getVertexFormat() ) )
-         SAFE_DELETE( instMat );
-
-      hook->mMatInst = instMat;
-   }
-
-   return hook->mMatInst;
+    PROFILE_SCOPE( InstancingMaterialHook_GetInstancingMat );
+    
+    if( matInst == NULL )
+        return NULL;
+        
+    InstancingMaterialHook* hook = matInst->getHook<InstancingMaterialHook>();
+    if( hook == NULL )
+    {
+        hook = new InstancingMaterialHook();
+        matInst->addHook( hook );
+        
+        BaseMatInstance* instMat = matInst->getMaterial()->createMatInstance();
+        FeatureSet features( matInst->getRequestedFeatures() );
+        features.addFeature( MFT_UseInstancing );
+        
+        if( !instMat->init( features, matInst->getVertexFormat() ) )
+            SAFE_DELETE( instMat );
+            
+        hook->mMatInst = instMat;
+    }
+    
+    return hook->mMatInst;
 }

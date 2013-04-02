@@ -35,39 +35,39 @@
 
 class StdConsole
 {
-   bool stdConsoleEnabled;
-   // true if we're running in the background
-   bool inBackground;
-
-   int stdOut;
-   int stdIn;
-   int stdErr;
-   char inbuf[512];
-   S32  inpos;
-   bool lineOutput;
-   char curTabComplete[512];
-   S32  tabCompleteStart;
-   char rgCmds[MAX_CMDS][512];
-   S32  iCmdIndex;
-
-   // this holds the original terminal state
-   // before we messed with it
-   struct termios *originalTermState;
-
-   void printf(const char *s, ...);
-
+    bool stdConsoleEnabled;
+    // true if we're running in the background
+    bool inBackground;
+    
+    int stdOut;
+    int stdIn;
+    int stdErr;
+    char inbuf[512];
+    S32  inpos;
+    bool lineOutput;
+    char curTabComplete[512];
+    S32  tabCompleteStart;
+    char rgCmds[MAX_CMDS][512];
+    S32  iCmdIndex;
+    
+    // this holds the original terminal state
+    // before we messed with it
+    struct termios* originalTermState;
+    
+    void printf( const char* s, ... );
+    
 public:
-   StdConsole();
-   virtual ~StdConsole();
-   void process();
-   void enable(bool);
-   void processConsoleLine(const char *consoleLine);
-   static void create();
-   static void destroy();
-   static bool isEnabled();
-   void resetTerminal();
+    StdConsole();
+    virtual ~StdConsole();
+    void process();
+    void enable( bool );
+    void processConsoleLine( const char* consoleLine );
+    static void create();
+    static void destroy();
+    static bool isEnabled();
+    void resetTerminal();
 };
 
-extern StdConsole *stdConsole;
+extern StdConsole* stdConsole;
 
 #endif

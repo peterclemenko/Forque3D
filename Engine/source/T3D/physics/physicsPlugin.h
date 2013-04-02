@@ -54,7 +54,7 @@ class PhysicsPlayer;
 class PhysicsCollision;
 
 
-typedef Delegate<PhysicsObject*( const SceneObject *)> CreatePhysicsObjectFn; 
+typedef Delegate<PhysicsObject*( const SceneObject* )> CreatePhysicsObjectFn;
 typedef Map<StringNoCase, CreatePhysicsObjectFn> CreateFnMap;
 
 
@@ -64,79 +64,94 @@ class PhysicsPlugin
 
 protected:
 
-   /// The current active physics plugin.
-   static PhysicsPlugin* smSingleton;
-
-   static PhysicsResetSignal smPhysicsResetSignal;
-
-   // Our map of Strings to PhysicsWorld pointers.
-   Map<StringNoCase, PhysicsWorld*> mPhysicsWorldLookup;
-
-   static String smServerWorldName;
-   static String smClientWorldName;
-
-   /// A SimSet of objects to delete before the
-   /// physics reset/restore event occurs.
-   SimObjectPtr<SimSet> mPhysicsCleanup;      
-
-   /// Delegate method for debug drawing.
-   static void _debugDraw( SceneManager *graph, const SceneRenderState *state );
-
+    /// The current active physics plugin.
+    static PhysicsPlugin* smSingleton;
+    
+    static PhysicsResetSignal smPhysicsResetSignal;
+    
+    // Our map of Strings to PhysicsWorld pointers.
+    Map<StringNoCase, PhysicsWorld*> mPhysicsWorldLookup;
+    
+    static String smServerWorldName;
+    static String smClientWorldName;
+    
+    /// A SimSet of objects to delete before the
+    /// physics reset/restore event occurs.
+    SimObjectPtr<SimSet> mPhysicsCleanup;
+    
+    /// Delegate method for debug drawing.
+    static void _debugDraw( SceneManager* graph, const SceneRenderState* state );
+    
 public:
 
-   /// Note this should go away when we have "real" singleplayer.
-   static bool smSinglePlayer;
-   static bool isSinglePlayer() { return smSinglePlayer; }
-   
-   /// Number of threads to use if supported by the plugin.
-   static U32 smThreadCount;
-   static U32 getThreadCount() { return smThreadCount; }
-
-   /// Returns the active physics plugin.
-   /// @see PHYSICSPLUGIN
-   static PhysicsPlugin* getSingleton() { return smSingleton; }
-
-   ///
-   static bool activate( const char *library );
-
-   PhysicsPlugin();
-   virtual ~PhysicsPlugin();
-
-   /// Cleans up, deactivates, and deletes the plugin.
-   virtual void destroyPlugin() = 0;
-
-   virtual void reset() = 0;
-
-   /// Returns the physics cleanup set.
-   SimSet* getPhysicsCleanup() const { return mPhysicsCleanup; }      
-
-   void enableDebugDraw( bool enabled );
-
-   virtual PhysicsCollision* createCollision() = 0;
-
-   virtual PhysicsBody* createBody() = 0;
-
-   virtual PhysicsPlayer* createPlayer() = 0;
-
-   virtual bool isSimulationEnabled() const = 0;
-   virtual void enableSimulation( const String &worldName, bool enable ) = 0;
-
-   virtual void setTimeScale( const F32 timeScale ) = 0;
-   virtual const F32 getTimeScale() const = 0;
-
-   static PhysicsResetSignal& getPhysicsResetSignal() { return smPhysicsResetSignal; } 
-
-   virtual bool createWorld( const String &worldName ) = 0;
-   virtual void destroyWorld( const String &worldName ) = 0;
-
-   virtual PhysicsWorld* getWorld( const String &worldName ) const = 0;
-
+    /// Note this should go away when we have "real" singleplayer.
+    static bool smSinglePlayer;
+    static bool isSinglePlayer()
+    {
+        return smSinglePlayer;
+    }
+    
+    /// Number of threads to use if supported by the plugin.
+    static U32 smThreadCount;
+    static U32 getThreadCount()
+    {
+        return smThreadCount;
+    }
+    
+    /// Returns the active physics plugin.
+    /// @see PHYSICSPLUGIN
+    static PhysicsPlugin* getSingleton()
+    {
+        return smSingleton;
+    }
+    
+    ///
+    static bool activate( const char* library );
+    
+    PhysicsPlugin();
+    virtual ~PhysicsPlugin();
+    
+    /// Cleans up, deactivates, and deletes the plugin.
+    virtual void destroyPlugin() = 0;
+    
+    virtual void reset() = 0;
+    
+    /// Returns the physics cleanup set.
+    SimSet* getPhysicsCleanup() const
+    {
+        return mPhysicsCleanup;
+    }
+    
+    void enableDebugDraw( bool enabled );
+    
+    virtual PhysicsCollision* createCollision() = 0;
+    
+    virtual PhysicsBody* createBody() = 0;
+    
+    virtual PhysicsPlayer* createPlayer() = 0;
+    
+    virtual bool isSimulationEnabled() const = 0;
+    virtual void enableSimulation( const String& worldName, bool enable ) = 0;
+    
+    virtual void setTimeScale( const F32 timeScale ) = 0;
+    virtual const F32 getTimeScale() const = 0;
+    
+    static PhysicsResetSignal& getPhysicsResetSignal()
+    {
+        return smPhysicsResetSignal;
+    }
+    
+    virtual bool createWorld( const String& worldName ) = 0;
+    virtual void destroyWorld( const String& worldName ) = 0;
+    
+    virtual PhysicsWorld* getWorld( const String& worldName ) const = 0;
+    
 protected:
 
-   /// Overload this to toggle any physics engine specific stuff
-   /// when debug rendering is enabled or disabled.
-   virtual void _onDebugDrawEnabled( bool enabled ) {}
-
+    /// Overload this to toggle any physics engine specific stuff
+    /// when debug rendering is enabled or disabled.
+    virtual void _onDebugDrawEnabled( bool enabled ) {}
+    
 };
 
 /// Helper macro for accessing the physics plugin.  It will

@@ -37,38 +37,41 @@ namespace Zip
 class ExtraField;
 
 // Creation Helpers
-typedef ExtraField *(*ExtraFieldCreateFn)();
+typedef ExtraField* ( *ExtraFieldCreateFn )();
 
-template<class T> ExtraField * createExtraField()
+template<class T> ExtraField* createExtraField()
 {
-   return new T;
+    return new T;
 }
 
 // ExtraField base class
 class ExtraField
 {
-   ExtraField *mNext;
-
+    ExtraField* mNext;
+    
 protected:
-   U16 mID;
-   ExtraFieldCreateFn mCreateFn;
-
+    U16 mID;
+    ExtraFieldCreateFn mCreateFn;
+    
 public:
-   ExtraField()
-   {
-      mID = 0;
-      mCreateFn = NULL;
-   }
-   ExtraField(U16 id, ExtraFieldCreateFn fnCreate);
-   
-   virtual ~ExtraField() {}
-   
-   inline U16 getID()                  { return mID; }
-
-   virtual bool read(Stream *stream) = 0;
-
-   // Run time creation methods
-   static ExtraField *create(U16 id);
+    ExtraField()
+    {
+        mID = 0;
+        mCreateFn = NULL;
+    }
+    ExtraField( U16 id, ExtraFieldCreateFn fnCreate );
+    
+    virtual ~ExtraField() {}
+    
+    inline U16 getID()
+    {
+        return mID;
+    }
+    
+    virtual bool read( Stream* stream ) = 0;
+    
+    // Run time creation methods
+    static ExtraField* create( U16 id );
 };
 
 #define  DeclareExtraField(name) \

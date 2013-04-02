@@ -34,24 +34,27 @@ class InstancingMaterialHook : public MatInstanceHook
 {
 public:
 
-   /// The material hook type.
-   static const MatInstanceHookType Type;
-
-   InstancingMaterialHook();
-   virtual ~InstancingMaterialHook();
-
-   // MatInstanceHook
-   virtual const MatInstanceHookType& getType() const { return Type; }
-
-   /// Returns the instancing material instance or the input material 
-   /// instance if one could not be created.
-   static BaseMatInstance* getInstancingMat( BaseMatInstance *matInst );
-
+    /// The material hook type.
+    static const MatInstanceHookType Type;
+    
+    InstancingMaterialHook();
+    virtual ~InstancingMaterialHook();
+    
+    // MatInstanceHook
+    virtual const MatInstanceHookType& getType() const
+    {
+        return Type;
+    }
+    
+    /// Returns the instancing material instance or the input material
+    /// instance if one could not be created.
+    static BaseMatInstance* getInstancingMat( BaseMatInstance* matInst );
+    
 protected:
 
-   /// The instancing material.
-   BaseMatInstance *mMatInst;
-
+    /// The instancing material.
+    BaseMatInstance* mMatInst;
+    
 };
 
 #endif // _INSTANCINGMATHOOK_H_

@@ -37,47 +37,50 @@
 /// Audio data buffer for the XAudio device layer.
 class SFXXAudioBuffer : public SFXBuffer
 {
-   public:
+public:
 
-      typedef SFXBuffer Parent;
-      
-      friend class SFXXAudioDevice;
-      friend class SFXXAudioVoice;
+    typedef SFXBuffer Parent;
+    
+    friend class SFXXAudioDevice;
+    friend class SFXXAudioVoice;
+    
+protected:
 
-   protected:
-
-      struct Buffer
-      {
-         XAUDIO2_BUFFER mData;
-         SFXInternal::SFXStreamPacket* mPacket;
-
-         Buffer()
+    struct Buffer
+    {
+        XAUDIO2_BUFFER mData;
+        SFXInternal::SFXStreamPacket* mPacket;
+        
+        Buffer()
             : mPacket( 0 )
-         {
+        {
             dMemset( &mData, 0, sizeof( mData ) );
-         }
-      };
+        }
+    };
+    
+    typedef Vector< Buffer > QueueType;
+    
+    QueueType mBufferQueue;
+    
+    /// If this is a streaming buffer, return the unique voice associated
+    /// with the buffer.
+    SFXXAudioVoice* _getUniqueVoice()
+    {
+        return ( SFXXAudioVoice* ) mUniqueVoice.getPointer();
+    }
+    
+    ///
+    SFXXAudioBuffer( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
+    virtual ~SFXXAudioBuffer();
+    
+    // SFXBuffer.
+    virtual void write( SFXInternal::SFXStreamPacket* const* packets, U32 num );
+    void _flush();
+    
+public:
 
-      typedef Vector< Buffer > QueueType;
-
-      QueueType mBufferQueue;
-
-      /// If this is a streaming buffer, return the unique voice associated
-      /// with the buffer.
-      SFXXAudioVoice* _getUniqueVoice() { return ( SFXXAudioVoice* ) mUniqueVoice.getPointer(); }
-
-      ///
-      SFXXAudioBuffer( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
-      virtual ~SFXXAudioBuffer();
-
-      // SFXBuffer.
-      virtual void write( SFXInternal::SFXStreamPacket* const* packets, U32 num );
-      void _flush();
-
-   public:
-
-      ///
-      static SFXXAudioBuffer* create( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
+    ///
+    static SFXXAudioBuffer* create( const ThreadSafeRef< SFXStream >& stream, SFXDescription* description );
 };
 
 #endif // _SFXXAUDIOBUFFER_H_

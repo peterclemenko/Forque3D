@@ -39,130 +39,130 @@
 /// Timer that queries the real-time ticker.
 struct RealMSTimer
 {
-   typedef U32 TickType;
-   static TickType getTick()
-   {
-      return Platform::getRealMilliseconds();
-   }
+    typedef U32 TickType;
+    static TickType getTick()
+    {
+        return Platform::getRealMilliseconds();
+    }
 };
 
 /// Timer that queries the simulation-time ticker.
 struct VirtualMSTimer
 {
-   typedef U32 TickType;
-   static TickType getTick()
-   {
-      return Platform::getVirtualMilliseconds();
-   }
+    typedef U32 TickType;
+    static TickType getTick()
+    {
+        return Platform::getVirtualMilliseconds();
+    }
 };
 
 /// Timer that queries Sim::getCurrentTime().
 struct SimMSTimer
 {
-   typedef U32 TickType;
-   static TickType getTick()
-   {
-      return Sim::getCurrentTime();
-   }
+    typedef U32 TickType;
+    static TickType getTick()
+    {
+        return Sim::getCurrentTime();
+    }
 };
 
 
 ///
 template< class Timer = RealMSTimer, typename Tick = typename Timer::TickType >
 class GenericTimeSource : public IPositionable< Tick >,
-                          public IProcess,
-                          public IResettable
+    public IProcess,
+    public IResettable
 {
-   public:
+public:
 
-      typedef IPositionable< Tick > Parent;
-      typedef Tick TickType;
+    typedef IPositionable< Tick > Parent;
+    typedef Tick TickType;
+    
+protected:
 
-   protected:
+    ///
+    TickType mStartTime;
+    
+    ///
+    TickType mPauseTime;
+    
+    ///
+    Timer mTimer;
+    
+public:
 
-      ///
-      TickType mStartTime;
-
-      ///
-      TickType mPauseTime;
-
-      ///
-      Timer mTimer;
-
-   public:
-
-      GenericTimeSource()
-         : mStartTime( TypeTraits< TickType >::MAX ),
-           mPauseTime( TypeTraits< TickType >::MAX ) {}
-
-      bool isStarted() const
-      {
-         return ( mStartTime != TypeTraits< TickType >::MAX );
-      }
-      bool isPaused() const
-      {
-         return ( mPauseTime != TypeTraits< TickType >::MAX );
-      }
-
-      /// Return the number of ticks since the time source
-      /// has been started.
-      TickType getPosition() const
-      {
-         if( !isStarted() )
+    GenericTimeSource()
+        : mStartTime( TypeTraits< TickType >::MAX ),
+          mPauseTime( TypeTraits< TickType >::MAX ) {}
+          
+    bool isStarted() const
+    {
+        return ( mStartTime != TypeTraits< TickType >::MAX );
+    }
+    bool isPaused() const
+    {
+        return ( mPauseTime != TypeTraits< TickType >::MAX );
+    }
+    
+    /// Return the number of ticks since the time source
+    /// has been started.
+    TickType getPosition() const
+    {
+        if( !isStarted() )
             return TypeTraits< TickType >::ZERO;
-         else if( isPaused() )
+        else if( isPaused() )
             return ( mPauseTime - mStartTime );
-         else
+        else
             return ( mTimer.getTick() - mStartTime );
-      }
-
-      ///
-      void setPosition( TickType pos )
-      {
-         if( !isStarted() )
+    }
+    
+    ///
+    void setPosition( TickType pos )
+    {
+        if( !isStarted() )
             mStartTime = pos;
-         else
-         {
+        else
+        {
             TickType savedStartTime = mStartTime;
-
+            
             mStartTime = ( mTimer.getTick() - pos );
             if( isPaused() )
-               mPauseTime = ( mStartTime + ( mPauseTime - savedStartTime ) );
-         }
-      }
-
-      // IResettable.
-      virtual void reset()
-      {
-         mStartTime = TypeTraits< TickType >::MAX;
-         mPauseTime = TypeTraits< TickType >::MAX;
-      }
-
-      // IProcess.
-      virtual void start()
-      {
-         if( !isStarted() )
-         {
+                mPauseTime = ( mStartTime + ( mPauseTime - savedStartTime ) );
+        }
+    }
+    
+    // IResettable.
+    virtual void reset()
+    {
+        mStartTime = TypeTraits< TickType >::MAX;
+        mPauseTime = TypeTraits< TickType >::MAX;
+    }
+    
+    // IProcess.
+    virtual void start()
+    {
+        if( !isStarted() )
+        {
             TickType now = mTimer.getTick();
-
+            
             if( isPaused() )
             {
-               mStartTime += now - mPauseTime;
-               mPauseTime = TypeTraits< TickType >::MAX;
+                mStartTime += now - mPauseTime;
+                mPauseTime = TypeTraits< TickType >::MAX;
             }
             else
-               mStartTime = now;
-         }
-      }
-      virtual void stop()
-      {
-         reset();
-      }
-      virtual void pause()
-      {
-         if( !isPaused() )
+                mStartTime = now;
+        }
+    }
+    virtual void stop()
+    {
+        reset();
+    }
+    virtual void pause()
+    {
+        if( !isPaused() )
             mPauseTime = mTimer.getTick();
-      }
+    }
 };
 
 #endif // _TIMESOURCE_H_

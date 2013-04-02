@@ -29,13 +29,13 @@
 
 class GuiToggleButtonCtrl : public GuiButtonCtrl
 {
-   typedef GuiButtonCtrl Parent;
+    typedef GuiButtonCtrl Parent;
 public:
-   DECLARE_CONOBJECT(GuiToggleButtonCtrl);
-   GuiToggleButtonCtrl();
-
-   virtual void onPreRender();
-   void onRender(Point2I offset, const RectI &updateRect);
+    DECLARE_CONOBJECT( GuiToggleButtonCtrl );
+    GuiToggleButtonCtrl();
+    
+    virtual void onPreRender();
+    void onRender( Point2I offset, const RectI& updateRect );
 };
 
 #endif //_GUITOGGLEBUTTONCTRL_H_

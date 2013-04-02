@@ -32,38 +32,41 @@
 
 class NxMaterial;
 
-class PxMaterial : public SimDataBlock 
+class PxMaterial : public SimDataBlock
 {
-   typedef SimDataBlock Parent;
-
+    typedef SimDataBlock Parent;
+    
 protected:
 
-   F32 restitution;
-   F32 staticFriction;
-   F32 dynamicFriction;
-
-   NxMaterial *mNxMat;
-   S32 mNxMatId;
-
-   bool mServer;
-
+    F32 restitution;
+    F32 staticFriction;
+    F32 dynamicFriction;
+    
+    NxMaterial* mNxMat;
+    S32 mNxMatId;
+    
+    bool mServer;
+    
 public:
 
-   DECLARE_CONOBJECT( PxMaterial );
-
-   PxMaterial();
-   ~PxMaterial();
-
-   static void consoleInit();
-   static void initPersistFields();
-   virtual void onStaticModified( const char *slotName, const char *newValue );
-
-   bool preload( bool server, String &errorBuffer );
-   virtual void packData( BitStream* stream );
-   virtual void unpackData( BitStream* stream );
-
-   S32 getMaterialId() const { return mNxMatId; }
-
+    DECLARE_CONOBJECT( PxMaterial );
+    
+    PxMaterial();
+    ~PxMaterial();
+    
+    static void consoleInit();
+    static void initPersistFields();
+    virtual void onStaticModified( const char* slotName, const char* newValue );
+    
+    bool preload( bool server, String& errorBuffer );
+    virtual void packData( BitStream* stream );
+    virtual void unpackData( BitStream* stream );
+    
+    S32 getMaterialId() const
+    {
+        return mNxMatId;
+    }
+    
 };
 
 #endif // _PHYSX_MATERIAL_H

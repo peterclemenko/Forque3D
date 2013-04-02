@@ -43,60 +43,66 @@
 /// @{
 class  GuiSplitContainer : public GuiContainer
 {
-   typedef GuiContainer Parent;
+    typedef GuiContainer Parent;
 public:
 
-   enum Orientation
-   {
-      Vertical = 0,
-      Horizontal = 1
-   };
-
-   enum FixedPanel
-   {
-      None = 0,
-      FirstPanel = 1,
-      SecondPanel
-   };   
-
-   GuiSplitContainer();
-
-   DECLARE_CONOBJECT( GuiSplitContainer );
-   DECLARE_DESCRIPTION( "A container that splits its area between two child controls.\n"
-                        "The split ratio can be dynamically adjusted with a handle control between the two children.\n"
-                        "Splitting can be either horizontal or vertical." );
-
-   // ConsoleObject
-   static void initPersistFields();
-   virtual bool onAdd();
-
-   // GuiControl   
-   virtual bool onWake();
-   virtual void parentResized(const RectI &oldParentRect, const RectI &newParentRect);
-   virtual bool resize( const Point2I &newPosition, const Point2I &newExtent );   
-   virtual void onRender(Point2I offset, const RectI &updateRect);
-   virtual void onMouseDown(const GuiEvent &event);
-   virtual void onMouseUp(const GuiEvent &event);
-   virtual void onMouseDragged(const GuiEvent &event); 
-
-   virtual bool layoutControls( RectI &clientRect );
-   virtual void getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent &lastGuiEvent);
-   virtual inline Point2I getSplitPoint() { return mSplitPoint; };
-   /// The Splitters entire Client Rectangle, this takes into account padding of this control
-   virtual inline RectI getSplitRect() { return mSplitRect; };
-   virtual void solvePanelConstraints( Point2I newDragPos, GuiContainer * firstPanel, GuiContainer * secondPanel, RectI clientRect );   
-   virtual Point2I getMinExtent() const;   
-
+    enum Orientation
+    {
+        Vertical = 0,
+        Horizontal = 1
+    };
+    
+    enum FixedPanel
+    {
+        None = 0,
+        FirstPanel = 1,
+        SecondPanel
+    };
+    
+    GuiSplitContainer();
+    
+    DECLARE_CONOBJECT( GuiSplitContainer );
+    DECLARE_DESCRIPTION( "A container that splits its area between two child controls.\n"
+                         "The split ratio can be dynamically adjusted with a handle control between the two children.\n"
+                         "Splitting can be either horizontal or vertical." );
+                         
+    // ConsoleObject
+    static void initPersistFields();
+    virtual bool onAdd();
+    
+    // GuiControl
+    virtual bool onWake();
+    virtual void parentResized( const RectI& oldParentRect, const RectI& newParentRect );
+    virtual bool resize( const Point2I& newPosition, const Point2I& newExtent );
+    virtual void onRender( Point2I offset, const RectI& updateRect );
+    virtual void onMouseDown( const GuiEvent& event );
+    virtual void onMouseUp( const GuiEvent& event );
+    virtual void onMouseDragged( const GuiEvent& event );
+    
+    virtual bool layoutControls( RectI& clientRect );
+    virtual void getCursor( GuiCursor*& cursor, bool& showCursor, const GuiEvent& lastGuiEvent );
+    virtual inline Point2I getSplitPoint()
+    {
+        return mSplitPoint;
+    };
+    /// The Splitters entire Client Rectangle, this takes into account padding of this control
+    virtual inline RectI getSplitRect()
+    {
+        return mSplitRect;
+    };
+    virtual void solvePanelConstraints( Point2I newDragPos, GuiContainer* firstPanel, GuiContainer* secondPanel, RectI clientRect );
+    virtual Point2I getMinExtent() const;
+    
 protected:
 
-   S32         mFixedPanel; 
-   S32         mFixedPanelSize;
-   S32         mOrientation;
-   S32         mSplitterSize;
-   Point2I     mSplitPoint;
-   RectI       mSplitRect;
-   bool        mDragging;
-
+    S32         mFixedPanel;
+    S32         mFixedPanelSize;
+    S32         mOrientation;
+    S32         mSplitterSize;
+    Point2I     mSplitPoint;
+    RectI       mSplitRect;
+    bool        mDragging;
+    
 };
 
 typedef GuiSplitContainer::Orientation GuiSplitOrientation;

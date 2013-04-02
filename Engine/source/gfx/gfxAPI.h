@@ -24,13 +24,13 @@
 #define _GFXAPI_H_
 
 #ifndef _ENGINEAPI_H_
-   #include "console/engineAPI.h"
+#include "console/engineAPI.h"
 #endif
 #ifndef _GFXSTRUCTS_H_
-   #include "gfx/gfxStructs.h"
+#include "gfx/gfxStructs.h"
 #endif
 #ifndef _GFXENUMS_H_
-   #include "gfx/gfxEnums.h"
+#include "gfx/gfxEnums.h"
 #endif
 
 
