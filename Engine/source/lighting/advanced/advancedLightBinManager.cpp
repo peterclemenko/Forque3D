@@ -443,7 +443,7 @@ AdvancedLightBinManager::LightMaterialInfo* AdvancedLightBinManager::_getLightMa
 void AdvancedLightBinManager::_deleteLightMaterials()
 {
     LightMatTable::Iterator iter = mLightMaterials.begin();
-    for( ; iter != mLightMaterials.end(); iter++ )
+    for( ; iter != mLightMaterials.end(); ++iter )
         delete iter->value;
         
     mLightMaterials.clear();
@@ -489,7 +489,7 @@ void AdvancedLightBinManager::_setupPerFrameParameters( const SceneRenderState* 
     
     // Parameters calculated, assign them to the materials
     LightMatTable::Iterator iter = mLightMaterials.begin();
-    for( ; iter != mLightMaterials.end(); iter++ )
+    for( ; iter != mLightMaterials.end(); ++iter )
     {
         if( iter->value )
             iter->value->setViewParameters( frustum.getNearDist(),

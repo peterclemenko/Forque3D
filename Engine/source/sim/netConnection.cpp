@@ -363,9 +363,8 @@ NetConnection::NetConnection()
     mStringTable = NULL;
     mSendingEvents = true;
     mNetClassGroup = NetClassGroupGame;
-    AssertFatal( mNetClassGroup >= NetClassGroupGame && mNetClassGroup < NetClassGroupsCount,
-                 "Invalid net event class type." );
-                 
+    AssertFatal( mNetClassGroup < NetClassGroupsCount,  "Invalid net event class type." );
+    
     mSimulatedPing = 0;
     mSimulatedPacketLoss = 0;
 #ifdef TORQUE_DEBUG_NET

@@ -33,20 +33,20 @@ class PlatformCursorController
 {
 protected:
 
-    struct CursorShape
+    struct CursorShapeT3D
     {
-        enum Type
+        enum TypeT3D
         {
             TYPE_RESOURCE,
             TYPE_FILE,
         };
         
-        Type   mCursorType;
-        S32    mCursorID;   // Points to a platform specific cursor ID
-        String mCursorFile; // Points to a custom cursor file
+        TypeT3D   mCursorType;
+        S32       mCursorID;   // Points to a platform specific cursor ID
+        String    mCursorFile; // Points to a custom cursor file
     };
     
-    Vector<CursorShape> mCursors;
+    Vector<CursorShapeT3D> mCursors;
     
     /// The PlatformWindow that owns this Cursor Controller
     PlatformWindow* mOwner;
@@ -85,7 +85,7 @@ public:
     virtual void setCursorVisible( bool visible ) = 0;
     virtual bool isCursorVisible() = 0;
     
-    virtual void setCursorShape( const CursorShape& shape, bool reload );
+    virtual void setCursorShape( const CursorShapeT3D& shape, bool reload );
     virtual void setCursorShape( U32 cursorID ) = 0;
     virtual void setCursorShape( const UTF8* filename, bool reload ) = 0;
     

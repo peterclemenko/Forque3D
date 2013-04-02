@@ -25,7 +25,7 @@
 
 #include "math/mPoint3.h"
 #include "math/mMatrix.h"
-#include "Leap.h"
+#include <Leap.h>
 
 namespace LeapMotionUtil
 {

@@ -41,7 +41,6 @@
 #include "gfx/util/screenspace.h"
 #include "scene/reflectionManager.h"
 
-
 ProcessedCustomMaterial::ProcessedCustomMaterial( Material& mat )
 {
     mMaterial = &mat;
@@ -348,13 +347,13 @@ void ProcessedCustomMaterial::setTextureStages( SceneRenderState* state, const S
                 case Material::BackBuff:
                 {
                     GFX->setTexture( samplerRegister, sgData.backBuffTex );
-                    //if ( sgData.reflectTex )
-                    //   GFX->setTexture( samplerRegister, sgData.reflectTex );
-                    //else
-                    //{
-                    //    GFXTextureObject *refractTex = REFLECTMGR->getRefractTex( true );
-                    //    GFX->setTexture( samplerRegister, refractTex );
-                    //}
+                    /*if ( sgData.reflectTex )
+                       GFX->setTexture( samplerRegister, sgData.reflectTex );
+                    else
+                    {
+                       GFXTextureObject *refractTex = REFLECTMGR->getRefractTex( true );
+                      GFX->setTexture( samplerRegister, refractTex );
+                    }*/
                     break;
                 }
                 case Material::ReflectBuff:

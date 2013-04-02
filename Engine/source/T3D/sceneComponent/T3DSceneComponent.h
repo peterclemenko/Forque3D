@@ -75,7 +75,7 @@ public:
     
     U32 getObjectType() const
     {
-        return _objectType;   // TODO: use owner if useowner set
+        return _objectType;    // TODO: use owner if useowner set
     }
     void setObjectType( U32 objectTypeMask );
     

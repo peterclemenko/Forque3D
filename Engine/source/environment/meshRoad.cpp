@@ -668,7 +668,7 @@ void MeshRoad::initPersistFields()
     
     addGroup( "Internal" );
     
-    addProtectedField( "Node", TypeString, NULL, &addNodeFromField, &emptyStringProtectedGetFn,
+    addProtectedField( "Node", TypeString, 0, &addNodeFromField, &emptyStringProtectedGetFn,
                        "Do not modify, for internal use." );
                        
     endGroup( "Internal" );
@@ -928,40 +928,40 @@ void MeshRoad::_debugRender( ObjectRenderInst* ri, SceneRenderState* state, Base
     
     for ( U32 i = 0; i < convexCount; i++ )
     {
-       MeshRoadConvex *convex = mDebugConvex[i];
+      MeshRoadConvex *convex = mDebugConvex[i];
     
-       Point3F a = convex->verts[0];
-       Point3F b = convex->verts[1];
-       Point3F c = convex->verts[2];
-       Point3F p = convex->verts[3];
+      Point3F a = convex->verts[0];
+      Point3F b = convex->verts[1];
+      Point3F c = convex->verts[2];
+      Point3F p = convex->verts[3];
     
-       //mObjToWorld.mulP(a);
-       //mObjToWorld.mulP(b);
-       //mObjToWorld.mulP(c);
-       //mObjToWorld.mulP(p);
+      //mObjToWorld.mulP(a);
+      //mObjToWorld.mulP(b);
+      //mObjToWorld.mulP(c);
+      //mObjToWorld.mulP(p);
     
-       PrimBuild::vertex3fv( c );
-       PrimBuild::vertex3fv( b );
-       PrimBuild::vertex3fv( a );
+      PrimBuild::vertex3fv( c );
+      PrimBuild::vertex3fv( b );
+      PrimBuild::vertex3fv( a );
     
-       PrimBuild::vertex3fv( b );
-       PrimBuild::vertex3fv( a );
-       PrimBuild::vertex3fv( p );
+      PrimBuild::vertex3fv( b );
+      PrimBuild::vertex3fv( a );
+      PrimBuild::vertex3fv( p );
     
-       PrimBuild::vertex3fv( c );
-       PrimBuild::vertex3fv( b );
-       PrimBuild::vertex3fv( p );
+      PrimBuild::vertex3fv( c );
+      PrimBuild::vertex3fv( b );
+      PrimBuild::vertex3fv( p );
     
-       PrimBuild::vertex3fv( a );
-       PrimBuild::vertex3fv( c );
-       PrimBuild::vertex3fv( p );
+      PrimBuild::vertex3fv( a );
+      PrimBuild::vertex3fv( c );
+      PrimBuild::vertex3fv( p );
     }
     
     PrimBuild::end();
     
     for ( U32 i = 0; i < mSegments.size(); i++ )
     {
-       ///GFX->getDrawUtil()->drawWireBox( mSegments[i].worldbounds, ColorI(255,0,0,255) );
+      ///GFX->getDrawUtil()->drawWireBox( mSegments[i].worldbounds, ColorI(255,0,0,255) );
     }
     
     GFX->enterDebugEvent( ColorI( 255, 0, 0 ), "DecalRoad_debugRender" );
@@ -974,14 +974,14 @@ void MeshRoad::_debugRender( ObjectRenderInst* ri, SceneRenderState* state, Base
     
     if ( smShowBatches )
     {
-       for ( U32 i = 0; i < mBatches.size(); i++ )
-       {
-          const Box3F &box = mBatches[i].bounds;
-          Point3F center;
-          box.getCenter( &center );
+      for ( U32 i = 0; i < mBatches.size(); i++ )
+      {
+         const Box3F &box = mBatches[i].bounds;
+         Point3F center;
+         box.getCenter( &center );
     
-          GFX->getDrawUtil()->drawWireCube( ( box.maxExtents - box.minExtents ) * 0.5f, center, ColorI(255,100,100,255) );
-       }
+         GFX->getDrawUtil()->drawWireCube( ( box.maxExtents - box.minExtents ) * 0.5f, center, ColorI(255,100,100,255) );
+      }
     }
     
     GFX->leaveDebugEvent();

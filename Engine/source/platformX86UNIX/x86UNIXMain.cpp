@@ -23,13 +23,74 @@
 #include "platform/platform.h"
 #include "platform/platformInput.h"
 #include "console/console.h"
-
+#include "gfx/gfxInit.h"
+#include "gfx/gfxDevice.h"
+#include "core/strings/unicode.h"
 #include "platformX86UNIX/platformX86UNIX.h"
 #include "platformX86UNIX/x86UNIXStdConsole.h"
+#include "platformX86UNIX/x86UNIXState.h"
+
+#ifndef DEDICATED
+#include <SDL/SDL.h>
+#include <SDL/SDL_syswm.h>
+#include <SDL/SDL_version.h>
+#endif
+
+extern void InitWindowingSystem();
+
+#ifndef DEDICATED
+
+//------------------------------------------------------------------------------
+bool InitSDL()
+{
+    if( SDL_Init( SDL_INIT_VIDEO ) != 0 )
+        return false;
+        
+    atexit( SDL_Quit );
+    
+    SDL_SysWMinfo sysinfo;
+    SDL_VERSION( &sysinfo.version );
+    if( SDL_GetWMInfo( &sysinfo ) == 0 )
+        return false;
+        
+    x86UNIXState->setDisplayPointer( sysinfo.info.x11.display );
+    DisplayPtrManager::setDisplayLockFunction( sysinfo.info.x11.lock_func );
+    DisplayPtrManager::setDisplayUnlockFunction( sysinfo.info.x11.unlock_func );
+    
+    DisplayPtrManager xdisplay;
+    Display* display = xdisplay.getDisplayPointer();
+    
+    x86UNIXState->setScreenNumber(
+        DefaultScreen( display ) );
+    x86UNIXState->setScreenPointer(
+        DefaultScreenOfDisplay( display ) );
+        
+    x86UNIXState->setDesktopSize(
+        ( S32 ) DisplayWidth(
+            display,
+            x86UNIXState->getScreenNumber() ),
+        ( S32 ) DisplayHeight(
+            display,
+            x86UNIXState->getScreenNumber() )
+    );
+    x86UNIXState->setDesktopBpp(
+        ( S32 ) DefaultDepth(
+            display,
+            x86UNIXState->getScreenNumber() ) );
+            
+    // indicate that we want sys WM messages
+    SDL_EventState( SDL_SYSWMEVENT, SDL_ENABLE );
+    
+    return true;
+}
+#endif
 
 //------------------------------------------------------------------------------
 void Platform::init()
 {
+    StdConsole::create();
+    stdConsole->enable( true );
+    
     Con::printf( "Initializing platform..." );
     
     // Set the platform variable for the scripts
@@ -48,70 +109,27 @@ void Platform::init()
     
     //installRedBookDevices();
     
-#if 0
 #ifndef DEDICATED
     // if we're not dedicated do more initialization
     if( !x86UNIXState->isDedicated() )
     {
-        // init SDL
-        if( !InitSDL() )
-        {
-            DisplayErrorAlert( "Unable to initialize SDL." );
-            ImmediateShutdown( 1 );
-        }
-        
-        Con::printf( "Video Init:" );
-        
-        // load gl library
-        if( !GLLoader::OpenGLInit() )
-        {
-            DisplayErrorAlert( "Unable to initialize OpenGL." );
-            ImmediateShutdown( 1 );
-        }
-        
-        // initialize video
-        Video::init();
-        if( Video::installDevice( OpenGLDevice::create() ) )
-            Con::printf( "   OpenGL display device detected." );
-        else
-            Con::printf( "   OpenGL display device not detected." );
-            
-        Con::printf( " " );
+        InitWindowingSystem();
     }
 #endif
-    // if we are dedicated, do sleep timing and display results
-    if( x86UNIXState->isDedicated() )
-    {
-        const S32 MaxSleepIter = 10;
-        U32 totalSleepTime = 0;
-        U32 start;
-        for( S32 i = 0; i < MaxSleepIter; ++i )
-        {
-            start = Platform::getRealMilliseconds();
-            Sleep( 0, 1000000 );
-            totalSleepTime += Platform::getRealMilliseconds() - start;
-        }
-        U32 average = static_cast<U32>( totalSleepTime / MaxSleepIter );
-        
-        Con::printf( "Sleep latency: %ums", average );
-        // dPrintf as well, since console output won't be visible yet
-        dPrintf( "Sleep latency: %ums\n", average );
-        if( !x86UNIXState->getDSleep() && average < 10 )
-        {
-            const char* msg = "Sleep latency ok, enabling dsleep for lower cpu " \
-                              "utilization";
-            Con::printf( "%s", msg );
-            dPrintf( "%s\n", msg );
-            x86UNIXState->setDSleep( true );
-        }
-    }
-#endif
+    
+    Con::printf( "Done" );
 }
 
 //------------------------------------------------------------------------------
 void Platform::shutdown()
 {
-    Cleanup();
+    //Cleanup();
+    Input::destroy();
+    
+    GFXDevice::destroy();
+    
+    // Dushan - we should destroy console on shutdown
+    StdConsole::destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -140,9 +158,14 @@ extern "C"
     }
 }
 
+#ifndef TORQUE_SHARED
+
 extern S32 TorqueMain( S32 argc, const char** argv );
 
-int main( int argc, const char** argv )
+S32 main( int argc, const char** argv )
 {
     return TorqueMain( argc, argv );
 }
+
+#endif
+

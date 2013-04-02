@@ -145,6 +145,8 @@ SceneManager::~SceneManager()
 
 void SceneManager::renderScene( ScenePassType passType, U32 objectMask )
 {
+    GFXDEBUGEVENT_SCOPE_EX( SceneManager_render, ColorI::GREEN, avar( "SceneManager_render" ) );
+    
     SceneCameraState cameraState = SceneCameraState::fromGFX();
     
     // Handle frustum locking.
@@ -156,9 +158,7 @@ void SceneManager::renderScene( ScenePassType passType, U32 objectMask )
     {
         // Store the camera state so if we lock, this will become the
         // locked state.
-        
-        if( passType == SPT_Diffuse )
-            smLockedDiffuseCamera = cameraState;
+        smLockedDiffuseCamera = cameraState;
     }
     
     // Create the render state.
@@ -232,8 +232,9 @@ void SceneManager::renderScene( SceneRenderState* renderState, U32 objectMask, S
     PROFILE_END();
     
     // Render the scene.
-    
+    GFX->enterDebugEvent( ColorI::GREEN, "renderSceneNoLights" );
     renderSceneNoLights( renderState, objectMask, baseObject, baseZone );
+    GFX->leaveDebugEvent();
     
     // Trigger the post-render signal.
     

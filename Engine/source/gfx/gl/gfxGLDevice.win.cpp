@@ -280,6 +280,7 @@ void GFXGLDevice::init( const GFXVideoMode& mode, PlatformWindow* window )
 
 bool GFXGLDevice::beginSceneInternal()
 {
+    mCanCurrentlyRender = true;
     glGetError();
     return true;
 }
@@ -332,48 +333,6 @@ GFXWindowTarget* GFXGLDevice::allocWindowTarget( PlatformWindow* window )
     return ggwt;
 }
 
-void GFXGLDevice::_updateRenderTargets()
-{
-    if( mRTDirty || mCurrentRT->isPendingState() )
-    {
-        // GL doesn't need to deactivate targets.
-        mRTDeactivate = NULL;
-        
-        // NOTE: The render target changes is not really accurate
-        // as the GFXTextureTarget supports MRT internally.  So when
-        // we activate a GFXTarget it could result in multiple calls
-        // to SetRenderTarget on the actual device.
-        mDeviceStatistics.mRenderTargetChanges++;
-        
-        GFXGLTextureTarget* tex = dynamic_cast<GFXGLTextureTarget*>( mCurrentRT.getPointer() );
-        if( tex )
-        {
-            tex->applyState();
-            tex->makeActive();
-        }
-        else
-        {
-            GFXGLWindowTarget* win = dynamic_cast<GFXGLWindowTarget*>( mCurrentRT.getPointer() );
-            AssertFatal( win != NULL,
-                         "GFXGLDevice::_updateRenderTargets() - invalid target subclass passed!" );
-                         
-            //DWORD w1 = GetLastError();
-            HWND hwnd = GETHWND( win->getWindow() );
-            HDC winDc = GetDC( hwnd );
-            bool res = wglMakeCurrent( winDc, ( HGLRC )win->mContext );
-            //DWORD w2 = GetLastError();
-            AssertFatal( res == true, "GFXGLDevice::setActiveRenderTarget - failed" );
-        }
-        
-        mRTDirty = false;
-    }
-    
-    if( mViewportDirty )
-    {
-        glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
-        mViewportDirty = false;
-    }
-}
 
 GFXFence* GFXGLDevice::_createPlatformSpecificFence()
 {

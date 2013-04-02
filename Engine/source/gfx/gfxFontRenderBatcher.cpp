@@ -224,7 +224,7 @@ FontRenderBatcher::SheetMarker& FontRenderBatcher::getSheetMarker( U32 sheetID )
             mSheets[i] = NULL;
     }
     
-    // Allocate if it doesn't exist...
+    // Allocate if it doesn't exist.
     if( !mSheets[sheetID] )
     {
         S32 size = sizeof( SheetMarker ) + mLength * sizeof( CharMarker );

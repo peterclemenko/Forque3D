@@ -22,6 +22,7 @@
 
 #include "platform/platform.h"
 #include "gfx/gfxTextureHandle.h"
+#include "materials/matTextureTarget.h"
 
 #include "gfx/gfxDevice.h"
 #include "gfx/gfxTextureManager.h"
@@ -60,8 +61,18 @@ bool GFXTexHandle::set( const String& texName, GFXTextureProfile* profile, const
     
     // Create and set the new texture.
     AssertFatal( texName.isNotEmpty(), "Texture name is empty" );
-    StrongObjectRef::set( TEXMGR->createTexture( texName, profile ) );
-    
+    // added fhc
+    String tmpStr = texName;
+    if( tmpStr.substr( 0, 1 ).equal( "#" ) )
+    {
+        NamedTexTarget* textureTarget = NamedTexTarget::find( tmpStr.substr( 1 ) );
+        if( textureTarget )
+            StrongObjectRef::set( textureTarget->getTexture() );
+    }
+    else
+        // end added fhc
+        StrongObjectRef::set( TEXMGR->createTexture( texName, profile ) );
+        
 #ifdef TORQUE_DEBUG
     if( getPointer() )
         getPointer()->mDebugDescription = desc;

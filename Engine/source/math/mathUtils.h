@@ -163,14 +163,14 @@ bool capsuleCapsuleOverlap( const Point3F& a1, const Point3F& b1, F32 radius1, c
 
 /// Return capsule-sphere overlap.  Returns time of first overlap, where time
 /// is viewed as a sphere of radius radA moving from point A0 to A1.
-bool capsuleSphereNearestOverlap( const Point3F& A0, const Point3F A1, F32 radA, const Point3F& B, F32 radB, F32& t );
+bool capsuleSphereNearestOverlap( const Point3F& A0, const Point3F& A1, F32 radA, const Point3F& B, F32 radB, F32& t );
 
 /// Intersect two line segments (p1,q1) and (p2,q2), returning points on lines (c1 & c2) and line parameters (s,t).
 /// Based on routine from "Real Time Collision Detection" by Christer Ericson pp 149.
 F32 segmentSegmentNearest( const Point3F& p1, const Point3F& q1, const Point3F& p2, const Point3F& q2, F32& s, F32& t, Point3F& c1, Point3F& c2 );
 
 /// Transform bounding box making sure to keep original box entirely contained.
-void transformBoundingBox( const Box3F& sbox, const MatrixF& mat, const Point3F scale, Box3F& dbox );
+void transformBoundingBox( const Box3F& sbox, const MatrixF& mat, const Point3F& scale, Box3F& dbox );
 
 bool mProjectWorldToScreen( const Point3F& in,
                             Point3F* out,

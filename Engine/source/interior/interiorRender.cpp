@@ -321,15 +321,15 @@ void Interior::renderLights( SceneRenderState* state,
     // build the render instances...
     for(U32 z=0; z<mZones.size(); z++)
     {
-    if(!zonevis.isZoneVisible(z))
-    	continue;
+    	if(!zonevis.isZoneVisible(z))
+    		continue;
     
-    Zone &zone = mZones[z];
-    S32 zoneid = zone.zoneId - 1;
-    if(zoneid > -1)
-    	zoneid += intInst->getZoneRangeStart();// only zone managers...
-    else
-    	zoneid = intInst->_getCurrZone(0);// if not what zone is it in...
+    	Zone &zone = mZones[z];
+    	S32 zoneid = zone.zoneId - 1;
+    	if(zoneid > -1)
+    		zoneid += intInst->getZoneRangeStart();// only zone managers...
+    	else
+    		zoneid = intInst->_getCurrZone(0);// if not what zone is it in...
     
        if (!smLightPlugin->zoneInit(zoneid))
           continue;
@@ -337,21 +337,21 @@ void Interior::renderLights( SceneRenderState* state,
        static Vector<MeshRenderInst*> sRenderList;
        sRenderList.clear();
     
-    for(U32 j=0; j<mZoneRNList[z].renderNodeList.size(); j++)
-    {
-    	RenderNode &node = mZoneRNList[z].renderNodeList[j];
+    	for(U32 j=0; j<mZoneRNList[z].renderNodeList.size(); j++)
+    	{
+    		RenderNode &node = mZoneRNList[z].renderNodeList[j];
     
-    	if (!node.matInst)
-    		continue;
+    		if (!node.matInst)
+    			continue;
     
-    	MeshRenderInst *ri = state->getRenderPass()->allocInst<MeshRenderInst>();
-    	*ri = *coreRi;
-    	ri->type = RenderPassManager::RIT_InteriorDynamicLighting;
-    	ri->matInst = node.matInst;
-    	ri->primBuffIndex = node.primInfoIndex;
+    		MeshRenderInst *ri = state->getRenderPass()->allocInst<MeshRenderInst>();
+    		*ri = *coreRi;
+    		ri->type = RenderPassManager::RIT_InteriorDynamicLighting;
+    		ri->matInst = node.matInst;
+    		ri->primBuffIndex = node.primInfoIndex;
     
           sRenderList.push_back(ri);
-    }
+    	}
        smLightPlugin->processRI(state, sRenderList);
     }
     */

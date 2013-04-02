@@ -85,6 +85,7 @@ public:
     static const double MinFrameRate;
     static const double MaxFrameRate;
     static const double AppGroundFrameRate;
+    bool mHasSequences; // appSequences.size() crashes if none.
     
 protected:
     // Variables used during loading that must be held until the shape is deleted

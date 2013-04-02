@@ -742,7 +742,9 @@ bool blInteriorProxy::isShadowedBy( blInteriorProxy* test )
 
 void blInteriorProxy::light( LightInfo* light )
 {
+#if !defined (TORQUE_CPU_X86_64)
     Platform::setMathControlStateKnown();
+#endif
     
     InteriorInstance* interior = getObject();
     if( !interior )

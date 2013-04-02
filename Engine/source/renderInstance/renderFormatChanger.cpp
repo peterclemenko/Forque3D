@@ -134,12 +134,14 @@ void RenderFormatToken::process( SceneRenderState* state, RenderPassStateBin* ca
             // Set active z target on render pass
             if( mTargetDepthStencilTexture[mTargetChainIdx].isValid() )
             {
-                if( callingBin->getRenderPass()->getDepthTargetTexture() != GFXTextureTarget::sDefaultDepthStencil )
-                    mStoredPassZTarget = callingBin->getRenderPass()->getDepthTargetTexture();
+                RenderPassManager* mRenderPass = callingBin->getRenderPass();
+                GFXTextureObject* mDepthTargetTexture = mRenderPass->getDepthTargetTexture();
+                if( mDepthTargetTexture != GFXTextureTarget::sDefaultDepthStencil )
+                    mStoredPassZTarget = mDepthTargetTexture;
                 else
                     mStoredPassZTarget = NULL;
                     
-                callingBin->getRenderPass()->setDepthTargetTexture( mTargetDepthStencilTexture[mTargetChainIdx] );
+                mRenderPass->setDepthTargetTexture( mTargetDepthStencilTexture[mTargetChainIdx] );
             }
             
             // Run the PostEffect which copies data into the new target.

@@ -1273,12 +1273,10 @@ bool GuiControl::resize( const Point2I& newPosition, const Point2I& newExtent )
         if( parent )
             parent->childResized( this );
         setUpdate();
+        
+        return true;
     }
     
-    // We sized something
-    if( extentChanged )
-        return true;
-        
     // Note : We treat a repositioning as no sizing happening
     //  because parent's should really not need to know when they
     //  have moved, as it should not affect any child sizing since

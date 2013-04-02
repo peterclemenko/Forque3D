@@ -1186,6 +1186,7 @@ void PlayerData::packData( BitStream* stream )
     Parent::packData( stream );
     
     stream->writeFlag( renderFirstPerson );
+    
     stream->writeFlag( firstPersonShadows );
     
     stream->write( minLookAngle );
@@ -3401,7 +3402,7 @@ void Player::updateLookAnimation( F32 dT )
 
 bool Player::inDeathAnim()
 {
-    if( mActionAnimation.thread && mActionAnimation.action >= 0 )
+    if( mActionAnimation.thread )
         if( mActionAnimation.action < mDataBlock->actionCount )
             return mDataBlock->actionList[mActionAnimation.action].death;
             

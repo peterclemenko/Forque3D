@@ -34,6 +34,7 @@
 #include "scene/reflectionManager.h"
 #include "postFx/postEffectManager.h"
 #include "gfx/gfxTransformSaver.h"
+#include "gfx/gfxDebugEvent.h"
 
 
 IMPLEMENT_CONOBJECT( GuiTSCtrl );
@@ -413,6 +414,7 @@ void GuiTSCtrl::onRender( Point2I offset, const RectI& updateRect )
     saver.restore();
     
     // Allow subclasses to render 2D elements.
+    GFXDEBUGEVENT_SCOPE_EX( GUIRender, ColorI::GREEN, avar( "GUI Render" ) );
     GFX->setClipRect( updateRect );
     renderGui( offset, updateRect );
     
@@ -441,7 +443,7 @@ void GuiTSCtrl::drawLine( Point3F p0, Point3F p1, const ColorI& color, F32 width
 
 //-----------------------------------------------------------------------------
 
-void GuiTSCtrl::drawLineList( const Vector<Point3F>& points, const ColorI color, F32 width )
+void GuiTSCtrl::drawLineList( const Vector<Point3F>& points, const ColorI& color, F32 width )
 {
     for( S32 i = 0; i < points.size() - 1; i++ )
         drawLine( points[i], points[i + 1], color, width );

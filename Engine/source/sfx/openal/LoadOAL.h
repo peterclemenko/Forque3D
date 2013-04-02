@@ -31,8 +31,8 @@
 #  include <OpenAL/al.h>
 #  include <OpenAL/alc.h>
 #else
-#  include <al/al.h>
-#  include <al/alc.h>
+#  include <AL/al.h>
+#  include <AL/alc.h>
 #endif
 
 #ifndef ALAPIENTRY

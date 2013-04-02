@@ -33,6 +33,7 @@
 #include "gfx/gfxTextureManager.h"
 #include "gfx/sim/cubemapData.h"
 
+
 RenderPassData::RenderPassData()
 {
     reset();
@@ -155,6 +156,14 @@ bool ProcessedMaterial::stepInstance()
 
 String ProcessedMaterial::_getTexturePath( const String& filename )
 {
+    // added fhc
+    // prevent path mangling
+    if( filename.substr( 0, 1 ).equal( "#" ) )
+    {
+        return filename;
+    }
+    // end added fhc
+    
     // if '/', then path is specified, use it.
     if( filename.find( '/' ) != String::NPos )
     {

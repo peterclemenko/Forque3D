@@ -178,6 +178,7 @@ else{
 ReplaceTextInFile($newPath . "buildFiles/config/project.conf", "Full", $argv[1]);
 ReplaceTextInFile($newPath . "buildFiles/config/project.360.conf", "Full", $argv[1]);
 ReplaceTextInFile($newPath . "buildFiles/config/project.mac.conf", "Full", $argv[1]);
+ReplaceTextInFile($newPath . "buildFiles/config/project.linux.conf", "Full", $argv[1]);
 ReplaceTextInFile($newPath . "game/Template.torsion", "Full", $argv[1]);
 ReplaceTextInFile($newPath . "game/main.cs", "Full", $argv[1]);
 ReplaceTextInFile($newPath . "source/torqueConfig.h", "Full", $argv[1]);

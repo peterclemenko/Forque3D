@@ -109,7 +109,6 @@ void GFXGLDevice::initGLState()
 
 GFXGLDevice::GFXGLDevice( U32 adapterIndex ) :
     mAdapterIndex( adapterIndex ),
-    mCurrentVB( NULL ),
     mCurrentPB( NULL ),
     m_mCurrentWorld( true ),
     m_mCurrentView( true ),
@@ -133,13 +132,15 @@ GFXGLDevice::GFXGLDevice( U32 adapterIndex ) :
     
     for( U32 i = 0; i < TEXTURE_STAGE_COUNT; i++ )
         mActiveTextureType[i] = GL_ZERO;
+        
+    for( U32 i = 0; i < 4; i++ )
+        mCurrentVB[i] = 0;
 }
 
 GFXGLDevice::~GFXGLDevice()
 {
     mCurrentStateBlock = NULL;
     mCurrentPB = NULL;
-    mCurrentVB = NULL;
     for( U32 i = 0; i < mVolatileVBs.size(); i++ )
         mVolatileVBs[i] = NULL;
     for( U32 i = 0; i < mVolatilePBs.size(); i++ )
@@ -161,8 +162,11 @@ GFXGLDevice::~GFXGLDevice()
 void GFXGLDevice::zombify()
 {
     mTextureManager->zombify();
-    if( mCurrentVB )
-        mCurrentVB->finish();
+    for( int i = 0; i < 4; i++ )
+    {
+        if( mCurrentVB[i] )
+            mCurrentVB[i]->finish();
+    }
     if( mCurrentPB )
         mCurrentPB->finish();
     //mVolatileVBs.clear();
@@ -183,8 +187,11 @@ void GFXGLDevice::resurrect()
         walk->resurrect();
         walk = walk->getNextResource();
     }
-    if( mCurrentVB )
-        mCurrentVB->prepare();
+    for( int i = 0; i < 4; i++ )
+    {
+        if( mCurrentVB[i] )
+            mCurrentVB[i]->prepare();
+    }
     if( mCurrentPB )
         mCurrentPB->prepare();
     mTextureManager->resurrect();
@@ -244,15 +251,15 @@ GFXPrimitiveBuffer* GFXGLDevice::allocPrimitiveBuffer( U32 numIndices, U32 numPr
 
 void GFXGLDevice::setVertexStream( U32 stream, GFXVertexBuffer* buffer )
 {
-    AssertFatal( stream == 0, "GFXGLDevice::setVertexStream - We don't support multiple vertex streams!" );
+    AssertFatal( stream >= 0 && stream < 4, "GFXGLDevice::setVertexStream - We don't support multiple vertex streams!" );
     
     // Reset the state the old VB required, then set the state the new VB requires.
-    if( mCurrentVB )
-        mCurrentVB->finish();
+    if( mCurrentVB[stream] )
+        mCurrentVB[stream]->finish();
         
-    mCurrentVB = static_cast<GFXGLVertexBuffer*>( buffer );
-    if( mCurrentVB )
-        mCurrentVB->prepare();
+    mCurrentVB[stream] = static_cast<GFXGLVertexBuffer*>( buffer );
+    if( mCurrentVB[stream] )
+        mCurrentVB[stream]->prepare();
 }
 
 void GFXGLDevice::setVertexStreamFrequency( U32 stream, U32 frequency )
@@ -332,7 +339,7 @@ GLsizei GFXGLDevice::primCountToIndexCount( GFXPrimitiveType primType, U32 primi
     return 0;
 }
 
-inline void GFXGLDevice::preDrawPrimitive()
+void GFXGLDevice::preDrawPrimitive()
 {
     if( mStateDirty )
     {
@@ -343,7 +350,7 @@ inline void GFXGLDevice::preDrawPrimitive()
         setShaderConstBufferInternal( mCurrentShaderConstBuffer );
 }
 
-inline void GFXGLDevice::postDrawPrimitive( U32 primitiveCount )
+void GFXGLDevice::postDrawPrimitive( U32 primitiveCount )
 {
     mDeviceStatistics.mDrawCalls++;
     mDeviceStatistics.mPolyCount += primitiveCount;
@@ -504,8 +511,10 @@ void GFXGLDevice::setMatrix( GFXMatrixType mtype, const MatrixF& mat )
         {
             glMatrixMode( GL_MODELVIEW );
             m_mCurrentWorld = mat;
-            modelview = m_mCurrentWorld;
-            modelview *= m_mCurrentView;
+            modelview = m_mCurrentView;
+            modelview *= m_mCurrentWorld;
+            //modelview = m_mCurrentWorld;
+            //modelview *= m_mCurrentView;
             modelview.transpose();
             glLoadMatrixf( ( F32* ) modelview );
         }
@@ -514,8 +523,8 @@ void GFXGLDevice::setMatrix( GFXMatrixType mtype, const MatrixF& mat )
         {
             glMatrixMode( GL_MODELVIEW );
             m_mCurrentView = mat;
-            modelview = m_mCurrentView;
-            modelview *= m_mCurrentWorld;
+            modelview = m_mCurrentWorld;
+            modelview *= m_mCurrentView;
             modelview.transpose();
             glLoadMatrixf( ( F32* ) modelview );
         }
@@ -549,8 +558,8 @@ void GFXGLDevice::setClipRect( const RectI& inRect )
     // Create projection matrix.  See http://www.opengl.org/documentation/specs/man_pages/hardcopy/GL/html/gl/ortho.html
     const F32 left = mClip.point.x;
     const F32 right = mClip.point.x + mClip.extent.x;
-    const F32 bottom = mClip.extent.y;
-    const F32 top = 0.0f;
+    const F32 bottom = mClip.point.y + mClip.extent.y;
+    const F32 top = mClip.point.y;
     const F32 near = 0.0f;
     const F32 far = 1.0f;
     
@@ -571,22 +580,14 @@ void GFXGLDevice::setClipRect( const RectI& inRect )
     pt.set( tx, ty, tz, 1.0f );
     mProjectionMatrix.setColumn( 3, pt );
     
-    // Translate projection matrix.
-    static MatrixF translate( true );
-    pt.set( 0.0f, -mClip.point.y, 0.0f, 1.0f );
-    translate.setColumn( 3, pt );
-    
-    mProjectionMatrix *= translate;
-    
     setMatrix( GFXMatrixProjection, mProjectionMatrix );
     
     MatrixF mTempMatrix( true );
     setViewMatrix( mTempMatrix );
     setWorldMatrix( mTempMatrix );
     
-    // Set the viewport to the clip rect (with y flip)
-    RectI viewport( mClip.point.x, size.y - ( mClip.point.y + mClip.extent.y ), mClip.extent.x, mClip.extent.y );
-    setViewport( viewport );
+    // Set the viewport to the clip rect
+    setViewport( mClip );
 }
 
 /// Creates a state block object based on the desc passed in.  This object
@@ -668,12 +669,16 @@ void GFXGLDevice::disableShaders()
 
 void GFXGLDevice::setShaderConstBufferInternal( GFXShaderConstBuffer* buffer )
 {
-    static_cast<GFXGLShaderConstBuffer*>( buffer )->activate();
+    GFXGLShaderConstBuffer* glBuffer = dynamic_cast<GFXGLShaderConstBuffer*>( buffer );
+    if( glBuffer )
+        glBuffer->activate();
 }
 
 U32 GFXGLDevice::getNumSamplers() const
 {
-    return mPixelShaderVersion > 0.001f ? mMaxShaderTextures : mMaxFFTextures;
+    U32 samplerCount = mPixelShaderVersion > 0.001f ? mMaxShaderTextures : mMaxFFTextures;
+    AssertFatal( samplerCount <= TEXTURE_STAGE_COUNT, "To many samplers!" );
+    return samplerCount;
 }
 
 U32 GFXGLDevice::getNumRenderTargets() const
@@ -723,7 +728,9 @@ void GFXGLDevice::_updateRenderTargets()
     
     if( mViewportDirty )
     {
-        glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
+        GLint y = mCurrentRT->getSize().y - ( mViewport.point.y + mViewport.extent.y );
+        //Con::printf("glViewport(%d, %d, %d, %d)", mViewport.point.x, y, mViewport.extent.x, mViewport.extent.y);
+        glViewport( mViewport.point.x, y, mViewport.extent.x, mViewport.extent.y );
         mViewportDirty = false;
     }
 }

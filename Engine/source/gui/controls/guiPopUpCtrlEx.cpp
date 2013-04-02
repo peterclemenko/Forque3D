@@ -394,35 +394,35 @@ DefineEngineMethod( GuiPopUpMenuCtrlEx, addScheme, void, ( S32 id, ColorI fontCo
                     "@param fontColorSel Color of text when being selected. Formatted as \"Red Green Blue\", each a numerical between 0 and 255.\n" )
 {
     /*ColorI fontColor, fontColorHL, fontColorSEL;
-     U32 r, g, b;
-     char buf[64];
+    U32 r, g, b;
+    char buf[64];
     
-     dStrcpy( buf, argv[3] );
-     char* temp = dStrtok( buf, " \0" );
-     r = temp ? dAtoi( temp ) : 0;
-     temp = dStrtok( NULL, " \0" );
-     g = temp ? dAtoi( temp ) : 0;
-     temp = dStrtok( NULL, " \0" );
-     b = temp ? dAtoi( temp ) : 0;
-     fontColor.set( r, g, b );
+    dStrcpy( buf, argv[3] );
+    char* temp = dStrtok( buf, " \0" );
+    r = temp ? dAtoi( temp ) : 0;
+    temp = dStrtok( NULL, " \0" );
+    g = temp ? dAtoi( temp ) : 0;
+    temp = dStrtok( NULL, " \0" );
+    b = temp ? dAtoi( temp ) : 0;
+    fontColor.set( r, g, b );
     
-     dStrcpy( buf, argv[4] );
-     temp = dStrtok( buf, " \0" );
-     r = temp ? dAtoi( temp ) : 0;
-     temp = dStrtok( NULL, " \0" );
-     g = temp ? dAtoi( temp ) : 0;
-     temp = dStrtok( NULL, " \0" );
-     b = temp ? dAtoi( temp ) : 0;
-     fontColorHL.set( r, g, b );
+    dStrcpy( buf, argv[4] );
+    temp = dStrtok( buf, " \0" );
+    r = temp ? dAtoi( temp ) : 0;
+    temp = dStrtok( NULL, " \0" );
+    g = temp ? dAtoi( temp ) : 0;
+    temp = dStrtok( NULL, " \0" );
+    b = temp ? dAtoi( temp ) : 0;
+    fontColorHL.set( r, g, b );
     
-     dStrcpy( buf, argv[5] );
-     temp = dStrtok( buf, " \0" );
-     r = temp ? dAtoi( temp ) : 0;
-     temp = dStrtok( NULL, " \0" );
-     g = temp ? dAtoi( temp ) : 0;
-     temp = dStrtok( NULL, " \0" );
-     b = temp ? dAtoi( temp ) : 0;
-     fontColorSEL.set( r, g, b );*/
+    dStrcpy( buf, argv[5] );
+    temp = dStrtok( buf, " \0" );
+    r = temp ? dAtoi( temp ) : 0;
+    temp = dStrtok( NULL, " \0" );
+    g = temp ? dAtoi( temp ) : 0;
+    temp = dStrtok( NULL, " \0" );
+    b = temp ? dAtoi( temp ) : 0;
+    fontColorSEL.set( r, g, b );*/
     
     object->addScheme( id, fontColor, fontColorHL, fontColorSEL );
 }

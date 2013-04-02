@@ -737,7 +737,7 @@ public:
     void setNetClassGroup( U32 group );    ///< Sets the group of NetClasses this connection traffics in.
     bool isEstablished()
     {
-        return mEstablished;  ///< Is the connection established?
+        return mEstablished;    ///< Is the connection established?
     }
     
     DECLARE_CONOBJECT( NetConnection );

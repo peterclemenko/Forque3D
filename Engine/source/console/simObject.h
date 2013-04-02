@@ -769,7 +769,7 @@ public:
     void setId( SimObjectId id );
     static void setForcedId( SimObjectId id )
     {
-        smForceId = true;  ///< Force an Id on the next registered object.
+        smForceId = true;    ///< Force an Id on the next registered object.
         smForcedId = id;
     }
     bool isChildOfGroup( SimGroup* pGroup );
@@ -1123,7 +1123,7 @@ public:
         set( ( WeakRefBase::WeakReference* )NULL );
     }
     
-    SimObjectPtr<T>& operator=( const SimObjectPtr ref )
+    SimObjectPtr<T>& operator=( const SimObjectPtr& ref )
     {
         set( ref.mReference );
         return *this;

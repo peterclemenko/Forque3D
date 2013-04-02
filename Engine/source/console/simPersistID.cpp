@@ -46,7 +46,7 @@ SimPersistID::SimPersistID( SimObject* object )
 
 //-----------------------------------------------------------------------------
 
-SimPersistID::SimPersistID( const Torque::UUID& uuid )
+SimPersistID::SimPersistID( const Torque::TUUID& uuid )
     : mUUID( uuid ),
       mObject( NULL )
 {
@@ -106,7 +106,7 @@ void SimPersistID::resolve( SimObject* object )
 
 //-----------------------------------------------------------------------------
 
-SimPersistID* SimPersistID::find( const Torque::UUID& uuid )
+SimPersistID* SimPersistID::find( const Torque::TUUID& uuid )
 {
     AssertFatal( smLookupTable, "SimPersistID::find - system has not been initialized" );
     
@@ -119,7 +119,7 @@ SimPersistID* SimPersistID::find( const Torque::UUID& uuid )
 
 //-----------------------------------------------------------------------------
 
-SimPersistID* SimPersistID::findOrCreate( const Torque::UUID& uuid )
+SimPersistID* SimPersistID::findOrCreate( const Torque::TUUID& uuid )
 {
     AssertFatal( smLookupTable, "SimPersistID::findOrCreate - system has not been initialized" );
     

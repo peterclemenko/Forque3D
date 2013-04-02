@@ -58,7 +58,7 @@ public:
     {
         return mZipFilename;
     }
-    virtual Status getStatus() const
+    virtual NodeStatus getStatus() const
     {
         if( mZipStream )
         {
@@ -188,7 +188,7 @@ public:
     }
     
     // getStatus() doesn't appear to be used for directories
-    Status getStatus() const
+    NodeStatus getStatus() const
     {
         return FileNode::Open;
     }
@@ -283,7 +283,7 @@ public:
     }
     
     // getStatus() doesn't appear to be used for directories
-    Status getStatus() const
+    NodeStatus getStatus() const
     {
         return FileNode::Open;
     }

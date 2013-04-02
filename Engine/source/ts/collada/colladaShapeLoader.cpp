@@ -259,6 +259,7 @@ void ColladaShapeLoader::enumerateScene()
         const domLibrary_animation_clips* libraryClips = root->getLibrary_animation_clips_array()[iClipLib];
         for( int iClip = 0; iClip < libraryClips->getAnimation_clip_array().getCount(); iClip++ )
             appSequences.push_back( new ColladaAppSequence( libraryClips->getAnimation_clip_array()[iClip] ) );
+        mHasSequences = true; //preventing a crash when appSequences has nothing.
     }
     
     // Process all animations => this attaches animation channels to the targeted

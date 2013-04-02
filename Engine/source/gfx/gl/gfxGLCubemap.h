@@ -76,7 +76,7 @@ public:
     
     static GLenum getEnumForFaceNumber( U32 face )
     {
-        return faceList[face];  ///< Performs lookup to get a GLenum for the given face number
+        return faceList[face];    ///< Performs lookup to get a GLenum for the given face number
     }
     
 protected:

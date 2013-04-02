@@ -157,7 +157,7 @@ protected:
         EnergyMask     = Parent::NextFreeMask << 1,
         FreezeMask     = Parent::NextFreeMask << 2,
         ForceMoveMask  = Parent::NextFreeMask << 3,
-        NextFreeMask = Parent::NextFreeMask << 4
+        NextFreeMask   = Parent::NextFreeMask << 4
     };
     
     void updateDustTrail( F32 dt );

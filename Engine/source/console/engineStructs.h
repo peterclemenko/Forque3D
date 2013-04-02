@@ -35,7 +35,7 @@
 template< typename T > class Vector;
 namespace Torque
 {
-class UUID;
+class TUUID;
 }
 
 class ColorI;
@@ -45,7 +45,7 @@ class ColorF;
 DECLARE_STRUCT( Vector< bool > );
 DECLARE_STRUCT( Vector< S32 > );
 DECLARE_STRUCT( Vector< F32 > );
-DECLARE_STRUCT( Torque::UUID );
+DECLARE_STRUCT( Torque::TUUID );
 DECLARE_STRUCT( ColorI );
 DECLARE_STRUCT( ColorF );
 

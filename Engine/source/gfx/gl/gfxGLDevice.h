@@ -224,7 +224,7 @@ private:
     
     U32 mAdapterIndex;
     
-    StrongRefPtr<GFXGLVertexBuffer> mCurrentVB;
+    StrongRefPtr<GFXGLVertexBuffer> mCurrentVB[4];
     StrongRefPtr<GFXGLPrimitiveBuffer> mCurrentPB;
     
     /// Since GL does not have separate world and view matrices we need to track them

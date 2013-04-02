@@ -204,8 +204,8 @@ GFXShader* ShaderData::_createShader( const Vector<GFXShaderMacro>& macros )
     // Enable shader error logging.
     GFXShader::setLogging( true, true );
     
-    GFXShader* shader = GFX->createShader();
     bool success = false;
+    GFXShader* shader = GFX->createShader();
     
     // Initialize the right shader type.
     switch( GFX->getAdapterType() )

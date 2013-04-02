@@ -326,7 +326,7 @@ Path MemFile::getName() const
     return mFileData->mPath;
 }
 
-FileNode::Status MemFile::getStatus() const
+FileNode::NodeStatus MemFile::getStatus() const
 {
     return mStatus;
 }
@@ -504,7 +504,7 @@ bool MemDirectory::getAttributes( Attributes* attr )
     return mDirectoryData->getAttributes( attr );
 }
 
-FileNode::Status MemDirectory::getStatus() const
+FileNode::NodeStatus MemDirectory::getStatus() const
 {
     return mStatus;
 }

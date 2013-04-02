@@ -45,8 +45,8 @@ IMPLEMENT_STRUCT( Vector< F32 >,
 END_IMPLEMENT_STRUCT;
 
 
-IMPLEMENT_STRUCT( Torque::UUID,
-                  UUID, ,
+IMPLEMENT_STRUCT( Torque::TUUID,
+                  TUUID, ,
                   "" )
 END_IMPLEMENT_STRUCT;
 

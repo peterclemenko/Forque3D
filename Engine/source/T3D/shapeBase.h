@@ -1143,7 +1143,9 @@ protected:
     virtual void ejectShellCasing( U32 imageSlot );
     virtual void updateDamageLevel();
     virtual void updateDamageState();
+public:
     virtual void blowUp();
+protected:
     virtual void onImpact( SceneObject* obj, VectorF vec );
     virtual void onImpact( VectorF vec );
     /// @}

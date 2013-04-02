@@ -12,17 +12,18 @@ SOURCES := {foreach from=$dirWalk item=file key=key}
 {/foreach}
 
 LDFLAGS := -g -m32
-LDLIBS := -lstdc++ -lm -lpthread -lrt
+LDLIBS := -lstdc++ -lm -lSDL -lpthread -lrt -lXxf86vm -lXft -lcryptopp -lcurl -lGL -lX11 -lXext -lopenal
 {foreach item=def from=$projLibs}LDLIBS += -l{$def}
 {/foreach}
 
-CFLAGS := -MMD -I. -Wfatal-errors -m32 -msse -mmmx -march=i686 -pipe
+CFLAGS := -MMD -I. -Wfatal-errors -m32 -msse -mmmx -march=i686 -pipe -ldl
 
 {foreach item=def from=$projIncludes}CFLAGS += -I{$def}
 {/foreach}
 
 CFLAGS += -DUNICODE
 CFLAGS += -DLINUX
+CFLAGS += -DBULLET_INFINITE_WORLD
 
 {foreach item=def from=$projDefines}CFLAGS += -D{$def}
 {/foreach}

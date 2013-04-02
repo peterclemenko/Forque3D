@@ -31,7 +31,7 @@
 namespace Torque
 {
 /// A universally unique identifier.
-class UUID
+class TUUID
 {
 public:
 
@@ -46,13 +46,13 @@ protected:
     U8    e;
     U8    f[ 6 ];
     
-    static UUID smNull;
+    static TUUID smNull;
     
 public:
 
-    UUID()
+    TUUID()
     {
-        dMemset( this, 0, sizeof( UUID ) );
+        dMemset( this, 0, sizeof( TUUID ) );
     }
     
     ///
@@ -75,11 +75,11 @@ public:
     /// Return a hash value for this UUID.
     U32 getHash() const;
     
-    bool operator ==( const UUID& uuid ) const
+    bool operator ==( const TUUID& uuid ) const
     {
-        return ( dMemcmp( this, &uuid, sizeof( UUID ) ) == 0 );
+        return ( dMemcmp( this, &uuid, sizeof( TUUID ) ) == 0 );
     }
-    bool operator !=( const UUID& uuid ) const
+    bool operator !=( const TUUID& uuid ) const
     {
         return !( *this == uuid );
     }
@@ -88,7 +88,7 @@ public:
 
 namespace DictHash
 {
-inline U32 hash( const Torque::UUID& uuid )
+inline U32 hash( const Torque::TUUID& uuid )
 {
     return uuid.getHash();
 }

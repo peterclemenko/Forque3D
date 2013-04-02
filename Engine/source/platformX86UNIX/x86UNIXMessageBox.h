@@ -101,6 +101,7 @@ public:
     static const int OK = 1;
     static const int Cancel = 2;
     static const int Retry = 3;
+    static const int IgnoreAll = 4;
     
     XMessageBox( Display* display );
     ~XMessageBox();
@@ -108,6 +109,7 @@ public:
     int alertOK( const char* windowTitle, const char* message );
     int alertOKCancel( const char* windowTitle, const char* message );
     int alertRetryCancel( const char* windowTitle, const char* message );
+    int alertAssert( const char* windowTitle, const char* message );
 private:
     int show();
     void repaint();

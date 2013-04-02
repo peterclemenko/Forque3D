@@ -290,7 +290,6 @@ void Settings::readLayer( SimXMLDocument* document, String groupStack )
 {
     for( S32 i = 0; document->pushChildElement( i ); i++ )
     {
-        bool groupCount = 0;
         const UTF8* type = document->elementValue();
         const UTF8* name = document->attribute( "name" );
         const UTF8* value = document->getText();
@@ -304,7 +303,6 @@ void Settings::readLayer( SimXMLDocument* document, String groupStack )
                 
             newStack += name;
             readLayer( document, newStack );
-            groupCount++;
         }
         else if( dStrcmp( type, "Setting" ) == 0 )
         {

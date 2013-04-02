@@ -83,15 +83,16 @@ public:
     
     operator F32* ()
     {
-        return ( m );  ///< Allow people to get at m.
+        return ( m );    ///< Allow people to get at m.
     }
     operator const F32* () const
     {
-        return ( F32* )( m );  ///< Allow people to get at m.
+        return ( F32* )( m );    ///< Allow people to get at m.
     }
     
     bool isAffine() const;                       ///< Check to see if this is an affine matrix.
     bool isIdentity() const;                     ///< Checks for identity matrix.
+    bool isSingular() const;                     ///< Check for singularity
     
     /// Make this an identity matrix.
     MatrixF& identity();
@@ -344,6 +345,13 @@ inline bool MatrixF::isIdentity() const
         m[13] == 0.0f &&
         m[14] == 0.0f &&
         m[15] == 1.0f;
+}
+
+inline bool MatrixF::isSingular() const
+{
+    F32 det = m_matF_determinant( m );
+    
+    return det != 0.0f;
 }
 
 inline MatrixF& MatrixF::identity()

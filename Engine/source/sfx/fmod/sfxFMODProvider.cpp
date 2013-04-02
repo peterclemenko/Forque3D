@@ -181,6 +181,10 @@ void SFXFMODProvider::init()
     dllName = "libfmodex.dylib";
     pDllName = "libfmodexp.dylib";
     eventDllName = "libfmodevent.dylib";
+#elif defined( TORQUE_OS_LINUX )
+    dllName = "libfmodex.so";
+    pDllName = "libfmodexp.so";
+    eventDllName = "libfmodevent.so";
 #else
 #  warning Need to set FMOD DLL filename for platform.
     return;
@@ -201,7 +205,7 @@ void SFXFMODProvider::init()
     
     mFMod.eventDllRef = OsLoadLibrary( eventDllName );
     if( !mFMod.eventDllRef )
-        Con::warnf( "SFXFMODProvider - Could not locate %s - FMOD Designer integration not available.", eventDllName );
+        Con::warnf( "SFXFMODProvider - Could not locate %s - FMOD Designer intergration not available.", eventDllName );
     
     mFMod.isLoaded = true;
     mFMod.eventIsLoaded = true;
@@ -218,11 +222,11 @@ void SFXFMODProvider::init()
     
     if( mFMod.isLoaded == false )
     {
-        Con::warnf( "SFXFMODProvider - Could not load %s - FMOD not available.", dllName );
+        Con::warnf( "SFXFMODProvider - Could not locate %s - FMOD not available.", dllName );
         return;
     }
     if( !mFMod.eventIsLoaded && mFMod.eventDllRef )
-        Con::warnf( "SFXFMODProvider - Could not load %s - FMOD Designer integration not available.", eventDllName );
+        Con::warnf( "SFXFMODProvider - Could not load the %s - FMOD Designer integration not available.", eventDllName );
     
 #endif
     

@@ -51,7 +51,7 @@ bool SimPersistSet::processArguments( S32 argc, const char** argv )
     for( U32 i = 0; i < argc; ++ i )
     {
         // Parse the UUID.
-        Torque::UUID uuid;
+        Torque::TUUID uuid;
         if( !uuid.fromString( argv[ i ] ) )
         {
             Con::errorf( "SimPersistSet::processArguments - could not read UUID at index %i: %s", i, argv[ i ] );

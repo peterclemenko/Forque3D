@@ -60,8 +60,8 @@ beginModule( 'razerHydra' );
             "\n", E_USER_ERROR );
    }
 
-   // Only Windows is supported at this time
-   if ( Generator::$platform == "win32" )
+   //Dushan - supported platform is Linux also
+   if ( Generator::$platform == "win32" || Generator::$platform == "linux" )
    {
       // Source
       addEngineSrcDir( "platform/input/razerHydra" );

@@ -49,14 +49,14 @@ public:
     
 protected:
 
-    typedef HashTable< Torque::UUID, SimPersistID* > LookupTableType;
+    typedef HashTable< Torque::TUUID, SimPersistID* > LookupTableType;
     
     /// Reference to the SimObject.  Will be NULL for as long as the
     /// persistent ID is not resolved.
     SimObject* mObject;
     
     /// The UUID assigned to the object.  Never changes.
-    Torque::UUID mUUID;
+    Torque::TUUID mUUID;
     
     /// Table of persistent object IDs.
     static LookupTableType* smLookupTable;
@@ -67,7 +67,7 @@ protected:
     
     /// Construct a persistent ID stub for the given unique identifier.
     /// The stub remains not bound to any object until it is resolved.
-    SimPersistID( const Torque::UUID& uuid );
+    SimPersistID( const Torque::TUUID& uuid );
     
     ///
     ~SimPersistID();
@@ -93,15 +93,15 @@ public:
     static void shutdown();
     
     /// Look up a persistent ID by its UUID.  Return NULL if no PID is bound to the given UUID.
-    static SimPersistID* find( const Torque::UUID& uuid );
+    static SimPersistID* find( const Torque::TUUID& uuid );
     
     /// Look up a persistent ID by its UUID.  If no PID is bound to the given UUID yet, create a
     /// new PID and bind it to the UUID.
-    static SimPersistID* findOrCreate( const Torque::UUID& uuid );
+    static SimPersistID* findOrCreate( const Torque::TUUID& uuid );
     
     /// Find a SimObject by the UUID assigned to its PID.  Return NULL if either no PID is bound
     /// to the given UUID or if the PID bound to it is not yet resolved.
-    static SimObject* findObjectByUUID( const Torque::UUID& uuid );
+    static SimObject* findObjectByUUID( const Torque::TUUID& uuid );
     
     /// Return the object that is bound to this PID.  If the PID has not yet been resolved,
     /// return NULL.
@@ -111,7 +111,7 @@ public:
     }
     
     /// Return the UUID bound to this PID.
-    const Torque::UUID& getUUID() const
+    const Torque::TUUID& getUUID() const
     {
         return mUUID;
     }

@@ -191,7 +191,7 @@ public:
     /// Returns the interior resource
     Resource<InteriorResource>& getResource()
     {
-        return( mInteriorRes ); // SceneLighting::InteriorProxy interface
+        return( mInteriorRes );   // SceneLighting::InteriorProxy interface
     }
     
     /// Returns the CRC for validation

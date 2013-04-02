@@ -28,7 +28,7 @@
 #include "math/mMatrix.h"
 #include "math/mQuat.h"
 #include "platform/input/leapMotion/leapMotionConstants.h"
-#include "Leap.h"
+#include <Leap.h>
 
 struct LeapMotionDeviceData
 {

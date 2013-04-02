@@ -548,7 +548,7 @@ void GuiDecalEditorCtrl::forceRedraw( DecalInstance* decalInstance )
     // this in response to UI events from script.
     /*
     if ( !decalInstance )
-    return;
+    	return;
     
     GFXDrawUtil *drawUtil = GFX->getDrawUtil();
     GFXStateBlockDesc desc;

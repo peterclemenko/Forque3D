@@ -43,7 +43,7 @@ exec("./messageBoxOk.ed.gui");
 exec("./messageBoxYesNo.ed.gui");
 exec("./messageBoxYesNoCancel.ed.gui");
 exec("./messageBoxOKCancel.ed.gui");
-exec("./messageBoxOKCancelDetailsDlg.ed.gui");
+exec("./MessageBoxOKCancelDetailsDlg.ed.gui");
 exec("./messagePopup.ed.gui");
 exec("./IODropdownDlg.ed.gui");
 

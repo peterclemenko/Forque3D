@@ -74,6 +74,18 @@ beginModule( 'leapMotion' );
       addProjectLibInput( "Leap.lib", "Leapd.lib" );
    }
 
+   if ( Generator::$platform == "linux" )
+   {
+      // Source
+      addEngineSrcDir( "platform/input/leapMotion" );
+
+      // Includes
+      addIncludePath( $LEAPMOTION_SDK_PATH . "/include" );
+
+      // Libs
+      //addProjectLibDir( $LEAPMOTION_SDK_PATH . "/lib/x86" );
+      //addProjectLibInput( "Leap.lib", "Leapd.lib" );
+   }
 endModule();
 
 ?>

@@ -64,7 +64,7 @@ public:
     
     S32 getTabIndex( void )
     {
-        return mTabIndex;  ///< Get the tab index of this control
+        return mTabIndex;    ///< Get the tab index of this control
     }
     
     //only cycle tabs through the current window, so overwrite the method

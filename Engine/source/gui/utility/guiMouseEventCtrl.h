@@ -26,6 +26,9 @@
 #ifndef _GUICONTROL_H_
 #include "gui/core/guiControl.h"
 #endif
+#ifndef _EVENT_H_
+#include "platform/event.h"
+#endif
 
 
 class GuiMouseEventCtrl : public GuiControl

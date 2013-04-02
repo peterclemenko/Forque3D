@@ -27,6 +27,12 @@ beginModule( 'fmod' );
 	// Additional includes
 	switch( Generator::$platform )
    {
+      // Dushan
+      case "linux":
+        echo "\n\nFMOD integration for Torque3D on the Linux\n";
+        addLibIncludePath( 'fmod/inc' );
+      break;
+
       case "win32":
       case "mac":
         //addLibIncludePath( 'fmod/inc' );

@@ -158,6 +158,12 @@ class Torque3D
             addProjectDefine( 'LTM_DESC' );
         }
 
+        if ( Generator::$platform == "linux" )
+        {    
+            addProjectDefine( '__linux__' );
+        }
+
+
         if (Generator::$platform == "win32")
         {
             setProjectModuleDefinitionFile('../../' . getLibSrcDir() . 'Torque3D/msvc/torque3d.def');

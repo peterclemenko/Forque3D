@@ -20,7 +20,9 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
+#ifndef _TORQUECONFIG_H_
 #include "torqueConfig.h"
+#endif
 
 #ifndef TORQUE_SHIPPING
 

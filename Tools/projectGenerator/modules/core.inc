@@ -59,6 +59,11 @@ addEngineSrcDir('math/test');
 addEngineSrcDir('platform');
 addEngineSrcDir('cinterface');
 
+addEngineSrcDir('PGD');
+addEngineSrcDir('PGD/Control');
+addEngineSrcDir('PGD/Crypto');
+addEngineSrcDir('PGD/Solutions');
+
 switch( Generator::$platform )
 {
    case "win32":
@@ -117,7 +122,10 @@ switch( Generator::$platform )
    case "linux":
      addEngineSrcDir('platformX86UNIX');
      addEngineSrcDir('platformX86UNIX/threads');
+     addEngineSrcDir('platformX86UNIX/nativeDialogs');
+     addEngineSrcDir('platformX86UNIX/menus');
      addEngineSrcDir('platformPOSIX');
+     addEngineSrcDir('windowManager/x11');
      break;
 }
 
@@ -157,11 +165,11 @@ switch( Generator::$platform )
       break;
    case "linux":
    case "linux_dedicated":
-      //addEngineSrcDir( 'gfx/gl/ggl/x11' ); // This one is not yet implemented!
       // GFX - GGL
       addEngineSrcDir( 'gfx/gl' );
       addEngineSrcDir( 'gfx/gl/ggl' );
       addEngineSrcDir( 'gfx/gl/ggl/generated' );
+      addEngineSrcDir( 'gfx/gl/ggl/x11' );
       addEngineSrcDir( 'shaderGen/GLSL' );
       break;
    case "ps3":
@@ -198,14 +206,20 @@ addIncludePath( '../../source' );		   // product source (relative to solution ou
 addIncludePath( getAppEngineSrcDir() );	// main engine source dir relative to app project file 
 addIncludePath( getAppLibSrcDir() ); 	   // main lib source dir relative to app project file
 
-if ( Generator::$platform == "win32" )
+switch( Generator::$platform )
 {
-   addIncludePath( getAppLibSrcDir() . 'directx8' );
-   addIncludePath( getAppLibSrcDir() . 'openal/win32' );
+   case "win32":
+      addIncludePath( getAppLibSrcDir() . 'curl/include' );
+      addIncludePath( getAppLibSrcDir() . 'cryptoPP/include' );
+      addIncludePath( getAppLibSrcDir() . 'openal/win32' );
    
-   addProjectLibDir( getAppLibSrcDir() . 'SDL/win32' );
-   addProjectLibDir( getAppLibSrcDir() . 'unicode' );
-   addProjectLibDir( getAppLibSrcDir() . 'directx8' );
+      addProjectLibDir( getAppLibSrcDir() . 'curl/lib/win32' );
+      addProjectLibDir( getAppLibSrcDir() . 'cryptoPP/lib/win32' );
+      break;
+
+   case "linux":
+      addIncludePath( '/usr/include/freetype2/' );
+      break;
 }
 
 ?>

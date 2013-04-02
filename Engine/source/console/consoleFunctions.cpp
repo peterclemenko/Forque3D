@@ -1642,15 +1642,15 @@ DefineEngineFunction( countBits, S32, ( S32 v ), ,
 
 //-----------------------------------------------------------------------------
 
-DefineEngineFunction( generateUUID, Torque::UUID, (), ,
+DefineEngineFunction( generateUUID, Torque::TUUID, (), ,
                       "Generate a new universally unique identifier (UUID).\n\n"
                       "@return A newly generated UUID.\n\n"
                       "@ingroup Utilities" )
 {
-    Torque::UUID uuid;
+    Torque::TUUID UUID;
     
-    uuid.generate();
-    return uuid;
+    UUID.generate();
+    return UUID;
 }
 
 //=============================================================================
@@ -1834,6 +1834,7 @@ DefineEngineFunction( compile, bool, ( const char* fileName, bool overrideNoDSO 
     
     return true;
 }
+void reExec( const Torque::Path& path );
 
 //-----------------------------------------------------------------------------
 
@@ -1924,7 +1925,7 @@ DefineEngineFunction( exec, bool, ( const char* fileName, bool noCalls, bool jou
     // [tom, 11/17/2006] It seems to make sense to not compile scripts that are in the
     // prefs directory. However, getDSOPath() can handle this situation and will put
     // the dso along with the script to avoid name clashes with tools/game dsos.
-    if( ( dsoPath && *dsoPath == 0 ) || ( prefsPath && prefsPath[ 0 ] && dStrnicmp( scriptFileName, prefsPath, dStrlen( prefsPath ) ) == 0 ) )
+    if( ( dsoPath && *dsoPath == 0 ) || dStrstr( scriptFileName, "prefs.cs" ) ) //(prefsPath && prefsPath[ 0 ] && dStrnicmp(scriptFileName, prefsPath, dStrlen(prefsPath)) == 0) )
         compiled = false;
 #else
     bool compiled = false;  // Don't try to compile things on the 360, ignore DSO's when debugging
@@ -2024,11 +2025,8 @@ DefineEngineFunction( exec, bool, ( const char* fileName, bool noCalls, bool jou
     //}
     
     // If we had a DSO, let's check to see if we should be reading from it.
-    //MGT: fixed bug with dsos not getting recompiled correctly
-    //Note: Using Nathan Martin's version from the forums since its easier to read and understand
     if( compiled && dsoFile != NULL && ( scriptFile == NULL || ( dsoModifiedTime >= scriptModifiedTime ) ) )
     {
-        //MGT: end
         compiledStream = FileStream::createAndOpen( nameBuffer, Torque::FS::File::Read );
         if( compiledStream )
         {
@@ -2116,6 +2114,12 @@ DefineEngineFunction( exec, bool, ( const char* fileName, bool noCalls, bool jou
             Journal::Write( bool( false ) );
     }
     
+    if( compiled ) //if this is true TORQUE_NO_DSO_GENERATION must be defined and it must not be prefs / .mis
+    {
+        Torque::Path path( scriptFileName );
+        Torque::FS::AddChangeNotification( path, &reExec );
+    }
+    
     if( compiledStream )
     {
         // Delete the script object first to limit memory used
@@ -2159,7 +2163,20 @@ DefineEngineFunction( exec, bool, ( const char* fileName, bool noCalls, bool jou
     execDepth--;
     return ret;
 }
-
+void reExec( const Torque::Path& path )
+{
+    //we know this is a file that exists, and a .cs file, so we can skip a lot of checks...
+    CodeBlock* newCodeBlock = new CodeBlock();
+    StringTableEntry name = StringTable->insert( path.getFullPath().c_str() );
+    
+    void* data;
+    U32 dataSize = 0;
+    Torque::FS::ReadFile( name, data, dataSize, true );
+    
+    newCodeBlock->compileExec( name, ( char* )data, false, 0 );
+    
+    delete [] data;
+}
 ConsoleFunction( eval, const char*, 2, 2, "eval(consoleString)" )
 {
     TORQUE_UNUSED( argc );

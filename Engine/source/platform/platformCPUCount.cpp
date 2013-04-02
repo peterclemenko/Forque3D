@@ -25,15 +25,15 @@
 #include "platform/platformCPUCount.h"
 
 // Consoles don't need this
-#if defined(TORQUE_OS_XENON) || defined(TORQUE_OS_PS3)
+#if defined(TORQUE_OS_XENON) || defined(TORQUE_OS_PS3) || defined(TORQUE_CPU_X86_64)
 namespace CPUInfo
 {
 
 EConfig CPUCount( U32& TotAvailLogical, U32& TotAvailCore, U32& PhysicalNum )
 {
-    TotAvailLogical = 6;
-    TotAvailCore = 6;
-    PhysicalNum = 3;
+    TotAvailLogical = 2;
+    TotAvailCore = 2;
+    PhysicalNum = 1;
     
     return CONFIG_MultiCoreAndHTEnabled;
 }
@@ -523,9 +523,9 @@ EConfig CPUCount( U32& TotAvailLogical, U32& TotAvailCore, U32& PhysicalNum )
             // processors per core
 
             tblSMTID[j]  = GetNzbSubID( apicID, MaxLPPerCore, 0 );
-            unsigned char maxCorePPP = MaxCorePerPhysicalProc();
-            unsigned char maskWidth = find_maskwidth( MaxLPPerCore );
-            tblCoreID[j] = GetNzbSubID( apicID, maxCorePPP, maskWidth );
+            tblCoreID[j] = GetNzbSubID( apicID,
+                                        MaxCorePerPhysicalProc(),
+                                        ( unsigned char ) find_maskwidth( MaxLPPerCore ) );
 
             // Extract package ID, assume single cluster.
             // Shift value is the mask width for max Logical per package

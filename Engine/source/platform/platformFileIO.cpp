@@ -423,7 +423,7 @@ StringTableEntry Platform::makeRelativePathName( const char* path, const char* t
     
     else
     {
-        if( ( *pathPtr == 0 && *toPtr == '/' ) || ( *toPtr == '/' && *pathPtr == 0 ) )
+        if( *pathPtr == 0 && *toPtr == '/' )
             branch = pathPtr;
             
         // Allocate a new temp so we aren't prone to buffer overruns.

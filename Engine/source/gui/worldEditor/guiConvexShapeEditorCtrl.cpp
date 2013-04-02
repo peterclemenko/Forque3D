@@ -229,20 +229,20 @@ void GuiConvexEditorCtrl::on3DRightMouseDown( const Gui3DMouseEvent& event )
     return;
     
     /*
-     if ( mConvexSEL && mFaceSEL != -1 && mFaceSEL == mFaceHL )
-     {
-        _submitUndo( "Split ConvexShape face." );
+    if ( mConvexSEL && mFaceSEL != -1 && mFaceSEL == mFaceHL )
+    {
+      _submitUndo( "Split ConvexShape face." );
     
-        const MatrixF &surf = mConvexSEL->mSurfaces[mFaceSEL];
+      const MatrixF &surf = mConvexSEL->mSurfaces[mFaceSEL];
     
-        MatrixF newSurf( surf );
+      MatrixF newSurf( surf );
     
-        MatrixF rotMat( EulerF( 0.0f, mDegToRad( 2.0f ), 0.0f ) );
+      MatrixF rotMat( EulerF( 0.0f, mDegToRad( 2.0f ), 0.0f ) );
     
-        newSurf *= rotMat;
+      newSurf *= rotMat;
     
-        mConvexSEL->mSurfaces.insert( mFaceSEL+1, newSurf );
-     }
+      mConvexSEL->mSurfaces.insert( mFaceSEL+1, newSurf );
+    }
     */
 }
 

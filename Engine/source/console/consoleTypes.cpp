@@ -820,25 +820,25 @@ ConsoleSetType( TypeRectUV )
 //-----------------------------------------------------------------------------
 // TypeUUID
 //-----------------------------------------------------------------------------
-ConsoleType( uuid, TypeUUID, Torque::UUID )
-ImplementConsoleTypeCasters( TypeUUID, Torque::UUID )
+ConsoleType( UUID, TypeUUID, Torque::TUUID )
+ImplementConsoleTypeCasters( TypeUUID, Torque::TUUID )
 
 ConsoleGetType( TypeUUID )
 {
-    Torque::UUID* uuid = ( Torque::UUID* ) dptr;
-    return Con::getReturnBuffer( uuid->toString() );
+    Torque::TUUID* UUID = ( Torque::TUUID* ) dptr;
+    return Con::getReturnBuffer( UUID->toString() );
 }
 
 ConsoleSetType( TypeUUID )
 {
     if( argc == 1 )
     {
-        Torque::UUID* uuid = ( Torque::UUID* ) dptr;
-        if( !uuid->fromString( argv[ 0 ] ) )
+        Torque::TUUID* UUID = ( Torque::TUUID* ) dptr;
+        if( !UUID->fromString( argv[ 0 ] ) )
             Con::errorf( "Error parsing UUID: '%s'", argv[ 0 ] );
     }
     else
-        Con::printf( "(TypeUUID) Cannot set multiple args to a single uuid." );
+        Con::printf( "(TypeUUID) Cannot set multiple args to a single UUID." );
 }
 
 //-----------------------------------------------------------------------------
@@ -866,14 +866,14 @@ ConsoleSetType( TypePID )
             *pid = NULL;
         else
         {
-            Torque::UUID uuid;
-            if( !uuid.fromString( argv[ 0 ] ) )
+            Torque::TUUID UUID;
+            if( !UUID.fromString( argv[ 0 ] ) )
             {
                 Con::errorf( "Error parsing UUID in PID: '%s'", argv[ 0 ] );
                 *pid = NULL;
             }
             else
-                *pid = SimPersistID::findOrCreate( uuid );
+                *pid = SimPersistID::findOrCreate( UUID );
         }
     }
     else
@@ -904,14 +904,14 @@ ConsoleSetType( TypeSimPersistId )
             *pid = NULL;
         else
         {
-            Torque::UUID uuid;
-            if( !uuid.fromString( argv[ 0 ] ) )
+            Torque::TUUID UUID;
+            if( !UUID.fromString( argv[ 0 ] ) )
             {
                 Con::errorf( "Error parsing UUID in PID: '%s'", argv[ 0 ] );
                 *pid = NULL;
             }
             else
-                *pid = SimPersistID::find( uuid );
+                *pid = SimPersistID::find( UUID );
         }
     }
     else

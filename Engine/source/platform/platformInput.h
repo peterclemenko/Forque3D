@@ -104,6 +104,7 @@ public:
     static void disable();
     
     static void activate();
+    static void reactivate();
     static void deactivate();
     
     static U16  getAscii( U16 keyCode, KEY_STATE keyState );

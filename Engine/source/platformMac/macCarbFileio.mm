@@ -49,6 +49,7 @@
 #include "platform/profiler.h"
 #include "cinterface/cinterface.h";
 
+//fixes for zip support
 #include "core/volume.h"
 
 //TODO: file io still needs some work...
@@ -79,7 +80,7 @@ bool dFileDelete( const char* name )
 bool dFileTouch( const char* path )
 {
     if( !path || !*path )
-        return false;
+        return Torque::FS::IsFile( path );
         
     // set file at path's modification and access times to now.
     return( utimes( path, NULL ) == 0 ); // utimes returns 0 on success.
@@ -636,11 +637,8 @@ bool Platform::isFile( const char* path )
     // make sure we can stat the file
     struct stat statData;
     if( stat( path, &statData ) < 0 )
-    {
-        // Since file does not exist on disk see if it exists in a zip file loaded
-        return Torque::FS::IsFile( path );
-    }
-    
+        return false;
+        
     // now see if it's a regular file
     if( ( statData.st_mode & S_IFMT ) == S_IFREG )
         return true;

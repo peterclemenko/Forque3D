@@ -240,7 +240,7 @@ public:
     }
     Point2I getChildMargin()
     {
-        return mChildMargin;  //  Added to aid in sizing calculations
+        return mChildMargin;    //  Added to aid in sizing calculations
     }
     S32 getBorderThickness( void )
     {

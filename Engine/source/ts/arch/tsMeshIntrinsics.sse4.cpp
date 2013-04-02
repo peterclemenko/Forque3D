@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 #include "ts/tsMesh.h"
 
-#if defined(TORQUE_CPU_X86) && (_MSC_VER >= 1500)
+#if 0 //defined(TORQUE_CPU_X86) || defined (TORQUE_CPU_X86_64) && (_MSC_VER >= 1500)
 #include "ts/tsMeshIntrinsics.h"
 #include <smmintrin.h>
 
@@ -34,10 +34,11 @@ void m_matF_x_BatchedVertWeightList_SSE4( const MatrixF& mat,
     const char* __restrict iPtr = reinterpret_cast<const char*>( batch );
     const dsize_t inStride = sizeof( TSSkinMesh::BatchData::BatchedVertWeight );
     
-    __m128 sseMat[3];
+    __m128 sseMat[4];
     sseMat[0] = _mm_loadu_ps( &mat[0] );
     sseMat[1] = _mm_loadu_ps( &mat[4] );
     sseMat[2] = _mm_loadu_ps( &mat[8] );
+    sseMat[3] = _mm_loadu_ps( &mat[12] );
     
     // temp registers
     __m128 inPos, tempPos;

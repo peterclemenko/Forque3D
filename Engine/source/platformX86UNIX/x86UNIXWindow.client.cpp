@@ -21,23 +21,17 @@
 //-----------------------------------------------------------------------------
 
 
+#include "windowManager/x11/x11WindowMgr.h"
 
 #include "console/console.h"
-#include "core/fileStream.h"
-#include "game/resource.h"
-#include "game/version.h"
+#include "core/stream/fileStream.h"
 #include "math/mRandom.h"
 #include "platformX86UNIX/platformX86UNIX.h"
 #include "platformX86UNIX/x86UNIXStdConsole.h"
-#include "platform/event.h"
-#include "platform/gameInterface.h"
+#include "platform/input/event.h"
 #include "platform/platform.h"
-#include "platform/platformAL.h"
 #include "platform/platformInput.h"
-#include "platform/platformVideo.h"
 #include "platform/profiler.h"
-#include "platformX86UNIX/platformGL.h"
-#include "platformX86UNIX/x86UNIXOGLVideo.h"
 #include "platformX86UNIX/x86UNIXState.h"
 
 #ifndef DEDICATED
@@ -60,7 +54,8 @@
 #include <SDL/SDL_version.h>
 #endif
 
-x86UNIXPlatformState* x86UNIXState;
+static x86UNIXPlatformState _x86UNIXState_Obj;
+x86UNIXPlatformState* x86UNIXState = &_x86UNIXState_Obj;
 
 bool DisplayPtrManager::sgDisplayLocked = false;
 LockFunc_t DisplayPtrManager::sgLockFunc = NULL;
@@ -70,8 +65,6 @@ static U32 lastTimeTick;
 static MRandomLCG sgPlatRandom;
 
 #ifndef DEDICATED
-extern void InstallRedBookDevices();
-extern void PollRedbookDevices();
 extern bool InitOpenGL();
 // This is called when some X client sends
 // a selection event (e.g. SelectionRequest)
@@ -147,14 +140,28 @@ static S32 ParseCommandLine( S32 argc, const char** argv,
     return 0;
 }
 
-static void DetectWindowingSystem()
+int XLocalErrorHandler( Display* display, XErrorEvent* error )
+{
+    char errorBuffer[4096];
+    XGetErrorText( display, error->error_code, errorBuffer, sizeof( errorBuffer ) );
+    Con::printf( errorBuffer );
+    AssertFatal( 0, "X Error" );
+}
+
+void InitWindowingSystem()
 {
 #ifndef DEDICATED
-    Display* dpy = XOpenDisplay( NULL );
-    if( dpy != NULL )
+    if( !x86UNIXState->isXWindowsRunning() )
     {
-        x86UNIXState->setXWindowsRunning( true );
-        XCloseDisplay( dpy );
+        Display* dpy = XOpenDisplay( NULL );
+        AssertFatal( dpy, "Failed to connect to X Server" );
+        if( dpy != NULL )
+        {
+            x86UNIXState->setXWindowsRunning( true );
+            x86UNIXState->setDisplayPointer( dpy );
+            
+            XSetErrorHandler( XLocalErrorHandler );
+        }
     }
 #endif
 }
@@ -167,50 +174,6 @@ static void InitWindow( const Point2I& initialSize, const char* name )
 }
 
 #ifndef DEDICATED
-//------------------------------------------------------------------------------
-static bool InitSDL()
-{
-    if( SDL_Init( SDL_INIT_VIDEO ) != 0 )
-        return false;
-        
-    atexit( SDL_Quit );
-    
-    SDL_SysWMinfo sysinfo;
-    SDL_VERSION( &sysinfo.version );
-    if( SDL_GetWMInfo( &sysinfo ) == 0 )
-        return false;
-        
-    x86UNIXState->setDisplayPointer( sysinfo.info.x11.display );
-    DisplayPtrManager::setDisplayLockFunction( sysinfo.info.x11.lock_func );
-    DisplayPtrManager::setDisplayUnlockFunction( sysinfo.info.x11.unlock_func );
-    
-    DisplayPtrManager xdisplay;
-    Display* display = xdisplay.getDisplayPointer();
-    
-    x86UNIXState->setScreenNumber(
-        DefaultScreen( display ) );
-    x86UNIXState->setScreenPointer(
-        DefaultScreenOfDisplay( display ) );
-        
-    x86UNIXState->setDesktopSize(
-        ( S32 ) DisplayWidth(
-            display,
-            x86UNIXState->getScreenNumber() ),
-        ( S32 ) DisplayHeight(
-            display,
-            x86UNIXState->getScreenNumber() )
-    );
-    x86UNIXState->setDesktopBpp(
-        ( S32 ) DefaultDepth(
-            display,
-            x86UNIXState->getScreenNumber() ) );
-            
-    // indicate that we want sys WM messages
-    SDL_EventState( SDL_SYSWMEVENT, SDL_ENABLE );
-    
-    return true;
-}
-
 //------------------------------------------------------------------------------
 static void ProcessSYSWMEvent( const SDL_Event& event )
 {
@@ -237,7 +200,7 @@ static void SetAppState()
             state & SDL_APPINPUTFOCUS )
     {
         x86UNIXState->setWindowActive( true );
-        Input::reactivate();
+        //Input::reactivate();
     }
     // if we are active, but we don't have appactive or input focus,
     // deactivate input (if window not locked) and clear windowActive
@@ -365,7 +328,7 @@ static bool ProcessMessages()
                 break;
             case SDL_VIDEORESIZE:
             case SDL_VIDEOEXPOSE:
-                Game->refreshWindow();
+                //Game->refreshWindow();
                 break;
             case SDL_USEREVENT:
                 if( event.user.code == TORQUE_SETVIDEOMODE )
@@ -444,28 +407,31 @@ void DisplayErrorAlert( const char* errMsg, bool showSDLError )
 //------------------------------------------------------------------------------
 static inline void AlertDisableVideo( AlertWinState& state )
 {
-
+    /* RKO-TODO: Possibly re-implement this functionality?
     state.fullScreen = Video::isFullScreen();
-    state.cursorHidden = ( SDL_ShowCursor( SDL_QUERY ) == SDL_DISABLE );
-    state.inputGrabbed = ( SDL_WM_GrabInput( SDL_GRAB_QUERY ) == SDL_GRAB_ON );
+    state.cursorHidden = (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE);
+    state.inputGrabbed = (SDL_WM_GrabInput(SDL_GRAB_QUERY) == SDL_GRAB_ON);
     
-    if( state.fullScreen )
-        SDL_WM_ToggleFullScreen( SDL_GetVideoSurface() );
-    if( state.cursorHidden )
-        SDL_ShowCursor( SDL_ENABLE );
-    if( state.inputGrabbed )
-        SDL_WM_GrabInput( SDL_GRAB_OFF );
+    if (state.fullScreen)
+      SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
+    if (state.cursorHidden)
+      SDL_ShowCursor(SDL_ENABLE);
+    if (state.inputGrabbed)
+      SDL_WM_GrabInput(SDL_GRAB_OFF);
+      */
 }
 
 //------------------------------------------------------------------------------
 static inline void AlertEnableVideo( AlertWinState& state )
 {
-    if( state.fullScreen )
-        SDL_WM_ToggleFullScreen( SDL_GetVideoSurface() );
-    if( state.cursorHidden )
-        SDL_ShowCursor( SDL_DISABLE );
-    if( state.inputGrabbed )
-        SDL_WM_GrabInput( SDL_GRAB_ON );
+    /* RKO-TODO: Possibly re-implement this functionality?
+    if (state.fullScreen)
+      SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
+    if (state.cursorHidden)
+      SDL_ShowCursor(SDL_DISABLE);
+    if (state.inputGrabbed)
+      SDL_WM_GrabInput(SDL_GRAB_ON);
+      */
 }
 #endif // DEDICATED
 
@@ -551,55 +517,56 @@ bool Platform::AlertRetry( const char* windowTitle, const char* message )
 }
 
 //------------------------------------------------------------------------------
+Platform::ALERT_ASSERT_RESULT Platform::AlertAssert( const char* windowTitle, const char* message )
+{
+#ifndef DEDICATED
+    if( x86UNIXState->isXWindowsRunning() )
+    {
+        AlertWinState state;
+        AlertDisableVideo( state );
+        
+        DisplayPtrManager xdisplay;
+        XMessageBox mBox( xdisplay.getDisplayPointer() );
+        int val = mBox.alertAssert( windowTitle, message );
+        
+        ALERT_ASSERT_RESULT result = ALERT_ASSERT_IGNORE;
+        switch( val )
+        {
+            case XMessageBox::OK:
+                result = ALERT_ASSERT_EXIT;
+                break;
+            default:
+            case XMessageBox::Cancel:
+                result = ALERT_ASSERT_IGNORE;
+                break;
+            case XMessageBox::Retry:
+                result = ALERT_ASSERT_DEBUG;
+                break;
+            case XMessageBox::IgnoreAll:
+                result = ALERT_ASSERT_IGNORE_ALL;
+                break;
+        }
+        
+        AlertEnableVideo( state );
+        return result;
+    }
+    else
+#endif
+    {
+        if( Con::isActive() && StdConsole::isEnabled() )
+            Con::printf( "AlertAssert: %s %s", windowTitle, message );
+        else
+            dPrintf( "AlertAssert: %s %s\n", windowTitle, message );
+            
+        return ALERT_ASSERT_DEBUG;
+    }
+}
+
+//------------------------------------------------------------------------------
 bool Platform::excludeOtherInstances( const char* mutexName )
 {
-    return AcquireProcessMutex( mutexName );
-}
-
-
-//------------------------------------------------------------------------------
-void Platform::enableKeyboardTranslation( void )
-{
-#ifndef DEDICATED
-    // JMQ: not sure if this is needed for i18n keyboards
-    //SDL_EnableUNICODE( 1 );
-//    SDL_EnableKeyRepeat(
-//       SDL_DEFAULT_REPEAT_DELAY,
-//       SDL_DEFAULT_REPEAT_INTERVAL);
-#endif
-}
-
-//------------------------------------------------------------------------------
-void Platform::disableKeyboardTranslation( void )
-{
-#ifndef DEDICATED
-    //SDL_EnableUNICODE( 0 );
-    //   SDL_EnableKeyRepeat(0, 0);
-#endif
-}
-
-//------------------------------------------------------------------------------
-void Platform::setWindowLocked( bool locked )
-{
-#ifndef DEDICATED
-    x86UNIXState->setWindowLocked( locked );
-    
-    UInputManager* uInputManager =
-        dynamic_cast<UInputManager*>( Input::getManager() );
-        
-    if( uInputManager && uInputManager->isEnabled() &&
-            Input::isActive() )
-        uInputManager->setWindowLocked( locked );
-#endif
-}
-
-//------------------------------------------------------------------------------
-void Platform::minimizeWindow()
-{
-#ifndef DEDICATED
-    if( x86UNIXState->windowCreated() )
-        SDL_WM_IconifyWindow();
-#endif
+    AssertFatal( 0, "Not Implemented" );
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -618,19 +585,12 @@ void Platform::process()
         if( quit )
         {
             // generate a quit event
-            Event quitEvent;
-            quitEvent.type = QuitEventType;
-            Game->postEvent( quitEvent );
+            Platform::postQuitMessage( 0 );
         }
         
         // process input events
         PROFILE_START( XUX_InputProcess );
         Input::process();
-        PROFILE_END();
-        
-        // poll redbook state
-        PROFILE_START( XUX_PollRedbookDevices );
-        PollRedbookDevices();
         PROFILE_END();
         
         // if we're not the foreground window, sleep for 1 ms
@@ -641,13 +601,15 @@ void Platform::process()
     else
     {
         // no window
-        // if we're not in journal mode, sleep for 1 ms
+        // sleep for 1 ms
         // JMQ: since linux's minimum sleep latency seems to be 20ms, this can
         // increase player pings by 10-20ms in the dedicated server.  So
         // you have to use -dsleep to enable it.  the server sleeps anyway when
         // there are no players connected.
         // JMQ: recent kernels (such as RH 8.0 2.4.18) reduce the latency
         // to 2-4 ms on average.
+#if 0
+// Dushan - FIX ME
         if( !Game->isJournalReading() && ( x86UNIXState->getDSleep() ||
                                            Con::getIntVariable( "Server::PlayerCount" ) -
                                            Con::getIntVariable( "Server::BotCount" ) <= 0 ) )
@@ -656,10 +618,11 @@ void Platform::process()
             Sleep( 0, getBackgroundSleepTime() * 1000000 );
             PROFILE_END();
         }
+#endif
     }
     
 #ifndef DEDICATED
-#if 0
+#if 1
 // JMQ: disabled this because it may fire mistakenly in some configurations.
 // sdl's default event handling scheme should be enough.
     // crude check to make sure that we're not loading up events.  the sdl
@@ -675,40 +638,6 @@ void Platform::process()
 #endif
     PROFILE_END();
 }
-
-// extern U32 calculateCRC(void * buffer, S32 len, U32 crcVal );
-
-// #if defined(DEBUG) || defined(INTERNAL_RELEASE)
-// static U32 stubCRC = 0;
-// #else
-// static U32 stubCRC = 0xEA63F56C;
-// #endif
-
-//------------------------------------------------------------------------------
-const Point2I& Platform::getWindowSize()
-{
-    return x86UNIXState->getWindowSize();
-}
-
-
-//------------------------------------------------------------------------------
-void Platform::setWindowSize( U32 newWidth, U32 newHeight )
-{
-    x86UNIXState->setWindowSize( ( S32 ) newWidth, ( S32 ) newHeight );
-}
-
-
-//------------------------------------------------------------------------------
-void Platform::initWindow( const Point2I& initialSize, const char* name )
-{
-#ifndef DEDICATED
-    // initialize window
-    InitWindow( initialSize, name );
-    if( !InitOpenGL() )
-        ImmediateShutdown( 1 );
-#endif
-}
-
 
 //------------------------------------------------------------------------------
 // Web browser function:
@@ -733,9 +662,9 @@ bool Platform::openWebBrowser( const char* webAddress )
     else if( pid != 0 )
     {
         // parent
-        if( Video::isFullScreen() )
-            Video::toggleFullScreen();
-            
+        //if (Video::isFullScreen())
+        //   Video::toggleFullScreen();
+        
         return true;
     }
     else if( pid == 0 )
@@ -743,7 +672,7 @@ bool Platform::openWebBrowser( const char* webAddress )
         // child
         // try to exec konqueror, then netscape
         char* argv[3];
-        argv[0] = "";
+        argv[0] = const_cast<char*>( "" );
         argv[1] = const_cast<char*>( webAddress );
         argv[2] = 0;
         
@@ -784,37 +713,6 @@ bool Platform::setLoginPassword( const char* password )
     return false;
 }
 
-//-------------------------------------------------------------------------------
-void TimeManager::process()
-{
-    U32 curTime = Platform::getRealMilliseconds();
-    TimeEvent event;
-    event.elapsedTime = curTime - lastTimeTick;
-    if( event.elapsedTime > sgTimeManagerProcessInterval )
-    {
-        lastTimeTick = curTime;
-        Game->postEvent( event );
-    }
-}
-
-//------------------------------------------------------------------------------
-ConsoleFunction( getDesktopResolution, const char*, 1, 1,
-                 "getDesktopResolution()" )
-{
-    if( !x86UNIXState->windowCreated() )
-        return "0 0 0";
-        
-    char buffer[256];
-    char* returnString = Con::getReturnBuffer( dStrlen( buffer ) + 1 );
-    
-    dSprintf( buffer, sizeof( buffer ), "%d %d %d",
-              x86UNIXState->getDesktopSize().x,
-              x86UNIXState->getDesktopSize().y,
-              x86UNIXState->getDesktopBpp() );
-    dStrcpy( returnString, buffer );
-    return( returnString );
-}
-
 //------------------------------------------------------------------------------
 // Silly Korean registry key checker:
 //------------------------------------------------------------------------------
@@ -824,72 +722,35 @@ ConsoleFunction( isKoreanBuild, bool, 1, 1, "isKoreanBuild()" )
     return false;
 }
 
-//------------------------------------------------------------------------------
-int main( S32 argc, const char** argv )
+bool Platform::displaySplashWindow( String path )
 {
-    // init platform state
-    x86UNIXState = new x86UNIXPlatformState;
-    
-    // parse the command line for unix-specific params
-    Vector<char*> newCommandLine;
-    S32 returnVal = ParseCommandLine( argc, argv, newCommandLine );
-    if( returnVal != 0 )
-        return returnVal;
+    if( path.isEmpty() )
+        return false;
         
-    // init lastTimeTick for TimeManager::process()
-    lastTimeTick = Platform::getRealMilliseconds();
-    
-    // init process control stuff
-    ProcessControlInit();
-    
-    // check to see if X is running
-    DetectWindowingSystem();
-    
-    // run the game
-    returnVal = Game->main( newCommandLine.size(),
-                            const_cast<const char**>( newCommandLine.address() ) );
-                            
-    // dispose of command line
-    for( U32 i = 0; i < newCommandLine.size(); i++ )
-        delete [] newCommandLine[i];
-        
-    // dispose of state
-    delete x86UNIXState;
-    
-    return returnVal;
-}
-
-void Platform::setWindowTitle( const char* title )
-{
-#ifndef DEDICATED
-    x86UNIXState->setWindowName( title );
-    SDL_WM_SetCaption( x86UNIXState->getWindowName(), NULL );
+#ifdef UNICODE
+    const UTF16* lFileName = path.utf16();
+#else
+    const UTF8*  lFileName = path.c_str();
 #endif
-}
-
-Resolution Video::getDesktopResolution()
-{
-    Resolution  Result;
-    Result.h   = x86UNIXState->getDesktopSize().x;
-    Result.w   = x86UNIXState->getDesktopSize().y;
-    Result.bpp = x86UNIXState->getDesktopBpp();
     
-    return Result;
+    /*X11WindowManager* mgr = (X11WindowManager*)PlatformWindowManager::get();
+    return mgr->displaySplashWindow();*/
+    return true;
 }
 
-
-//-----------------------------------------------------------------------------
-void Platform::restartInstance()
+void Platform::closeSplashWindow()
 {
-
-    if( Game->isRunning() )
-    {
-        //Con::errorf( "Error restarting Instance. Game is Still running!");
-        return;
-    }
-    
-    char cmd[2048];
-    sprintf( cmd, "%s &", x86UNIXState->getExePathName() );
-    system( cmd );
-    exit( 0 );
+    X11WindowManager* mgr = ( X11WindowManager* )PlatformWindowManager::get();
+    return mgr->closeSplashWindow();
 }
+
+void Platform::openFolder( const char* path )
+{
+    AssertFatal( 0, "Not Implemented" );
+}
+
+void Platform::openFile( const char* path )
+{
+    AssertFatal( 0, "Not Implemented" );
+}
+

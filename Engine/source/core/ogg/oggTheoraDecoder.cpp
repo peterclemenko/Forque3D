@@ -285,7 +285,7 @@ U32 OggTheoraDecoder::read( OggTheoraFrame** buffer, U32 num )
         
         // Transcode the packet.
         
-#if ( defined( TORQUE_COMPILER_GCC ) || defined( TORQUE_COMPILER_VISUALC ) ) && defined( TORQUE_CPU_X86 )
+#if ( defined( TORQUE_COMPILER_GCC ) || defined( TORQUE_COMPILER_VISUALC ) ) && defined( TORQUE_CPU_X86 ) || defined ( TORQUE_CPU_X86_64 )
         
         if( ( mTranscoder == TRANSCODER_Auto || mTranscoder == TRANSCODER_SSE2420RGBA ) &&
                 getDecoderPixelFormat() == PIXEL_FORMAT_420 &&
@@ -375,13 +375,11 @@ void OggTheoraDecoder::_transcode( th_ycbcr_buffer ycbcr, U8* buffer, const U32 
             {
                 ++ pU0;
                 ++ pV0;
+                
+                // Pixel 0x1.
+                G = sampleG( pU0, pV0 );
             }
             
-            // Pixel 0x1.
-            
-            if( numChromaSamples == 4 )
-                G = sampleG( pU0, pV0 );
-                
             ycbcrToRGB( dst0, pY0, pU0, pV0, G );
             
             ++ pY0;

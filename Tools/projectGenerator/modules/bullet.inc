@@ -33,8 +33,7 @@ beginModule( 'bullet' );
 
    if (inProjectConfig())
    {
-      addProjectDependency( 'libbullet' );
-
+      addProjectDependency( 'libbullet' ); 
       addSolutionProjectRef( 'libbullet' );
    }
    

@@ -29,8 +29,8 @@
 #include "app/mainLoop.h"
 #include "platform/input/event.h"
 #include "platform/typetraits.h"
+//fixes for zip support
 #include "core/volume.h"
-
 
 const F32 TypeTraits< F32 >::MIN = - F32_MAX;
 const F32 TypeTraits< F32 >::MAX = F32_MAX;
@@ -135,7 +135,6 @@ S32 Platform::compareModifiedTimes( const char* firstPath, const char* secondPat
     FileTime firstModTime;
     if( !getFileTimes( firstPath, NULL, &firstModTime ) )
     {
-        //The reason we failed to get file times could be cause it is in a zip.  Lets check.
         return Torque::FS::CompareModifiedTimes( firstPath, secondPath );
     }
     

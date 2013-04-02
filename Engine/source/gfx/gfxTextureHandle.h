@@ -76,6 +76,18 @@ public:
     {
         return getPointer() ? getPointer()->getDepth()  : 0;
     }
+    U32 getBitmapWidth() const
+    {
+        return getPointer() ? getPointer()->getBitmapWidth()  : 0;
+    }
+    U32 getBitmapHeight() const
+    {
+        return getPointer() ? getPointer()->getBitmapHeight() : 0;
+    }
+    U32 getBitmapDepth() const
+    {
+        return getPointer() ? getPointer()->getBitmapDepth()  : 0;
+    }
     GFXFormat getFormat() const
     {
         return getPointer() ? getPointer()->getFormat() : GFXFormat_COUNT;

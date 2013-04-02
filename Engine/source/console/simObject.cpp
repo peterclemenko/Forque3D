@@ -161,10 +161,10 @@ void SimObject::initPersistFields()
     
     addGroup( "Editing" );
     
-    addProtectedField( "hidden", TypeBool, NULL,
+    addProtectedField( "hidden", TypeBool, 0,
                        &_setHidden, &_getHidden,
                        "Whether the object is visible." );
-    addProtectedField( "locked", TypeBool, NULL,
+    addProtectedField( "locked", TypeBool, 0,
                        &_setLocked, &_getLocked,
                        "Whether the object can be edited." );
                        
@@ -552,6 +552,8 @@ void SimObject::unregisterObject()
         getGroup()->removeObject( this );
         
     processDeleteNotifies();
+    
+    unlinkNamespaces(); //Phantom139: Moved here
     
     // Do removals from the Sim.
     Sim::gNameDictionary->remove( this );
@@ -1189,7 +1191,7 @@ void SimObject::onRemove()
 {
     mFlags.clear( Added );
     
-    unlinkNamespaces();
+    //unlinkNamespaces();  //Phantom139: Edit Removed
 }
 
 //-----------------------------------------------------------------------------

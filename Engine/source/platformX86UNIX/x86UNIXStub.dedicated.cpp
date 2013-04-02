@@ -83,7 +83,6 @@ void OpenALDLLShutdown() {}
 #endif
 
 // Platform Stubs
-
 bool Platform::excludeOtherInstances( const char* )
 {
     return true;

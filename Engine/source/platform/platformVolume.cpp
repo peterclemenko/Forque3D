@@ -22,6 +22,11 @@
 
 #include "platform/platform.h"
 
+//Uncomment this define if you want to use the alternative zip support where you can
+//define your directories and files inside the zip just like you would on disk
+//instead of the default zip support that treats the zip as an extra directory.
+#define TORQUE_ZIP_DISK_LAYOUT
+
 #if defined(TORQUE_OS_WIN32) || defined(TORQUE_OS_XBOX) || defined(TORQUE_OS_XENON)
 #include <sys/utime.h>
 #else

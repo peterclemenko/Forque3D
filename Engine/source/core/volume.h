@@ -79,7 +79,7 @@ public:
 class FileNode : public FileBase
 {
 public:
-    enum Status
+    enum NodeStatus
     {
         Open,                   ///< In an open state
         Closed,                 ///< In a closed state
@@ -122,7 +122,7 @@ public:
     
     // Properties
     virtual Path   getName() const = 0;
-    virtual Status getStatus() const = 0;
+    virtual NodeStatus getStatus() const = 0;
     
     virtual bool   getAttributes( Attributes* ) = 0;
     
@@ -464,6 +464,19 @@ inline bool AddChangeNotification( const Path& path, T obj, U func )
         return false;
         
     FileSystemChangeNotifier::ChangeDelegate dlg( obj, func );
+    return fs->getChangeNotifier()->addNotification( path, dlg );
+}
+
+/// Adds a file change notification callback for a function.
+///@ingroup VolumeSystem
+template <class U>
+inline bool AddChangeNotification( const Path& path, U func )
+{
+    FileSystemRef fs = GetFileSystem( path );
+    if( !fs || !fs->getChangeNotifier() )
+        return false;
+        
+    FileSystemChangeNotifier::ChangeDelegate dlg( func );
     return fs->getChangeNotifier()->addNotification( path, dlg );
 }
 

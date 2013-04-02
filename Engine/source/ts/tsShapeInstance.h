@@ -168,7 +168,7 @@ public:
         MeshObjectInstance();
         virtual ~MeshObjectInstance() {}
         
-        void render( S32 objectDetail, TSMaterialList*, const TSRenderState& rdata, F32 alpha );
+        void render( S32 objectDetail, TSMaterialList*, const TSRenderState& rdata, F32 alpha, const char* meshName = 0 );
         
         /// Gets the mesh with specified detail level
         TSMesh* getMesh( S32 num ) const
@@ -726,7 +726,7 @@ public:
 
     TSShapeInstance( const Resource<TSShape>& shape, bool loadMaterials = true );
     TSShapeInstance( TSShape* pShape, bool loadMaterials = true );
-    ~TSShapeInstance();
+    virtual ~TSShapeInstance();
     
     void buildInstanceData( TSShape*, bool loadMaterials );
     void initNodeTransforms();

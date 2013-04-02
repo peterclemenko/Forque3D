@@ -260,12 +260,14 @@ bool RazerHydraDevice::enable()
 #endif
     
     const char* dllName;
-#ifdef TORQUE_OS_WIN32
+#if defined (TORQUE_OS_WIN32)
 #ifdef TORQUE_DEBUG
     dllName = "sixensed.dll";
 #else
     dllName = "sixense.dll";
 #endif
+#elif defined (TORQUE_OS_LINUX)
+    dllName = "libsixense.so";
 #else
 #ifdef LOG_INPUT
     Input::log( "...platform not supported for Razer Hydra\n" );
@@ -274,6 +276,7 @@ bool RazerHydraDevice::enable()
 #endif
     
     mRazerHydraLib = OsLoadLibrary( dllName );
+    
     if( mRazerHydraLib )
     {
 #ifdef LOG_INPUT

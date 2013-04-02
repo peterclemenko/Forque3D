@@ -30,6 +30,7 @@
 #include "console/consoleTypes.h"
 #include "console/console.h"
 #include "gui/core/guiTypes.h"
+#include "platform/input/event.h"
 #include "gfx/gfxDrawUtil.h"
 #include "gui/controls/guiTextEditCtrl.h"
 #ifdef TORQUE_TOOLS
@@ -3449,6 +3450,8 @@ void GuiTreeViewCtrl::onMouseUp( const GuiEvent& event )
         scrollVisible( newItem );
         
         onDragDropped_callback();
+        
+        buildVisibleTree( false );
     }
     
     mDragMidPoint = NomDragMidPoint;

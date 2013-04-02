@@ -271,7 +271,7 @@ struct _ConsoleConstType
 template< typename T >
 S32 TYPEID()
 {
-    return T::_smTypeId;  // Default assumes a structured type storing its ID in a static member variable.
+    return T::_smTypeId;    // Default assumes a structured type storing its ID in a static member variable.
 }
 
 

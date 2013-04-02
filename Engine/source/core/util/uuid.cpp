@@ -425,9 +425,9 @@ uuid_state gUUIDState;
 
 namespace Torque
 {
-UUID UUID::smNull;
+TUUID TUUID::smNull;
 
-void UUID::generate()
+void TUUID::generate()
 {
     if( !gUUIDStateInitialized )
     {
@@ -438,25 +438,25 @@ void UUID::generate()
     create_token( &gUUIDState, ( xuuid_t* ) this );
 }
 
-String UUID::toString() const
+String TUUID::toString() const
 {
     char buffer[ 1024 ];
     format_token( buffer, ( xuuid_t* ) this );
     return buffer;
 }
 
-bool UUID::fromString( const char* str )
+bool TUUID::fromString( const char* str )
 {
     if( parse_token( str, ( xuuid_t* ) this ) != 0 )
     {
-        dMemset( this, 0, sizeof( UUID ) );
+        dMemset( this, 0, sizeof( TUUID ) );
         return false;
     }
     
     return true;
 }
 
-U32 UUID::getHash() const
+U32 TUUID::getHash() const
 {
     return ( a + b + c + d + e + f[ 0 ] + f[ 1 ] + f[ 2 ] + f[ 3 ] + f[ 4 ] + f[ 5 ] );
 }

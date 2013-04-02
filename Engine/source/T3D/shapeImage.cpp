@@ -79,11 +79,11 @@ EndImplementEnumType;
 ImplementEnumType( ShapeBaseImageLightType,
                    "@brief The type of light to attach to this ShapeBaseImage.\n\n"
                    "@ingroup gameObjects\n\n" )
-{ ShapeBaseImageData::NoLight,           "NoLight", "No light is attached.\n" },
-{ ShapeBaseImageData::ConstantLight,     "ConstantLight", "A constant emitting light is attached.\n" },
-{ ShapeBaseImageData::SpotLight,         "SpotLight", "A spotlight is attached.\n" },
-{ ShapeBaseImageData::PulsingLight,      "PulsingLight", "A pusling light is attached.\n" },
-{ ShapeBaseImageData::WeaponFireLight,   "WeaponFireLight", "Light emits when the weapon is fired, then dissipates.\n" }
+{ ShapeBaseImageData::NoLight,               "NoLight", "No light is attached.\n" },
+{ ShapeBaseImageData::ConstantLight,         "ConstantLight", "A constant emitting light is attached.\n" },
+{ ShapeBaseImageData::SpotLight,             "SpotLight", "A spotlight is attached.\n" },
+{ ShapeBaseImageData::PulsingLight,          "PulsingLight", "A pusling light is attached.\n" },
+{ ShapeBaseImageData::WeaponFireLight,       "WeaponFireLight", "Light emits when the weapon is fired, then dissipates.\n" },
 EndImplementEnumType;
 
 //----------------------------------------------------------------------------
@@ -2904,6 +2904,8 @@ void ShapeBase::updateAnimThread( U32 imageSlot, S32 imageShapeIndex, ShapeBaseI
         if( !image.dataBlock->shapeIsValid[i] || i != imageShapeIndex && !image.doAnimateAllShapes )
             continue;
             
+        TSShape* mShape = image.shapeInstance[i]->getShape();
+        
         if( image.animThread[i] && stateData.sequence[i] != -1 )
         {
             S32 seqIndex = stateData.sequence[i];  // Standard index without any prefix
@@ -2928,12 +2930,12 @@ void ShapeBase::updateAnimThread( U32 imageSlot, S32 imageShapeIndex, ShapeBaseI
             if( hasShapeBasePrefix || hasScriptPrefix )
             {
                 bool found = false;
-                String baseSeqName( image.shapeInstance[i]->getShape()->getSequenceName( stateData.sequence[i] ) );
+                String baseSeqName( mShape->getSequenceName( stateData.sequence[i] ) );
                 
                 if( !found && hasShapeBasePrefix && hasScriptPrefix )
                 {
                     String seqName = String( shapeBasePrefix ) + String( "_" ) + String( scriptPrefix ) + String( "_" ) + baseSeqName;
-                    S32 index = image.shapeInstance[i]->getShape()->findSequence( seqName );
+                    S32 index = mShape->findSequence( seqName );
                     if( index != -1 )
                     {
                         seqIndex = index;
@@ -2944,7 +2946,7 @@ void ShapeBase::updateAnimThread( U32 imageSlot, S32 imageShapeIndex, ShapeBaseI
                 if( !found && hasShapeBasePrefix )
                 {
                     String seqName = String( shapeBasePrefix ) + String( "_" ) + baseSeqName;
-                    S32 index = image.shapeInstance[i]->getShape()->findSequence( seqName );
+                    S32 index = mShape->findSequence( seqName );
                     if( index != -1 )
                     {
                         seqIndex = index;
@@ -2955,7 +2957,7 @@ void ShapeBase::updateAnimThread( U32 imageSlot, S32 imageShapeIndex, ShapeBaseI
                 if( !found && hasScriptPrefix )
                 {
                     String seqName = String( scriptPrefix ) + String( "_" ) + baseSeqName;
-                    S32 index = image.shapeInstance[i]->getShape()->findSequence( seqName );
+                    S32 index = mShape->findSequence( seqName );
                     if( index != -1 )
                     {
                         seqIndex = index;
@@ -2996,7 +2998,7 @@ void ShapeBase::updateAnimThread( U32 imageSlot, S32 imageShapeIndex, ShapeBaseI
                     image.shapeInstance[i]->setTimeScale( image.animThread[i], stateData.direction ? timeScale : -timeScale );
                     
                     // Broadcast the sequence change
-                    String seqName = image.shapeInstance[i]->getShape()->getSequenceName( stateData.sequence[i] );
+                    String seqName = mShape->getSequenceName( stateData.sequence[i] );
                     onImageAnimThreadChange( imageSlot, imageShapeIndex, lastState, seqName, stateData.direction ? 0.0f : 1.0f, stateData.direction ? timeScale : -timeScale );
                 }
                 else
@@ -3010,12 +3012,12 @@ void ShapeBase::updateAnimThread( U32 imageSlot, S32 imageShapeIndex, ShapeBaseI
                     if( hasShapeBasePrefix || hasScriptPrefix )
                     {
                         bool found = false;
-                        String baseVisSeqName( image.shapeInstance[i]->getShape()->getSequenceName( stateData.sequenceVis[i] ) );
+                        String baseVisSeqName( mShape->getSequenceName( stateData.sequenceVis[i] ) );
                         
                         if( !found && hasShapeBasePrefix && hasScriptPrefix )
                         {
                             String seqName = String( shapeBasePrefix ) + String( "_" ) + String( scriptPrefix ) + String( "_" ) + baseVisSeqName;
-                            S32 index = image.shapeInstance[i]->getShape()->findSequence( seqName );
+                            S32 index = mShape->findSequence( seqName );
                             if( index != -1 )
                             {
                                 seqVisIndex = index;
@@ -3026,7 +3028,7 @@ void ShapeBase::updateAnimThread( U32 imageSlot, S32 imageShapeIndex, ShapeBaseI
                         if( !found && hasShapeBasePrefix )
                         {
                             String seqName = String( shapeBasePrefix ) + String( "_" ) + baseVisSeqName;
-                            S32 index = image.shapeInstance[i]->getShape()->findSequence( seqName );
+                            S32 index = mShape->findSequence( seqName );
                             if( index != -1 )
                             {
                                 seqVisIndex = index;
@@ -3037,7 +3039,7 @@ void ShapeBase::updateAnimThread( U32 imageSlot, S32 imageShapeIndex, ShapeBaseI
                         if( !found && hasScriptPrefix )
                         {
                             String seqName = String( scriptPrefix ) + String( "_" ) + baseVisSeqName;
-                            S32 index = image.shapeInstance[i]->getShape()->findSequence( seqName );
+                            S32 index = mShape->findSequence( seqName );
                             if( index != -1 )
                             {
                                 seqVisIndex = index;
@@ -3053,7 +3055,7 @@ void ShapeBase::updateAnimThread( U32 imageSlot, S32 imageShapeIndex, ShapeBaseI
                     image.shapeInstance[i]->setTimeScale( image.flashThread[i], timeScale );
                     
                     // Broadcast the sequence change
-                    String seqName = image.shapeInstance[i]->getShape()->getSequenceName( stateData.sequenceVis[i] );
+                    String seqName = mShape->getSequenceName( stateData.sequenceVis[i] );
                     onImageAnimThreadChange( imageSlot, imageShapeIndex, lastState, seqName, stateData.direction ? 0.0f : 1.0f, stateData.direction ? timeScale : -timeScale );
                 }
             }

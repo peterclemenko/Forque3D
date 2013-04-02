@@ -32,26 +32,24 @@ function beginProject($name, $sharedConfig)
     // Set the game project name, this is what your game's exe/dll will be called
     setGameProjectName($name);
     
-    if (Generator::$platform == "win32" && $sharedConfig)
+    if ($sharedConfig)
         beginSolutionConfig( $name, '{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}' );
-
-	
 }
 
 function endProject($sharedConfig)
 {
-    if (Generator::$platform == "win32" && $sharedConfig)
+    if ($sharedConfig)
         endSolutionConfig();
 }
 
 function beginSolutionConfig( $name, $guid = '' )
 {
-	Generator::beginSolution( $name, $guid );  
+    Generator::beginSolution( $name, $guid );  
 }
 
 function addSolutionProjectRef( $pname )
 {
-	Generator::addSolutionProjectRef( $pname );		
+    Generator::addSolutionProjectRef( $pname );		
 }
 
 // Add a reference to an external project, this is used for WPF projects currently

@@ -33,6 +33,7 @@ PlatformAssert* PlatformAssert::platformAssert = NULL;
 PlatformAssert::PlatformAssert()
 {
     processing = false;
+    ignoreAll = false;
 }
 
 //--------------------------------------
@@ -99,15 +100,15 @@ bool PlatformAssert::process( Type         assertType,
         Platform::debugBreak();
         
     processing = true;
-    bool ret = true;
+    bool ret = false;
     
     // always dump to the Assert to the Console
     if( Con::isActive() )
     {
         if( assertType == Warning )
-            Con::warnf( ConsoleLogEntry::Assert, "%s(%ld) : %s - %s", filename, lineNumber, typeName[assertType], message );
+            Con::warnf( ConsoleLogEntry::Assert, "%s(%ld,0): {%s} - %s", filename, lineNumber, typeName[assertType], message );
         else
-            Con::errorf( ConsoleLogEntry::Assert, "%s(%ld) : %s - %s", filename, lineNumber, typeName[assertType], message );
+            Con::errorf( ConsoleLogEntry::Assert, "%s(%ld,0): {%s} - %s", filename, lineNumber, typeName[assertType], message );
     }
     
     // if not a WARNING pop-up a dialog box
@@ -118,17 +119,29 @@ bool PlatformAssert::process( Type         assertType,
             Platform::forceShutdown( 1 );
             
         char buffer[2048];
-        dSprintf( buffer, 2048, "%s(%ld) : %s", filename, lineNumber, typeName[assertType] );
-        
-#ifdef TORQUE_DEBUG
-        // In debug versions, allow a retry even for ISVs...
-        bool retry = displayMessageBox( buffer, message, true );
-#else
-        bool retry = displayMessageBox( buffer, message, ( ( assertType == Fatal ) ? true : false ) );
-#endif
-        if( !retry )
-            Platform::forceShutdown( 1 );
-            
+        dSprintf( buffer, 2048, "%s: (%s @ %ld)", typeName[assertType], filename, lineNumber );
+        if( !ignoreAll )
+        {
+            // Display message box with Debug, Ignore, Ignore All, and Exit options
+            switch( Platform::AlertAssert( buffer, message ) )
+            {
+                case Platform::ALERT_ASSERT_DEBUG:
+                    ret = true;
+                    break;
+                case Platform::ALERT_ASSERT_IGNORE:
+                    ret = false;
+                    break;
+                case Platform::ALERT_ASSERT_IGNORE_ALL:
+                    ignoreAll = true;
+                    ret = false;
+                    break;
+                default:
+                case Platform::ALERT_ASSERT_EXIT:
+                    Platform::forceShutdown( 1 );
+                    break;
+            }
+        }
+        //Dushan - was missing
         ret = askToEnterDebugger( message );
     }
     
@@ -169,4 +182,12 @@ const char* avar( const char* message, ... )
     va_start( args, message );
     dVsprintf( buffer, sizeof( buffer ), message, args );
     return( buffer );
+}
+
+//-----------------------------------------------------------------------------
+
+ConsoleFunction( Assert, void, 3, 3, "(condition, message) - Fatal Script Assertion" )
+{
+    // Process Assertion.
+    AssertISV( dAtob( argv[1] ), argv[2] );
 }

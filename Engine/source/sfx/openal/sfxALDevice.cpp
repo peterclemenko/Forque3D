@@ -63,10 +63,12 @@ SFXALDevice::SFXALDevice( SFXProvider* provider,
     
     if( !Con::getBoolVariable( "$_forceAllMainThread" ) )
     {
+#if defined (_WIN32)
         SFXInternal::gUpdateThread = new AsyncPeriodicUpdateThread
         ( "OpenAL Update Thread", SFXInternal::gBufferUpdateList,
           Con::getIntVariable( "$pref::SFX::updateInterval", SFXInternal::DEFAULT_UPDATE_INTERVAL ) );
         SFXInternal::gUpdateThread->start();
+#endif
     }
 }
 

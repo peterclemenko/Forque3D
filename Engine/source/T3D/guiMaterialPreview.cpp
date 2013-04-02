@@ -404,14 +404,17 @@ void GuiMaterialPreview::renderWorld( const RectI& updateRect )
     {
         // render a weapon
         /*
-         MatrixF mat;
+        MatrixF mat;
         
-         GFX->pushWorldMatrix();
-         GFX->multWorld( mat );
+        GFX->pushWorldMatrix();
+        GFX->multWorld( mat );
         
-         GFX->popWorldMatrix();
+        GFX->popWorldMatrix();
         */
     }
+    
+    // DS - Set ambient light explicitely for the preview otherwise it would get overwrittten by other calls of setSpecialLight;
+    state.setAmbientLightColor( mFakeSun->getAmbient() );
     
     renderPass->renderPass( &state );
     

@@ -47,14 +47,6 @@ function showPlayerList(%val)
 
 moveMap.bind( keyboard, F2, showPlayerList );
 
-function showControlsHelp(%val)
-{
-   if (%val)
-      ControlsHelpDlg.toggle();
-}
-
-moveMap.bind(keyboard, h, showControlsHelp);
-
 function hideHUDs(%val)
 {
    if (%val)
@@ -803,7 +795,6 @@ vehicleMap.bindCmd(keyboard, "ctrl f","getout();","");
 vehicleMap.bind(keyboard, space, brake);
 vehicleMap.bindCmd(keyboard, "l", "brakeLights();", "");
 vehicleMap.bindCmd(keyboard, "escape", "", "handleEscape();");
-vehicleMap.bind(keyboard, h, showControlsHelp);
 vehicleMap.bind( keyboard, v, toggleFreeLook ); // v for vanity
 //vehicleMap.bind(keyboard, tab, toggleFirstPerson );
 vehicleMap.bind(keyboard, "alt c", toggleCamera);

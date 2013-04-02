@@ -2639,7 +2639,7 @@ void ShapeBase::_prepRenderImage( SceneRenderState* state,
         return;
         
     // We don't need to render if all the meshes are forced hidden.
-    if( mMeshHidden.getSize() > 0 && mMeshHidden.testAll() )
+    if( mMeshHidden.testAll() )
         return;
         
     // If we're rendering shadows don't render the mounted
@@ -4734,6 +4734,12 @@ DefineEngineMethod( ShapeBase, applyDamage, void, ( F32 amount ), ,
     object->applyDamage( amount );
 }
 
+DefineEngineMethod( ShapeBase, blowUp, void, (), ,
+                    "@brief Explodes an object into pieces." )
+{
+    object->blowUp();
+}
+
 DefineEngineMethod( ShapeBase, applyRepair, void, ( F32 amount ), ,
                     "@brief Repair damage by the specified amount.\n\n"
 
@@ -5253,7 +5259,9 @@ DefineEngineMethod( ShapeBase, changeMaterial, void, ( const char* mapTo, Materi
     newMat->mMapTo = mapTo;
     
     // Map the material in the in the matmgr
-    MATMGR->mapMaterial( mapTo, newMat->mMapTo );
+    //MATMGR->mapMaterial( mapTo, newMat->mMapTo );
+    // mapping material name not mapping type.
+    MATMGR->mapMaterial( mapTo, newMat->getName() );
     
     // Replace instances with the new material being traded in. For ShapeBase
     // class we have to update the server/client objects separately so both

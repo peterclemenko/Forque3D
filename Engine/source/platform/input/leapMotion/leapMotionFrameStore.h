@@ -23,8 +23,18 @@
 #ifndef _LEAPMOTIONFRAMESTORE_H_
 #define _LEAPMOTIONFRAMESTORE_H_
 
+#if defined (TORQUE_OS_WIN32)
 #include "platformWin32/platformWin32.h"
-#include "Leap.h"
+#endif
+#if defined (TORQUE_OS_LINUX) || defined (TORQUE_OS_OPENBSD)
+#include "platformX86UNIX/platformX86UNIX.h"
+#endif
+#if defined (TORQUE_OS_MAC)
+#include "platformMac/platformMacCarb.h"
+#endif
+
+#include "platform/types.h"
+#include <Leap.h>
 
 class SimGroup;
 
@@ -65,3 +75,4 @@ public:
 #define LEAPMOTIONFS ManagedSingleton<LeapMotionFrameStore>::instance()
 
 #endif   // _LEAPMOTIONFRAMESTORE_H_
+

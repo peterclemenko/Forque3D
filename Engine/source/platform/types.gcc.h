@@ -67,7 +67,7 @@ typedef unsigned long long  U64;
 #  define TORQUE_OS_PS3
 #  include "platform/types.posix.h"
 
-#elif defined(linux)
+#elif defined(__linux__)
 #  define TORQUE_OS_STRING "Linux"
 #  define TORQUE_OS_LINUX
 #  define TORQUE_SUPPORTS_NASM

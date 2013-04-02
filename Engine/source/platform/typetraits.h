@@ -224,17 +224,17 @@ struct _TypeTraits< T* >
     template< typename A >
     static bool isTaggedPtr( A* ptr )
     {
-        return ( U32( ptr ) & 0x1 );  //TODO: 64bits
+        return ( U32( ptr ) & 0x1 );    //TODO: 64bits
     }
     template< typename A >
     static A* getTaggedPtr( A* ptr )
     {
-        return ( A* )( U32( ptr ) | 0x1 );  //TODO: 64bits
+        return ( A* )( U32( ptr ) | 0x1 );    //TODO: 64bits
     }
     template< typename A >
     static A* getUntaggedPtr( A* ptr )
     {
-        return ( A* )( U32( ptr ) & 0xFFFFFFFE );  //TODO: 64bit
+        return ( A* )( U32( ptr ) & 0xFFFFFFFE );    //TODO: 64bit
     }
 };
 

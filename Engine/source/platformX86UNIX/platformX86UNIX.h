@@ -27,7 +27,7 @@
 #include "platform/platform.h"
 #endif
 #ifndef _EVENT_H_
-#include "platform/event.h"
+#include "platform/input/event.h"
 #endif
 
 #include <stdio.h>
@@ -59,7 +59,7 @@ void DisplayErrorAlert( const char* errMsg, bool showSDLError = true );
 
 // Just like strstr, except case insensitive
 // (Found this function at http://www.codeguru.com/string/stristr.html)
-extern char* stristr( char* szStringToBeSearched, const char* szSubstringToSearchFor );
+extern const char* stristr( const char* szStringToBeSearched, const char* szSubstringToSearchFor );
 
 extern "C"
 {

@@ -347,15 +347,15 @@ public:
     
     inline const Point2I&   getPosition() const
     {
-        return mBounds.point;  ///< Returns position of the control
+        return mBounds.point;    ///< Returns position of the control
     }
     inline const Point2I&   getExtent() const
     {
-        return mBounds.extent;  ///< Returns extents of the control
+        return mBounds.extent;    ///< Returns extents of the control
     }
     inline const RectI     getBounds()const
     {
-        return mBounds;  ///< Returns the bounds of the control
+        return mBounds;    ///< Returns the bounds of the control
     }
     inline const RectI     getGlobalBounds() ///< Returns the bounds of this object, in global coordinates
     {
@@ -366,7 +366,7 @@ public:
     };
     virtual Point2I   getMinExtent() const
     {
-        return mMinExtent;  ///< Returns minimum size the control can be
+        return mMinExtent;    ///< Returns minimum size the control can be
     }
     virtual void      setMinExtent( const Point2I& newMinExtent )
     {
@@ -374,19 +374,19 @@ public:
     };
     inline const S32        getLeft() const
     {
-        return mBounds.point.x;  ///< Returns the X position of the control
+        return mBounds.point.x;    ///< Returns the X position of the control
     }
     inline const S32        getTop() const
     {
-        return mBounds.point.y;  ///< Returns the Y position of the control
+        return mBounds.point.y;    ///< Returns the Y position of the control
     }
     inline const S32        getWidth() const
     {
-        return mBounds.extent.x;  ///< Returns the width of the control
+        return mBounds.extent.x;    ///< Returns the width of the control
     }
     inline const S32        getHeight() const
     {
-        return mBounds.extent.y;  ///< Returns the height of the control
+        return mBounds.extent.y;    ///< Returns the height of the control
     }
     
     inline const S32        getHorizSizing() const
@@ -408,7 +408,7 @@ public:
     virtual void setVisible( bool value );
     inline bool isVisible() const
     {
-        return mVisible;  ///< Returns true if the object is visible
+        return mVisible;    ///< Returns true if the object is visible
     }
     virtual bool isHidden() const
     {
@@ -429,12 +429,12 @@ public:
     virtual void setActive( bool value );
     bool isActive()
     {
-        return mActive;  ///< Returns true if this control is active
+        return mActive;    ///< Returns true if this control is active
     }
     
     bool isAwake()
     {
-        return mAwake;  ///< Returns true if this control is awake
+        return mAwake;    ///< Returns true if this control is awake
     }
     
     /// @}

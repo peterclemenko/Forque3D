@@ -160,7 +160,7 @@ void InteriorSimpleMesh::render( SceneRenderState* state,
     
     for(S32 i=0; i<packedPrimitives.size(); i++)
     {
-    primitive &draw = packedPrimitives[i];
+    	primitive &draw = packedPrimitives[i];
        MeshRenderInst *inst = state->getRenderPass()->allocInst<MeshRenderInst>();
        *inst = copyinst;
     
@@ -174,38 +174,38 @@ void InteriorSimpleMesh::render( SceneRenderState* state,
        inst->primBuff = &primBuff;
        inst->vertBuff = &vertBuff;
     
-     if(draw.alpha)
-     {
-    inst->translucentSort = true;
-    inst->type = RenderPassManager::RIT_Translucent;
-     }
+      if(draw.alpha)
+      {
+    	inst->translucentSort = true;
+    	inst->type = RenderPassManager::RIT_Translucent;
+      }
     
        inst->lightmap = gInteriorLMManager.getHandle(interiorlmhandle, instancelmhandle, draw.lightMapIndex);
     
        state->getRenderPass()->addInst(inst);
-     renderInstList->push_back(inst);
+      renderInstList->push_back(inst);
     }
     
     if(lightingplugin && renderInstList->size() > 0)
     {
-    if(lightingplugin->interiorInstInit(intInst, this))
-    {
-    	if(lightingplugin->allZoneInit())
+    	if(lightingplugin->interiorInstInit(intInst, this))
     	{
-    		Vector<MeshRenderInst *> &list = *renderInstList;
-    
-    		// clone the origial instances to avoid damaging the originals' data
-    		for(int i=0; i<renderInstList->size(); i++)
+    		if(lightingplugin->allZoneInit())
     		{
-    			MeshRenderInst *inst = state->getRenderPass()->allocInst<MeshRenderInst>();
-    			const MeshRenderInst *oldinst = list[i];
-    			*inst = *oldinst;
-    			list[i] = inst;
-    		}
+    			Vector<MeshRenderInst *> &list = *renderInstList;
     
-    		lightingplugin->processRI(state, list);
+    			// clone the origial instances to avoid damaging the originals' data
+    			for(int i=0; i<renderInstList->size(); i++)
+    			{
+    				MeshRenderInst *inst = state->getRenderPass()->allocInst<MeshRenderInst>();
+    				const MeshRenderInst *oldinst = list[i];
+    				*inst = *oldinst;
+    				list[i] = inst;
+    			}
+    
+    			lightingplugin->processRI(state, list);
+    		}
     	}
-    }
     }
     */
 }

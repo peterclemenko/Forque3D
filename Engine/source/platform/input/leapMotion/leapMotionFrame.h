@@ -27,7 +27,7 @@
 #include "math/mPoint3.h"
 #include "math/mMatrix.h"
 #include "math/mQuat.h"
-#include "Leap.h"
+#include <Leap.h>
 
 class LeapMotionFrame : public SimObject
 {

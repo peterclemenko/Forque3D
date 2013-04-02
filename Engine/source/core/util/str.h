@@ -79,7 +79,7 @@ public:
     bool     isEmpty() const;  ///< Is this an empty string [""]?
     bool     isNotEmpty() const
     {
-        return !isEmpty();  ///< Is this not an empty string [""]?
+        return !isEmpty();    ///< Is this not an empty string [""]?
     }
     
     /// Erases all characters in a string.

@@ -379,9 +379,10 @@ public:
                          bool isSkinDirty,
                          const Vector<MatrixF>& transforms,
                          TSVertexBufferHandle& vertexBuffer,
-                         GFXPrimitiveBufferHandle& primitiveBuffer );
+                         GFXPrimitiveBufferHandle& primitiveBuffer,
+                         const char* meshName = 0 );
                          
-    void innerRender( TSMaterialList*, const TSRenderState& data, TSVertexBufferHandle& vb, GFXPrimitiveBufferHandle& pb );
+    void innerRender( TSMaterialList*, const TSRenderState& data, TSVertexBufferHandle& vb, GFXPrimitiveBufferHandle& pb, const char* meshName = 0 );
     
     /// @}
     
@@ -630,7 +631,8 @@ public:
                  bool isSkinDirty,
                  const Vector<MatrixF>& transforms,
                  TSVertexBufferHandle& vertexBuffer,
-                 GFXPrimitiveBufferHandle& primitiveBuffer );
+                 GFXPrimitiveBufferHandle& primitiveBuffer,
+                 const char* meshName = 0 );
                  
     // collision methods...
     bool buildPolyList( S32 frame, AbstractPolyList* polyList, U32& surfaceKey, TSMaterialList* materials );

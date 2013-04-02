@@ -79,7 +79,7 @@ DefineConsoleType( TypeFilename, const char* )
 DefineConsoleType( TypeStringFilename, String )
 
 /// A universally unique identifier.
-DefineConsoleType( TypeUUID, Torque::UUID )
+DefineConsoleType( TypeUUID, Torque::TUUID )
 
 /// A persistent ID that is associated with an object.  This type cannot
 /// be used to reference PIDs of other objects.

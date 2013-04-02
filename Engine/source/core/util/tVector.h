@@ -396,6 +396,13 @@ template<class T> inline void Vector<T>::insert( U32 index, const T& x )
 
 template<class T> inline void Vector<T>::erase( U32 index )
 {
+    if( index >= mElementCount )
+    {
+        U32 myPain = 0;//Ecstasy Motion having recurring problems with calling sequences
+        myPain++;// indices outside of the array.  Debugging very unhelpful in this situation
+        //Setting a line here that we can put a breakpoint on.
+    }
+    
     AssertFatal( index < mElementCount, "Vector<T>::erase - out of bounds index!" );
     
     destructInPlace( &mArray[index] );

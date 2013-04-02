@@ -546,7 +546,7 @@ public:
     
     virtual void* getNativeVariable()
     {
-        return new( AbstractClassRep* );  // Any pointer-sized allocation will do.
+        return new( AbstractClassRep* );    // Any pointer-sized allocation will do.
     }
     virtual void deleteNativeVariable( void* var )
     {

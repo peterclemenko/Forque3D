@@ -23,7 +23,7 @@
 
 #include "platformX86UNIX/platformX86UNIX.h"
 #include "platform/platform.h"
-#include "platform/event.h"
+#include "platform/input/event.h"
 #include "platform/platformNetAsync.h"
 
 #include <unistd.h>
@@ -49,9 +49,8 @@
 #include <stdlib.h>
 
 #include "console/console.h"
-#include "platform/gameInterface.h"
-#include "core/fileStream.h"
-#include "core/tVector.h"
+#include "core/stream/fileStream.h"
+#include "core/util/tVector.h"
 
 static Net::Error getLastError();
 static S32 defaultPort = 28000;

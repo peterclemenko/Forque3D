@@ -226,6 +226,11 @@ protected:
     Vector<FileName>  mSequences;
     ChangeSet         mChangeSet;
     
+    // Paths to shapes used by MeshFit
+    static String smCapsuleShapePath;
+    static String smCubeShapePath;
+    static String smSphereShapePath;
+    
     static bool addSequenceFromField( void* obj, const char* index, const char* data );
     
     static void       _onTSShapeLoaded( Resource< TSShape >& shape );
@@ -256,6 +261,7 @@ public:
     
     DECLARE_CONOBJECT( TSShapeConstructor );
     static void initPersistFields();
+    static void consoleInit();
     static TSShapeConstructor* findShapeConstructor( const FileName& path );
     
     bool onAdd();
@@ -266,6 +272,22 @@ public:
     void writeChangeSet();
     
     void notifyShapeChanged();
+    
+    /// @name Shape paths for MeshFit
+    ///@{
+    static const String& getCapsuleShapePath()
+    {
+        return smCapsuleShapePath;
+    }
+    static const String& getCubeShapePath()
+    {
+        return smCubeShapePath;
+    }
+    static const String& getSphereShapePath()
+    {
+        return smSphereShapePath;
+    }
+    ///@}
     
     TSShape* getShape() const
     {

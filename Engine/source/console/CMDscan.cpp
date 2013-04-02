@@ -1821,7 +1821,7 @@ void CMD_switch_to_buffer( YY_BUFFER_STATE  new_buffer )
      * with
      *		CMDpop_buffer_state();
      *		CMDpush_buffer_state(new_buffer);
-      */
+     */
     CMDensure_buffer_stack();
     if( YY_CURRENT_BUFFER == new_buffer )
         return;
@@ -2028,7 +2028,7 @@ static void CMDensure_buffer_stack( void )
         /* First allocation is just for 2 elements, since we don't know if this
          * scanner will even need a stack. We use 2 instead of 1 to avoid an
          * immediate realloc on the next call.
-           */
+         */
         num_to_alloc = 1;
         ( yy_buffer_stack ) = ( struct yy_buffer_state** )CMDalloc
                               ( num_to_alloc * sizeof( struct yy_buffer_state* )
